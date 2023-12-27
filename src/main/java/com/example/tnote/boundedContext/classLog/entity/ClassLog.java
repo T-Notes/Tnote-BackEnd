@@ -19,8 +19,11 @@ public class ClassLog extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "class_log_id")
     private Long id;
+    @Column(nullable = false)
     private String title;
+    @Column(nullable = false)
     private LocalDateTime startDate;
+    @Column(nullable = false)
     private LocalDateTime endDate;
     private String plan; // 학습계획
     private String classContents; // 수업내용
