@@ -11,6 +11,7 @@ import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,9 +19,11 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 @Table(name="USER_TB")
 public class User extends BaseTimeEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
@@ -29,9 +32,6 @@ public class User extends BaseTimeEntity {
     private String school;
     private String subject;
     private boolean alarm; // 마이페이지 > 설정 > 알림 받기
-
-    @Enumerated(EnumType.STRING)
-    private OauthProvider oauthProvider;
 
     @OneToMany(mappedBy = "user")
     private List<ClassLog> classLogs = new ArrayList<>();
