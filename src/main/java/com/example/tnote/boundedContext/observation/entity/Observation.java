@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Table(name="OBSERVATION_TB")
 public class Observation extends BaseTimeEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "observation_id")
     private Long id;
     private String studentName;

@@ -16,6 +16,7 @@ import lombok.NoArgsConstructor;
 @Table(name="PROCEEDING_TB")
 public class Proceeding extends BaseTimeEntity {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "proceeding_id")
     private Long id;
     private String title;

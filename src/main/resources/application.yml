@@ -8,8 +8,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url : jdbc:mysql://localhost:3306/tnote
-    username : ENC(sNTWYtkpLNv2PcXl/hRAyw==)
-    password : ENC(NMexjONfc42kzjSxCDNKYQ==)
+    username : ENC(weCzej+Q4NHYuZ6aoWGDig==)
+    password : ENC(qsrjb9CE1lxV8+Gtn/hh5A==)
 
   devtools:
     livereload:
@@ -31,9 +31,24 @@ spring:
     database: mysql
 
   security:
-    user:
-      name: root
-      password: root
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ENC(7zMpxrfNhjOz1YYsn5LKmRZMOQs0GOdUHliPciJYASO/xUjhbWTfk8dUN/3ljZtDfN62WqZ1fWjG0HM/myD/S7TYCer3jbhBR14FNcamgf9QUcxK1hTy7w==)
+            client-secret: ENC(FQWqOqUQUSJdl4WOdTbhPjj8N1wWDlMq6FgwK8zmom9ws7HSPjj9gsMKJRHTo9Am)
+            redirect-uri: "http://localhost:8080/login/oauth2/code/google"
+            authorization-grant-type: authorization_code
+            scope: profile, email
+        provider:
+          google:
+            authorization-uri: https://accounts.google.com/o/oauth2/v2/auth?prompt=consent&access_type=offline
+            token_uri: https://accounts.google.com/o/oauth2/token
+            user-info-uri: https://www.googleapis.com/oauth2/v2/userinfo
+
+custom:
+  jwt:
+    secret-key: ENC(exQSzTX++5yGjQCPKD6OFE8v58Nx5TxHheJPkelemTLqBMUH5OmAAFsBF/VYm1VIi//uvs+tbtHqaTv3A6zCNNZpBU3jLSTBJAws8A91A6k=)
 
 jasypt:
   encryptor:

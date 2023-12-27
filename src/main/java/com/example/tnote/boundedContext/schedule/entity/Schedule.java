@@ -14,7 +14,10 @@ import lombok.NoArgsConstructor;
 @Table(name="SCHEDULE_TB")
 public class Schedule extends BaseTimeEntity {
 
+
+
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "schedule_id")
     private Long id;
     private String semesterName;

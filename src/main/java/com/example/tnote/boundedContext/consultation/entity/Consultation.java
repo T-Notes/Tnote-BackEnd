@@ -17,6 +17,7 @@ import lombok.NoArgsConstructor;
 public class Consultation extends BaseTimeEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "consultation_id")
     private Long id;
     private String studentName;
