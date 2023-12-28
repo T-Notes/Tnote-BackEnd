@@ -36,34 +36,54 @@ public class SecurityConfig {
                 .csrf(
                         AbstractHttpConfigurer::disable
                 )
-                .exceptionHandling()
-                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
-                .accessDeniedHandler(jwtAccessDeniedHandler)
+                .headers(headerConfig ->
+                        headerConfig.frameOptions(
+                                HeadersConfigurer.FrameOptionsConfig::disable
+                        )
+                )
+                .exceptionHandling(exceptionConfig ->
+                        exceptionConfig
+                                .authenticationEntryPoint(jwtAuthenticationEntryPoint)
+                                .accessDeniedHandler(jwtAccessDeniedHandler)
+                )
+                .authorizeHttpRequests(authorizeRequests ->
+                        authorizeRequests
+                                .requestMatchers("/**").permitAll()
+                                .anyRequest().authenticated()
+                )
+                .cors(
+                        Customizer.withDefaults()
+                )
+                //세션 정책 설정
+                .sessionManagement(configurer ->
+                        configurer.sessionCreationPolicy(
+                                SessionCreationPolicy.STATELESS
+                        )
 
-                .and()
-                .headers().frameOptions().disable()
+                )
+                .addFilterBefore(
+                        new JwtAuthenticationFilter(jwtTokenProvider)
+                            , UsernamePasswordAuthenticationFilter.class
+                )
+                .addFilterBefore(
+                        jwtExceptionFilter, JwtAuthenticationFilter.class
+                )
+                .logout(logout ->
+                        logout.logoutSuccessUrl("/")
+                )
+                .oauth2Login(oauth2 ->
+                        oauth2.redirectionEndpoint( info ->
+                                info.baseUri("/oauth2/code/*")
 
-                .and()
-                .cors()
+                        )
+                )
 
-                .and()
-                .sessionManagement()//세션 정책 설정
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .oauth2Login()
+//                .redirectionEndpoint()
+//                .baseUri("/oauth2/code/*")
 
-                .and()
-                .authorizeHttpRequests()
-                .requestMatchers("/**").permitAll()
-                .anyRequest().authenticated()
-
-                .and()
-                .oauth2Login()
-                .redirectionEndpoint()
-                .baseUri("/oauth2/code/*")
         ;
 
-        http
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
 
         return http.build();
     }

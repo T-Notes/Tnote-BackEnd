@@ -1,10 +1,10 @@
 package com.example.tnote.boundedContext.user.controller;
 
 import com.example.tnote.base.response.Result;
-import com.example.tnote.boundedContext.user.dto.JwtResponse;
-import com.example.tnote.boundedContext.user.dto.SignInResponse;
 import com.example.tnote.boundedContext.user.dto.TokenRequest;
 import com.example.tnote.boundedContext.user.service.AuthService;
+import com.example.tnote.boundedContext.user.dto.JwtResponse;
+import com.example.tnote.boundedContext.user.dto.SignInResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
