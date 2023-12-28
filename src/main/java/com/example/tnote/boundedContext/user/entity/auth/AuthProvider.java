@@ -1,4 +1,4 @@
-package com.example.tnote.boundedContext.user.entity;
+package com.example.tnote.boundedContext.user.entity.auth;
 
 import lombok.Getter;
 
