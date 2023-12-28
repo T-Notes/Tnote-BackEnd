@@ -1,11 +1,15 @@
 package com.example.tnote.base.filter;
 
+import com.example.tnote.base.exception.JwtErrorResult;
+import com.example.tnote.base.exception.JwtException;
 import com.example.tnote.base.utils.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.util.StringUtils;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
@@ -13,26 +17,41 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 
 @RequiredArgsConstructor
+@Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private static final String HEADER_AUTHORIZATION = "Authorization";
+    private static final String PREFIX_TOKEN = "Bearer ";
 
     private final JwtTokenProvider jwtTokenProvider;
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        // 헤더에서 JWT 를 받아옵니다.
-        String token = jwtTokenProvider.resolveToken(request);
-
-        // 유효한 토큰인지 확인합니다.
-        if (token != null) {
-            jwtTokenProvider.validateToken(token);
-
-            // 토큰이 유효하면 토큰으로부터 유저 정보를 받아옵니다.
-            Authentication authentication = jwtTokenProvider.getAuthentication(token);
-
-            // SecurityContext 에 Authentication 객체를 저장합니다.
-            SecurityContextHolder.getContext().setAuthentication(authentication);
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+            throws ServletException, IOException {
+        String token = resolveToken(request);
+        System.out.println("----------");
+        System.out.println(token);
+        System.out.println("----------");
+        try {
+            if (token != null) {
+                if (!jwtTokenProvider.isValidToken(token)) {
+                    throw new JwtException(JwtErrorResult.EXPIRED_ACCESS_TOKEN);
+                }
+                Authentication authentication = jwtTokenProvider.getAuthentication(token);
+                SecurityContextHolder.getContext().setAuthentication(authentication);
+                log.info("authentication={}", authentication.getPrincipal());
+            }
+        } catch (JwtException e) {
+            log.warn("e={}", e.getJwtErrorResult().getMessage());
+            request.setAttribute("JwtException", e.getJwtErrorResult().getMessage());
         }
-
         filterChain.doFilter(request, response);
+    }
+
+    private String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(HEADER_AUTHORIZATION);
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(PREFIX_TOKEN)) {
+            return bearerToken.substring(PREFIX_TOKEN.length());
+        }
+        return null;
     }
 }
