@@ -81,23 +81,39 @@ public class JwtTokenProvider {
                 .getSubject();
     }
 
-    // Request의 Header에서 token 값을 가져옵니다. "AccessToken" : "TOKEN값'
-    public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("AccessToken");
-    }
 
-    // 토큰의 유효성 확인
-    public void validateToken(String token) {
+//    // 토큰의 유효성 확인
+//    public void validateToken(String token) {
+//        try {
+//            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
+//        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
+//            throw new JwtException(JwtErrorResult.WRONG_TOKEN);
+//        } catch (ExpiredJwtException e) {
+//            throw new JwtException(JwtErrorResult.EXPIRED_TOKEN);
+//        } catch (UnsupportedJwtException e) {
+//            throw new JwtException(JwtErrorResult.UNSUPPORTED);
+//        } catch (IllegalArgumentException e) {
+//            throw new JwtException(JwtErrorResult.WRONG_TOKEN);
+//        }
+//    }
+    public boolean isValidToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            throw new JwtException(JwtErrorResult.WRONG_TOKEN);
+            Jws<Claims> claimsJws = Jwts.parserBuilder()
+                    .setSigningKey(SECRET_KEY)
+                    .build()
+                    .parseClaimsJws(token);
+
+            log.info("expiredDate={}", claimsJws.getBody().getExpiration());
+            log.info("expired?={}", claimsJws.getBody().getExpiration().before(new Date()));
+            return !claimsJws.getBody().getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
-            throw new JwtException(JwtErrorResult.EXPIRED_TOKEN);
+            return false;
         } catch (UnsupportedJwtException e) {
             throw new JwtException(JwtErrorResult.UNSUPPORTED);
-        } catch (IllegalArgumentException e) {
+        } catch (MalformedJwtException | IllegalArgumentException e) {
             throw new JwtException(JwtErrorResult.WRONG_TOKEN);
+        } catch (SignatureException e) {
+            throw new JwtException(JwtErrorResult.WRONG_SIGNATURE);
         }
     }
 
