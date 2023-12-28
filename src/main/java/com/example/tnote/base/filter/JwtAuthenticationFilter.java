@@ -28,20 +28,16 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
         String token = resolveToken(request);
-        System.out.println("----------");
-        System.out.println(token);
-        System.out.println("----------");
         try {
-            if (token != null) {
-                if (!jwtTokenProvider.isValidToken(token)) {
-                    throw new JwtException(JwtErrorResult.EXPIRED_ACCESS_TOKEN);
-                }
+            if (token != null && jwtTokenProvider.isValidToken(token)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
-                log.info("authentication={}", authentication.getPrincipal());
+                // 여기서 인증 객체를 출력해 확인
+                log.info("Authentication Object: {}", authentication);
+                log.info("Principal Details: {}", authentication.getPrincipal());
             }
         } catch (JwtException e) {
-            log.warn("e={}", e.getJwtErrorResult().getMessage());
+            log.warn("JWT Error: {}", e.getJwtErrorResult().getMessage());
             request.setAttribute("JwtException", e.getJwtErrorResult().getMessage());
         }
         filterChain.doFilter(request, response);
