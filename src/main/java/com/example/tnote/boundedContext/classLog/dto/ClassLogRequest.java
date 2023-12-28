@@ -1,5 +1,6 @@
 package com.example.tnote.boundedContext.classLog.dto;
 
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -14,4 +15,5 @@ public class ClassLogRequest {
     private String classContents;
     private String submission;
     private String magnitude;
+
 }
