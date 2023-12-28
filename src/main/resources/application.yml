@@ -8,8 +8,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url : jdbc:mysql://localhost:3306/tnote
-    username : ENC(weCzej+Q4NHYuZ6aoWGDig==)
-    password : ENC(qsrjb9CE1lxV8+Gtn/hh5A==)
+    username : root
+    password : rlaxoghks12
 
   devtools:
     livereload:
@@ -27,7 +27,7 @@ spring:
           apply_to_ddl : false
         format_sql: true
         use_sql_comments: true
-        default_batch_fetch_size: 1000 # ?? ??? ??? ??? N+1? ???? ??? ???
+        default_batch_fetch_size: 1000 # 배치 사이즈 조절을 통해서 N+1이 나더라도 최소화 시킨다
     database: mysql
 
   security:
@@ -35,8 +35,8 @@ spring:
       client:
         registration:
           google:
-            client-id: ENC(7zMpxrfNhjOz1YYsn5LKmRZMOQs0GOdUHliPciJYASO/xUjhbWTfk8dUN/3ljZtDfN62WqZ1fWjG0HM/myD/S7TYCer3jbhBR14FNcamgf9QUcxK1hTy7w==)
-            client-secret: ENC(FQWqOqUQUSJdl4WOdTbhPjj8N1wWDlMq6FgwK8zmom9ws7HSPjj9gsMKJRHTo9Am)
+            client-id: 1094168267661-n3b7sefr3t8i70j25hchguib6bntkmc5.apps.googleusercontent.com
+            client-secret: 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
             redirect-uri: "http://localhost:8080/login/oauth2/code/google"
             authorization-grant-type: authorization_code
             scope: profile, email
@@ -48,7 +48,7 @@ spring:
 
 custom:
   jwt:
-    secret-key: ENC(exQSzTX++5yGjQCPKD6OFE8v58Nx5TxHheJPkelemTLqBMUH5OmAAFsBF/VYm1VIi//uvs+tbtHqaTv3A6zCNNZpBU3jLSTBJAws8A91A6k=)
+    secret-key: tnotetnotetnotetnotetnotetnotetnotetnotetnotetnotetnotetnotetnote
 
 jasypt:
   encryptor:
