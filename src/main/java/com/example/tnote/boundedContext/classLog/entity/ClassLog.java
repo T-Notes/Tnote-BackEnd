@@ -6,11 +6,13 @@ import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="CLASS_LOG_TB")
@@ -19,8 +21,11 @@ public class ClassLog extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "class_log_id")
     private Long id;
+    @Column(nullable = false)
     private String title;
+    @Column(nullable = false)
     private LocalDateTime startDate;
+    @Column(nullable = false)
     private LocalDateTime endDate;
     private String plan; // 학습계획
     private String classContents; // 수업내용
