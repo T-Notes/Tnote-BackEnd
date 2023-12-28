@@ -5,6 +5,8 @@ import com.example.tnote.base.exception.JwtException;
 import com.example.tnote.base.exception.JwtErrorResult;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.user.dto.Token;
+import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
+import com.example.tnote.boundedContext.user.service.auth.PrincipalDetailService;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
@@ -30,16 +32,8 @@ public class JwtTokenProvider {
     @Value("${custom.jwt.secret-key}")
     private String SECRET_KEY;
 
-    private SecretKey key;
 
-    private final UserDetailsService userDetailsService;
-
-    // 객체 초기화, secretKey를 Base64로 인코딩한다.
-    @PostConstruct
-    protected void init() {
-        String secretKey = Base64.getEncoder().encodeToString(SECRET_KEY.getBytes());
-        key = Keys.hmacShaKeyFor(secretKey.getBytes());
-    }
+    private final PrincipalDetailService principalDetailService;
 
     public Token createToken(String email) {
         Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
@@ -49,14 +43,14 @@ public class JwtTokenProvider {
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + Constants.ACCESS_TOKEN_EXPIRE_COUNT)) // 토큰 만료 시간
-                .signWith(key, SignatureAlgorithm.HS256) // 사용할 암호화 알고리즘과 signature 에 들어갈 secret값 세팅
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY) // 사용할 암호화 알고리즘과 signature 에 들어갈 secret값 세팅
                 .compact();
 
         String refreshToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + Constants.REFRESH_TOKEN_EXPIRE_COUNT))
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
 
         return Token.builder()
@@ -67,37 +61,30 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        UserDetails userDetails = userDetailsService.loadUserByUsername(this.getUserPk(token));
-        return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+        log.info("token~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:{}",token);
+        PrincipalDetails principalDetails = principalDetailService.loadUserByUsername(getPayload(token));
+        log.info("getAuthentication, email={}", principalDetails.getUsername());
+        return new UsernamePasswordAuthenticationToken(principalDetails, "", principalDetails.getAuthorities());
     }
 
-    // 토큰에서 회원 정보 추출
-    public String getUserPk(String token) {
-        return Jwts.parserBuilder()
-                .setSigningKey(key)
-                .build()
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
-    }
-
-    // Request의 Header에서 token 값을 가져옵니다. "AccessToken" : "TOKEN값'
-    public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("AccessToken");
-    }
-
-    // 토큰의 유효성 확인
-    public void validateToken(String token) {
+    public boolean isValidToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-        } catch (io.jsonwebtoken.security.SecurityException | MalformedJwtException e) {
-            throw new JwtException(JwtErrorResult.WRONG_TOKEN);
+            Jws<Claims> claimsJws = Jwts.parserBuilder()
+                    .setSigningKey(SECRET_KEY)
+                    .build()
+                    .parseClaimsJws(token);
+
+            log.info("expiredDate={}", claimsJws.getBody().getExpiration());
+            log.info("expired?={}", claimsJws.getBody().getExpiration().before(new Date()));
+            return !claimsJws.getBody().getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
-            throw new JwtException(JwtErrorResult.EXPIRED_TOKEN);
+            return false;
         } catch (UnsupportedJwtException e) {
             throw new JwtException(JwtErrorResult.UNSUPPORTED);
-        } catch (IllegalArgumentException e) {
+        } catch (MalformedJwtException | IllegalArgumentException e) {
             throw new JwtException(JwtErrorResult.WRONG_TOKEN);
+        } catch (SignatureException e) {
+            throw new JwtException(JwtErrorResult.WRONG_SIGNATURE);
         }
     }
 
@@ -108,7 +95,7 @@ public class JwtTokenProvider {
         try {
             // 검증
             Jws<Claims> claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
+                    .setSigningKey(SECRET_KEY)
                     .build()
                     .parseClaimsJws(refreshToken);
 
@@ -131,8 +118,19 @@ public class JwtTokenProvider {
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + Constants.ACCESS_TOKEN_EXPIRE_COUNT)) // 만료 시간
-                .signWith(key, SignatureAlgorithm.HS256)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
+    }
+    public String getPayload(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(SECRET_KEY)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody().getSubject();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().getSubject();
+        }
     }
 
 }

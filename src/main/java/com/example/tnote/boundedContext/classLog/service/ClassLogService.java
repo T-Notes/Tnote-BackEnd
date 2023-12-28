@@ -14,7 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional(readOnly = true)
+@Transactional
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -22,6 +22,7 @@ public class ClassLogService {
     private final ClassLogRepository classLogRepository;
     private final UserRepository userRepository;
 
+    @Transactional
     public ClassLogResponse save(Long userId, ClassLogRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(CommonErrorResult.USER_NOT_FOUND));
