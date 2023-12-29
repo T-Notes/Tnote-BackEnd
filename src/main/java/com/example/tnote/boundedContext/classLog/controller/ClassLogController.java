@@ -4,14 +4,17 @@ import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -35,6 +38,17 @@ public class ClassLogController {
         ClassLogResponseDto classLogResponseDto = classLogService.save(userId, classLogRequestDto);
 
         return ResponseEntity.ok(Result.of(classLogResponseDto));
+    }
+
+    @GetMapping("/classLogs}")
+    public ResponseEntity<Result> getAllClassLogs(@PathVariable Long userId) {
+        List<ClassLog> classLogs = classLogService.readAllClassLog(userId);
+
+        List<ClassLogResponseDto> classLogDtos = classLogs.stream()
+                .map(ClassLogResponseDto::of)
+                .toList();
+
+        return ResponseEntity.ok(Result.of(classLogDtos));
     }
 
     @DeleteMapping("/{classLogId}")
