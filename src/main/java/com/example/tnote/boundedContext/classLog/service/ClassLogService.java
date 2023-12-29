@@ -4,11 +4,11 @@ import com.example.tnote.base.exception.CommonErrorResult;
 import com.example.tnote.base.exception.CommonException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequest;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -38,5 +38,14 @@ public class ClassLogService {
                 .magnitude(request.getMagnitude())
                 .build();
         return ClassLogResponse.of(classLogRepository.save(classLog));
+    }
+
+    public ClassLogDeleteResponseDto deleteClassLog(Long userId, Long classLogId) {
+        ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
+        classLogRepository.delete(classLog);
+
+        return ClassLogDeleteResponseDto.builder()
+                .id(classLog.getId())
+                .build();
     }
 }
