@@ -40,7 +40,7 @@ public class ClassLogController {
         return ResponseEntity.ok(Result.of(classLogResponseDto));
     }
 
-    @GetMapping("/classLogs}")
+    @GetMapping("/classLogs")
     public ResponseEntity<Result> getAllClassLogs(@PathVariable Long userId) {
         List<ClassLog> classLogs = classLogService.readAllClassLog(userId);
 
