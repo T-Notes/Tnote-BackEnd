@@ -42,13 +42,9 @@ public class ClassLogController {
 
     @GetMapping("/classLogs")
     public ResponseEntity<Result> getAllClassLogs(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        List<ClassLog> classLogs = classLogService.readAllClassLog(principalDetails.getId());
+        List<ClassLogResponseDto> classLogDto = classLogService.readAllClassLog(principalDetails.getId());
 
-        List<ClassLogResponseDto> classLogDtos = classLogs.stream()
-                .map(ClassLogResponseDto::of)
-                .toList();
-
-        return ResponseEntity.ok(Result.of(classLogDtos));
+        return ResponseEntity.ok(Result.of(classLogDto));
     }
 
     @DeleteMapping("/{classLogId}")

@@ -51,7 +51,13 @@ public class ClassLogService {
     }
 
     @Transactional(readOnly = true)
-    public List<ClassLog> readAllClassLog(Long userId) {
-        return classLogRepository.findAllByUserId(userId);
+    public List<ClassLogResponseDto> readAllClassLog(Long userId) {
+        //todo slice 형태로 바꿔야합니다
+        List<ClassLog> classLogs = classLogRepository.findAllByUserId(userId);
+
+        List<ClassLogResponseDto> classLogDto = classLogs.stream()
+                .map(ClassLogResponseDto::of)
+                .toList();
+        return classLogDto;
     }
 }
