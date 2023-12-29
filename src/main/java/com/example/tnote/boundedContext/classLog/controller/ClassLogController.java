@@ -41,8 +41,8 @@ public class ClassLogController {
     }
 
     @GetMapping("/classLogs")
-    public ResponseEntity<Result> getAllClassLogs(@PathVariable Long userId) {
-        List<ClassLog> classLogs = classLogService.readAllClassLog(userId);
+    public ResponseEntity<Result> getAllClassLogs(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        List<ClassLog> classLogs = classLogService.readAllClassLog(principalDetails.getId());
 
         List<ClassLogResponseDto> classLogDtos = classLogs.stream()
                 .map(ClassLogResponseDto::of)
