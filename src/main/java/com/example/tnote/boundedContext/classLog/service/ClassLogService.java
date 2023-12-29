@@ -2,8 +2,8 @@ package com.example.tnote.boundedContext.classLog.service;
 
 import com.example.tnote.base.exception.CommonErrorResult;
 import com.example.tnote.base.exception.CommonException;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogRequest;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
@@ -23,7 +23,7 @@ public class ClassLogService {
     private final UserRepository userRepository;
 
     @Transactional
-    public ClassLogResponse save(Long userId, ClassLogRequest request) {
+    public ClassLogResponseDto save(Long userId, ClassLogRequestDto request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(CommonErrorResult.USER_NOT_FOUND));
 
@@ -37,7 +37,7 @@ public class ClassLogService {
                 .submission(request.getSubmission())
                 .magnitude(request.getMagnitude())
                 .build();
-        return ClassLogResponse.of(classLogRepository.save(classLog));
+        return ClassLogResponseDto.of(classLogRepository.save(classLog));
     }
 
     public ClassLogDeleteResponseDto deleteClassLog(Long userId, Long classLogId) {

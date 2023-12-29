@@ -1,13 +1,12 @@
 package com.example.tnote.boundedContext.classLog.dto;
 
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class ClassLogRequest {
+public class ClassLogRequestDto {
     private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;

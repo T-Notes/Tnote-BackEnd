@@ -2,11 +2,9 @@ package com.example.tnote.boundedContext.classLog.controller;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogRequest;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
-import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,14 +27,14 @@ public class ClassLogController {
 
     @PostMapping("/write")
     public ResponseEntity<Result> createClassLog(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                 @RequestBody ClassLogRequest classLogRequest) {
+                                                 @RequestBody ClassLogRequestDto classLogRequestDto) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
         }
         Long userId = principalDetails.getId();
-        ClassLogResponse classLogResponse = classLogService.save(userId, classLogRequest);
+        ClassLogResponseDto classLogResponseDto = classLogService.save(userId, classLogRequestDto);
 
-        return ResponseEntity.ok(Result.of(classLogResponse));
+        return ResponseEntity.ok(Result.of(classLogResponseDto));
     }
 
     @DeleteMapping("/{classLogId}")
