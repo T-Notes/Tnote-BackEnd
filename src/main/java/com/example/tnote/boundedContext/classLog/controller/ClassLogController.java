@@ -34,8 +34,7 @@ public class ClassLogController {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
         }
-        Long userId = principalDetails.getId();
-        ClassLogResponseDto classLogResponseDto = classLogService.save(userId, classLogRequestDto);
+        ClassLogResponseDto classLogResponseDto = classLogService.save(principalDetails.getId(), classLogRequestDto);
 
         return ResponseEntity.ok(Result.of(classLogResponseDto));
     }
