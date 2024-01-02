@@ -57,7 +57,5 @@ t
 Dsrc/main/java/com/example/tnote/boundedContext/user/entity/User.java,4/8/48c5cafe1b3b645340e1572a62a864e2c6922c38
 p
 @src/main/java/com/example/tnote/base/config/WebClientConfig.java,3/a/3a572be0974198afe695ea008067ca1c79ab0d40
-€
-Psrc/main/java/com/example/tnote/boundedContext/classLog/dto/ClassLogRequest.java,5/8/58e538d6f2b921cafa14fc0bbbb2026cacd73c9f
 |
 Lsrc/main/java/com/example/tnote/boundedContext/user/service/UserService.java,0/f/0f5de7ea407d4359a016553dfec07c85663b568a
