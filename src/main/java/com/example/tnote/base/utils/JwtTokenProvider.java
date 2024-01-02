@@ -9,11 +9,14 @@ import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.service.auth.PrincipalDetailService;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import io.jsonwebtoken.*;
 import org.springframework.stereotype.Component;
 
@@ -29,16 +32,8 @@ public class JwtTokenProvider {
     @Value("${custom.jwt.secret-key}")
     private String SECRET_KEY;
 
-    private SecretKey key;
 
     private final PrincipalDetailService principalDetailService;
-
-    // 객체 초기화, secretKey를 Base64로 인코딩한다.
-    @PostConstruct
-    protected void init() {
-        String secretKey = Base64.getEncoder().encodeToString(SECRET_KEY.getBytes());
-        key = Keys.hmacShaKeyFor(secretKey.getBytes());
-    }
 
     public Token createToken(String email) {
         Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
@@ -65,7 +60,6 @@ public class JwtTokenProvider {
                 .build();
     }
 
-
     public Authentication getAuthentication(String token) {
         log.info("token~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:{}",token);
         PrincipalDetails principalDetails = principalDetailService.loadUserByUsername(getPayload(token));
@@ -73,23 +67,10 @@ public class JwtTokenProvider {
         return new UsernamePasswordAuthenticationToken(principalDetails, "", principalDetails.getAuthorities());
     }
 
-    public String getPayload(String token) {
-        try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody().getSubject();
-        } catch (ExpiredJwtException e) {
-            return e.getClaims().getSubject();
-        }
-    }
-
-
     public boolean isValidToken(String token) {
         try {
             Jws<Claims> claimsJws = Jwts.parserBuilder()
-                    .setSigningKey(key)
+                    .setSigningKey(SECRET_KEY)
                     .build()
                     .parseClaimsJws(token);
 
@@ -114,7 +95,7 @@ public class JwtTokenProvider {
         try {
             // 검증
             Jws<Claims> claims = Jwts.parserBuilder()
-                    .setSigningKey(key)
+                    .setSigningKey(SECRET_KEY)
                     .build()
                     .parseClaimsJws(refreshToken);
 
@@ -139,6 +120,17 @@ public class JwtTokenProvider {
                 .setExpiration(new Date(now.getTime() + Constants.ACCESS_TOKEN_EXPIRE_COUNT)) // 만료 시간
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
+    }
+    public String getPayload(String token) {
+        try {
+            return Jwts.parserBuilder()
+                    .setSigningKey(SECRET_KEY)
+                    .build()
+                    .parseClaimsJws(token)
+                    .getBody().getSubject();
+        } catch (ExpiredJwtException e) {
+            return e.getClaims().getSubject();
+        }
     }
 
 }
