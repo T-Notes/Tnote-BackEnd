@@ -24,6 +24,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final BooleanPath alarm = createBoolean("alarm");
 
+    public final NumberPath<Integer> career = createNumber("career", Integer.class);
+
     public final ListPath<com.example.tnote.boundedContext.classLog.entity.ClassLog, com.example.tnote.boundedContext.classLog.entity.QClassLog> classLogs = this.<com.example.tnote.boundedContext.classLog.entity.ClassLog, com.example.tnote.boundedContext.classLog.entity.QClassLog>createList("classLogs", com.example.tnote.boundedContext.classLog.entity.ClassLog.class, com.example.tnote.boundedContext.classLog.entity.QClassLog.class, PathInits.DIRECT2);
 
     public final ListPath<com.example.tnote.boundedContext.consultation.entity.Consultation, com.example.tnote.boundedContext.consultation.entity.QConsultation> consultations = this.<com.example.tnote.boundedContext.consultation.entity.Consultation, com.example.tnote.boundedContext.consultation.entity.QConsultation>createList("consultations", com.example.tnote.boundedContext.consultation.entity.Consultation.class, com.example.tnote.boundedContext.consultation.entity.QConsultation.class, PathInits.DIRECT2);

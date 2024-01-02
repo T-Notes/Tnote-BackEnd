@@ -32,6 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             if (token != null && jwtTokenProvider.isValidToken(token)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
+
                 // 여기서 인증 객체를 출력해 확인
                 log.info("Authentication Object: {}", authentication);
                 log.info("Principal Details: {}", authentication.getPrincipal());

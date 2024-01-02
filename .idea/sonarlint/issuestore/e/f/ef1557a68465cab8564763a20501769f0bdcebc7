@@ -1,0 +1,8 @@
+
+o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(À™ëù
+j	java:S116"URename this field "GRANT_TYPE" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ïì®¶
+n	java:S116""TRename this field "CLIENT_ID" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(°ª¿±øÿÿÿÿ
+r	java:S116%"XRename this field "CLIENT_SECRET" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(³¡´Áÿÿÿÿÿ
+n	java:S116("TRename this field "TOKEN_URI" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¨†­ÿÿÿÿÿ
+m	java:S116+"XRename this field "USER_INFO_URI" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(¦İßÍ
+l	java:S116."WRename this field "REDIRECT_URI" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(ë“ëÍ

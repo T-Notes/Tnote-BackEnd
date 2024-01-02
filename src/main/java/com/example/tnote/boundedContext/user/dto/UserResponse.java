@@ -19,6 +19,7 @@ public class UserResponse {
     private String name;
     private String school;
     private String subject;
+    private int career;
     private boolean alarm;
 
     public static UserResponse of(User user) {
@@ -28,6 +29,7 @@ public class UserResponse {
                 .name(user.getUsername())
                 .school(user.getSchool())
                 .subject(user.getSubject())
+                .career(user.getCareer())
                 .alarm(user.isAlarm())
                 .build();
     }
@@ -45,6 +47,7 @@ public class UserResponse {
                 .username(response.getName())
                 .school(response.getSchool())
                 .subject(response.getSubject())
+                .career(response.getCareer())
                 .alarm(response.isAlarm())
                 .build();
     }

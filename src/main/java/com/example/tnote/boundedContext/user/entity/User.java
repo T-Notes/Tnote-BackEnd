@@ -31,6 +31,7 @@ public class User extends BaseTimeEntity {
     private String username;
     private String school;
     private String subject;
+    private int career;
     private boolean alarm; // 마이페이지 > 설정 > 알림 받기
 
     @OneToMany(mappedBy = "user")
@@ -43,4 +44,20 @@ public class User extends BaseTimeEntity {
     private List<Proceeding> proceedings = new ArrayList<>();
     @OneToMany(mappedBy = "user")
     private List<Schedule> schedules = new ArrayList<>();
+
+    /*
+        연관관계 메서드
+    */
+    public void updateSubject(String subject) {
+        this.subject = subject;
+    }
+    public void updateCareer(int career) {
+        this.career = career;
+    }
+    public void updateAlarm(boolean alarm) {
+        this.alarm = alarm;
+    }
+    public void updateSchool(String school) {
+        this.school = school;
+    }
 }

@@ -8,8 +8,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url : jdbc:mysql://localhost:3306/tnote
-    username : root
-    password : rlaxoghks12
+    username : ENC(e98vlO4+8hU/yWUikbrVmQ==)
+    password : ENC(PJUmqFtWNJZM8LhyNmR18w==)
 
   devtools:
     livereload:
@@ -35,8 +35,8 @@ spring:
       client:
         registration:
           google:
-            client-id: 1094168267661-n3b7sefr3t8i70j25hchguib6bntkmc5.apps.googleusercontent.com
-            client-secret: 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
+            client-id: ENC(M2gQH3j/cP+s3ZUJN5nMAOf/ER6moYwaMmKXNuK4qp1eqzk9xDdR60LKKBEvKZTdFGwXvPhrm5ztHu1vgDInNlBD+kN7Va8ND6E6llM2at5FwVz44UYnTQ==)
+            client-secret: ENC(nq0Htj/dHR2sd8Vrv+Dpblt3QI+pEKrowkXRIuhdbAyX5Lqx2Val72eNrgo86+qh)
             redirect-uri: "http://localhost:8080/login/oauth2/code/google"
             authorization-grant-type: authorization_code
             scope: profile, email
@@ -48,7 +48,7 @@ spring:
 
 custom:
   jwt:
-    secret-key: tnotetnotetnotetnotetnotetnotetnotetnotetnotetnotetnotetnotetnote
+    secret-key: ENC(9KBL0zD4YP0GMdjQzGlUfN7XZlkoiyetp4+zvdUPEKZ7XYGTX3OLIeDwiLAFKz84DhGVEnrM2E55OL40pvlkgC75rFwBjaw4Gy6bPMFnqzs=)
 
 jasypt:
   encryptor:
