@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ClassLogResponse {
+public class ClassLogResponseDto {
     private Long id;
     private String title;
     private LocalDateTime startDate;
@@ -17,8 +17,8 @@ public class ClassLogResponse {
     private String submission;
     private String magnitude;
 
-    public static ClassLogResponse of(ClassLog classLog) {
-        return ClassLogResponse.builder()
+    public static ClassLogResponseDto of(ClassLog classLog) {
+        return ClassLogResponseDto.builder()
                 .id(classLog.getId())
                 .title(classLog.getTitle())
                 .startDate(classLog.getStartDate())
@@ -30,7 +30,7 @@ public class ClassLogResponse {
                 .build();
     }
 
-    public static ClassLog toEntity(ClassLogResponse response) {
+    public static ClassLog toEntity(ClassLogResponseDto response) {
         return ClassLog.builder()
                 .id(response.getId())
                 .title(response.getTitle())
