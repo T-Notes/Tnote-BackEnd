@@ -57,6 +57,9 @@ dependencies {
     implementation 'io.jsonwebtoken:jjwt-jackson:0.11.2'
     implementation 'com.auth0:java-jwt:3.18.3'
     implementation 'com.auth0:auth0-spring-security-api:1.5.2'
+
+    // gson -> from json to model class
+    implementation 'com.google.code.gson:gson:2.9.0'
 }
 
 tasks.named('test') {

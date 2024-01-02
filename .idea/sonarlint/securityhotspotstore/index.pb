@@ -49,13 +49,7 @@ Ksrc/main/java/com/example/tnote/boundedContext/user/dto/SignInResponse.java,9/
 Ksrc/main/java/com/example/tnote/boundedContext/user/dto/GoogleUserInfo.java,0/6/065145fcf836170528f029544bd2db658cc75107
 x
 Hsrc/main/java/com/example/tnote/boundedContext/user/dto/JwtResponse.java,2/3/2340bee7d43bc9c61a8130011c781e0fde9572b5
-t
-Dsrc/main/java/com/example/tnote/boundedContext/user/entity/User.java,4/8/48c5cafe1b3b645340e1572a62a864e2c6922c38
 „
 Tsrc/main/java/com/example/tnote/boundedContext/RefreshToken/entity/RefreshToken.java,5/4/54b274f8c907717b9ec73690645f098d705ec75c
-x
-Hsrc/main/java/com/example/tnote/boundedContext/user/dto/UserRequest.java,3/8/38d5392fbd324fc2c9e81888206841b7d8eddd69
 p
 @src/main/java/com/example/tnote/base/config/WebClientConfig.java,3/a/3a572be0974198afe695ea008067ca1c79ab0d40
-|
-Lsrc/main/java/com/example/tnote/boundedContext/user/service/UserService.java,0/f/0f5de7ea407d4359a016553dfec07c85663b568a
