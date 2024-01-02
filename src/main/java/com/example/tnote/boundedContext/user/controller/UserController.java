@@ -1,5 +1,7 @@
 package com.example.tnote.boundedContext.user.controller;
 
+import com.example.tnote.base.exception.CommonErrorResult;
+import com.example.tnote.base.exception.CommonException;
 import com.example.tnote.base.exception.UserErrorResult;
 import com.example.tnote.base.exception.UserException;
 import com.example.tnote.base.response.Result;
@@ -12,12 +14,23 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
+import net.minidev.json.parser.ParseException;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.net.URLConnection;
+import java.net.URLEncoder;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 @Slf4j
 @RestController
@@ -27,9 +40,77 @@ public class UserController {
 
     private final UserService userService;
 
+    @Value("${api.career-key}")
+    private String KEY;
+
+    @Value("${api.call-back-url}")
+    private String callBackUrl;
+
+    @GetMapping("/school")
+    public ResponseEntity<Result> findSchool(@RequestBody UserRequest dto) throws IOException, ParseException {
+
+        HttpURLConnection urlConnection = null;
+        InputStream stream = null;
+        String result = null;
+        String gubun = null;
+        String encodeSchoolName = URLEncoder.encode(dto.getSchoolName(),"UTF-8");
+
+        if (dto.getGubun().equals("고등학교")) {
+            gubun = "high_list";
+        } else if (dto.getGubun().equals("중학교")) {
+            gubun = "midd_list";
+        } else {
+            gubun = "elem_list";
+        }
+
+        StringBuilder urlStr = new StringBuilder(
+                callBackUrl + "apiKey=" + KEY
+                        + "&svcType=api&svcCode=SCHOOL&contentType=json"
+                        + "&gubun=" + gubun
+                        + "&searchSchulNm=" + encodeSchoolName);
+        try {
+            URL url = new URL(urlStr.toString());
+
+            urlConnection = (HttpURLConnection) url.openConnection();
+            stream = userService.getNetworkConnection(urlConnection);
+            result = userService.readStreamToString(stream);
+
+            if (stream != null) stream.close();
+        } catch(IOException e) {
+            e.printStackTrace();
+        } finally {
+            if (urlConnection != null) {
+                urlConnection.disconnect();
+            }
+        }
+
+        JSONObject parsingData = (JSONObject) new JSONParser().parse(result.toString());
+
+        // REST API 호출 상태 출력하기
+        StringBuilder out = new StringBuilder();
+        out.append(parsingData.get("status") +" : " + parsingData.get("status_message") +"\n");
+
+        JSONObject dataSearch = (JSONObject) parsingData.get("dataSearch");
+        JSONArray content = (JSONArray) dataSearch.get("content");
+
+        ArrayList<Object> schoolList = new ArrayList<>();
+
+        // 데이터 출력하기
+        JSONObject tmp;
+        for(int i=0; i<content.size(); i++) {
+            tmp = (JSONObject) content.get(i);
+            schoolList.add(Arrays.asList(tmp.get("schoolName"), tmp.get("adres")));
+        }
+
+        return ResponseEntity.ok(Result.of(schoolList));
+    }
+
+
+
     @PatchMapping("/{userId}")
     public ResponseEntity<Result> updateExtraInfo(@PathVariable Long userId, @RequestBody UserRequest dto) throws IOException {
-        log.info("user 추가 정보 등록 / 수정 같은 api 사용");
+        log.info(" user controller - user 추가 정보 등록 / 수정 같은 api 사용, alarm 수신 여부만 바꿔도 여기서 처리");
+
         UserResponse response = userService.updateExtraInfo(userId, dto);
 
         return ResponseEntity.ok(Result.of(response));
@@ -40,25 +121,29 @@ public class UserController {
                                          HttpServletResponse response,
                                          @AuthenticationPrincipal PrincipalDetails user) {
 
-        log.info("PrincipalDetails in user - controller : {}", user);
+        log.info("PrincipalDetails in user - controller / logout : {}", user);
 
         if (user == null) {
             log.warn("PrincipalDetails is null");
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
         }
 
-        //userService.logout(request, response, user);
+        userService.logout(request, response, user);
 
         return ResponseEntity.ok(Result.of("로그아웃 되었습니다."));
     }
 
     @DeleteMapping
     public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal PrincipalDetails user) {
-        log.info("로그인한 user만 탈퇴 진행 가능");
 
-        log.info("user : {}", user);
+        log.info("PrincipalDetails in user - controller / delete user : {}", user);
 
-        //userService.deleteUser(user);
+        if (user == null) {
+            log.warn("PrincipalDetails is null");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
+        }
+
+        userService.deleteUser(user);
 
         return ResponseEntity.ok(Result.of("탈퇴 처리가 완료 되었습니다."));
     }
