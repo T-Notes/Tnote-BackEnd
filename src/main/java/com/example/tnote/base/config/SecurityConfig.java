@@ -48,7 +48,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/**","/classLog/**").permitAll()
+                                .requestMatchers("/**","/classLog/**","/user/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .cors(
