@@ -41,8 +41,6 @@ k
 bsrc/main/java/com/example/tnote/boundedContext/RefreshToken/repository/RefreshTokenRepository.java,6/d/6d1724756cf1170cad08551608b1d7fd42036613
 Œ
 \src/main/java/com/example/tnote/boundedContext/RefreshToken/service/RefreshTokenService.java,9/b/9be26fc7601f3a3f6655bbc44f41eb620aa198a5
-o
-?src/main/java/com/example/tnote/base/config/SecurityConfig.java,0/9/093b4a571e714498f49bd2933609db413a8e39c7
 r
 Bsrc/main/java/com/example/tnote/boundedContext/user/dto/Token.java,4/b/4bf53bd023661d0ec945ab3b31345a0b63f490fc
 {
@@ -61,3 +59,5 @@ p
 @src/main/java/com/example/tnote/base/config/WebClientConfig.java,3/a/3a572be0974198afe695ea008067ca1c79ab0d40
 €
 Psrc/main/java/com/example/tnote/boundedContext/classLog/dto/ClassLogRequest.java,5/8/58e538d6f2b921cafa14fc0bbbb2026cacd73c9f
+|
+Lsrc/main/java/com/example/tnote/boundedContext/user/service/UserService.java,0/f/0f5de7ea407d4359a016553dfec07c85663b568a
