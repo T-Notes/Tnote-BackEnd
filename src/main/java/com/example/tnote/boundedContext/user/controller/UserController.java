@@ -49,6 +49,8 @@ public class UserController {
     @GetMapping("/school")
     public ResponseEntity<Result> findSchool(@RequestBody UserRequest dto) throws IOException, ParseException {
 
+        log.info("학교 찾는 api");
+
         HttpURLConnection urlConnection = null;
         InputStream stream = null;
         String result = null;
