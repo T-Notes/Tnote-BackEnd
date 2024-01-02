@@ -78,10 +78,6 @@ public class SecurityConfig {
                         )
                 )
 
-//                .oauth2Login()
-//                .redirectionEndpoint()
-//                .baseUri("/oauth2/code/*")
-
         ;
 
 
