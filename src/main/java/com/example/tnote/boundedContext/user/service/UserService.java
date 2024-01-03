@@ -24,6 +24,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -57,6 +59,12 @@ public class UserService {
         }
         if(StringUtils.hasText(request.getSchoolName())) {
             user.updateSchool(request.getSchoolName());
+        }
+        if(StringUtils.hasText(request.getGubun())) {
+            user.updateSchoolGubun(request.getGubun());
+        }
+        if(StringUtils.hasText(request.getRegion())) {
+            user.updateSchoolAddress(request.getRegion());
         }
         if(Objects.nonNull(request.getCareer())) {
             user.updateCareer(request.getCareer());
@@ -121,5 +129,28 @@ public class UserService {
         br.close();
 
         return result.toString();
+    }
+
+    public int findCityCode(String cityName) {
+        Map<String, Integer> cityCodes = new HashMap<>();
+        cityCodes.put("서울특별시", 100260);
+        cityCodes.put("부산광역시", 100267);
+        cityCodes.put("인천광역시", 100269);
+        cityCodes.put("대전광역시", 100271);
+        cityCodes.put("대구광역시", 100272);
+        cityCodes.put("울산광역시", 100273);
+        cityCodes.put("광주광역시", 100275);
+        cityCodes.put("경기도", 100276);
+        cityCodes.put("강원도", 100278);
+        cityCodes.put("충청북도", 100280);
+        cityCodes.put("충청남도", 100281);
+        cityCodes.put("전라북도", 100282);
+        cityCodes.put("전라남도", 100283);
+        cityCodes.put("경상북도", 100285);
+        cityCodes.put("경상남도", 100291);
+        cityCodes.put("제주도", 100292);
+
+        Integer cityCode = cityCodes.get(cityName);
+        return cityCode;
     }
 }

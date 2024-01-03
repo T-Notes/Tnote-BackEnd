@@ -13,8 +13,6 @@ m
 =src/main/java/com/example/tnote/base/config/JasyptConfig.java,0/e/0e147dca4f24b341e9ef88171845c372c0da2c92
 i
 9src/main/java/com/example/tnote/base/response/Result.java,4/5/45d877f3409841917d0f9f323d916ef2dc2f598d
-Ç
-Rsrc/main/java/com/example/tnote/boundedContext/user/repository/UserRepository.java,2/d/2d6a2206d5b855ee91d4cebbdf00175dfe4abb8b
 Ä
 Psrc/main/java/com/example/tnote/boundedContext/proceeding/entity/Proceeding.java,6/0/60414019fcc56c0c26eb05feeb36373a8439f1f1
 Ç
@@ -23,8 +21,6 @@ Rsrc/main/java/com/example/tnote/boundedContext/observation/entity/Observation.j
 Tsrc/main/java/com/example/tnote/boundedContext/consultation/entity/Consultation.java,7/5/75df46ee46917a1acf1d0fdcc7639be8859e080e
 |
 Lsrc/main/java/com/example/tnote/boundedContext/classLog/entity/ClassLog.java,f/0/f093fc66b9bc858bc58cd281be87a09313344a7b
-Ç
-Rsrc/main/java/com/example/tnote/boundedContext/user/controller/AuthController.java,2/e/2e78fd9c1790307a3e00fcc17bcb4c36e1cbef47
 
 Osrc/main/java/com/example/tnote/boundedContext/user/service/RequestService.java,e/c/ec9378c781c60c92876bb79fce0ea3ee9d71e7d1
 Å
@@ -33,8 +29,6 @@ e
 5src/main/java/com/example/tnote/TNoteApplication.java,1/1/11fe0f695348285f26324100d44baacdf9d25b03
 Ö
 Usrc/main/java/com/example/tnote/boundedContext/user/service/GoogleRequestService.java,e/f/ef1557a68465cab8564763a20501769f0bdcebc7
-y
-Isrc/main/java/com/example/tnote/boundedContext/user/dto/UserResponse.java,e/b/eb5de5decf21a974cfbb74d4084a722707364aae
 k
 ;src/main/java/com/example/tnote/base/utils/CookieUtils.java,a/5/a5b7febf0437242e2d1ead95904c76e77f65495c
 r

@@ -29,6 +29,8 @@ public class User extends BaseTimeEntity {
 
     private String email;
     private String username;
+    private String schoolAddress;
+    private String schoolGubun;
     private String school;
     private String subject;
     private int career;
@@ -56,6 +58,12 @@ public class User extends BaseTimeEntity {
     }
     public void updateAlarm(boolean alarm) {
         this.alarm = alarm;
+    }
+    public void updateSchoolAddress(String schoolAddress) {
+        this.schoolAddress = schoolAddress;
+    }
+    public void updateSchoolGubun(String schoolGubun) {
+        this.schoolGubun = schoolGubun;
     }
     public void updateSchool(String school) {
         this.school = school;
