@@ -49,22 +49,17 @@ public class UserController {
     @GetMapping("/school")
     public ResponseEntity<Result> findSchool(@RequestBody UserRequest dto) throws IOException, ParseException {
 
-        log.info("학교 찾는 api");
+        log.info("api 사용해서 특정 학교 찾기");
 
         HttpURLConnection urlConnection = null;
         InputStream stream = null;
         String result = null;
-        String gubun = null;
+
+        // encoding , api param에 맞게 custom
+        String gubun = userService.changeGubun(dto.getGubun());
         int encodeRegion = userService.findCityCode(dto.getRegion());
         String encodeSchoolName = URLEncoder.encode(dto.getSchoolName(),"UTF-8");
 
-        if (dto.getGubun().equals("고등학교")) {
-            gubun = "high_list";
-        } else if (dto.getGubun().equals("중학교")) {
-            gubun = "midd_list";
-        } else {
-            gubun = "elem_list";
-        }
 
         StringBuilder urlStr = new StringBuilder(
                 callBackUrl + "apiKey=" + KEY
@@ -74,7 +69,6 @@ public class UserController {
                         + "&searchSchulNm=" + encodeSchoolName);
         try {
             URL url = new URL(urlStr.toString());
-            log.info("url : {}", url);
 
             urlConnection = (HttpURLConnection) url.openConnection();
             stream = userService.getNetworkConnection(urlConnection);
