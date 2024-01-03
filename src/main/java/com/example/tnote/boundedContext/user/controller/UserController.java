@@ -55,6 +55,7 @@ public class UserController {
         InputStream stream = null;
         String result = null;
         String gubun = null;
+        int encodeRegion = userService.findCityCode(dto.getRegion());
         String encodeSchoolName = URLEncoder.encode(dto.getSchoolName(),"UTF-8");
 
         if (dto.getGubun().equals("고등학교")) {
@@ -69,9 +70,11 @@ public class UserController {
                 callBackUrl + "apiKey=" + KEY
                         + "&svcType=api&svcCode=SCHOOL&contentType=json"
                         + "&gubun=" + gubun
+                        + "&region=" + encodeRegion
                         + "&searchSchulNm=" + encodeSchoolName);
         try {
             URL url = new URL(urlStr.toString());
+            log.info("url : {}", url);
 
             urlConnection = (HttpURLConnection) url.openConnection();
             stream = userService.getNetworkConnection(urlConnection);
