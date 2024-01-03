@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class ClassLogController {
     private final ClassLogService classLogService;
 
-    @PostMapping("/write")
+    @PostMapping("/classLogs")
     public ResponseEntity<Result> createClassLog(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                  @RequestBody ClassLogRequestDto classLogRequestDto) {
         if (principalDetails == null) {
