@@ -42,7 +42,7 @@ public class ClassLog extends BaseTimeEntity {
     @OneToMany(mappedBy = "classLog", cascade = CascadeType.ALL)
     private List<ClassLogImage> classLogImage = new ArrayList<>();
 
-    public void getClearClassLogImages() {
+    public void clearClassLogImages() {
         this.classLogImage.clear();
     }
 }
