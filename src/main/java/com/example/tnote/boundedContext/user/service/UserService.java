@@ -133,6 +133,7 @@ public class UserService {
 
     public int findCityCode(String cityName) {
         Map<String, Integer> cityCodes = new HashMap<>();
+
         cityCodes.put("서울특별시", 100260);
         cityCodes.put("부산광역시", 100267);
         cityCodes.put("인천광역시", 100269);
@@ -152,5 +153,19 @@ public class UserService {
 
         Integer cityCode = cityCodes.get(cityName);
         return cityCode;
+    }
+
+    public String changeGubun(String gubun) {
+        String result = null;
+
+        if (gubun.equals("고등학교")) {
+            result = "high_list";
+        } else if (gubun.equals("중학교")) {
+            result = "midd_list";
+        } else {
+            result = "elem_list";
+        }
+
+        return result;
     }
 }
