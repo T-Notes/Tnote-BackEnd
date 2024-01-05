@@ -40,6 +40,7 @@ public class ProceedingController {
 
     @GetMapping("/proceedings")
     public ResponseEntity<Result> getAllProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        //todo slice 형태로 바꿔야합니다.
         List<ProceedingResponseDto> proceedingList = proceedingService.readAllProceeding(principalDetails.getId());
 
         return ResponseEntity.ok(Result.of(proceedingList));
