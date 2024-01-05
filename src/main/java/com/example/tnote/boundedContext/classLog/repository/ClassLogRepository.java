@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ClassLogRepository extends JpaRepository<ClassLog, Long> {
     @Query("select cl from ClassLog cl " +
-            "where cl.id = :reviewId and cl.user.id = :userId")
-    Optional<ClassLog> findByIdAndUserId(Long reviewId, Long userId);
+            "where cl.id = :classLogId and cl.user.id = :userId")
+    Optional<ClassLog> findByIdAndUserId(Long classLogId, Long userId);
     List<ClassLog> findAllByUserId(Long userId);
 }
