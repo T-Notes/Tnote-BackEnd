@@ -43,7 +43,7 @@ public class ProceedingService {
         return ProceedingResponseDto.of(proceedingRepository.save(proceeding));
     }
     @Transactional(readOnly = true)
-    public List<ProceedingResponseDto> readAllClassLog(Long userId) {
+    public List<ProceedingResponseDto> readAllProceeding(Long userId) {
         //todo slice 형태로 바꿔야합니다
         List<Proceeding> proceedings = proceedingRepository.findAllByUserId(userId);
 
@@ -52,7 +52,7 @@ public class ProceedingService {
                 .toList();
     }
 
-    public ProceedingDeleteResponseDto deleteClassLog(Long userId, Long proceedingId) {
+    public ProceedingDeleteResponseDto deleteProceeding(Long userId, Long proceedingId) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(userId, proceedingId).orElseThrow();
         proceedingRepository.delete(proceeding);
 
