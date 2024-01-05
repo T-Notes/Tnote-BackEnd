@@ -2,9 +2,11 @@ package com.example.tnote.boundedContext.proceeding.service;
 
 import com.example.tnote.base.exception.CommonErrorResult;
 import com.example.tnote.base.exception.CommonException;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
@@ -48,6 +50,15 @@ public class ProceedingService {
         return proceedings.stream()
                 .map(ProceedingResponseDto::of)
                 .toList();
+    }
+
+    public ProceedingDeleteResponseDto deleteClassLog(Long userId, Long proceedingId) {
+        Proceeding proceeding = proceedingRepository.findByIdAndUserId(userId, proceedingId).orElseThrow();
+        proceedingRepository.delete(proceeding);
+
+        return ProceedingDeleteResponseDto.builder()
+                .id(proceeding.getId())
+                .build();
     }
 
 }
