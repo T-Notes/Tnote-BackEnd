@@ -6,6 +6,7 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -65,5 +66,28 @@ public class ClassLogService {
     public ClassLogDetailResponseDto getClassLogDetail(Long userId, Long classLogId) {
         ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
         return new ClassLogDetailResponseDto(classLog);
+    }
+
+    public ClassLogResponseDto updateClassLog(Long userId, Long classLogId, ClassLogUpdateRequestDto classLogUpdateRequestDto){
+        ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
+        updateEachClassLogItem(classLogUpdateRequestDto,classLog);
+
+        return ClassLogResponseDto.of(classLog);
+    }
+
+    private void updateEachClassLogItem(ClassLogUpdateRequestDto classLogUpdateRequestDto , ClassLog classLog){
+        if (classLogUpdateRequestDto.isNonPlan()){
+            classLog.updatePlan(classLogUpdateRequestDto.getPlan());
+        }
+        if (classLogUpdateRequestDto.isNonSubmission()){
+            classLog.updateSubmission(classLogUpdateRequestDto.getSubmission());
+        }
+        if (classLogUpdateRequestDto.isNonClassContents()){
+            classLog.updateClassContents(classLogUpdateRequestDto.getClassContents());
+        }
+        if (classLogUpdateRequestDto.isNonMagnitude()){
+            classLog.updateMagnitude(classLogUpdateRequestDto.getMagnitude());
+        }
+        //todo 이미지에 대한 수정부분도 필요합니다.
     }
 }

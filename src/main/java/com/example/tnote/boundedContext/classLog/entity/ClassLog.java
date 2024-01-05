@@ -45,4 +45,20 @@ public class ClassLog extends BaseTimeEntity {
     public void clearClassLogImages() {
         this.classLogImage.clear();
     }
+
+    public void updatePlan(String plan){
+        this.plan = plan;
+    }
+
+    public void updateClassContents(String classContents) {
+        this.classContents = classContents;
+    }
+
+    public void updateSubmission(String submission) {
+        this.submission = submission;
+    }
+
+    public void updateMagnitude(String magnitude) {
+        this.magnitude = magnitude;
+    }
 }
