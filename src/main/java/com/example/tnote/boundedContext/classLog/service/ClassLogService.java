@@ -2,6 +2,7 @@ package com.example.tnote.boundedContext.classLog.service;
 
 import com.example.tnote.base.exception.CommonErrorResult;
 import com.example.tnote.base.exception.CommonException;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
@@ -58,5 +59,11 @@ public class ClassLogService {
         return classLogs.stream()
                 .map(ClassLogResponseDto::of)
                 .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public ClassLogDetailResponseDto getClassLogDetail(Long userId, Long classLogId) {
+        ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
+        return new ClassLogDetailResponseDto(classLog);
     }
 }

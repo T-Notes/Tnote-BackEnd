@@ -2,6 +2,7 @@ package com.example.tnote.boundedContext.classLog.controller;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
@@ -49,7 +50,16 @@ public class ClassLogController {
     @DeleteMapping("/{classLogId}")
     public ResponseEntity<Result> deleteClassLog(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                  @PathVariable Long classLogId) {
-        ClassLogDeleteResponseDto deleteResponseDto = classLogService.deleteClassLog(principalDetails.getId(), classLogId);
+        ClassLogDeleteResponseDto deleteResponseDto = classLogService.deleteClassLog(principalDetails.getId(),
+                classLogId);
         return ResponseEntity.ok(Result.of(deleteResponseDto));
+    }
+
+    @GetMapping("/{classLogId}")
+    public ResponseEntity<Result> getClassLogDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                    @PathVariable Long classLogId) {
+        //Todo 나중에 아카이브 컨트롤러로 빼야할수도 있습니다 회의가 필요합니다.
+        ClassLogDetailResponseDto detailResponseDto = classLogService.getClassLogDetail(principalDetails.getId(), classLogId);
+        return ResponseEntity.ok(Result.of(detailResponseDto));
     }
 }

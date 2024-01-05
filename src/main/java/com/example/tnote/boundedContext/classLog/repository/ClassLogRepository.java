@@ -10,7 +10,8 @@ public interface ClassLogRepository extends JpaRepository<ClassLog, Long> {
     @Query("select cl from ClassLog cl where cl.user.id = :userId")
     List<ClassLog> findAllByUserId(Long userId);
 
-    Optional<ClassLog> findByIdAndUserId
+    @Query("select cl from ClassLog cl " +
+            "where cl.id = :classLogId and cl.user.id = :userId")
+    Optional<ClassLog> findByIdAndUserId(Long userId, Long classLogId);
 
-    List<ClassLog> findAllByUserId(Long userId);
 }
