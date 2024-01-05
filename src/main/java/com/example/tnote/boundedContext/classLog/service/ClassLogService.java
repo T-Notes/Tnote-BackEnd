@@ -55,9 +55,8 @@ public class ClassLogService {
         //todo slice 형태로 바꿔야합니다
         List<ClassLog> classLogs = classLogRepository.findAllByUserId(userId);
 
-        List<ClassLogResponseDto> classLogDto = classLogs.stream()
+        return classLogs.stream()
                 .map(ClassLogResponseDto::of)
                 .toList();
-        return classLogDto;
     }
 }
