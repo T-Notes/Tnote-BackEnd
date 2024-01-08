@@ -24,7 +24,7 @@ public class Consultation extends BaseTimeEntity {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private CounselingField counselingField;
-    private String targetType;
+    private CounselingType counselingType;
     private String consultationContents;
     private String consultationResult;
 
