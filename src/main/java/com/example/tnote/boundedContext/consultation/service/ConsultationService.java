@@ -2,8 +2,10 @@ package com.example.tnote.boundedContext.consultation.service;
 
 import com.example.tnote.base.exception.CommonErrorResult;
 import com.example.tnote.base.exception.CommonException;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
@@ -52,5 +54,12 @@ public class ConsultationService {
                 .map(ConsultationResponseDto::of)
                 .toList();
     }
+    public ConsultationDeleteResponseDto deleteClassLog(Long userId, Long consultationId) {
+        Consultation consultation = consultationRepository.findByIdAndUserId(userId, consultationId).orElseThrow();
+        consultationRepository.delete(consultation);
 
+        return ConsultationDeleteResponseDto.builder()
+                .id(consultation.getId())
+                .build();
+    }
 }
