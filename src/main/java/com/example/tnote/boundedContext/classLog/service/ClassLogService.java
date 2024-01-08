@@ -2,9 +2,11 @@ package com.example.tnote.boundedContext.classLog.service;
 
 import com.example.tnote.base.exception.CommonErrorResult;
 import com.example.tnote.base.exception.CommonException;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -55,9 +57,37 @@ public class ClassLogService {
         //todo slice 형태로 바꿔야합니다
         List<ClassLog> classLogs = classLogRepository.findAllByUserId(userId);
 
-        List<ClassLogResponseDto> classLogDto = classLogs.stream()
+        return classLogs.stream()
                 .map(ClassLogResponseDto::of)
                 .toList();
-        return classLogDto;
+    }
+
+    @Transactional(readOnly = true)
+    public ClassLogDetailResponseDto getClassLogDetail(Long userId, Long classLogId) {
+        ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
+        return new ClassLogDetailResponseDto(classLog);
+    }
+
+    public ClassLogResponseDto updateClassLog(Long userId, Long classLogId, ClassLogUpdateRequestDto classLogUpdateRequestDto){
+        ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
+        updateEachClassLogItem(classLogUpdateRequestDto,classLog);
+
+        return ClassLogResponseDto.of(classLog);
+    }
+
+    private void updateEachClassLogItem(ClassLogUpdateRequestDto classLogUpdateRequestDto , ClassLog classLog){
+        if (classLogUpdateRequestDto.hasPlan()){
+            classLog.updatePlan(classLogUpdateRequestDto.getPlan());
+        }
+        if (classLogUpdateRequestDto.hasSubmission()){
+            classLog.updateSubmission(classLogUpdateRequestDto.getSubmission());
+        }
+        if (classLogUpdateRequestDto.hasClassContents()){
+            classLog.updateClassContents(classLogUpdateRequestDto.getClassContents());
+        }
+        if (classLogUpdateRequestDto.hasMagnitude()){
+            classLog.updateMagnitude(classLogUpdateRequestDto.getMagnitude());
+        }
+        //todo 이미지에 대한 수정부분도 필요합니다.
     }
 }

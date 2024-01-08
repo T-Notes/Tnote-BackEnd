@@ -2,9 +2,12 @@ package com.example.tnote.boundedContext.classLog.entity;
 
 import com.example.tnote.base.entity.BaseTimeEntity;
 import com.example.tnote.boundedContext.user.entity.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,5 +38,27 @@ public class ClassLog extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "classLog", cascade = CascadeType.ALL)
+    private List<ClassLogImage> classLogImage = new ArrayList<>();
 
+    public void clearClassLogImages() {
+        this.classLogImage.clear();
+    }
+
+    public void updatePlan(String plan){
+        this.plan = plan;
+    }
+
+    public void updateClassContents(String classContents) {
+        this.classContents = classContents;
+    }
+
+    public void updateSubmission(String submission) {
+        this.submission = submission;
+    }
+
+    public void updateMagnitude(String magnitude) {
+        this.magnitude = magnitude;
+    }
 }
