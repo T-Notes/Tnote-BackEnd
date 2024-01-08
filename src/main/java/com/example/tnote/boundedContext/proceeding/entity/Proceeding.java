@@ -19,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name="PROCEEDING_TB")
+@Table(name = "PROCEEDING_TB")
 public class Proceeding extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,5 +40,13 @@ public class Proceeding extends BaseTimeEntity {
 
     public void clearProceedingImages() {
         this.proceedingImage.clear();
+    }
+
+    public void updateLocation(String location) {
+        this.location = location;
+    }
+
+    public void updateWorkContents(String workContents) {
+        this.workContents = workContents;
     }
 }
