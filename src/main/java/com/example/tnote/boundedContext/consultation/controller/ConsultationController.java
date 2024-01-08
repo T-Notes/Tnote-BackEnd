@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.consultation.controller;
 
 import com.example.tnote.base.response.Result;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
@@ -44,6 +45,14 @@ public class ConsultationController {
         ConsultationResponseDto consultationResponseDto = consultationService.save(principalDetails.getId(),
                 requestDto);
         return ResponseEntity.ok(Result.of(consultationResponseDto));
+    }
+
+    @GetMapping("/consultations")
+    public ResponseEntity<Result> getAllConsultations(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        List<ConsultationResponseDto> consultationResponseDtos = consultationService.readAllConsultation(
+                principalDetails.getId());
+
+        return ResponseEntity.ok(Result.of(consultationResponseDtos));
     }
 
 }
