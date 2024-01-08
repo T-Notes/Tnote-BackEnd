@@ -7,6 +7,7 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
@@ -42,6 +43,7 @@ public class ProceedingService {
                 .build();
         return ProceedingResponseDto.of(proceedingRepository.save(proceeding));
     }
+
     @Transactional(readOnly = true)
     public List<ProceedingResponseDto> readAllProceeding(Long userId) {
         //todo slice 형태로 바꿔야합니다
@@ -59,6 +61,12 @@ public class ProceedingService {
         return ProceedingDeleteResponseDto.builder()
                 .id(proceeding.getId())
                 .build();
+    }
+
+    public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
+        Proceeding proceeding = proceedingRepository.findByIdAndUserId(userId, proceedingId).orElseThrow();
+
+        return new ProceedingDetailResponseDto(proceeding);
     }
 
 }

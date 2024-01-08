@@ -2,6 +2,7 @@ package com.example.tnote.boundedContext.proceeding.controller;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
@@ -53,5 +54,15 @@ public class ProceedingController {
                 principalDetails.getId(), proceedingId);
 
         return ResponseEntity.ok((Result.of(proceedingDeleteResponseDto)));
+    }
+
+    @GetMapping("/{proceedingId}")
+    public ResponseEntity<Result> getProceedingDetails(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                       @PathVariable Long proceedingId) {
+        //todo 아카이브 컨트롤러로 위치 변경해야하는지 회의필요
+        ProceedingDetailResponseDto proceedingDetailResponseDto = proceedingService.getProceedingDetails(
+                principalDetails.getId(), proceedingId);
+
+        return ResponseEntity.ok(Result.of(proceedingDetailResponseDto));
     }
 }
