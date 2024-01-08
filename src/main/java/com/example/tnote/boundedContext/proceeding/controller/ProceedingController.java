@@ -5,6 +5,7 @@ import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseD
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.util.List;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -64,5 +66,15 @@ public class ProceedingController {
                 principalDetails.getId(), proceedingId);
 
         return ResponseEntity.ok(Result.of(proceedingDetailResponseDto));
+    }
+
+    @PutMapping("/{proceedingId}")
+    public ResponseEntity<Result> updateProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                   @PathVariable Long proceedingId, @RequestBody
+                                                   ProceedingUpdateRequestDto updateRequestDto) {
+        ProceedingResponseDto proceedingResponseDto = proceedingService.updateProceeding(principalDetails.getId(),
+                proceedingId, updateRequestDto);
+
+        return ResponseEntity.ok(Result.of(proceedingResponseDto));
     }
 }

@@ -10,6 +10,7 @@ import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseD
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -55,7 +56,7 @@ public class ProceedingService {
     }
 
     public ProceedingDeleteResponseDto deleteProceeding(Long userId, Long proceedingId) {
-        Proceeding proceeding = proceedingRepository.findByIdAndUserId(userId, proceedingId).orElseThrow();
+        Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId).orElseThrow();
         proceedingRepository.delete(proceeding);
 
         return ProceedingDeleteResponseDto.builder()
@@ -64,9 +65,25 @@ public class ProceedingService {
     }
 
     public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
-        Proceeding proceeding = proceedingRepository.findByIdAndUserId(userId, proceedingId).orElseThrow();
+        Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId).orElseThrow();
 
         return new ProceedingDetailResponseDto(proceeding);
     }
 
+    public ProceedingResponseDto updateProceeding(Long userId, Long proceedingId,
+                                                  ProceedingUpdateRequestDto updateRequestDto) {
+        Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId).orElseThrow();
+        updateEachItem(updateRequestDto, proceeding);
+
+        return ProceedingResponseDto.of(proceeding);
+    }
+
+    private void updateEachItem(ProceedingUpdateRequestDto updateRequestDto, Proceeding proceeding) {
+        if (updateRequestDto.hasLocation()) {
+            proceeding.updateLocation(updateRequestDto.getLocation());
+        }
+        if (updateRequestDto.hasWorkContents()) {
+            proceeding.updateWorkContents(updateRequestDto.getWorkContents());
+        }
+    }
 }

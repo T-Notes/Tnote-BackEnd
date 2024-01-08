@@ -7,11 +7,11 @@ public class ProceedingUpdateRequestDto {
     private String location;
     private String workContents;
 
-    public boolean isNoLocation() {
+    public boolean hasLocation() {
         return location != null;
     }
 
-    public boolean isNonWorkContents() {
+    public boolean hasWorkContents() {
         return workContents != null;
     }
 }

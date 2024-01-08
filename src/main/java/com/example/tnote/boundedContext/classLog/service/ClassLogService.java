@@ -76,16 +76,16 @@ public class ClassLogService {
     }
 
     private void updateEachClassLogItem(ClassLogUpdateRequestDto classLogUpdateRequestDto , ClassLog classLog){
-        if (classLogUpdateRequestDto.isNonPlan()){
+        if (classLogUpdateRequestDto.hasPlan()){
             classLog.updatePlan(classLogUpdateRequestDto.getPlan());
         }
-        if (classLogUpdateRequestDto.isNonSubmission()){
+        if (classLogUpdateRequestDto.hasSubmission()){
             classLog.updateSubmission(classLogUpdateRequestDto.getSubmission());
         }
-        if (classLogUpdateRequestDto.isNonClassContents()){
+        if (classLogUpdateRequestDto.hasClassContents()){
             classLog.updateClassContents(classLogUpdateRequestDto.getClassContents());
         }
-        if (classLogUpdateRequestDto.isNonMagnitude()){
+        if (classLogUpdateRequestDto.hasMagnitude()){
             classLog.updateMagnitude(classLogUpdateRequestDto.getMagnitude());
         }
         //todo 이미지에 대한 수정부분도 필요합니다.
