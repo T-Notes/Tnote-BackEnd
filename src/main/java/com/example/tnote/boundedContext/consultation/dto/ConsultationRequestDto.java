@@ -17,6 +17,7 @@ public class ConsultationRequestDto {
     private CounselingType counselingType;
     private String consultationContents;
     private String consultationResult;
+
     public void validateEnums() {
         validateCounselingField();
         validateCounselingType();
