@@ -2,9 +2,11 @@ package com.example.tnote.boundedContext.consultation.controller;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
@@ -66,4 +68,12 @@ public class ConsultationController {
         return ResponseEntity.ok(Result.of(deleteResponseDto));
     }
 
+    @GetMapping("/{consultationId}")
+    public ResponseEntity<Result> getClassLogDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                    @PathVariable Long consultationId) {
+        //Todo 나중에 아카이브 컨트롤러로 빼야할수도 있습니다 회의가 필요합니다.
+        ConsultationDetailResponseDto detailResponseDto = consultationService.getConsultationDetail(principalDetails.getId(),
+                consultationId);
+        return ResponseEntity.ok(Result.of(detailResponseDto));
+    }
 }
