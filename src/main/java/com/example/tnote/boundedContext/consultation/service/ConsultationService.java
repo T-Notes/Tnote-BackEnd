@@ -15,6 +15,7 @@ import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,11 +35,18 @@ public class ConsultationService {
         requestDto.validateEnums();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(CommonErrorResult.USER_NOT_FOUND));
+
+        LocalDateTime startDate = requestDto.getStartDate();
+        LocalDateTime endDate = requestDto.getEndDate();
+        if(requestDto.isAllDay()){
+            startDate = startDate.withHour(9).withMinute(0);
+            endDate = endDate.withHour(19).withMinute(0);
+        }
         Consultation consultation = Consultation.builder()
                 .user(user)
                 .studentName(requestDto.getStudentName())
-                .startDate(requestDto.getStartDate())
-                .endDate(requestDto.getEndDate())
+                .startDate(startDate)
+                .endDate(endDate)
                 .counselingField(requestDto.getCounselingField())
                 .consultationResult(requestDto.getConsultationResult())
                 .consultationContents(requestDto.getConsultationContents())

@@ -17,7 +17,7 @@ public class ConsultationRequestDto {
     private CounselingType counselingType;
     private String consultationContents;
     private String consultationResult;
-
+    private boolean isAllDay;
     public void validateEnums() {
         validateCounselingField();
         validateCounselingType();
