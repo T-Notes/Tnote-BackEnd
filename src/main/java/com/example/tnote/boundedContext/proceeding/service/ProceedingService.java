@@ -15,6 +15,7 @@ import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -33,12 +34,19 @@ public class ProceedingService {
     public ProceedingResponseDto save(Long userId, ProceedingRequestDto request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(CommonErrorResult.USER_NOT_FOUND));
-        //Todo 종일이라는 체크박스에대한 시간값을 어떻게 넘겨줄지 회의가 필요합니다
+
+        LocalDateTime startDate = request.getStartDate();
+        LocalDateTime endDate = request.getEndDate();
+        if(request.isAllDay()){
+            startDate = startDate.withHour(9).withMinute(0);
+            endDate = endDate.withHour(19).withMinute(0);
+        }
+
         Proceeding proceeding = Proceeding.builder()
                 .user(user)
                 .title(request.getTitle())
-                .startDate(request.getStartDate())
-                .endDate(request.getEndDate())
+                .startDate(startDate)
+                .endDate(endDate)
                 .location(request.getLocation())
                 .workContents(request.getWorkContents())
                 .build();
