@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="CONSULTATION_TB")
+@Table(name = "CONSULTATION_TB")
 public class Consultation extends BaseTimeEntity {
 
     @Id
@@ -33,4 +33,12 @@ public class Consultation extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void updateConsultationContents(String consultationContents) {
+        this.consultationContents = consultationContents;
+    }
+
+    public void updateConsultationResult(String consultationResult) {
+        this.consultationResult = consultationResult;
+    }
 }

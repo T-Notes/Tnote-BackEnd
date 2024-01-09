@@ -9,6 +9,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteRespo
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
 import com.example.tnote.boundedContext.consultation.service.ConsultationService;
@@ -23,6 +24,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -60,9 +62,10 @@ public class ConsultationController {
 
         return ResponseEntity.ok(Result.of(consultationResponseDtos));
     }
+
     @DeleteMapping("/{consultationId}")
     public ResponseEntity<Result> deleteConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                 @PathVariable Long consultationId) {
+                                                     @PathVariable Long consultationId) {
         ConsultationDeleteResponseDto deleteResponseDto = consultationService.deleteClassLog(principalDetails.getId(),
                 consultationId);
         return ResponseEntity.ok(Result.of(deleteResponseDto));
@@ -72,8 +75,18 @@ public class ConsultationController {
     public ResponseEntity<Result> getClassLogDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @PathVariable Long consultationId) {
         //Todo 나중에 아카이브 컨트롤러로 빼야할수도 있습니다 회의가 필요합니다.
-        ConsultationDetailResponseDto detailResponseDto = consultationService.getConsultationDetail(principalDetails.getId(),
+        ConsultationDetailResponseDto detailResponseDto = consultationService.getConsultationDetail(
+                principalDetails.getId(),
                 consultationId);
         return ResponseEntity.ok(Result.of(detailResponseDto));
+    }
+
+    @PutMapping("/{consultationId}")
+    public ResponseEntity<Result> updateConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                     @PathVariable Long consultationId, @RequestBody
+                                                     ConsultationUpdateRequestDto requestDto) {
+        ConsultationResponseDto responseDto = consultationService.updateConsultation(principalDetails.getId(),
+                consultationId, requestDto);
+        return ResponseEntity.ok(Result.of(responseDto));
     }
 }

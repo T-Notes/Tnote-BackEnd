@@ -10,6 +10,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteRespo
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -56,6 +57,7 @@ public class ConsultationService {
                 .map(ConsultationResponseDto::of)
                 .toList();
     }
+
     public ConsultationDeleteResponseDto deleteClassLog(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(userId, consultationId).orElseThrow();
         consultationRepository.delete(consultation);
@@ -69,5 +71,21 @@ public class ConsultationService {
     public ConsultationDetailResponseDto getConsultationDetail(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(userId, consultationId).orElseThrow();
         return new ConsultationDetailResponseDto(consultation);
+    }
+
+    public ConsultationResponseDto updateConsultation(Long userId, Long consultationId,
+                                                      ConsultationUpdateRequestDto requestDto) {
+        Consultation consultation = consultationRepository.findByIdAndUserId(userId, consultationId).orElseThrow();
+        updateEachItems(consultation, requestDto);
+        return ConsultationResponseDto.of(consultation);
+    }
+
+    private void updateEachItems(Consultation consultation, ConsultationUpdateRequestDto requestDto) {
+        if (requestDto.hasConsultationContents()) {
+            consultation.updateConsultationContents(requestDto.getConsultationContents());
+        }
+        if (requestDto.hasConsultationResult()) {
+            consultation.updateConsultationResult(requestDto.getConsultationResult());
+        }
     }
 }
