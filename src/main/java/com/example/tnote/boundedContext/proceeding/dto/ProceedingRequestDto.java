@@ -13,6 +13,7 @@ public class ProceedingRequestDto {
     private LocalDateTime endDate;
     private String location;
     private String workContents;
+    private boolean isAllDay;
 
     //todo 추후에 S3로 이미지도 추가해야합니다.
     public Proceeding toEntity() {

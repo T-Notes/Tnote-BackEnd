@@ -14,5 +14,6 @@ public class ClassLogRequestDto {
     private String classContents;
     private String submission;
     private String magnitude;
+    private boolean isAllDay;
 
 }
