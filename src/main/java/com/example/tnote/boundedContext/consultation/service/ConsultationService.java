@@ -39,8 +39,8 @@ public class ConsultationService {
         LocalDateTime startDate = requestDto.getStartDate();
         LocalDateTime endDate = requestDto.getEndDate();
         if(requestDto.isAllDay()){
-            startDate = startDate.withHour(9).withMinute(0);
-            endDate = endDate.withHour(19).withMinute(0);
+            startDate = startDate.withHour(12).withMinute(0);
+            endDate = endDate.withHour(23).withMinute(59);
         }
         Consultation consultation = Consultation.builder()
                 .user(user)

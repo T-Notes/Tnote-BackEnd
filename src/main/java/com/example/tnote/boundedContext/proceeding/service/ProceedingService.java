@@ -38,8 +38,8 @@ public class ProceedingService {
         LocalDateTime startDate = request.getStartDate();
         LocalDateTime endDate = request.getEndDate();
         if(request.isAllDay()){
-            startDate = startDate.withHour(9).withMinute(0);
-            endDate = endDate.withHour(19).withMinute(0);
+            startDate = startDate.withHour(12).withMinute(0);
+            endDate = endDate.withHour(23).withMinute(59);
         }
 
         Proceeding proceeding = Proceeding.builder()
