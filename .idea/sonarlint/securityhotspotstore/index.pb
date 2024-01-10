@@ -15,8 +15,6 @@ i
 9src/main/java/com/example/tnote/base/response/Result.java,4/5/45d877f3409841917d0f9f323d916ef2dc2f598d
 €
 Psrc/main/java/com/example/tnote/boundedContext/proceeding/entity/Proceeding.java,6/0/60414019fcc56c0c26eb05feeb36373a8439f1f1
-‚
-Rsrc/main/java/com/example/tnote/boundedContext/observation/entity/Observation.java,e/3/e3543ab1a2b84dd2e22e6146527f04c7dc094986
 „
 Tsrc/main/java/com/example/tnote/boundedContext/consultation/entity/Consultation.java,7/5/75df46ee46917a1acf1d0fdcc7639be8859e080e
 |
@@ -76,8 +74,6 @@ x
 Hsrc/main/java/com/example/tnote/boundedContext/user/dto/UserRequest.java,3/8/38d5392fbd324fc2c9e81888206841b7d8eddd69
 y
 Isrc/main/java/com/example/tnote/boundedContext/user/dto/UserResponse.java,e/b/eb5de5decf21a974cfbb74d4084a722707364aae
-‰
-Ysrc/main/java/com/example/tnote/boundedContext/schedule/repository/SubjectRepository.java,d/a/da37b1d8520b53312ba235d5b385586274e0d48d
 Š
 Zsrc/main/java/com/example/tnote/boundedContext/classLog/repository/ClassLogRepository.java,c/1/c1ad139a0e0bb218e7457278f49b60370caac024
 |
@@ -112,7 +108,3 @@ j
 Lsrc/main/java/com/example/tnote/boundedContext/schedule/entity/ClassDay.java,9/3/93f7c9ecdd100eccfb07b71efa784eb84ef62a7f
 <
 build.gradle,f/0/f07866736216be0ee2aba49e392191aeae700a35
-|
-Lsrc/main/java/com/example/tnote/boundedContext/schedule/entity/Subjects.java,b/4/b4e5369df5fe93e08e1189d6fa54ec96b07ccb3b
-
-_src/main/java/com/example/tnote/boundedContext/schedule/repository/ScheduleQueryRepository.java,e/9/e997539c8e830f5589a6c6fad6c2439389cdc0dc

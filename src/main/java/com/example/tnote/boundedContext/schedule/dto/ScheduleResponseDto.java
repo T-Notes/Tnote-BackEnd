@@ -20,7 +20,6 @@ public class ScheduleResponseDto {
 
     private Long id;
     private String semesterName;
-    private ClassDay lastDay; // 삭제 예정
     private String lastClass;
     private String email; // user와 연관관계 때문 ( 중복 안되는 값 필요 )
     private List<SubjectResponseDto> subjects;
@@ -43,7 +42,6 @@ public class ScheduleResponseDto {
         return ScheduleResponseDto.builder()
                 .id(schedules.getId())
                 .semesterName(schedules.getSemesterName())
-                .lastDay(schedules.getLastDay()) // 삭제 예정
                 .lastClass(schedules.getLastClass())
                 .startDate(schedules.getStartDate())
                 .endDate(schedules.getEndDate())
