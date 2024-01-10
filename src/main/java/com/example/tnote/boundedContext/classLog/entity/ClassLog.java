@@ -38,13 +38,13 @@ public class ClassLog extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
-    @JsonManagedReference
-    @OneToMany(mappedBy = "classLog", cascade = CascadeType.ALL)
-    private List<ClassLogImage> classLogImage = new ArrayList<>();
-
-    public void clearClassLogImages() {
-        this.classLogImage.clear();
-    }
+//    @JsonManagedReference
+//    @OneToMany(mappedBy = "classLog", cascade = CascadeType.ALL)
+//    private List<ClassLogImage> classLogImage = new ArrayList<>();
+//
+//    public void clearClassLogImages() {
+//        this.classLogImage.clear();
+//    }
 
     public void updatePlan(String plan){
         this.plan = plan;
