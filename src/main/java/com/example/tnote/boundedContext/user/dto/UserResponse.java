@@ -17,8 +17,6 @@ public class UserResponse {
     private Long id;
     private String email;
     private String name;
-    private String address;
-    private String gubun;
     private String school;
     private String subject;
     private int career;
@@ -29,8 +27,6 @@ public class UserResponse {
                 .id(user.getId())
                 .email(user.getEmail())
                 .name(user.getUsername())
-                .address(user.getSchoolAddress())
-                .gubun(user.getSchoolGubun())
                 .school(user.getSchool())
                 .subject(user.getSubject())
                 .career(user.getCareer())
@@ -49,8 +45,6 @@ public class UserResponse {
                 .id(response.getId())
                 .email(response.getEmail())
                 .username(response.getName())
-                .schoolAddress(response.getAddress())
-                .schoolGubun(response.getGubun())
                 .school(response.getSchool())
                 .subject(response.getSubject())
                 .career(response.getCareer())

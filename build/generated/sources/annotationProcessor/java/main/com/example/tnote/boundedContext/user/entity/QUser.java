@@ -45,10 +45,6 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath school = createString("school");
 
-    public final StringPath schoolAddress = createString("schoolAddress");
-
-    public final StringPath schoolGubun = createString("schoolGubun");
-
     public final StringPath subject = createString("subject");
 
     //inherited
