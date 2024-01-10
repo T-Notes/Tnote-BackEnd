@@ -29,7 +29,6 @@ public class Schedule extends BaseTimeEntity {
     @Column(name = "schedule_id")
     private Long id;
     private String semesterName;
-    private ClassDay lastDay; // 삭제 예정
     private String lastClass;
     private LocalDate startDate;
     private LocalDate endDate;
@@ -46,9 +45,6 @@ public class Schedule extends BaseTimeEntity {
     public void updateSemesterName(String semesterName) {
         this.semesterName = semesterName;
     }
-    public void updateLastDay(ClassDay lastDay) {
-        this.lastDay = lastDay;
-    } // 삭제 예정
     public void updateLastClass(String lastClass) {
         this.lastClass = lastClass;
     }

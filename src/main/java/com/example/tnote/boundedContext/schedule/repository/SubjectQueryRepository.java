@@ -1,7 +1,6 @@
 package com.example.tnote.boundedContext.schedule.repository;
 
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
-import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.entity.Subjects;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;

@@ -17,7 +17,6 @@ import java.time.LocalDateTime;
 public class ScheduleRequestDto {
 
     private String semesterName;
-    private ClassDay lastDay; // 삭제 예정
     private String lastClass;
     private String email; // user와 연관관계 때문 ( 중복 안되는 값 필요 )
 

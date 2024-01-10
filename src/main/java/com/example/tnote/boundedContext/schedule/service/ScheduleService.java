@@ -41,7 +41,6 @@ public class ScheduleService {
         }
 
         Schedule schedule = Schedule.builder()
-                .lastDay(dto.getLastDay()) // 삭제 예정
                 .semesterName(dto.getSemesterName())
                 .lastClass(dto.getLastClass())
                 .startDate(dto.getStartDate())
@@ -61,11 +60,6 @@ public class ScheduleService {
 
         if(dto.getSemesterName() != null) {
             schedule.updateSemesterName(dto.getSemesterName());
-        }
-
-        // 삭제 예정
-        if(dto.getLastDay() != null) {
-            schedule.updateLastDay(dto.getLastDay());
         }
 
         if(dto.getLastClass() != null) {
