@@ -35,12 +35,12 @@ public class ProceedingImage {
     @JoinColumn(name = "proceeding_id")
     private Proceeding proceeding;
 
-    @Builder
-    public ProceedingImage(Proceeding proceeding, String proceedingImageUrl) {
-        this.proceeding = proceeding;
-        if (proceeding != null) {
-            proceeding.getProceedingImage().add(this);
-        }
-        this.proceedingImageUrl = proceedingImageUrl;
-    }
+//    @Builder
+//    public ProceedingImage(Proceeding proceeding, String proceedingImageUrl) {
+//        this.proceeding = proceeding;
+//        if (proceeding != null) {
+//            proceeding.getProceedingImage().add(this);
+//        }
+//        this.proceedingImageUrl = proceedingImageUrl;
+//    }
 }

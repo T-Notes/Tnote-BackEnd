@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
 public class ClassLogDetailResponseDto {
     private Long id;
     private Long userId;
