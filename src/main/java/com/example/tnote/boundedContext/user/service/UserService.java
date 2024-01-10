@@ -60,12 +60,6 @@ public class UserService {
         if(StringUtils.hasText(request.getSchoolName())) {
             user.updateSchool(request.getSchoolName());
         }
-        if(StringUtils.hasText(request.getGubun())) {
-            user.updateSchoolGubun(request.getGubun());
-        }
-        if(StringUtils.hasText(request.getRegion())) {
-            user.updateSchoolAddress(request.getRegion());
-        }
         if(Objects.nonNull(request.getCareer())) {
             user.updateCareer(request.getCareer());
         }

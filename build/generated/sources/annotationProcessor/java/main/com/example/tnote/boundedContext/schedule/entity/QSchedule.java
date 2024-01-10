@@ -24,26 +24,22 @@ public class QSchedule extends EntityPathBase<Schedule> {
 
     public final com.example.tnote.base.entity.QBaseTimeEntity _super = new com.example.tnote.base.entity.QBaseTimeEntity(this);
 
-    public final StringPath classDay = createString("classDay");
-
-    public final StringPath classLocation = createString("classLocation");
-
-    public final StringPath classPeriod = createString("classPeriod");
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
-    public final StringPath description = createString("description");
+    public final DateTimePath<java.time.LocalDateTime> endDate = createDateTime("endDate", java.time.LocalDateTime.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final StringPath lastDay = createString("lastDay");
+    public final StringPath lastClass = createString("lastClass");
 
-    public final StringPath lastPeriod = createString("lastPeriod");
+    public final EnumPath<ClassDay> lastDay = createEnum("lastDay", ClassDay.class);
 
     public final StringPath semesterName = createString("semesterName");
 
-    public final StringPath subjectName = createString("subjectName");
+    public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
+
+    public final ListPath<Subjects, QSubjects> subjectsList = this.<Subjects, QSubjects>createList("subjectsList", Subjects.class, QSubjects.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

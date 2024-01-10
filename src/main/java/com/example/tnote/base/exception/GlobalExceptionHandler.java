@@ -35,6 +35,28 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }
 
+    @ExceptionHandler({SubjectsException.class})
+    public ResponseEntity<ErrorResponse> handleException(final SubjectsException exception) {
+        log.warn("Exception occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getSubjectsErrorResult());
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final SubjectsErrorResult errorResult) {
+        return ResponseEntity.status(errorResult.getHttpStatus())
+                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
+    }
+
+    @ExceptionHandler({ScheduleException.class})
+    public ResponseEntity<ErrorResponse> handleException(final ScheduleException exception) {
+        log.warn("Exception occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getScheduleErrorResult());
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final ScheduleErrorResult errorResult) {
+        return ResponseEntity.status(errorResult.getHttpStatus())
+                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
+    }
+
     @Getter
     @RequiredArgsConstructor
     static class ErrorResponse {
