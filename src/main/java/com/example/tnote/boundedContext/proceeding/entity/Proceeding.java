@@ -34,13 +34,13 @@ public class Proceeding extends BaseTimeEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @JsonManagedReference
-    @OneToMany(mappedBy = "proceeding", cascade = CascadeType.ALL)
-    private List<ProceedingImage> proceedingImage = new ArrayList<>();
-
-    public void clearProceedingImages() {
-        this.proceedingImage.clear();
-    }
+//    @JsonManagedReference
+//    @OneToMany(mappedBy = "proceeding", cascade = CascadeType.ALL)
+//    private List<ProceedingImage> proceedingImage = new ArrayList<>();
+//
+//    public void clearProceedingImages() {
+//        this.proceedingImage.clear();
+//    }
 
     public void updateLocation(String location) {
         this.location = location;
