@@ -2,6 +2,8 @@ package com.example.tnote.boundedContext.consultation.service;
 
 import com.example.tnote.base.exception.CommonErrorResult;
 import com.example.tnote.base.exception.CommonException;
+import com.example.tnote.base.exception.UserErrorResult;
+import com.example.tnote.base.exception.UserException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
@@ -34,7 +36,7 @@ public class ConsultationService {
     public ConsultationResponseDto save(Long userId, ConsultationRequestDto requestDto) {
         requestDto.validateEnums();
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CommonException(CommonErrorResult.USER_NOT_FOUND));
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
         LocalDateTime startDate = requestDto.getStartDate();
         LocalDateTime endDate = requestDto.getEndDate();
