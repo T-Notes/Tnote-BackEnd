@@ -38,13 +38,15 @@ public class ConsultationController {
     private final ConsultationService consultationService;
 
     @GetMapping("/fields")
-    public ResponseEntity<List<CounselingField>> getCounselingFields() {
-        return ResponseEntity.ok(Arrays.asList(CounselingField.values()));
+    public ResponseEntity<Result> getCounselingFields() {
+        List<CounselingField> response = Arrays.asList(CounselingField.values());
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @GetMapping("/types")
-    public ResponseEntity<List<CounselingType>> getCounselingTypes() {
-        return ResponseEntity.ok(Arrays.asList(CounselingType.values()));
+    public ResponseEntity<Result> getCounselingTypes() {
+        List<CounselingType> response = Arrays.asList(CounselingType.values());
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @PostMapping("/consultations")
