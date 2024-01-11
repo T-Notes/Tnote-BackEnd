@@ -4,6 +4,7 @@ import com.example.tnote.base.exception.CommonErrorResult;
 import com.example.tnote.base.exception.CommonException;
 import com.example.tnote.base.exception.UserErrorResult;
 import com.example.tnote.base.exception.UserException;
+import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
@@ -38,12 +39,8 @@ public class ConsultationService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
-        LocalDateTime startDate = requestDto.getStartDate();
-        LocalDateTime endDate = requestDto.getEndDate();
-        if(requestDto.isAllDay()){
-            startDate = startDate.withHour(12).withMinute(0);
-            endDate = endDate.withHour(23).withMinute(59);
-        }
+        LocalDateTime startDate = DateUtils.adjustStartDateTime(requestDto.getStartDate(), requestDto.isAllDay());
+        LocalDateTime endDate = DateUtils.adjustEndDateTime(requestDto.getEndDate(), requestDto.isAllDay());
         Consultation consultation = Consultation.builder()
                 .user(user)
                 .studentName(requestDto.getStudentName())

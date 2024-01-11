@@ -4,6 +4,7 @@ import com.example.tnote.base.exception.CommonErrorResult;
 import com.example.tnote.base.exception.CommonException;
 import com.example.tnote.base.exception.UserErrorResult;
 import com.example.tnote.base.exception.UserException;
+import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
@@ -33,24 +34,20 @@ public class ProceedingService {
     private final ProceedingRepository proceedingRepository;
 
     @Transactional
-    public ProceedingResponseDto save(Long userId, ProceedingRequestDto request) {
+    public ProceedingResponseDto save(Long userId, ProceedingRequestDto requestDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
-        LocalDateTime startDate = request.getStartDate();
-        LocalDateTime endDate = request.getEndDate();
-        if(request.isAllDay()){
-            startDate = startDate.withHour(12).withMinute(0);
-            endDate = endDate.withHour(23).withMinute(59);
-        }
+        LocalDateTime startDate = DateUtils.adjustStartDateTime(requestDto.getStartDate(), requestDto.isAllDay());
+        LocalDateTime endDate = DateUtils.adjustEndDateTime(requestDto.getEndDate(), requestDto.isAllDay());
 
         Proceeding proceeding = Proceeding.builder()
                 .user(user)
-                .title(request.getTitle())
+                .title(requestDto.getTitle())
                 .startDate(startDate)
                 .endDate(endDate)
-                .location(request.getLocation())
-                .workContents(request.getWorkContents())
+                .location(requestDto.getLocation())
+                .workContents(requestDto.getWorkContents())
                 .build();
         return ProceedingResponseDto.of(proceedingRepository.save(proceeding));
     }

@@ -4,6 +4,7 @@ import com.example.tnote.base.exception.CommonErrorResult;
 import com.example.tnote.base.exception.CommonException;
 import com.example.tnote.base.exception.UserErrorResult;
 import com.example.tnote.base.exception.UserException;
+import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
@@ -32,12 +33,9 @@ public class ClassLogService {
     public ClassLogResponseDto save(Long userId, ClassLogRequestDto request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
-        LocalDateTime startDate = request.getStartDate();
-        LocalDateTime endDate = request.getEndDate();
-        if(request.isAllDay()){
-            startDate = startDate.withHour(12).withMinute(0);
-            endDate = endDate.withHour(23).withMinute(59);
-        }
+
+        LocalDateTime startDate = DateUtils.adjustStartDateTime(request.getStartDate(), request.isAllDay());
+        LocalDateTime endDate = DateUtils.adjustEndDateTime(request.getEndDate(), request.isAllDay());
         ClassLog classLog = ClassLog.builder()
                 .user(user)
                 .title(request.getTitle())
@@ -76,24 +74,25 @@ public class ClassLogService {
         return new ClassLogDetailResponseDto(classLog);
     }
 
-    public ClassLogResponseDto updateClassLog(Long userId, Long classLogId, ClassLogUpdateRequestDto classLogUpdateRequestDto){
+    public ClassLogResponseDto updateClassLog(Long userId, Long classLogId,
+                                              ClassLogUpdateRequestDto classLogUpdateRequestDto) {
         ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
-        updateEachClassLogItem(classLogUpdateRequestDto,classLog);
+        updateEachClassLogItem(classLogUpdateRequestDto, classLog);
 
         return ClassLogResponseDto.of(classLog);
     }
 
-    private void updateEachClassLogItem(ClassLogUpdateRequestDto classLogUpdateRequestDto , ClassLog classLog){
-        if (classLogUpdateRequestDto.hasPlan()){
+    private void updateEachClassLogItem(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog) {
+        if (classLogUpdateRequestDto.hasPlan()) {
             classLog.updatePlan(classLogUpdateRequestDto.getPlan());
         }
-        if (classLogUpdateRequestDto.hasSubmission()){
+        if (classLogUpdateRequestDto.hasSubmission()) {
             classLog.updateSubmission(classLogUpdateRequestDto.getSubmission());
         }
-        if (classLogUpdateRequestDto.hasClassContents()){
+        if (classLogUpdateRequestDto.hasClassContents()) {
             classLog.updateClassContents(classLogUpdateRequestDto.getClassContents());
         }
-        if (classLogUpdateRequestDto.hasMagnitude()){
+        if (classLogUpdateRequestDto.hasMagnitude()) {
             classLog.updateMagnitude(classLogUpdateRequestDto.getMagnitude());
         }
         //todo 이미지에 대한 수정부분도 필요합니다.
