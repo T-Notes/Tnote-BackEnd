@@ -1,5 +1,6 @@
 package com.example.tnote.boundedContext.observation.dto;
 
+import com.example.tnote.boundedContext.observation.entity.Observation;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,4 +14,15 @@ public class ObservationResponseDto {
     private LocalDateTime endDate;
     private String observationContents; // 관찰 내용
     private String guidance; // 해석 및 지도 방안
+
+    public static ObservationResponseDto of(Observation observation) {
+        return ObservationResponseDto.builder()
+                .id(observation.getId())
+                .studentName(observation.getStudentName())
+                .startDate(observation.getStartDate())
+                .endDate(observation.getEndDate())
+                .observationContents(observation.getObservationContents())
+                .guidance(observation.getGuidance())
+                .build();
+    }
 }
