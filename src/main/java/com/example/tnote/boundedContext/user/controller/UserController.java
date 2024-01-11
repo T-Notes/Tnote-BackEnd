@@ -99,6 +99,7 @@ public class UserController {
         for(int i=0; i<content.size(); i++) {
             tmp = (JSONObject) content.get(i);
             schoolList.add(Arrays.asList(tmp.get("schoolName"), tmp.get("adres")));
+            // 혹시 이부분은 오타일까요?? adres
         }
 
         return ResponseEntity.ok(Result.of(schoolList));
@@ -134,7 +135,7 @@ public class UserController {
 
     @DeleteMapping
     public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal PrincipalDetails user) {
-
+        // 유저 삭제는 url이 없어도 작동이 잘하나요?? 궁금한 부분입니다.
         log.info("PrincipalDetails in user - controller / delete user : {}", user);
 
         if (user == null) {

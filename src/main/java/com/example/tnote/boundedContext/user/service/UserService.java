@@ -54,6 +54,8 @@ public class UserService {
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
         log.info("과목, 학교, 경력, 알람 수신 여부 등록 및 수정");
+        // StringUtils 라는 라이브러리를 사용하지 않고 요청 dto내에서 해당 부분을 컨트롤할 수 있을것 같은데 어떻게 생각하시나요?? 그리구 아래 부분은 메소드 분리하는게 더 역할분담이 잘되있어보일것 같아요
+
         if(StringUtils.hasText(request.getSubject())) {
             user.updateSubject(request.getSubject());
         }
@@ -156,6 +158,7 @@ public class UserService {
             result = "high_list";
         } else if (gubun.equals("중학교")) {
             result = "midd_list";
+            // 이부분도 혹시 middle 로 하는게 더 명확해보일것 같아요 정말 사소한부분이긴합니다.
         } else {
             result = "elem_list";
         }

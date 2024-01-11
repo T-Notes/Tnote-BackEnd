@@ -49,6 +49,7 @@ public class ScheduleService {
                 .build();
 
         Schedule saved = scheduleRepository.save(schedule);
+        // 이부분은 뭔가 중복코드라고 보입니다! scheduleRepository.save(schedule) 이부분을 return문안에서 처리해도 됬을 것 같은데 이렇게 처리하신 이유가 궁금합니다!
 
         return ScheduleResponseDto.of(saved);
     }
@@ -58,6 +59,7 @@ public class ScheduleService {
         User currentUser = checkCurrentUser(user.getId());
         Schedule schedule = authorizationWriter(scheduleId, currentUser);
 
+        // 이부분도 dto 내에서 처리하는게 좋을것 같습니다. 객체를 사용하는듯 하면 좋을것 같아요 이렇게하면 getter의 역할을 넘어서 사용하는 느낌이 들어요
         if(dto.getSemesterName() != null) {
             schedule.updateSemesterName(dto.getSemesterName());
         }
@@ -81,6 +83,7 @@ public class ScheduleService {
         Schedule own = authorizationWriter(scheduleId, currentUser);
 
         scheduleRepository.deleteById(own.getId());
+        //삭제 했을때도 삭제된 대상의 정보가 넘어가면 좋을 것같아요 그래야 확실하게 제대로 된 대상이 삭제됬는지 확인할 수 있을것 같으니까욥..
         return "학기가 삭제되었습니다.";
     }
 

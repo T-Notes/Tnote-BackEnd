@@ -56,6 +56,9 @@ public class SubjectService {
 
         User currentUser = checkCurrentUser(user.getId());
         Subjects subjects = authorization(subjectsId, currentUser);
+        //이 부분의 메소드들 checkCurrentUser,authorization 이 두 메소드는 이 클래스 내에서만 사용되면 접근제한자를 private로 바꾸시는건 어떨까요?? public으로 두신 이유가 궁금합니다!
+
+        // 이부분도 똑같아욥!
 
         if(dto.getSubjectName() != null) {
             subjects.updateSubjectName(dto.getSubjectName());

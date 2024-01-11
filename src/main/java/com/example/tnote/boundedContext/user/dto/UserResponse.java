@@ -13,7 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class UserResponse {
-
+    // 전체적으로 builder와 constructor 어노테이션을 같이 쓰시는데 이렇게 하시는 이유가 있으실까요??
     private Long id;
     private String email;
     private String name;
