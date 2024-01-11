@@ -32,6 +32,7 @@ public class ProceedingService {
 
     @Transactional
     public ProceedingResponseDto save(Long userId, ProceedingRequestDto request) {
+        // classLog에 작성한 피드백과 같은 생각입니다!
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(CommonErrorResult.USER_NOT_FOUND));
 

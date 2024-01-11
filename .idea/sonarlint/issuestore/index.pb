@@ -34,10 +34,6 @@ Hsrc/main/java/com/example/tnote/base/filter/JwtAuthenticationFilter.java,6/0/6
 .gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
 p
 @src/main/java/com/example/tnote/base/utils/JwtTokenProvider.java,5/0/509063b3e6d08a8dfc63bc26260b2e00ea2ec069
-Š
-Zsrc/main/java/com/example/tnote/boundedContext/classLog/repository/ClassLogRepository.java,c/1/c1ad139a0e0bb218e7457278f49b60370caac024
-q
-Asrc/main/java/com/example/tnote/base/exception/UserException.java,e/4/e4b470dc6fd6016573dfbcdb1a18d03b303ed6dc
 u
 Esrc/main/java/com/example/tnote/base/exception/ScheduleException.java,8/e/8efd9daa027d676bf295ad56a71349b9069e9042
 z
@@ -48,8 +44,6 @@ w
 Gsrc/main/java/com/example/tnote/base/exception/SubjectsErrorResult.java,6/9/698c59b5292a33bb6c4903a49bb726ab0f729fdf
 u
 Esrc/main/java/com/example/tnote/base/exception/SubjectsException.java,4/4/44193024e20338420aaedde7ef66d971f3a7ba68
-s
-Csrc/main/java/com/example/tnote/base/exception/UserErrorResult.java,c/6/c68a1f2afbddd1abbc175957622af83f73bb0ca7
 j
 :src/test/java/com/example/tnote/TNoteApplicationTests.java,e/6/e699ed4b41cf394373cafba026a5786a2d96628c
 |

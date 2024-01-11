@@ -27,9 +27,16 @@ public class ClassLogService {
     private final UserRepository userRepository;
 
     @Transactional
+    //  class에 @Transactional 선언을 해주셨는데, 메소드에 read only가 아니게 재선언 하신게 뭔가 중복코드 같습니다!
     public ClassLogResponseDto save(Long userId, ClassLogRequestDto request) {
+        // 사소한거긴 한데 여기서 Exception을 Common말고 UserException으로 잡아서 가독성을 높이면 어떨까라는 생각이 듭니다!
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(CommonErrorResult.USER_NOT_FOUND));
+
+        /*
+            다른 service파일들을 보니 아래 "종일" 관련해서 localdatetime을 만드는 코드가 중복되어 보입니다!
+            해당 부분은 static 메소드로 하나 만들어서 공유하면 어떨까라는 생각이 또 듭니다!
+         */
         LocalDateTime startDate = request.getStartDate();
         LocalDateTime endDate = request.getEndDate();
         if(request.isAllDay()){

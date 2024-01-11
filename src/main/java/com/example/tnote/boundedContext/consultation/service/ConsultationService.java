@@ -33,6 +33,7 @@ public class ConsultationService {
     @Transactional
     public ConsultationResponseDto save(Long userId, ConsultationRequestDto requestDto) {
         requestDto.validateEnums();
+        // 아래 Exception도 classLog에 작성한 바와 같이 생각합니다!
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CommonException(CommonErrorResult.USER_NOT_FOUND));
 

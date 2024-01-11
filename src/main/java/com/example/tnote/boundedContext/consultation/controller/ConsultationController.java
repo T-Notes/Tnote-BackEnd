@@ -39,11 +39,14 @@ public class ConsultationController {
 
     @GetMapping("/fields")
     public ResponseEntity<List<CounselingField>> getCounselingFields() {
+        // 혹시 여기서 반환 타입을 아래 다른 메소드들 처럼 Result로 맞추면 일관성 측면에서 더 좋지 않을까 싶습니다!
+        // 가령, List<CounselingField> response = Arrays.asList(CounselingField.values()) 이런식으로 받아서 response를 반환하는것이요!
         return ResponseEntity.ok(Arrays.asList(CounselingField.values()));
     }
 
     @GetMapping("/types")
     public ResponseEntity<List<CounselingType>> getCounselingTypes() {
+        // getCounselingFields에 작성한 것과 같은 생각입니다!
         return ResponseEntity.ok(Arrays.asList(CounselingType.values()));
     }
 
