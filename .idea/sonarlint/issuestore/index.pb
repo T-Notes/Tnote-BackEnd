@@ -13,8 +13,6 @@ i
 Psrc/main/java/com/example/tnote/boundedContext/proceeding/entity/Proceeding.java,6/0/60414019fcc56c0c26eb05feeb36373a8439f1f1
 „
 Tsrc/main/java/com/example/tnote/boundedContext/consultation/entity/Consultation.java,7/5/75df46ee46917a1acf1d0fdcc7639be8859e080e
-|
-Lsrc/main/java/com/example/tnote/boundedContext/classLog/entity/ClassLog.java,f/0/f093fc66b9bc858bc58cd281be87a09313344a7b
 e
 5src/main/java/com/example/tnote/TNoteApplication.java,1/1/11fe0f695348285f26324100d44baacdf9d25b03
 k
@@ -34,24 +32,12 @@ Hsrc/main/java/com/example/tnote/base/filter/JwtAuthenticationFilter.java,6/0/6
 :
 
 .gitignore,a/5/a5cc2925ca8258af241be7e5b0381edf30266302
-Š
-Zsrc/main/java/com/example/tnote/boundedContext/classLog/dto/ClassLogDeleteResponseDto.java,b/6/b6ae6444ebec4ac200c6958aaf46b95bfc05a633
-ƒ
-Ssrc/main/java/com/example/tnote/boundedContext/classLog/dto/ClassLogRequestDto.java,1/2/1274a619ec076401b66bbb49fbd6dafea452861c
-„
-Tsrc/main/java/com/example/tnote/boundedContext/classLog/dto/ClassLogResponseDto.java,c/e/ce2c0b501a48fb45f213469ad6dd95eee64a357d
-‰
-Ysrc/main/java/com/example/tnote/boundedContext/classLog/dto/ClassLogSliceResponseDto.java,b/a/ba14473669a3ae77c671215f14b33a2d3615a369
-„
-Tsrc/main/java/com/example/tnote/boundedContext/classLog/service/ClassLogService.java,b/f/bfffc8d901bd646cbbe725d9352b3770563247d2
 p
 @src/main/java/com/example/tnote/base/utils/JwtTokenProvider.java,5/0/509063b3e6d08a8dfc63bc26260b2e00ea2ec069
 Š
 Zsrc/main/java/com/example/tnote/boundedContext/classLog/repository/ClassLogRepository.java,c/1/c1ad139a0e0bb218e7457278f49b60370caac024
 q
 Asrc/main/java/com/example/tnote/base/exception/UserException.java,e/4/e4b470dc6fd6016573dfbcdb1a18d03b303ed6dc
-Š
-Zsrc/main/java/com/example/tnote/boundedContext/classLog/controller/ClassLogController.java,8/0/80bfeca2fae88fa4cfc0ba5167f1d369c5791a10
 u
 Esrc/main/java/com/example/tnote/base/exception/ScheduleException.java,8/e/8efd9daa027d676bf295ad56a71349b9069e9042
 z

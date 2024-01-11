@@ -6,6 +6,7 @@ import com.example.tnote.base.utils.CookieUtils;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
 import com.example.tnote.boundedContext.user.dto.UserRequest;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
+import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
@@ -48,26 +49,29 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse updateExtraInfo(Long userId, UserRequest request) throws IOException {
+    public UserResponse updateExtraInfo(Long userId, UserUpdateRequest dto) throws IOException {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
-        log.info("과목, 학교, 경력, 알람 수신 여부 등록 및 수정");
-        if(StringUtils.hasText(request.getSubject())) {
-            user.updateSubject(request.getSubject());
-        }
-        if(StringUtils.hasText(request.getSchoolName())) {
-            user.updateSchool(request.getSchoolName());
-        }
-        if(Objects.nonNull(request.getCareer())) {
-            user.updateCareer(request.getCareer());
-        }
-        if(Objects.nonNull(request.isAlarm())) {
-            user.updateAlarm(request.isAlarm());
-        }
+        updateUserItem(dto, user);
 
         return UserResponse.of(user);
+    }
+
+    private void updateUserItem(UserUpdateRequest dto, User user) {
+        if (dto.hasSchoolName()){
+            user.updateSchool(dto.getSchoolName());
+        }
+        if (dto.hasSubject()){
+            user.updateSubject(dto.getSubject());
+        }
+        if (dto.hasCareer()){
+            user.updateCareer(dto.getCareer());
+        }
+        if (dto.hasAlarm()){
+            user.updateAlarm(dto.isAlarm());
+        }
     }
 
     @Transactional

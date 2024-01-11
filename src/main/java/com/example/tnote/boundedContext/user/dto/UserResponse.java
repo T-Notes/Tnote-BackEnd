@@ -1,17 +1,12 @@
 package com.example.tnote.boundedContext.user.dto;
 
 import com.example.tnote.boundedContext.user.entity.User;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.List;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@Getter
 public class UserResponse {
 
     private Long id;

@@ -1,15 +1,10 @@
 package com.example.tnote.boundedContext.schedule.dto;
 
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
 @Builder
+@Getter
 public class SubjectRequestDto {
 
     private String subjectName;

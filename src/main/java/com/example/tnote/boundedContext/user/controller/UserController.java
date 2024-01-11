@@ -7,6 +7,7 @@ import com.example.tnote.base.exception.UserException;
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.user.dto.UserRequest;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
+import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.service.UserService;
@@ -107,7 +108,7 @@ public class UserController {
 
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<Result> updateExtraInfo(@PathVariable Long userId, @RequestBody UserRequest dto) throws IOException {
+    public ResponseEntity<Result> updateExtraInfo(@PathVariable Long userId, @RequestBody UserUpdateRequest dto) throws IOException {
         log.info(" user controller - user 추가 정보 등록 / 수정 같은 api 사용, alarm 수신 여부만 바꿔도 여기서 처리");
 
         UserResponse response = userService.updateExtraInfo(userId, dto);

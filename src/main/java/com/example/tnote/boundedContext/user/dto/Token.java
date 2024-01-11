@@ -1,14 +1,9 @@
 package com.example.tnote.boundedContext.user.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-@Data
 @Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter
 public class Token {
     private String accessToken;
     private String refreshToken;
