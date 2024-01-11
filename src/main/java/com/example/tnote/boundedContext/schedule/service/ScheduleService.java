@@ -5,6 +5,7 @@ import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.entity.Subjects;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleQueryRepository;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -20,6 +21,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.temporal.ChronoUnit;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -146,5 +148,43 @@ public class ScheduleService {
         }
 
         return ScheduleResponseDto.excludeLastDayAndLastClassOf(scheduleRepository.findAll());
+    }
+
+    @Transactional
+    public long countLeftClasses(LocalDate startDate, LocalDate endDate, Long scheduleId) {
+
+        int totalCnt = 0;
+        HashMap<String,Integer> map = new HashMap<>();
+        map.put("MONDAY",0);
+        map.put("TUESDAY",0);
+        map.put("WEDNESDAY",0);
+        map.put("THURSDAY",0);
+        map.put("FRIDAY",0);
+        map.put("SATURDAY",0);
+        map.put("SUNDAY",0);
+
+
+        for(LocalDate currentDate = startDate; !currentDate.isAfter(endDate); currentDate = currentDate.plusDays(1)) {
+            String dayOfWeek = String.valueOf(currentDate.getDayOfWeek());
+
+            map.put(dayOfWeek, map.get(dayOfWeek) + 1);
+        }
+
+        Optional<Schedule> schedule = scheduleRepository.findById(scheduleId);
+
+        if(schedule.isEmpty()) {
+            log.warn("schedule is empty");
+            throw new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND);
+        }
+
+        for(Subjects s: schedule.get().getSubjectsList()) {
+
+            if(map.containsKey(String.valueOf(s.getClassDay()))) {
+                totalCnt += map.get(String.valueOf(s.getClassDay()));
+            }
+        }
+        log.info("totalCnt : {}", totalCnt);
+
+        return  totalCnt;
     }
 }
