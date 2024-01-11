@@ -7,7 +7,8 @@ import lombok.Getter;
 @Builder
 public class SignInResponse {
 
-    private GoogleUserInfo googleUserInfo;
+    //private GoogleUserInfo googleUserInfo;
+    private KakaoUserInfo kakaoUserInfo;
     private String accessToken;
     private String refreshToken;
     private Long userId;

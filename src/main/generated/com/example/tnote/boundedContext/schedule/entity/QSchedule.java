@@ -33,8 +33,6 @@ public class QSchedule extends EntityPathBase<Schedule> {
 
     public final StringPath lastClass = createString("lastClass");
 
-    public final EnumPath<ClassDay> lastDay = createEnum("lastDay", ClassDay.class);
-
     public final StringPath semesterName = createString("semesterName");
 
     public final DatePath<java.time.LocalDate> startDate = createDate("startDate", java.time.LocalDate.class);

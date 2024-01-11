@@ -82,6 +82,14 @@ public class ScheduleController {
         return ResponseEntity.ok(Result.of(response));
     }
 
+    // 남은 수업 횟수 체크
+    @GetMapping("/leftClasses/{scheduleId}")
+    public ResponseEntity<Result> countLeftClasses(@RequestBody ScheduleRequestDto dto, @PathVariable("scheduleId") Long scheduleId) {
+        long response = scheduleService.countLeftClasses(dto.getStartDate(), dto.getEndDate(), scheduleId);
+
+        return ResponseEntity.ok(Result.of(response));
+    }
+
     // 월~금 시간표에 넣을 데이터 조회
     @GetMapping("/week/{scheduleId}")
     public ResponseEntity<Result> findWeek(@PathVariable("scheduleId") Long scheduleId, @AuthenticationPrincipal PrincipalDetails user) {

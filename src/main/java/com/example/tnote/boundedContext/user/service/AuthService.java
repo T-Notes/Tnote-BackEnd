@@ -21,14 +21,14 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class AuthService {
 
-    private final GoogleRequestService googleRequestService;
+    private final KakaoRequestService kakaoRequestService;
     private final RefreshTokenService refreshTokenService;
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
     public SignInResponse redirect(TokenRequest tokenRequest){
-        return googleRequestService.redirect(tokenRequest);
+        return kakaoRequestService.redirect(tokenRequest);
     }
 
     @Transactional

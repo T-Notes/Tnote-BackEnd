@@ -30,6 +30,8 @@ public class QConsultation extends EntityPathBase<Consultation> {
 
     public final EnumPath<CounselingField> counselingField = createEnum("counselingField", CounselingField.class);
 
+    public final EnumPath<CounselingType> counselingType = createEnum("counselingType", CounselingType.class);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
@@ -40,8 +42,6 @@ public class QConsultation extends EntityPathBase<Consultation> {
     public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
 
     public final StringPath studentName = createString("studentName");
-
-    public final StringPath targetType = createString("targetType");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
