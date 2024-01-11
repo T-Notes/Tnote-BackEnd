@@ -2,6 +2,8 @@ package com.example.tnote.boundedContext.proceeding.service;
 
 import com.example.tnote.base.exception.CommonErrorResult;
 import com.example.tnote.base.exception.CommonException;
+import com.example.tnote.base.exception.UserErrorResult;
+import com.example.tnote.base.exception.UserException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
@@ -33,7 +35,7 @@ public class ProceedingService {
     @Transactional
     public ProceedingResponseDto save(Long userId, ProceedingRequestDto request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CommonException(CommonErrorResult.USER_NOT_FOUND));
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
         LocalDateTime startDate = request.getStartDate();
         LocalDateTime endDate = request.getEndDate();
