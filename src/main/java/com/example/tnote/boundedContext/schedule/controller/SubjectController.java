@@ -3,9 +3,7 @@ package com.example.tnote.boundedContext.schedule.controller;
 import com.example.tnote.base.exception.CommonErrorResult;
 import com.example.tnote.base.exception.CommonException;
 import com.example.tnote.base.response.Result;
-import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
-import com.example.tnote.boundedContext.schedule.dto.SubjectRequestDto;
-import com.example.tnote.boundedContext.schedule.dto.SubjectResponseDto;
+import com.example.tnote.boundedContext.schedule.dto.*;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.service.SubjectService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
@@ -40,7 +38,7 @@ public class SubjectController {
     }
 
     @PatchMapping("/{subjectsId}")
-    public ResponseEntity<Result> updateSubjects(@RequestBody SubjectRequestDto dto,
+    public ResponseEntity<Result> updateSubjects(@RequestBody SubjectsUpdateRequestDto dto,
                                                @PathVariable("subjectsId") Long subjectsId,
                                                @AuthenticationPrincipal PrincipalDetails user) {
 
@@ -53,7 +51,7 @@ public class SubjectController {
     public ResponseEntity<Result> deleteSubjects(@PathVariable Long subjectsId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        String response = subjectService.deleteSubjects(subjectsId, user);
+        SubjectsDeleteResponseDto response = subjectService.deleteSubjects(subjectsId, user);
 
         return ResponseEntity.ok(Result.of(response));
     }

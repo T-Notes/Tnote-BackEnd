@@ -1,12 +1,9 @@
 package com.example.tnote.boundedContext.schedule.service;
 
 import com.example.tnote.base.exception.*;
-import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
-import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
-import com.example.tnote.boundedContext.schedule.entity.ClassDay;
+import com.example.tnote.boundedContext.schedule.dto.*;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.entity.Subjects;
-import com.example.tnote.boundedContext.schedule.repository.ScheduleQueryRepository;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
@@ -16,10 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.DayOfWeek;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
@@ -50,44 +44,46 @@ public class ScheduleService {
                 .user(currentUser.get())
                 .build();
 
-        Schedule saved = scheduleRepository.save(schedule);
-
-        return ScheduleResponseDto.of(saved);
+        return ScheduleResponseDto.of(scheduleRepository.save(schedule));
     }
 
-    public ScheduleResponseDto updateSchedule(ScheduleRequestDto dto, Long scheduleId, PrincipalDetails user) {
+    public ScheduleResponseDto updateSchedule(ScheduleUpdateRequestDto dto, Long scheduleId, PrincipalDetails user) {
 
         User currentUser = checkCurrentUser(user.getId());
         Schedule schedule = authorizationWriter(scheduleId, currentUser);
 
-        if(dto.getSemesterName() != null) {
-            schedule.updateSemesterName(dto.getSemesterName());
-        }
-
-        if(dto.getLastClass() != null) {
-            schedule.updateLastClass(dto.getLastClass());
-        }
-        if(dto.getStartDate() != null) {
-            schedule.updateStartDate(dto.getStartDate());
-        }
-        if(dto.getEndDate() != null) {
-            schedule.updateEndDate(dto.getEndDate());
-        }
+        updateEachScheduleItem(dto, schedule);
 
         return ScheduleResponseDto.of(schedule);
     }
 
-    public String deleteSchedule(Long scheduleId, PrincipalDetails user) {
+    private void updateEachScheduleItem(ScheduleUpdateRequestDto dto, Schedule schedule) {
+        if (dto.hasSemesterName()){
+            schedule.updateSemesterName(dto.getSemesterName());
+        }
+        if (dto.hasLastClass()){
+            schedule.updateLastClass(dto.getLastClass());
+        }
+        if (dto.hasStartDate()){
+            schedule.updateStartDate(dto.getStartDate());
+        }
+        if (dto.hasEndDate()){
+            schedule.updateEndDate(dto.getEndDate());
+        }
+    }
+
+    public ScheduleDeleteResponseDto deleteSchedule(Long scheduleId, PrincipalDetails user) {
 
         User currentUser = checkCurrentUser(user.getId());
         Schedule own = authorizationWriter(scheduleId, currentUser);
 
         scheduleRepository.deleteById(own.getId());
-        return "학기가 삭제되었습니다.";
+        return ScheduleDeleteResponseDto.builder()
+                .id(own.getId())
+                .build();
     }
 
-    @Transactional
-    public Schedule authorizationWriter(Long id, User member) {
+    private Schedule authorizationWriter(Long id, User member) {
 
         Schedule schedule = scheduleRepository.findById(id).orElseThrow(
                 () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
@@ -100,7 +96,7 @@ public class ScheduleService {
 
     }
 
-    public User checkCurrentUser(Long id) {
+    private User checkCurrentUser(Long id) {
         Optional<User> currentUser = userRepository.findById(id);
 
         if (currentUser.isEmpty()) {

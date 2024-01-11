@@ -5,10 +5,7 @@ import com.example.tnote.base.exception.ScheduleException;
 import com.example.tnote.base.exception.UserErrorResult;
 import com.example.tnote.base.exception.UserException;
 import com.example.tnote.base.response.Result;
-import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
-import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
-import com.example.tnote.boundedContext.schedule.dto.SubjectRequestDto;
-import com.example.tnote.boundedContext.schedule.dto.SubjectResponseDto;
+import com.example.tnote.boundedContext.schedule.dto.*;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
@@ -56,7 +53,7 @@ public class ScheduleController {
     }
 
     @PatchMapping("/{scheduleId}")
-    public ResponseEntity<Result> updateSchedule(@RequestBody ScheduleRequestDto dto,
+    public ResponseEntity<Result> updateSchedule(@RequestBody ScheduleUpdateRequestDto dto,
                                                  @PathVariable("scheduleId") Long scheduleId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
@@ -69,14 +66,14 @@ public class ScheduleController {
     public ResponseEntity<Result> deleteSchedule(@PathVariable("scheduleId") Long scheduleId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        String response = scheduleService.deleteSchedule(scheduleId, user);
+        ScheduleDeleteResponseDto response = scheduleService.deleteSchedule(scheduleId, user);
 
         return ResponseEntity.ok(Result.of(response));
     }
 
     // 남은 수업 일수 체크
     @GetMapping("/leftClassDays")
-    public ResponseEntity<Result> countLeftDays(@RequestBody ScheduleRequestDto dto) {
+    public ResponseEntity<Result> countLeftDays(@RequestBody ScheduleDateRequestDto dto) {
         long response = scheduleService.countLeftDays(dto.getStartDate(), dto.getEndDate());
 
         return ResponseEntity.ok(Result.of(response));
@@ -84,7 +81,7 @@ public class ScheduleController {
 
     // 남은 수업 횟수 체크
     @GetMapping("/leftClasses/{scheduleId}")
-    public ResponseEntity<Result> countLeftClasses(@RequestBody ScheduleRequestDto dto, @PathVariable("scheduleId") Long scheduleId) {
+    public ResponseEntity<Result> countLeftClasses(@RequestBody ScheduleDateRequestDto dto, @PathVariable("scheduleId") Long scheduleId) {
         long response = scheduleService.countLeftClasses(dto.getStartDate(), dto.getEndDate(), scheduleId);
 
         return ResponseEntity.ok(Result.of(response));

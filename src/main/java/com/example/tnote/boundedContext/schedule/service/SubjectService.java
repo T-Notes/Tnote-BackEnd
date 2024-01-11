@@ -1,10 +1,7 @@
 package com.example.tnote.boundedContext.schedule.service;
 
 import com.example.tnote.base.exception.*;
-import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
-import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
-import com.example.tnote.boundedContext.schedule.dto.SubjectRequestDto;
-import com.example.tnote.boundedContext.schedule.dto.SubjectResponseDto;
+import com.example.tnote.boundedContext.schedule.dto.*;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.entity.Subjects;
@@ -46,49 +43,52 @@ public class SubjectService {
                 .schedule(currentSchedule)
                 .build();
 
-        Subjects saved = subjectRepository.save(subjects);
-
-        return SubjectResponseDto.of(saved);
+        return SubjectResponseDto.of(subjectRepository.save(subjects));
     }
 
     @Transactional
-    public SubjectResponseDto updateSubjects(SubjectRequestDto dto, Long subjectsId, PrincipalDetails user) {
+    public SubjectResponseDto updateSubjects(SubjectsUpdateRequestDto dto, Long subjectsId, PrincipalDetails user) {
 
         User currentUser = checkCurrentUser(user.getId());
         Subjects subjects = authorization(subjectsId, currentUser);
 
-        if(dto.getSubjectName() != null) {
-            subjects.updateSubjectName(dto.getSubjectName());
-        }
-        if(dto.getClassDay() != null) {
-            subjects.updateClassDay(dto.getClassDay());
-        }
-        if(dto.getClassTime() != null) {
-            subjects.updateClassTime(dto.getClassTime());
-        }
-        if(dto.getClassLocation() != null) {
-            subjects.updateClassLocation(dto.getClassLocation());
-        }
-        if(dto.getMemo() != null) {
-            subjects.updateMemo(dto.getMemo());
-        }
+        updateEachSubjectsItem(dto, subjects);
 
         return SubjectResponseDto.of(subjects);
     }
 
+    private void updateEachSubjectsItem(SubjectsUpdateRequestDto dto, Subjects subjects) {
+        if (dto.hasMemo()){
+            subjects.updateMemo(dto.getMemo());
+        }
+        if (dto.hasSubjectName()){
+            subjects.updateSubjectName(dto.getSubjectName());
+        }
+        if (dto.hasClassDay()){
+            subjects.updateClassDay(dto.getClassDay());
+        }
+        if (dto.hasClassLocation()){
+            subjects.updateClassLocation(dto.getClassLocation());
+        }
+        if (dto.hasClassTime()){
+            subjects.updateClassTime(dto.getClassTime());
+        }
+    }
+
     @Transactional
-    public String deleteSubjects(Long subjectsId, PrincipalDetails user) {
+    public SubjectsDeleteResponseDto deleteSubjects(Long subjectsId, PrincipalDetails user) {
 
         User currentUser = checkCurrentUser(user.getId());
         Subjects own = authorization(subjectsId, currentUser);
 
         subjectRepository.deleteById(own.getId());
 
-        return "과목이 삭제되었습니다.";
+        return SubjectsDeleteResponseDto.builder()
+                .id(own.getId())
+                .build();
     }
 
-    @Transactional
-    public Subjects authorization(Long id, User member) {
+    private Subjects authorization(Long id, User member) {
 
         Subjects subjects = subjectRepository.findById(id).orElseThrow(
                 () -> new SubjectsException(SubjectsErrorResult.SUBJECT_NOT_FOUND));
@@ -101,8 +101,7 @@ public class SubjectService {
 
     }
 
-    @Transactional
-    public User checkCurrentUser(Long id) {
+    private User checkCurrentUser(Long id) {
         Optional<User> currentUser = userRepository.findById(id);
 
         if (currentUser.isEmpty()) {
@@ -113,8 +112,7 @@ public class SubjectService {
         return currentUser.get();
     }
 
-    @Transactional
-    public Schedule checkCurrentSchedule(Long scheduleId) {
+    private Schedule checkCurrentSchedule(Long scheduleId) {
         Optional<Schedule> currentSchedule = scheduleRepository.findById(scheduleId);
 
         if (currentSchedule.isEmpty()) {
