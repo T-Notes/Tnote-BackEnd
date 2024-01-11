@@ -13,4 +13,5 @@ public class ObservationRequestDto {
     private String observationContents; // 관찰 내용
     private String guidance; // 해석 및 지도 방안
     private boolean isAllDay;
+    //todo 이미지 추가해야합니다.
 }
