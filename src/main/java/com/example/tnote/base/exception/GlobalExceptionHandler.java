@@ -4,7 +4,6 @@ package com.example.tnote.base.exception;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -53,6 +52,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final ScheduleErrorResult errorResult) {
+        return ResponseEntity.status(errorResult.getHttpStatus())
+                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
+    }
+
+    @ExceptionHandler({TodoException.class})
+    public ResponseEntity<ErrorResponse> handleException(final TodoException exception) {
+        log.warn("Exception occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getTodoErrorResult());
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final TodoErrorResult errorResult) {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }
