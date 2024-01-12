@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.observation.controller;
 
 import com.example.tnote.base.response.Result;
+import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 public class ObservationController {
     private final ObservationService observationService;
+
     @PostMapping("/observations")
     public ResponseEntity<Result> createObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @RequestBody
@@ -33,9 +35,17 @@ public class ObservationController {
     }
 
     @GetMapping("/observations")
-    public ResponseEntity<Result> getAllObservations(@AuthenticationPrincipal PrincipalDetails principalDetails){
-        List<ObservationResponseDto> observations = observationService.readAllClassLog(principalDetails.getId());
+    public ResponseEntity<Result> getAllObservations(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        List<ObservationResponseDto> observations = observationService.readAllObservation(principalDetails.getId());
 
         return ResponseEntity.ok(Result.of(observations));
+    }
+
+    @GetMapping("/observationId")
+    public ResponseEntity<Result> getObservationDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                       @PathVariable Long observationId) {
+        ObservationDetailResponseDto responseDto = observationService.readObservationDetail(principalDetails.getId(),
+                observationId);
+        return ResponseEntity.ok(Result.of(responseDto));
     }
 }
