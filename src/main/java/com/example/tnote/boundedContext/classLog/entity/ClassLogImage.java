@@ -35,12 +35,12 @@ public class ClassLogImage {
     @JoinColumn(name = "classLog_id")
     private ClassLog classLog;
 
-//    @Builder
-//    public ClassLogImage(ClassLog classLog, String classLogImageUrl) {
-//        this.classLog = classLog;
-//        if (classLog != null) {
-//            classLog.getClassLogImage().add(this);
-//        }
-//        this.classLogImageUrl = classLogImageUrl;
-//    }
+    @Builder
+    public ClassLogImage(ClassLog classLog, String classLogImageUrl) {
+        this.classLog = classLog;
+        if (classLog != null) {
+            classLog.getClassLogImage().add(this);
+        }
+        this.classLogImageUrl = classLogImageUrl;
+    }
 }
