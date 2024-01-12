@@ -41,7 +41,7 @@ public class ObservationController {
         return ResponseEntity.ok(Result.of(observations));
     }
 
-    @GetMapping("/observationId")
+    @GetMapping("/{observationId}")
     public ResponseEntity<Result> getObservationDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                        @PathVariable Long observationId) {
         ObservationDetailResponseDto responseDto = observationService.readObservationDetail(principalDetails.getId(),
