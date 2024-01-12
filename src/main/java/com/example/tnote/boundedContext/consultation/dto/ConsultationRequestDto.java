@@ -18,6 +18,7 @@ public class ConsultationRequestDto {
     private String consultationContents;
     private String consultationResult;
     private boolean isAllDay;
+
     public void validateEnums() {
         validateCounselingField();
         validateCounselingType();
@@ -34,6 +35,7 @@ public class ConsultationRequestDto {
             throw new IllegalArgumentException("Invalid counseling type: " + counselingType);
         }
     }
+
     private static class EnumUtils {
         public static <E extends Enum<E>> boolean isValidEnum(Class<E> enumClass, String enumName) {
             return Arrays.stream(enumClass.getEnumConstants())

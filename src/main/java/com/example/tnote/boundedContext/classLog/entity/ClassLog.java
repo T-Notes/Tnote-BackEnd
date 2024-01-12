@@ -18,7 +18,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="CLASS_LOG_TB")
+@Table(name = "CLASS_LOG_TB")
 public class ClassLog extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -46,7 +46,7 @@ public class ClassLog extends BaseTimeEntity {
 //        this.classLogImage.clear();
 //    }
 
-    public void updatePlan(String plan){
+    public void updatePlan(String plan) {
         this.plan = plan;
     }
 

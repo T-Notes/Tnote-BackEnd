@@ -33,7 +33,6 @@ public class ProceedingService {
     private final UserRepository userRepository;
     private final ProceedingRepository proceedingRepository;
 
-    @Transactional
     public ProceedingResponseDto save(Long userId, ProceedingRequestDto requestDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));

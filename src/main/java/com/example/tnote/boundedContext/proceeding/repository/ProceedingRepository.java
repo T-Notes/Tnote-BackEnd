@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 
 public interface ProceedingRepository extends JpaRepository<Proceeding, Long> {
     List<Proceeding> findAllByUserId(Long userId);
+
     @Query("select p from Proceeding p " +
             "where p.id = :proceedingId and p.user.id = :userId")
     Optional<Proceeding> findByIdAndUserId(Long proceedingId, Long userId);
