@@ -29,7 +29,6 @@ public class ClassLogService {
     private final ClassLogRepository classLogRepository;
     private final UserRepository userRepository;
 
-    @Transactional
     public ClassLogResponseDto save(Long userId, ClassLogRequestDto request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));

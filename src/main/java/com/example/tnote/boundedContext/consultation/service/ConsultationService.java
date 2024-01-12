@@ -33,7 +33,6 @@ public class ConsultationService {
     private final ConsultationRepository consultationRepository;
     private final UserRepository userRepository;
 
-    @Transactional
     public ConsultationResponseDto save(Long userId, ConsultationRequestDto requestDto) {
         requestDto.validateEnums();
         User user = userRepository.findById(userId)
