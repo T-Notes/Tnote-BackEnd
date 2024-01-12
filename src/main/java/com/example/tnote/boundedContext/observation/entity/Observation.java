@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Entity
 @Getter
 @Builder
-@Table(name="OBSERVATION_TB")
+@Table(name = "OBSERVATION_TB")
 public class Observation extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,4 +28,12 @@ public class Observation extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void updateObservationContents(String observationContents) {
+        this.observationContents = observationContents;
+    }
+
+    public void updateGuidance(String guidance) {
+        this.guidance = guidance;
+    }
 }

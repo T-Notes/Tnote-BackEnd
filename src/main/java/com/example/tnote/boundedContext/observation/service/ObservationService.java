@@ -9,6 +9,7 @@ import com.example.tnote.boundedContext.observation.dto.ObservationDeleteRespons
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -69,5 +70,21 @@ public class ObservationService {
         return ObservationDeleteResponseDto.builder()
                 .id(observation.getId())
                 .build();
+    }
+
+    public ObservationResponseDto updateObservation(Long userId, Long observationId,
+                                                    ObservationUpdateRequestDto requestDto) {
+        Observation observation = observationRepository.findByIdAndUserId(observationId, userId).orElseThrow();
+        updateEachItem(observation, requestDto);
+        return ObservationResponseDto.of(observation);
+    }
+
+    private void updateEachItem(Observation observation, ObservationUpdateRequestDto requestDto) {
+        if (requestDto.hasObservationContents()) {
+            observation.updateObservationContents(requestDto.getObservationContents());
+        }
+        if (requestDto.hasGuidance()) {
+            observation.updateGuidance(requestDto.getGuidance());
+        }
     }
 }
