@@ -1,0 +1,6 @@
+
+t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(†û„“ÿÿÿÿÿ
+<
+java:S1948"&Make "user" transient or serializable.(õ©¯†
+:
+java:S1168="$Return an empty map instead of null.(¥¹ï

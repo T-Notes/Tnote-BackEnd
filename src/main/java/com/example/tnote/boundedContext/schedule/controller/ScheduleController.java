@@ -1,28 +1,28 @@
 package com.example.tnote.boundedContext.schedule.controller;
 
-import com.example.tnote.base.exception.ScheduleErrorResult;
-import com.example.tnote.base.exception.ScheduleException;
-import com.example.tnote.base.exception.UserErrorResult;
-import com.example.tnote.base.exception.UserException;
 import com.example.tnote.base.response.Result;
-import com.example.tnote.boundedContext.schedule.dto.*;
-import com.example.tnote.boundedContext.schedule.entity.ClassDay;
-import com.example.tnote.boundedContext.schedule.entity.Schedule;
-import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
+import com.example.tnote.boundedContext.schedule.dto.ScheduleDeleteResponseDto;
+import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
+import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
+import com.example.tnote.boundedContext.schedule.dto.ScheduleUpdateRequestDto;
 import com.example.tnote.boundedContext.schedule.service.ScheduleService;
-import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
-import lombok.Getter;
+import java.time.LocalDate;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.*;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
@@ -31,7 +31,6 @@ import java.util.Optional;
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
-    private final ScheduleRepository scheduleRepository;
 
     @PostMapping
     public ResponseEntity<Result> saveSemester(@RequestBody ScheduleRequestDto dto,
@@ -73,23 +72,29 @@ public class ScheduleController {
 
     // 남은 수업 일수 체크
     @GetMapping("/leftClassDays")
-    public ResponseEntity<Result> countLeftDays(@RequestBody ScheduleDateRequestDto dto) {
-        long response = scheduleService.countLeftDays(dto.getStartDate(), dto.getEndDate());
+    public ResponseEntity<Result> countLeftDays(
+            @RequestParam(defaultValue = "1970-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @RequestParam(defaultValue = "1970-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
+        long response = scheduleService.countLeftDays(startDate, endDate);
 
         return ResponseEntity.ok(Result.of(response));
     }
 
     // 남은 수업 횟수 체크
     @GetMapping("/leftClasses/{scheduleId}")
-    public ResponseEntity<Result> countLeftClasses(@RequestBody ScheduleDateRequestDto dto, @PathVariable("scheduleId") Long scheduleId) {
-        long response = scheduleService.countLeftClasses(dto.getStartDate(), dto.getEndDate(), scheduleId);
+    public ResponseEntity<Result> countLeftClasses(
+            @RequestParam(defaultValue = "1970-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @RequestParam(defaultValue = "1970-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            @PathVariable("scheduleId") Long scheduleId) {
+        long response = scheduleService.countLeftClasses(startDate, endDate, scheduleId);
 
         return ResponseEntity.ok(Result.of(response));
     }
 
     // 월~금 시간표에 넣을 데이터 조회
     @GetMapping("/week/{scheduleId}")
-    public ResponseEntity<Result> findWeek(@PathVariable("scheduleId") Long scheduleId, @AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> findWeek(@PathVariable("scheduleId") Long scheduleId,
+                                           @AuthenticationPrincipal PrincipalDetails user) {
 
         List<ScheduleResponseDto> response = scheduleService.getAll(scheduleId, user);
         return ResponseEntity.ok(Result.of(response));

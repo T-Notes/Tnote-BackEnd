@@ -1,29 +1,39 @@
 package com.example.tnote.boundedContext.schedule.entity;
 
 import com.example.tnote.base.entity.BaseTimeEntity;
+import com.example.tnote.boundedContext.subject.entity.Subjects;
+import com.example.tnote.boundedContext.todo.entity.Todo;
 import com.example.tnote.boundedContext.user.entity.User;
-import jakarta.persistence.*;
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name="SCHEDULE_TB")
+@Table(name = "SCHEDULE_TB")
 public class Schedule extends BaseTimeEntity {
-/*
-    Schedule [1] : Subjects [N]
- */
+    /*
+        Schedule [1] : Subjects [N]
+        Schedule [1] : Todo [N]
+     */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "schedule_id")
@@ -42,15 +52,22 @@ public class Schedule extends BaseTimeEntity {
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Subjects> subjectsList = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Todo> todoList = new ArrayList<>();
+
     public void updateSemesterName(String semesterName) {
         this.semesterName = semesterName;
     }
+
     public void updateLastClass(String lastClass) {
         this.lastClass = lastClass;
     }
+
     public void updateStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
+
     public void updateEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
