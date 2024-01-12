@@ -9,16 +9,19 @@ public class ClassLogUpdateRequestDto {
     private String submission;
     private String magnitude;
 
-    public boolean hasPlan(){
+    public boolean hasPlan() {
         return plan != null;
     }
-    public boolean hasClassContents(){
+
+    public boolean hasClassContents() {
         return classContents != null;
     }
-    public boolean hasSubmission(){
+
+    public boolean hasSubmission() {
         return submission != null;
     }
-    public boolean hasMagnitude(){
+
+    public boolean hasMagnitude() {
         return magnitude != null;
     }
 }

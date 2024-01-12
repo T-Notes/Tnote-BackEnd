@@ -17,7 +17,7 @@ public class ClassLogDetailResponseDto {
     private String submission;
     private String magnitude;
 
-    public ClassLogDetailResponseDto(ClassLog classLog){
+    public ClassLogDetailResponseDto(ClassLog classLog) {
         this.id = classLog.getId();
         this.userId = classLog.getUser().getId();
         this.title = classLog.getTitle();

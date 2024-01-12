@@ -15,7 +15,7 @@ public class ProceedingResponseDto {
     private String location;
     private String workContents;
 
-    public static ProceedingResponseDto of(Proceeding proceeding){
+    public static ProceedingResponseDto of(Proceeding proceeding) {
         return ProceedingResponseDto.builder()
                 .id(proceeding.getId())
                 .title(proceeding.getTitle())

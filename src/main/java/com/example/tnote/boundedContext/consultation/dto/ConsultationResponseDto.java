@@ -19,7 +19,7 @@ public class ConsultationResponseDto {
     private String consultationContents;
     private String consultationResult;
 
-    public static ConsultationResponseDto of(Consultation consultation){
+    public static ConsultationResponseDto of(Consultation consultation) {
         return ConsultationResponseDto.builder()
                 .id(consultation.getId())
                 .studentName(consultation.getStudentName())
