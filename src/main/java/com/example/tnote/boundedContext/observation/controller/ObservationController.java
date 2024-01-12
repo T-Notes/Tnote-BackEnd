@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.observation.controller;
 
 import com.example.tnote.base.response.Result;
+import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
@@ -12,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -45,6 +47,14 @@ public class ObservationController {
     public ResponseEntity<Result> getObservationDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                        @PathVariable Long observationId) {
         ObservationDetailResponseDto responseDto = observationService.readObservationDetail(principalDetails.getId(),
+                observationId);
+        return ResponseEntity.ok(Result.of(responseDto));
+    }
+
+    @DeleteMapping("/{observationId}")
+    public ResponseEntity<Result> deleteObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                    @PathVariable Long observationId) {
+        ObservationDeleteResponseDto responseDto = observationService.deleteObservation(principalDetails.getId(),
                 observationId);
         return ResponseEntity.ok(Result.of(responseDto));
     }

@@ -5,6 +5,7 @@ import com.example.tnote.base.exception.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
@@ -61,4 +62,12 @@ public class ObservationService {
         return new ObservationDetailResponseDto(observation);
     }
 
+    public ObservationDeleteResponseDto deleteObservation(Long userId, Long observationId) {
+        Observation observation = observationRepository.findByIdAndUserId(observationId, userId).orElseThrow();
+        observationRepository.delete(observation);
+
+        return ObservationDeleteResponseDto.builder()
+                .id(observation.getId())
+                .build();
+    }
 }
