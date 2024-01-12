@@ -3,6 +3,8 @@ package com.example.tnote.boundedContext.observation.service;
 import com.example.tnote.base.exception.UserErrorResult;
 import com.example.tnote.base.exception.UserException;
 import com.example.tnote.base.utils.DateUtils;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
@@ -10,6 +12,7 @@ import com.example.tnote.boundedContext.observation.repository.ObservationReposi
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,5 +43,13 @@ public class ObservationService {
 
         return ObservationResponseDto.of(observation);
     }
+    @Transactional(readOnly = true)
+    public List<ObservationResponseDto> readAllClassLog(Long userId) {
+        //todo slice 형태로 바꿔야합니다
+        List<Observation> observations = observationRepository.findAllByUserId(userId);
 
+        return observations.stream()
+                .map(ObservationResponseDto::of)
+                .toList();
+    }
 }
