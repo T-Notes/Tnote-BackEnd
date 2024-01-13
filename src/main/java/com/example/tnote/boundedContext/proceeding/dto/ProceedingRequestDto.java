@@ -2,8 +2,10 @@ package com.example.tnote.boundedContext.proceeding.dto;
 
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Builder
@@ -14,8 +16,8 @@ public class ProceedingRequestDto {
     private String location;
     private String workContents;
     private boolean isAllDay;
+    private List<MultipartFile> proceedingImages;
 
-    //todo 추후에 S3로 이미지도 추가해야합니다.
     public Proceeding toEntity() {
         return Proceeding.builder()
                 .title(title)
