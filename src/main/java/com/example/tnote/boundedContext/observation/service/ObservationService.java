@@ -37,7 +37,8 @@ public class ObservationService {
     private final ObservationImageRepository observationImageRepository;
     private final UserRepository userRepository;
 
-    public ObservationResponseDto save(Long userId, ObservationRequestDto requestDto) {
+    public ObservationResponseDto save(Long userId, ObservationRequestDto requestDto,
+                                       List<MultipartFile> observationImages) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
@@ -45,13 +46,14 @@ public class ObservationService {
         LocalDateTime endDate = DateUtils.adjustEndDateTime(requestDto.getEndDate(), requestDto.isAllDay());
 
         Observation observation = Observation.builder()
+                .user(user)
                 .studentName(requestDto.getStudentName())
                 .startDate(startDate)
                 .endDate(endDate)
                 .observationContents(requestDto.getObservationContents())
                 .guidance(requestDto.getGuidance())
                 .build();
-
+        uploadObservationImages(observation, observationImages);
         return ObservationResponseDto.of(observation);
     }
 
@@ -95,8 +97,10 @@ public class ObservationService {
             observation.updateGuidance(requestDto.getGuidance());
         }
     }
-    private List<ObservationImage> uploadObservationImages(ObservationRequestDto requestDto, Observation observation) {
-        return requestDto.getObservationImages().stream()
+
+    private List<ObservationImage> uploadObservationImages(Observation observation,
+                                                           List<MultipartFile> observationImages) {
+        return observationImages.stream()
                 .map(file -> createObservationImage(observation, file))
                 .toList();
     }

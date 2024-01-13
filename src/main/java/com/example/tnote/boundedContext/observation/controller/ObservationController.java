@@ -21,7 +21,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -32,9 +34,10 @@ public class ObservationController {
 
     @PostMapping("/observations")
     public ResponseEntity<Result> createObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                    @RequestBody
-                                                    ObservationRequestDto requestDto) {
-        ObservationResponseDto observationResponseDto = observationService.save(principalDetails.getId(), requestDto);
+                                                    @RequestPart ObservationRequestDto requestDto,
+                                                    @RequestPart(name = "observationImages", required = false) List<MultipartFile> observationImages) {
+        ObservationResponseDto observationResponseDto = observationService.save(principalDetails.getId(), requestDto,
+                observationImages);
         return ResponseEntity.ok(Result.of(observationResponseDto));
     }
 
@@ -65,7 +68,8 @@ public class ObservationController {
     public ResponseEntity<Result> updateObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @PathVariable Long observationId,
                                                     @RequestBody ObservationUpdateRequestDto requestDto) {
-        ObservationResponseDto responseDto = observationService.updateObservation(principalDetails.getId(), observationId, requestDto);
+        ObservationResponseDto responseDto = observationService.updateObservation(principalDetails.getId(),
+                observationId, requestDto);
         return ResponseEntity.ok(Result.of(responseDto));
     }
 }
