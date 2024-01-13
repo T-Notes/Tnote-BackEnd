@@ -2,9 +2,12 @@ package com.example.tnote.boundedContext.consultation.entity;
 
 import com.example.tnote.base.entity.BaseTimeEntity;
 import com.example.tnote.boundedContext.user.entity.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,6 +32,9 @@ public class Consultation extends BaseTimeEntity {
     private CounselingType counselingType;
     private String consultationContents;
     private String consultationResult;
+    @JsonManagedReference
+    @OneToMany(mappedBy = "consultation", cascade = CascadeType.ALL)
+    private List<ConsultationImage> consultationImage = new ArrayList<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -37,7 +43,9 @@ public class Consultation extends BaseTimeEntity {
     public void updateConsultationContents(String consultationContents) {
         this.consultationContents = consultationContents;
     }
-
+    public void clearConsultationImages() {
+        this.consultationImage.clear();
+    }
     public void updateConsultationResult(String consultationResult) {
         this.consultationResult = consultationResult;
     }
