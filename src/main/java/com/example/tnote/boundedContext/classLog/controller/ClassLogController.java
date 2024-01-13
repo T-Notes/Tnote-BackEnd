@@ -38,7 +38,7 @@ public class ClassLogController {
     @PostMapping("/classLogs")
     public ResponseEntity<Result> createClassLog(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                  @RequestPart ClassLogRequestDto classLogRequestDto,
-                                                 @RequestPart List<MultipartFile> classLogImages) {
+                                                 @RequestPart(name = "classLogImages", required = false) List<MultipartFile> classLogImages) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of(UNAUTHORIZED.getMessage()));
         }
