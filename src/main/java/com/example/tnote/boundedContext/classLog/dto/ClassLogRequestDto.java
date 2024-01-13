@@ -1,5 +1,7 @@
 package com.example.tnote.boundedContext.classLog.dto;
 
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
@@ -18,5 +20,4 @@ public class ClassLogRequestDto {
     private String magnitude;
     private boolean isAllDay;
     private List<MultipartFile> classLogImages;
-
 }
