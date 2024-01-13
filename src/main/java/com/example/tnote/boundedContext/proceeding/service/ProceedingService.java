@@ -5,25 +5,31 @@ import com.example.tnote.base.exception.CommonException;
 import com.example.tnote.base.exception.UserErrorResult;
 import com.example.tnote.base.exception.UserException;
 import com.example.tnote.base.utils.DateUtils;
+import com.example.tnote.base.utils.FileUploadUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
+import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
+import com.example.tnote.boundedContext.proceeding.repository.ProceedingImageRepository;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @Transactional
 @Service
@@ -32,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ProceedingService {
     private final UserRepository userRepository;
     private final ProceedingRepository proceedingRepository;
+    private final ProceedingImageRepository proceedingImageRepository;
 
     public ProceedingResponseDto save(Long userId, ProceedingRequestDto requestDto) {
         User user = userRepository.findById(userId)
@@ -91,5 +98,29 @@ public class ProceedingService {
         if (updateRequestDto.hasWorkContents()) {
             proceeding.updateWorkContents(updateRequestDto.getWorkContents());
         }
+    }
+
+    private List<ProceedingImage> uploadProceedingImages(ProceedingRequestDto requestDto, Proceeding proceeding) {
+        return requestDto.getProceedingImages().stream()
+                .map(file -> createProceedingImage(proceeding, file))
+                .toList();
+    }
+
+    private ProceedingImage createProceedingImage(Proceeding proceeding, MultipartFile file) {
+        String url;
+        try {
+            url = FileUploadUtils.saveFileAndGetUrl(file);
+        } catch (IOException e) {
+            log.error("File upload fail", e);
+            throw new IllegalArgumentException();
+        }
+
+        log.info("url = {}", url);
+        proceeding.clearProceedingImages();
+
+        return proceedingImageRepository.save(ProceedingImage.builder()
+                .proceedingImageUrl(url)
+                .proceeding(proceeding)
+                .build());
     }
 }
