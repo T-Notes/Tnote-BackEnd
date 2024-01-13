@@ -42,7 +42,8 @@ public class ClassLogController {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of(UNAUTHORIZED.getMessage()));
         }
-        ClassLogResponseDto classLogResponseDto = classLogService.save(principalDetails.getId(), classLogRequestDto, classLogImages);
+        ClassLogResponseDto classLogResponseDto = classLogService.save(principalDetails.getId(), classLogRequestDto,
+                classLogImages);
 
         return ResponseEntity.ok(Result.of(classLogResponseDto));
     }

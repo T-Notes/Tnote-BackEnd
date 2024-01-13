@@ -28,7 +28,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -51,10 +53,10 @@ public class ConsultationController {
 
     @PostMapping("/consultations")
     public ResponseEntity<Result> createConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @RequestBody
-                                                     ConsultationRequestDto requestDto) {
+                                                     @RequestPart ConsultationRequestDto requestDto,
+                                                     @RequestPart(name = "consultationImages", required = false) List<MultipartFile> consultationImages) {
         ConsultationResponseDto consultationResponseDto = consultationService.save(principalDetails.getId(),
-                requestDto);
+                requestDto,consultationImages);
         return ResponseEntity.ok(Result.of(consultationResponseDto));
     }
 

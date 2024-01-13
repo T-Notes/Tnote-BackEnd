@@ -41,7 +41,8 @@ public class ConsultationService {
     private final ConsultationImageRepository consultationImageRepository;
     private final UserRepository userRepository;
 
-    public ConsultationResponseDto save(Long userId, ConsultationRequestDto requestDto) {
+    public ConsultationResponseDto save(Long userId, ConsultationRequestDto requestDto,
+                                        List<MultipartFile> consultationImages) {
         requestDto.validateEnums();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
@@ -58,7 +59,7 @@ public class ConsultationService {
                 .consultationContents(requestDto.getConsultationContents())
                 .consultationResult(requestDto.getConsultationResult())
                 .build();
-
+        uploadConsultationImages(consultation, consultationImages);
         return ConsultationResponseDto.of(consultationRepository.save(consultation));
     }
 
@@ -103,8 +104,9 @@ public class ConsultationService {
         }
     }
 
-    private List<ConsultationImage> uploadConsultationImages(ConsultationRequestDto requestDto, Consultation consultation) {
-        return requestDto.getConsultationImages().stream()
+    private List<ConsultationImage> uploadConsultationImages(Consultation consultation,
+                                                             List<MultipartFile> consultationImages) {
+        return consultationImages.stream()
                 .map(file -> createConsultationImage(consultation, file))
                 .toList();
     }
