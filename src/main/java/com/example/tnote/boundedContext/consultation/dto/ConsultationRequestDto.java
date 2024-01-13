@@ -4,8 +4,10 @@ import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
 import java.time.LocalDateTime;
 import java.util.Arrays;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Builder
@@ -18,6 +20,7 @@ public class ConsultationRequestDto {
     private String consultationContents;
     private String consultationResult;
     private boolean isAllDay;
+    private List<MultipartFile> consultationImages;
 
     public void validateEnums() {
         validateCounselingField();
