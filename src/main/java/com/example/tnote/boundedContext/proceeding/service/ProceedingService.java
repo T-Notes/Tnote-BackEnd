@@ -40,7 +40,8 @@ public class ProceedingService {
     private final ProceedingRepository proceedingRepository;
     private final ProceedingImageRepository proceedingImageRepository;
 
-    public ProceedingResponseDto save(Long userId, ProceedingRequestDto requestDto) {
+    public ProceedingResponseDto save(Long userId, ProceedingRequestDto requestDto,
+                                      List<MultipartFile> proceedingImages) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
@@ -55,6 +56,7 @@ public class ProceedingService {
                 .location(requestDto.getLocation())
                 .workContents(requestDto.getWorkContents())
                 .build();
+        uploadProceedingImages(proceeding, proceedingImages);
         return ProceedingResponseDto.of(proceedingRepository.save(proceeding));
     }
 
@@ -100,8 +102,8 @@ public class ProceedingService {
         }
     }
 
-    private List<ProceedingImage> uploadProceedingImages(ProceedingRequestDto requestDto, Proceeding proceeding) {
-        return requestDto.getProceedingImages().stream()
+    private List<ProceedingImage> uploadProceedingImages(Proceeding proceeding, List<MultipartFile> proceedingImages) {
+        return proceedingImages.stream()
                 .map(file -> createProceedingImage(proceeding, file))
                 .toList();
     }

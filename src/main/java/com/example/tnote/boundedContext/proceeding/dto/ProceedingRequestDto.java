@@ -16,7 +16,6 @@ public class ProceedingRequestDto {
     private String location;
     private String workContents;
     private boolean isAllDay;
-    private List<MultipartFile> proceedingImages;
 
     public Proceeding toEntity() {
         return Proceeding.builder()

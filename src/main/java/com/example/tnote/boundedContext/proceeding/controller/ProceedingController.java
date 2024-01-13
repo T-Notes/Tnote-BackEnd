@@ -22,7 +22,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -33,12 +35,13 @@ public class ProceedingController {
 
     @PostMapping("/proceedings")
     public ResponseEntity<Result> createProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                   @RequestBody
-                                                   ProceedingRequestDto requestDto) {
+                                                   @RequestPart ProceedingRequestDto requestDto,
+                                                   @RequestPart(name = "proceedingImages", required = false) List<MultipartFile> proceedingImages) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
         }
-        ProceedingResponseDto proceedingResponseDto = proceedingService.save(principalDetails.getId(), requestDto);
+        ProceedingResponseDto proceedingResponseDto = proceedingService.save(principalDetails.getId(), requestDto,
+                proceedingImages);
         return ResponseEntity.ok(Result.of(proceedingResponseDto));
     }
 
