@@ -35,7 +35,7 @@ public class ClassLogService {
     private final ClassLogImageRepository classLogImageRepository;
     private final UserRepository userRepository;
 
-    public ClassLogResponseDto save(Long userId, ClassLogRequestDto request) {
+    public ClassLogResponseDto save(Long userId, ClassLogRequestDto request, List<MultipartFile> classLogImages) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
@@ -51,7 +51,7 @@ public class ClassLogService {
                 .submission(request.getSubmission())
                 .magnitude(request.getMagnitude())
                 .build();
-        uploadClassLogImages(request, classLog);
+        uploadClassLogImages(classLog, classLogImages);
         return ClassLogResponseDto.of(classLogRepository.save(classLog));
     }
 
@@ -104,8 +104,8 @@ public class ClassLogService {
         //todo 이미지에 대한 수정부분도 필요합니다.
     }
 
-    private List<ClassLogImage> uploadClassLogImages(ClassLogRequestDto requestDto, ClassLog classLog) {
-        return requestDto.getClassLogImages().stream()
+    private List<ClassLogImage> uploadClassLogImages(ClassLog classLog, List<MultipartFile> classLogImages) {
+        return classLogImages.stream()
                 .map(file -> createClassLogImage(classLog, file))
                 .toList();
     }

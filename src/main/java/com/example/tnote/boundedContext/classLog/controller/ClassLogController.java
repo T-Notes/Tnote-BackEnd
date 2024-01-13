@@ -24,7 +24,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -35,11 +37,12 @@ public class ClassLogController {
 
     @PostMapping("/classLogs")
     public ResponseEntity<Result> createClassLog(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                 @RequestBody ClassLogRequestDto classLogRequestDto) {
+                                                 @RequestPart ClassLogRequestDto classLogRequestDto,
+                                                 @RequestPart List<MultipartFile> classLogImages) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of(UNAUTHORIZED.getMessage()));
         }
-        ClassLogResponseDto classLogResponseDto = classLogService.save(principalDetails.getId(), classLogRequestDto);
+        ClassLogResponseDto classLogResponseDto = classLogService.save(principalDetails.getId(), classLogRequestDto, classLogImages);
 
         return ResponseEntity.ok(Result.of(classLogResponseDto));
     }
