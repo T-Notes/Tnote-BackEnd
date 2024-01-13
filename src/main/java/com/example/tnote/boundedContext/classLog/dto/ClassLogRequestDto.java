@@ -20,4 +20,26 @@ public class ClassLogRequestDto {
     private String magnitude;
     private boolean isAllDay;
     private List<MultipartFile> classLogImages;
+
+    public static ClassLogRequestDto of(String title,
+                                        LocalDateTime startDate,
+                                        LocalDateTime endDate,
+                                        String plan,
+                                        String classContents,
+                                        String submission,
+                                        String magnitude,
+                                        boolean isAllDay,
+                                        List<MultipartFile> classLogImages) {
+        return ClassLogRequestDto.builder()
+                .title(title)
+                .startDate(startDate)
+                .endDate(endDate)
+                .plan(plan)
+                .classContents(classContents)
+                .submission(submission)
+                .magnitude(magnitude)
+                .isAllDay(isAllDay)
+                .classLogImages(classLogImages)
+                .build();
+    }
 }
