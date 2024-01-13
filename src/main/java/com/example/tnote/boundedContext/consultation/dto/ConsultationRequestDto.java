@@ -20,8 +20,6 @@ public class ConsultationRequestDto {
     private String consultationContents;
     private String consultationResult;
     private boolean isAllDay;
-    private List<MultipartFile> consultationImages;
-
     public void validateEnums() {
         validateCounselingField();
         validateCounselingType();
