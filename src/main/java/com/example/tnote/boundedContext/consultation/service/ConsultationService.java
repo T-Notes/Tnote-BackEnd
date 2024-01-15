@@ -121,7 +121,7 @@ public class ConsultationService {
                 .consultation(consultation)
                 .build());
     }
-    public List<ConsultationResponseDto> readDailyClassLogs(Long userId, LocalDate date) {
+    public List<ConsultationResponseDto> readDailyConsultations(Long userId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
