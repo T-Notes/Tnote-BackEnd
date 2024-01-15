@@ -12,6 +12,7 @@ import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,7 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ObservationController {
     private final ObservationService observationService;
 
-    @PostMapping("/observations")
+    @PostMapping(value = "/observations", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @RequestPart ObservationRequestDto requestDto,
                                                     @RequestPart(name = "observationImages", required = false) List<MultipartFile> observationImages) {
