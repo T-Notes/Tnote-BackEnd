@@ -42,18 +42,11 @@ public class ObservationService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
-        LocalDateTime startDate = DateUtils.adjustStartDateTime(requestDto.getStartDate(), requestDto.isAllDay());
-        LocalDateTime endDate = DateUtils.adjustEndDateTime(requestDto.getEndDate(), requestDto.isAllDay());
-
-        Observation observation = Observation.builder()
-                .user(user)
-                .studentName(requestDto.getStudentName())
-                .startDate(startDate)
-                .endDate(endDate)
-                .observationContents(requestDto.getObservationContents())
-                .guidance(requestDto.getGuidance())
-                .build();
-        uploadObservationImages(observation, observationImages);
+        Observation observation = requestDto.toEntity(user);
+        if (observationImages != null && !observationImages.isEmpty()) {
+            List<ObservationImage> uploadedImages = uploadObservationImages(observation, observationImages);
+            observation.getObservationImage().addAll(uploadedImages); // 이미지 리스트에 추가
+        }
         return ObservationResponseDto.of(observation);
     }
 
