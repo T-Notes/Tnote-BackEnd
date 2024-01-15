@@ -1,9 +1,14 @@
 package com.example.tnote.boundedContext.proceeding.dto;
 
+import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
+import com.example.tnote.boundedContext.user.entity.User;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
+import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Builder
@@ -15,14 +20,15 @@ public class ProceedingRequestDto {
     private String workContents;
     private boolean isAllDay;
 
-    //todo 추후에 S3로 이미지도 추가해야합니다.
-    public Proceeding toEntity() {
+    public Proceeding toEntity(User user) {
         return Proceeding.builder()
-                .title(title)
-                .startDate(startDate)
-                .endDate(endDate)
-                .location(location)
-                .workContents(workContents)
+                .user(user)
+                .title(this.title)
+                .startDate(DateUtils.adjustStartDateTime(this.startDate, this.isAllDay))
+                .endDate(DateUtils.adjustEndDateTime(this.endDate, this.isAllDay))
+                .location(this.location)
+                .workContents(this.workContents)
+                .proceedingImage(new ArrayList<>())
                 .build();
     }
 }

@@ -12,6 +12,7 @@ import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -21,7 +22,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -30,11 +33,13 @@ import org.springframework.web.bind.annotation.RestController;
 public class ObservationController {
     private final ObservationService observationService;
 
-    @PostMapping("/observations")
+    @PostMapping(value = "/observations", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                    @RequestBody
-                                                    ObservationRequestDto requestDto) {
-        ObservationResponseDto observationResponseDto = observationService.save(principalDetails.getId(), requestDto);
+                                                    @RequestPart ObservationRequestDto requestDto,
+                                                    @RequestPart(name = "observationImages", required = false) List<MultipartFile> observationImages) {
+        ObservationResponseDto observationResponseDto = observationService.save(principalDetails.getId(), requestDto,
+                observationImages);
         return ResponseEntity.ok(Result.of(observationResponseDto));
     }
 
@@ -65,7 +70,8 @@ public class ObservationController {
     public ResponseEntity<Result> updateObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @PathVariable Long observationId,
                                                     @RequestBody ObservationUpdateRequestDto requestDto) {
-        ObservationResponseDto responseDto = observationService.updateObservation(principalDetails.getId(), observationId, requestDto);
+        ObservationResponseDto responseDto = observationService.updateObservation(principalDetails.getId(),
+                observationId, requestDto);
         return ResponseEntity.ok(Result.of(responseDto));
     }
 }

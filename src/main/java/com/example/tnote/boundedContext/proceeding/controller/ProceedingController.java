@@ -12,6 +12,7 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +23,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -31,14 +34,16 @@ import org.springframework.web.bind.annotation.RestController;
 public class ProceedingController {
     private final ProceedingService proceedingService;
 
-    @PostMapping("/proceedings")
+    @PostMapping(value = "/proceedings", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                   @RequestBody
-                                                   ProceedingRequestDto requestDto) {
+                                                   @RequestPart ProceedingRequestDto requestDto,
+                                                   @RequestPart(name = "proceedingImages", required = false) List<MultipartFile> proceedingImages) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
         }
-        ProceedingResponseDto proceedingResponseDto = proceedingService.save(principalDetails.getId(), requestDto);
+        ProceedingResponseDto proceedingResponseDto = proceedingService.save(principalDetails.getId(), requestDto,
+                proceedingImages);
         return ResponseEntity.ok(Result.of(proceedingResponseDto));
     }
 

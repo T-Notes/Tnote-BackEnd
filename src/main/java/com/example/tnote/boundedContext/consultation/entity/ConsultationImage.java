@@ -1,4 +1,4 @@
-package com.example.tnote.boundedContext.proceeding.entity;
+package com.example.tnote.boundedContext.consultation.entity;
 
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.fasterxml.jackson.annotation.JsonBackReference;
@@ -21,26 +21,26 @@ import lombok.NoArgsConstructor;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class ProceedingImage {
+public class ConsultationImage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "proceeding_image_id")
+    @Column(name = "consultation_image_id")
     private Long id;
 
     @Column(columnDefinition = "TEXT")
-    private String proceedingImageUrl;
+    private String consultationImageUrl;
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "proceeding_id")
-    private Proceeding proceeding;
+    @JoinColumn(name = "consultation_id")
+    private Consultation consultation;
 
     @Builder
-    public ProceedingImage(Proceeding proceeding, String proceedingImageUrl) {
-        this.proceeding = proceeding;
-        if (proceeding != null) {
-            proceeding.getProceedingImage().add(this);
+    public ConsultationImage(Consultation consultation, String consultationImageUrl) {
+        this.consultation = consultation;
+        if (consultation != null) {
+            consultation.getConsultationImage().add(this);
         }
-        this.proceedingImageUrl = proceedingImageUrl;
+        this.consultationImageUrl = consultationImageUrl;
     }
 }

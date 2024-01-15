@@ -18,6 +18,7 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -28,7 +29,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
@@ -49,12 +52,13 @@ public class ConsultationController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @PostMapping("/consultations")
+    @PostMapping(value = "/consultations", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @RequestBody
-                                                     ConsultationRequestDto requestDto) {
+                                                     @RequestPart ConsultationRequestDto requestDto,
+                                                     @RequestPart(name = "consultationImages", required = false) List<MultipartFile> consultationImages) {
         ConsultationResponseDto consultationResponseDto = consultationService.save(principalDetails.getId(),
-                requestDto);
+                requestDto, consultationImages);
         return ResponseEntity.ok(Result.of(consultationResponseDto));
     }
 
