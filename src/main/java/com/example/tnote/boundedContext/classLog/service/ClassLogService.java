@@ -19,6 +19,7 @@ import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.io.IOException;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,7 +51,13 @@ public class ClassLogService {
                 .plan(request.getPlan())
                 .submission(request.getSubmission())
                 .magnitude(request.getMagnitude())
+                .classLogImage(new ArrayList<>()) // 이미지 리스트 초기화
                 .build();
+
+        if (classLogImages != null && !classLogImages.isEmpty()) {
+            List<ClassLogImage> uploadedImages = uploadClassLogImages(classLog, classLogImages);
+            classLog.getClassLogImage().addAll(uploadedImages); // 이미지 리스트에 추가
+        }
         uploadClassLogImages(classLog, classLogImages);
         return ClassLogResponseDto.of(classLogRepository.save(classLog));
     }
