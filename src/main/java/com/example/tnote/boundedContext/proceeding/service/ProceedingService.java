@@ -45,18 +45,11 @@ public class ProceedingService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
-        LocalDateTime startDate = DateUtils.adjustStartDateTime(requestDto.getStartDate(), requestDto.isAllDay());
-        LocalDateTime endDate = DateUtils.adjustEndDateTime(requestDto.getEndDate(), requestDto.isAllDay());
-
-        Proceeding proceeding = Proceeding.builder()
-                .user(user)
-                .title(requestDto.getTitle())
-                .startDate(startDate)
-                .endDate(endDate)
-                .location(requestDto.getLocation())
-                .workContents(requestDto.getWorkContents())
-                .build();
-        uploadProceedingImages(proceeding, proceedingImages);
+        Proceeding proceeding = requestDto.toEntity(user);
+        if (proceedingImages != null && !proceedingImages.isEmpty()) {
+            List<ProceedingImage> uploadedImages = uploadProceedingImages(proceeding, proceedingImages);
+            proceeding.getProceedingImage().addAll(uploadedImages); // 이미지 리스트에 추가
+        }
         return ProceedingResponseDto.of(proceedingRepository.save(proceeding));
     }
 
