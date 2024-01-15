@@ -15,4 +15,14 @@ public class ArchiveResponseDto {
     private List<ObservationResponseDto> observations;
     private List<ConsultationResponseDto> consultations;
     private List<ProceedingResponseDto> proceedings;
+
+    public ArchiveResponseDto of(List<ClassLogResponseDto> classLogs, List<ObservationResponseDto> observations,
+                                 List<ConsultationResponseDto> consultations, List<ProceedingResponseDto> proceedings) {
+        return ArchiveResponseDto.builder()
+                .classLogs(classLogs)
+                .consultations(consultations)
+                .observations(observations)
+                .proceedings(proceedings)
+                .build();
+    }
 }
