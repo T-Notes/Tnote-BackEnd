@@ -36,7 +36,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class ClassLogController {
     private final ClassLogService classLogService;
 
-    @PostMapping(value = "/classLogs", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/classLogs", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createClassLog(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                  @RequestPart ClassLogRequestDto classLogRequestDto,
                                                  @RequestPart(name = "classLogImages", required = false) List<MultipartFile> classLogImages) {

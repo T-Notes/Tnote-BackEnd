@@ -34,7 +34,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class ProceedingController {
     private final ProceedingService proceedingService;
 
-    @PostMapping(value = "/proceedings", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/proceedings", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                    @RequestPart ProceedingRequestDto requestDto,
                                                    @RequestPart(name = "proceedingImages", required = false) List<MultipartFile> proceedingImages) {

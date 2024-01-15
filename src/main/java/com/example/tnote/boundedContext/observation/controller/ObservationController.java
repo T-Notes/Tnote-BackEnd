@@ -33,7 +33,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class ObservationController {
     private final ObservationService observationService;
 
-    @PostMapping(value = "/observations", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/observations", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @RequestPart ObservationRequestDto requestDto,
                                                     @RequestPart(name = "observationImages", required = false) List<MultipartFile> observationImages) {

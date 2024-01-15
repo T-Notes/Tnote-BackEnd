@@ -52,12 +52,13 @@ public class ConsultationController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @PostMapping(value = "/consultations", consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
+    @PostMapping(value = "/consultations", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                      @RequestPart ConsultationRequestDto requestDto,
                                                      @RequestPart(name = "consultationImages", required = false) List<MultipartFile> consultationImages) {
         ConsultationResponseDto consultationResponseDto = consultationService.save(principalDetails.getId(),
-                requestDto,consultationImages);
+                requestDto, consultationImages);
         return ResponseEntity.ok(Result.of(consultationResponseDto));
     }
 
