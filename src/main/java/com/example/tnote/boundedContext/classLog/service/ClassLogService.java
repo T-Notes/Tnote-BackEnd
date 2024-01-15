@@ -18,6 +18,7 @@ import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -122,5 +123,14 @@ public class ClassLogService {
                 .build());
     }
 
+    public List<ClassLogResponseDto> readDailyClassLogs(Long userId, LocalDate date) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
+
+        List<ClassLog> classLogs = classLogRepository.findByUserIdAndStartDateBetween(userId, startOfDay, endOfDay);
+        return classLogs.stream()
+                .map(ClassLogResponseDto::of)
+                .toList();
+    }
 
 }

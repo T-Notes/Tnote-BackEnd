@@ -24,6 +24,7 @@ import com.example.tnote.boundedContext.consultation.repository.ConsultationRepo
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -119,5 +120,14 @@ public class ConsultationService {
                 .consultationImageUrl(url)
                 .consultation(consultation)
                 .build());
+    }
+    public List<ConsultationResponseDto> readDailyConsultations(Long userId, LocalDate date) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
+
+        List<Consultation> consultations = consultationRepository.findByUserIdAndStartDateBetween(userId, startOfDay, endOfDay);
+        return consultations.stream()
+                .map(ConsultationResponseDto::of)
+                .toList();
     }
 }

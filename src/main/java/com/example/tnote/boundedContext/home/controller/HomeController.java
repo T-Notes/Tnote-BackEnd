@@ -2,11 +2,14 @@ package com.example.tnote.boundedContext.home.controller;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.service.HomeService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -37,5 +40,16 @@ public class HomeController {
 
         return ResponseEntity.ok(Result.of(consultation));
 
+    }
+
+    @GetMapping("/dailyLogs")
+    public ResponseEntity<Result> readDailyLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
+        if (date == null) {
+            date = LocalDate.now(); // 날짜가 제공되지 않으면 현재 날짜 사용
+        }
+
+        ArchiveResponseDto response = homeService.readDailyLogs(principalDetails.getId(), date);
+        return ResponseEntity.ok(Result.of(response));
     }
 }

@@ -20,6 +20,7 @@ import com.example.tnote.boundedContext.observation.repository.ObservationReposi
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -114,5 +115,14 @@ public class ObservationService {
                 .observationImageUrl(url)
                 .observation(observation)
                 .build());
+    }
+    public List<ObservationResponseDto> readDailyObservations(Long userId, LocalDate date) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
+
+        List<Observation> classLogs = observationRepository.findByUserIdAndStartDateBetween(userId, startOfDay, endOfDay);
+        return classLogs.stream()
+                .map(ObservationResponseDto::of)
+                .toList();
     }
 }

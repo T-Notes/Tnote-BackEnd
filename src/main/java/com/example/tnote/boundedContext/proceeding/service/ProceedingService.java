@@ -23,6 +23,7 @@ import com.example.tnote.boundedContext.proceeding.repository.ProceedingReposito
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -117,5 +118,14 @@ public class ProceedingService {
                 .proceedingImageUrl(url)
                 .proceeding(proceeding)
                 .build());
+    }
+    public List<ProceedingResponseDto> readDailyProceedings(Long userId, LocalDate date) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
+
+        List<Proceeding> proceedings = proceedingRepository.findByUserIdAndStartDateBetween(userId, startOfDay, endOfDay);
+        return proceedings.stream()
+                .map(ProceedingResponseDto::of)
+                .toList();
     }
 }
