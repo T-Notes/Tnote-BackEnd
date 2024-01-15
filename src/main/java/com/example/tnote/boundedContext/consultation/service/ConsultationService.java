@@ -47,19 +47,11 @@ public class ConsultationService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
-        LocalDateTime startDate = DateUtils.adjustStartDateTime(requestDto.getStartDate(), requestDto.isAllDay());
-        LocalDateTime endDate = DateUtils.adjustEndDateTime(requestDto.getEndDate(), requestDto.isAllDay());
-        Consultation consultation = Consultation.builder()
-                .user(user)
-                .studentName(requestDto.getStudentName())
-                .startDate(startDate)
-                .endDate(endDate)
-                .counselingField(requestDto.getCounselingField())
-                .consultationResult(requestDto.getConsultationResult())
-                .consultationContents(requestDto.getConsultationContents())
-                .consultationResult(requestDto.getConsultationResult())
-                .build();
-        uploadConsultationImages(consultation, consultationImages);
+        Consultation consultation = requestDto.toEntity(user);
+        if (consultationImages != null && !consultationImages.isEmpty()) {
+            List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
+            consultation.getConsultationImage().addAll(uploadedImages); // 이미지 리스트에 추가
+        }
         return ConsultationResponseDto.of(consultationRepository.save(consultation));
     }
 
