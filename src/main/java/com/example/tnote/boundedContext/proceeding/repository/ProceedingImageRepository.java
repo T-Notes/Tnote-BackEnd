@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ProceedingImageRepository extends JpaRepository<ProceedingImage, Long> {
     List<ProceedingImage> findProceedingImageById(Long proceedingId);
+    void deleteByProceedingId(Long proceedingId);
 }

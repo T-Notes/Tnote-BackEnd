@@ -81,19 +81,24 @@ public class ProceedingService {
     }
 
     public ProceedingResponseDto updateProceeding(Long userId, Long proceedingId,
-                                                  ProceedingUpdateRequestDto updateRequestDto) {
+                                                  ProceedingUpdateRequestDto updateRequestDto,
+                                                  List<MultipartFile> proceedingImages) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId).orElseThrow();
-        updateEachItem(updateRequestDto, proceeding);
+        updateEachItem(updateRequestDto, proceeding, proceedingImages);
 
         return ProceedingResponseDto.of(proceeding);
     }
 
-    private void updateEachItem(ProceedingUpdateRequestDto updateRequestDto, Proceeding proceeding) {
+    private void updateEachItem(ProceedingUpdateRequestDto updateRequestDto, Proceeding proceeding,
+                                List<MultipartFile> proceedingImages) {
         if (updateRequestDto.hasLocation()) {
             proceeding.updateLocation(updateRequestDto.getLocation());
         }
         if (updateRequestDto.hasWorkContents()) {
             proceeding.updateWorkContents(updateRequestDto.getWorkContents());
+        }
+        if (!proceedingImages.isEmpty()) {
+            proceeding.updateProceedingImage(deleteExistedImagesAndUploadNewImages(proceeding, proceedingImages));
         }
     }
 
@@ -130,5 +135,15 @@ public class ProceedingService {
         return proceedings.stream()
                 .map(ProceedingResponseDto::of)
                 .toList();
+    }
+
+    private List<ProceedingImage> deleteExistedImagesAndUploadNewImages(Proceeding proceeding,
+                                                                        List<MultipartFile> proceedingImages) {
+        deleteExistedImages(proceeding);
+        return uploadProceedingImages(proceeding, proceedingImages);
+    }
+
+    private void deleteExistedImages(Proceeding proceeding) {
+        proceedingImageRepository.deleteByProceedingId(proceeding.getId());
     }
 }
