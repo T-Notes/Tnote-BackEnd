@@ -139,8 +139,7 @@ public class ClassLogService {
                 .toList();
     }
 
-    private List<ClassLogImage> deleteExistedImagesAndUploadNewImages(ClassLogUpdateRequestDto requestDto,
-                                                                      ClassLog classLog,
+    private List<ClassLogImage> deleteExistedImagesAndUploadNewImages(ClassLog classLog,
                                                                       List<MultipartFile> classLogImages) {
         deleteExistedImages(classLog);
         return uploadClassLogImages(classLog, classLogImages);
