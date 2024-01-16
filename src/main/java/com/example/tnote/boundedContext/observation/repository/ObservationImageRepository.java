@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ObservationImageRepository extends JpaRepository<ObservationImage, Long> {
     List<ObservationImage> findObservationImageById(Long observationId);
+    void deleteByObservationId(Long observationId);
 }

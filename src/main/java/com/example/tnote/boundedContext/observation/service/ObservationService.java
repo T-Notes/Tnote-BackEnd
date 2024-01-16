@@ -78,18 +78,23 @@ public class ObservationService {
     }
 
     public ObservationResponseDto updateObservation(Long userId, Long observationId,
-                                                    ObservationUpdateRequestDto requestDto) {
+                                                    ObservationUpdateRequestDto requestDto,
+                                                    List<MultipartFile> observationImages) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId).orElseThrow();
-        updateEachItem(observation, requestDto);
+        updateEachItem(observation, requestDto, observationImages);
         return ObservationResponseDto.of(observation);
     }
 
-    private void updateEachItem(Observation observation, ObservationUpdateRequestDto requestDto) {
+    private void updateEachItem(Observation observation, ObservationUpdateRequestDto requestDto,
+                                List<MultipartFile> observationImages) {
         if (requestDto.hasObservationContents()) {
             observation.updateObservationContents(requestDto.getObservationContents());
         }
         if (requestDto.hasGuidance()) {
             observation.updateGuidance(requestDto.getGuidance());
+        }
+        if (!observationImages.isEmpty()) {
+            observation.updateObservationImage(deleteExistedImagesAndUploadNewImages(observation, observationImages));
         }
     }
 
@@ -127,5 +132,15 @@ public class ObservationService {
         return classLogs.stream()
                 .map(ObservationResponseDto::of)
                 .toList();
+    }
+
+    private List<ObservationImage> deleteExistedImagesAndUploadNewImages(Observation observation,
+                                                                         List<MultipartFile> observationImages) {
+        deleteExistedImages(observation);
+        return uploadObservationImages(observation, observationImages);
+    }
+
+    private void deleteExistedImages(Observation observation) {
+        observationImageRepository.deleteByObservationId(observation.getId());
     }
 }
