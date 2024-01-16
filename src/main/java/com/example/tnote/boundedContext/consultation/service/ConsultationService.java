@@ -78,7 +78,9 @@ public class ConsultationService {
     @Transactional(readOnly = true)
     public ConsultationDetailResponseDto getConsultationDetail(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(userId, consultationId).orElseThrow();
-        return new ConsultationDetailResponseDto(consultation);
+        List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultation_Id(
+                consultationId);
+        return new ConsultationDetailResponseDto(consultation, consultationImages);
     }
 
     public ConsultationResponseDto updateConsultation(Long userId, Long consultationId,
@@ -121,11 +123,13 @@ public class ConsultationService {
                 .consultation(consultation)
                 .build());
     }
+
     public List<ConsultationResponseDto> readDailyConsultations(Long userId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
-        List<Consultation> consultations = consultationRepository.findByUserIdAndStartDateBetween(userId, startOfDay, endOfDay);
+        List<Consultation> consultations = consultationRepository.findByUserIdAndStartDateBetween(userId, startOfDay,
+                endOfDay);
         return consultations.stream()
                 .map(ConsultationResponseDto::of)
                 .toList();
