@@ -77,14 +77,16 @@ public class ClassLogService {
     }
 
     public ClassLogResponseDto updateClassLog(Long userId, Long classLogId,
-                                              ClassLogUpdateRequestDto classLogUpdateRequestDto) {
+                                              ClassLogUpdateRequestDto classLogUpdateRequestDto,
+                                              List<MultipartFile> classLogImages) {
         ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
-        updateEachClassLogItem(classLogUpdateRequestDto, classLog);
+        updateEachClassLogItem(classLogUpdateRequestDto, classLog, classLogImages);
 
         return ClassLogResponseDto.of(classLog);
     }
 
-    private void updateEachClassLogItem(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog) {
+    private void updateEachClassLogItem(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog,
+                                        List<MultipartFile> classLogImages) {
         if (classLogUpdateRequestDto.hasPlan()) {
             classLog.updatePlan(classLogUpdateRequestDto.getPlan());
         }
@@ -97,7 +99,10 @@ public class ClassLogService {
         if (classLogUpdateRequestDto.hasMagnitude()) {
             classLog.updateMagnitude(classLogUpdateRequestDto.getMagnitude());
         }
-        //todo 이미지에 대한 수정부분도 필요합니다.
+        if (!classLogImages.isEmpty()) {
+            classLog.updateClassLogImages(
+                    deleteExistedImagesAndUploadNewImages(classLogUpdateRequestDto, classLog, classLogImages));
+        }
     }
 
     private List<ClassLogImage> uploadClassLogImages(ClassLog classLog, List<MultipartFile> classLogImages) {
@@ -134,4 +139,14 @@ public class ClassLogService {
                 .toList();
     }
 
+    private List<ClassLogImage> deleteExistedImagesAndUploadNewImages(ClassLogUpdateRequestDto requestDto,
+                                                                      ClassLog classLog,
+                                                                      List<MultipartFile> classLogImages) {
+        deleteExistedImages(classLog);
+        return uploadClassLogImages(classLog, classLogImages);
+    }
+
+    private void deleteExistedImages(ClassLog classLog) {
+        classLogImageRepository.deleteByClassLogId(classLog.getId());
+    }
 }

@@ -7,4 +7,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ClassLogImageRepository extends JpaRepository<ClassLogImage, Long> {
     List<ClassLogImage> findClassLogImagesByClassLog_Id(Long classLogId);
+
+    void deleteByClassLogId(Long classLogId);
 }
+
