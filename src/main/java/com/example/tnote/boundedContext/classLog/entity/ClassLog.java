@@ -61,4 +61,8 @@ public class ClassLog extends BaseTimeEntity {
     public void updateMagnitude(String magnitude) {
         this.magnitude = magnitude;
     }
+
+    public void updateClassLogImages(List<ClassLogImage> classLogImages) {
+        this.classLogImage = classLogImages;
+    }
 }

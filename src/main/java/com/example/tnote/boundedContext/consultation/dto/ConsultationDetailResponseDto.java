@@ -1,9 +1,11 @@
 package com.example.tnote.boundedContext.consultation.dto;
 
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
+import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,8 +20,9 @@ public class ConsultationDetailResponseDto {
     private CounselingType counselingType;
     private String consultationContents;
     private String consultationResult;
+    private List<String> consultationImageUrls;
 
-    public ConsultationDetailResponseDto(Consultation consultation) {
+    public ConsultationDetailResponseDto(Consultation consultation, List<ConsultationImage> consultationImages) {
         this.id = consultation.getId();
         this.userId = consultation.getUser().getId();
         this.studentName = consultation.getStudentName();
@@ -29,5 +32,7 @@ public class ConsultationDetailResponseDto {
         this.consultationResult = consultation.getConsultationResult();
         this.counselingType = consultation.getCounselingType();
         this.consultationContents = consultation.getConsultationContents();
+        this.consultationImageUrls = consultationImages.stream().map(ConsultationImage::getConsultationImageUrl)
+                .toList();
     }
 }

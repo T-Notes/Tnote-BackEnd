@@ -76,10 +76,11 @@ public class ClassLogController {
 
     @PatchMapping("/{classLogId}")
     public ResponseEntity<Result> updateClassLog(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                 @PathVariable Long classLogId, @RequestBody
-                                                 ClassLogUpdateRequestDto classLogUpdateRequestDto) {
+                                                 @PathVariable Long classLogId,
+                                                 @RequestPart ClassLogUpdateRequestDto classLogUpdateRequestDto,
+                                                 @RequestPart(name = "classLogImages", required = false) List<MultipartFile> classLogImages) {
         ClassLogResponseDto classLogResponseDto = classLogService.updateClassLog(principalDetails.getId(), classLogId,
-                classLogUpdateRequestDto);
+                classLogUpdateRequestDto, classLogImages);
         return ResponseEntity.ok(Result.of(classLogResponseDto));
     }
 

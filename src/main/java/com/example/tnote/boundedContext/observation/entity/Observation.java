@@ -50,4 +50,8 @@ public class Observation extends BaseTimeEntity {
     public void updateGuidance(String guidance) {
         this.guidance = guidance;
     }
+
+    public void updateObservationImage(List<ObservationImage> observationImages) {
+        this.observationImage = observationImages;
+    }
 }

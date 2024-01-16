@@ -49,4 +49,7 @@ public class Consultation extends BaseTimeEntity {
     public void updateConsultationResult(String consultationResult) {
         this.consultationResult = consultationResult;
     }
+    public void updateConsultationImages(List<ConsultationImage> consultationImages){
+        this.consultationImage = consultationImages;
+    }
 }

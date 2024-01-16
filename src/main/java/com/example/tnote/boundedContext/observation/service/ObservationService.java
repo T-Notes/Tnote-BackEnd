@@ -64,7 +64,8 @@ public class ObservationService {
     @Transactional(readOnly = true)
     public ObservationDetailResponseDto readObservationDetail(Long userId, Long observationId) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId).orElseThrow();
-        return new ObservationDetailResponseDto(observation);
+        List<ObservationImage> observationImages = observationImageRepository.findObservationImageById(observationId);
+        return new ObservationDetailResponseDto(observation, observationImages);
     }
 
     public ObservationDeleteResponseDto deleteObservation(Long userId, Long observationId) {
@@ -77,18 +78,23 @@ public class ObservationService {
     }
 
     public ObservationResponseDto updateObservation(Long userId, Long observationId,
-                                                    ObservationUpdateRequestDto requestDto) {
+                                                    ObservationUpdateRequestDto requestDto,
+                                                    List<MultipartFile> observationImages) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId).orElseThrow();
-        updateEachItem(observation, requestDto);
+        updateEachItem(observation, requestDto, observationImages);
         return ObservationResponseDto.of(observation);
     }
 
-    private void updateEachItem(Observation observation, ObservationUpdateRequestDto requestDto) {
+    private void updateEachItem(Observation observation, ObservationUpdateRequestDto requestDto,
+                                List<MultipartFile> observationImages) {
         if (requestDto.hasObservationContents()) {
             observation.updateObservationContents(requestDto.getObservationContents());
         }
         if (requestDto.hasGuidance()) {
             observation.updateGuidance(requestDto.getGuidance());
+        }
+        if (!observationImages.isEmpty()) {
+            observation.updateObservationImage(deleteExistedImagesAndUploadNewImages(observation, observationImages));
         }
     }
 
@@ -116,13 +122,25 @@ public class ObservationService {
                 .observation(observation)
                 .build());
     }
+
     public List<ObservationResponseDto> readDailyObservations(Long userId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
-        List<Observation> classLogs = observationRepository.findByUserIdAndStartDateBetween(userId, startOfDay, endOfDay);
+        List<Observation> classLogs = observationRepository.findByUserIdAndStartDateBetween(userId, startOfDay,
+                endOfDay);
         return classLogs.stream()
                 .map(ObservationResponseDto::of)
                 .toList();
+    }
+
+    private List<ObservationImage> deleteExistedImagesAndUploadNewImages(Observation observation,
+                                                                         List<MultipartFile> observationImages) {
+        deleteExistedImages(observation);
+        return uploadObservationImages(observation, observationImages);
+    }
+
+    private void deleteExistedImages(Observation observation) {
+        observationImageRepository.deleteByObservationId(observation.getId());
     }
 }

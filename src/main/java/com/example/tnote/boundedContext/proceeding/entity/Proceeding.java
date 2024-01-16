@@ -49,4 +49,8 @@ public class Proceeding extends BaseTimeEntity {
     public void updateWorkContents(String workContents) {
         this.workContents = workContents;
     }
+
+    public void updateProceedingImage(List<ProceedingImage> proceedingImage) {
+        this.proceedingImage = proceedingImage;
+    }
 }

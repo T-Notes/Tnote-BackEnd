@@ -75,24 +75,30 @@ public class ProceedingService {
 
     public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId).orElseThrow();
+        List<ProceedingImage> proceedingImages = proceedingImageRepository.findProceedingImageById(proceedingId);
 
-        return new ProceedingDetailResponseDto(proceeding);
+        return new ProceedingDetailResponseDto(proceeding, proceedingImages);
     }
 
     public ProceedingResponseDto updateProceeding(Long userId, Long proceedingId,
-                                                  ProceedingUpdateRequestDto updateRequestDto) {
+                                                  ProceedingUpdateRequestDto updateRequestDto,
+                                                  List<MultipartFile> proceedingImages) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId).orElseThrow();
-        updateEachItem(updateRequestDto, proceeding);
+        updateEachItem(updateRequestDto, proceeding, proceedingImages);
 
         return ProceedingResponseDto.of(proceeding);
     }
 
-    private void updateEachItem(ProceedingUpdateRequestDto updateRequestDto, Proceeding proceeding) {
+    private void updateEachItem(ProceedingUpdateRequestDto updateRequestDto, Proceeding proceeding,
+                                List<MultipartFile> proceedingImages) {
         if (updateRequestDto.hasLocation()) {
             proceeding.updateLocation(updateRequestDto.getLocation());
         }
         if (updateRequestDto.hasWorkContents()) {
             proceeding.updateWorkContents(updateRequestDto.getWorkContents());
+        }
+        if (!proceedingImages.isEmpty()) {
+            proceeding.updateProceedingImage(deleteExistedImagesAndUploadNewImages(proceeding, proceedingImages));
         }
     }
 
@@ -119,13 +125,25 @@ public class ProceedingService {
                 .proceeding(proceeding)
                 .build());
     }
+
     public List<ProceedingResponseDto> readDailyProceedings(Long userId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
-        List<Proceeding> proceedings = proceedingRepository.findByUserIdAndStartDateBetween(userId, startOfDay, endOfDay);
+        List<Proceeding> proceedings = proceedingRepository.findByUserIdAndStartDateBetween(userId, startOfDay,
+                endOfDay);
         return proceedings.stream()
                 .map(ProceedingResponseDto::of)
                 .toList();
+    }
+
+    private List<ProceedingImage> deleteExistedImagesAndUploadNewImages(Proceeding proceeding,
+                                                                        List<MultipartFile> proceedingImages) {
+        deleteExistedImages(proceeding);
+        return uploadProceedingImages(proceeding, proceedingImages);
+    }
+
+    private void deleteExistedImages(Proceeding proceeding) {
+        proceedingImageRepository.deleteByProceedingId(proceeding.getId());
     }
 }

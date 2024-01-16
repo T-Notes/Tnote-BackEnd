@@ -90,10 +90,11 @@ public class ConsultationController {
 
     @PatchMapping("/{consultationId}")
     public ResponseEntity<Result> updateConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @PathVariable Long consultationId, @RequestBody
-                                                     ConsultationUpdateRequestDto requestDto) {
+                                                     @PathVariable Long consultationId,
+                                                     @RequestPart ConsultationUpdateRequestDto requestDto,
+                                                     @RequestPart(name = "consultationImages", required = false) List<MultipartFile> consultationImages) {
         ConsultationResponseDto responseDto = consultationService.updateConsultation(principalDetails.getId(),
-                consultationId, requestDto);
+                consultationId, requestDto, consultationImages);
         return ResponseEntity.ok(Result.of(responseDto));
     }
 }

@@ -1,7 +1,9 @@
 package com.example.tnote.boundedContext.classLog.dto;
 
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -16,8 +18,9 @@ public class ClassLogDetailResponseDto {
     private String classContents;
     private String submission;
     private String magnitude;
+    private List<String> classLogImageUrls;
 
-    public ClassLogDetailResponseDto(ClassLog classLog) {
+    public ClassLogDetailResponseDto(ClassLog classLog, List<ClassLogImage> classLogImages) {
         this.id = classLog.getId();
         this.userId = classLog.getUser().getId();
         this.title = classLog.getTitle();
@@ -27,6 +30,8 @@ public class ClassLogDetailResponseDto {
         this.classContents = classLog.getClassContents();
         this.submission = classLog.getSubmission();
         this.magnitude = classLog.getMagnitude();
-        //todo 추후 이미지 관련 추가해야 합니다.
+        this.classLogImageUrls = classLogImages.stream()
+                .map(ClassLogImage::getClassLogImageUrl)
+                .toList();
     }
 }
