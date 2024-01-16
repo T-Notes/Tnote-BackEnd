@@ -72,7 +72,8 @@ public class ClassLogService {
     @Transactional(readOnly = true)
     public ClassLogDetailResponseDto getClassLogDetail(Long userId, Long classLogId) {
         ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
-        return new ClassLogDetailResponseDto(classLog);
+        List<ClassLogImage> classLogImages = classLogImageRepository.findClassLogImagesByClassLog_Id(classLogId);
+        return new ClassLogDetailResponseDto(classLog, classLogImages);
     }
 
     public ClassLogResponseDto updateClassLog(Long userId, Long classLogId,
