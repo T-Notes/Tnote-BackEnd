@@ -69,9 +69,10 @@ public class ObservationController {
     @PatchMapping("/{observationId}")
     public ResponseEntity<Result> updateObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @PathVariable Long observationId,
-                                                    @RequestBody ObservationUpdateRequestDto requestDto) {
+                                                    @RequestPart ObservationUpdateRequestDto requestDto,
+                                                    @RequestPart(name = "observationImages", required = false) List<MultipartFile> observationImages) {
         ObservationResponseDto responseDto = observationService.updateObservation(principalDetails.getId(),
-                observationId, requestDto);
+                observationId, requestDto, observationImages);
         return ResponseEntity.ok(Result.of(responseDto));
     }
 }
