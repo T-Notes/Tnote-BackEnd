@@ -76,10 +76,11 @@ public class ProceedingController {
 
     @PatchMapping("/{proceedingId}")
     public ResponseEntity<Result> updateProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                   @PathVariable Long proceedingId, @RequestBody
-                                                   ProceedingUpdateRequestDto updateRequestDto) {
+                                                   @PathVariable Long proceedingId,
+                                                   @RequestPart ProceedingUpdateRequestDto updateRequestDto,
+                                                   @RequestPart(name = "proceedingImages", required = false) List<MultipartFile> proceedingImages) {
         ProceedingResponseDto proceedingResponseDto = proceedingService.updateProceeding(principalDetails.getId(),
-                proceedingId, updateRequestDto);
+                proceedingId, updateRequestDto, proceedingImages);
 
         return ResponseEntity.ok(Result.of(proceedingResponseDto));
     }
