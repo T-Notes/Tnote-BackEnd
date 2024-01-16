@@ -101,7 +101,7 @@ public class ClassLogService {
         }
         if (!classLogImages.isEmpty()) {
             classLog.updateClassLogImages(
-                    deleteExistedImagesAndUploadNewImages(classLogUpdateRequestDto, classLog, classLogImages));
+                    deleteExistedImagesAndUploadNewImages(classLog, classLogImages));
         }
     }
 
