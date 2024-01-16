@@ -64,7 +64,8 @@ public class ObservationService {
     @Transactional(readOnly = true)
     public ObservationDetailResponseDto readObservationDetail(Long userId, Long observationId) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId).orElseThrow();
-        return new ObservationDetailResponseDto(observation);
+        List<ObservationImage> observationImages = observationImageRepository.findObservationImageById(observationId);
+        return new ObservationDetailResponseDto(observation, observationImages);
     }
 
     public ObservationDeleteResponseDto deleteObservation(Long userId, Long observationId) {
@@ -116,11 +117,13 @@ public class ObservationService {
                 .observation(observation)
                 .build());
     }
+
     public List<ObservationResponseDto> readDailyObservations(Long userId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
-        List<Observation> classLogs = observationRepository.findByUserIdAndStartDateBetween(userId, startOfDay, endOfDay);
+        List<Observation> classLogs = observationRepository.findByUserIdAndStartDateBetween(userId, startOfDay,
+                endOfDay);
         return classLogs.stream()
                 .map(ObservationResponseDto::of)
                 .toList();
