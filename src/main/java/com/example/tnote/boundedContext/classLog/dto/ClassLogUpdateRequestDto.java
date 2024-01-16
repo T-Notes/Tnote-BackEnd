@@ -10,7 +10,6 @@ public class ClassLogUpdateRequestDto {
     private String classContents;
     private String submission;
     private String magnitude;
-    private List<MultipartFile> classLogImages;
 
     public boolean hasPlan() {
         return plan != null;
@@ -27,7 +26,5 @@ public class ClassLogUpdateRequestDto {
     public boolean hasMagnitude() {
         return magnitude != null;
     }
-    public boolean hasClassLogImages() {
-        return classLogImages.isEmpty();
-    }
+
 }
