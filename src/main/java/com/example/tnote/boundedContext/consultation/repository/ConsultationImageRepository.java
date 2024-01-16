@@ -6,4 +6,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ConsultationImageRepository extends JpaRepository<ConsultationImage, Long> {
     List<ConsultationImage> findConsultationImageByConsultation_Id(Long consultationId);
+    void deleteByConsultationId(Long consultationId);
 }

@@ -1,17 +1,9 @@
 package com.example.tnote.boundedContext.consultation.service;
 
-import com.example.tnote.base.exception.CommonErrorResult;
-import com.example.tnote.base.exception.CommonException;
 import com.example.tnote.base.exception.UserErrorResult;
 import com.example.tnote.base.exception.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
-import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
@@ -84,18 +76,24 @@ public class ConsultationService {
     }
 
     public ConsultationResponseDto updateConsultation(Long userId, Long consultationId,
-                                                      ConsultationUpdateRequestDto requestDto) {
+                                                      ConsultationUpdateRequestDto requestDto,
+                                                      List<MultipartFile> consultationImages) {
         Consultation consultation = consultationRepository.findByIdAndUserId(userId, consultationId).orElseThrow();
-        updateEachItems(consultation, requestDto);
+        updateEachItems(consultation, requestDto, consultationImages);
         return ConsultationResponseDto.of(consultation);
     }
 
-    private void updateEachItems(Consultation consultation, ConsultationUpdateRequestDto requestDto) {
+    private void updateEachItems(Consultation consultation, ConsultationUpdateRequestDto requestDto,
+                                 List<MultipartFile> consultationImages) {
         if (requestDto.hasConsultationContents()) {
             consultation.updateConsultationContents(requestDto.getConsultationContents());
         }
         if (requestDto.hasConsultationResult()) {
             consultation.updateConsultationResult(requestDto.getConsultationResult());
+        }
+        if (!consultationImages.isEmpty()) {
+            consultation.updateConsultationImages(
+                    deleteExistedImagesAndUploadNewImages(consultation, consultationImages));
         }
     }
 
@@ -133,5 +131,15 @@ public class ConsultationService {
         return consultations.stream()
                 .map(ConsultationResponseDto::of)
                 .toList();
+    }
+
+    private List<ConsultationImage> deleteExistedImagesAndUploadNewImages(Consultation consultation,
+                                                                          List<MultipartFile> consultationImages) {
+        deleteExistedImages(consultation);
+        return uploadConsultationImages(consultation, consultationImages);
+    }
+
+    private void deleteExistedImages(Consultation consultation) {
+        consultationImageRepository.deleteByConsultationId(consultation.getId());
     }
 }
