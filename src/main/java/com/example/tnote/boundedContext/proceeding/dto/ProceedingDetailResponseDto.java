@@ -1,7 +1,9 @@
 package com.example.tnote.boundedContext.proceeding.dto;
 
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
+import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -14,8 +16,9 @@ public class ProceedingDetailResponseDto {
     private LocalDateTime endDate;
     private String location;
     private String workContents;
+    private List<String> proceedingImageUrls;
 
-    public ProceedingDetailResponseDto(Proceeding proceeding) {
+    public ProceedingDetailResponseDto(Proceeding proceeding, List<ProceedingImage> proceedingImages) {
         this.id = proceeding.getId();
         this.userId = proceeding.getUser().getId();
         this.title = proceeding.getTitle();
@@ -23,5 +26,6 @@ public class ProceedingDetailResponseDto {
         this.endDate = proceeding.getEndDate();
         this.location = proceeding.getLocation();
         this.workContents = proceeding.getWorkContents();
+        this.proceedingImageUrls = proceedingImages.stream().map(ProceedingImage::getProceedingImageUrl).toList();
     }
 }
