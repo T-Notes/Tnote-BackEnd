@@ -142,10 +142,6 @@ Zsrc/main/java/com/example/tnote/boundedContext/classLog/controller/ClassLogCont
 \src/main/java/com/example/tnote/boundedContext/consultation/dto/ConsultationResponseDto.java,c/0/c0f0b2138b02c1d49c63c60131c597d20cf45385
 í
 bsrc/main/java/com/example/tnote/boundedContext/consultation/dto/ConsultationDetailResponseDto.java,4/8/48700ab4c4f9e187261f0ed960cc8d47d66ae4a5
-é
-^src/main/java/com/example/tnote/boundedContext/home/repository/ObservationQueryRepository.java,e/6/e6af8557c8b086da3a19a32007adb746a04b1842
-è
-_src/main/java/com/example/tnote/boundedContext/home/repository/ConsultationQueryRepository.java,d/1/d10dbf8967c5373510ee7150fec73f77a6c12117
 Ç
 Rsrc/main/java/com/example/tnote/boundedContext/user/controller/UserController.java,e/7/e76f969106f8b623b24a8e848a505c72febc92c6
 t
@@ -154,11 +150,5 @@ Dsrc/main/java/com/example/tnote/boundedContext/todo/entity/Todo.java,3/9/39b1f
 Lsrc/main/java/com/example/tnote/boundedContext/todo/dto/TodoResponseDto.java,9/6/9621f696c3062b3a8daed9aa203d6624d94a6280
 á
 Wsrc/main/java/com/example/tnote/boundedContext/todo/repository/TodoQueryRepository.java,d/d/dd24c0986449f30f6bdb4c235fefbabc6882e570
-|
-Lsrc/main/java/com/example/tnote/boundedContext/todo/service/TodoService.java,3/b/3bc15ea259e8cda00e2902dc1cbf658e86529ddc
 Ç
 Rsrc/main/java/com/example/tnote/boundedContext/todo/dto/TodoDeleteResponseDto.java,3/e/3ef0e0544d07f46613c0a9857e45c87df35dce43
-{
-Ksrc/main/java/com/example/tnote/boundedContext/todo/dto/TodoRequestDto.java,2/0/208018f4e4072bfa190913efa10c704049f85163
-Ç
-Rsrc/main/java/com/example/tnote/boundedContext/todo/controller/TodoController.java,4/1/41830a2a3b2f7f13348faa1d391defcddb330a6d

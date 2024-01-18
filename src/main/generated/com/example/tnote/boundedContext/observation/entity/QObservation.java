@@ -35,6 +35,8 @@ public class QObservation extends EntityPathBase<Observation> {
 
     public final StringPath observationContents = createString("observationContents");
 
+    public final ListPath<ObservationImage, QObservationImage> observationImage = this.<ObservationImage, QObservationImage>createList("observationImage", ObservationImage.class, QObservationImage.class, PathInits.DIRECT2);
+
     public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
 
     public final StringPath studentName = createString("studentName");

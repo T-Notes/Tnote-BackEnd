@@ -26,6 +26,8 @@ public class QClassLog extends EntityPathBase<ClassLog> {
 
     public final StringPath classContents = createString("classContents");
 
+    public final ListPath<ClassLogImage, QClassLogImage> classLogImage = this.<ClassLogImage, QClassLogImage>createList("classLogImage", ClassLogImage.class, QClassLogImage.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 

@@ -4,9 +4,12 @@ import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.service.HomeService;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -31,14 +34,12 @@ public class HomeController {
                                           @AuthenticationPrincipal PrincipalDetails user) {
 
         List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(studentName, user);
-        //List<ObservationResponseDto> observation = homeService.findAllOfObservation(studentName, user);
+        List<ObservationResponseDto> observation = homeService.findAllOfObservation(studentName, user);
 
-//        List<String> response = Stream.of(consultation, observation)
-//                .flatMap(x -> x.stream())
-//                .collect(Collectors.toList());
-//        return ResponseEntity.ok(Result.of(response));
-
-        return ResponseEntity.ok(Result.of(consultation));
+        List<String> response = (List<String>) Stream.of(consultation, observation)
+                .flatMap(x -> x.stream())
+                .collect(Collectors.toList());
+        return ResponseEntity.ok(Result.of(response));
 
     }
 
