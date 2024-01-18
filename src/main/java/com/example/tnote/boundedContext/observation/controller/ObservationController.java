@@ -36,9 +36,10 @@ public class ObservationController {
     @PostMapping(value = "/observations", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                    @RequestPart ObservationRequestDto requestDto,
+                                                    @RequestPart ObservationRequestDto observationRequestDto,
                                                     @RequestPart(name = "observationImages", required = false) List<MultipartFile> observationImages) {
-        ObservationResponseDto observationResponseDto = observationService.save(principalDetails.getId(), requestDto,
+        ObservationResponseDto observationResponseDto = observationService.save(principalDetails.getId(),
+                observationRequestDto,
                 observationImages);
         return ResponseEntity.ok(Result.of(observationResponseDto));
     }
@@ -69,10 +70,10 @@ public class ObservationController {
     @PatchMapping("/{observationId}")
     public ResponseEntity<Result> updateObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @PathVariable Long observationId,
-                                                    @RequestPart ObservationUpdateRequestDto requestDto,
+                                                    @RequestPart ObservationUpdateRequestDto observationUpdateRequestDto,
                                                     @RequestPart(name = "observationImages", required = false) List<MultipartFile> observationImages) {
         ObservationResponseDto responseDto = observationService.updateObservation(principalDetails.getId(),
-                observationId, requestDto, observationImages);
+                observationId, observationUpdateRequestDto, observationImages);
         return ResponseEntity.ok(Result.of(responseDto));
     }
 }
