@@ -1,0 +1,12 @@
+
+t	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(Ï”¡çıÿÿÿÿ
+H
+java:S1135:"2Complete the task associated to this TODO comment.(©Ó¸’
+†
+java:S1128"dRemove this unused import 'com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto'.(ô‰§ÿÿÿÿÿ8ê‹†ºÏ1
+z
+java:S1128"]Remove this unused import 'com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto'.(©Ùæ8ê‹†ºÏ1
+€
+java:S1128"^Remove this unused import 'com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto'.(µ¡°Ôşÿÿÿÿ8ê‹†ºÏ1
+s
+java:S1128"VRemove this unused import 'com.example.tnote.boundedContext.classLog.entity.ClassLog'.(ÿ§ÓÈ8ê‹†ºÏ1

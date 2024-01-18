@@ -21,6 +21,7 @@ import com.example.tnote.boundedContext.subject.repository.SubjectRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
@@ -49,6 +50,8 @@ public class SubjectService {
                 .classTime(dto.getClassTime())
                 .classDay(dto.getClassDay())
                 .subjectName(dto.getSubjectName())
+                .color(dto.getColor())
+                .date(dto.getDate())
                 .schedule(currentSchedule)
                 .build();
 
@@ -73,6 +76,9 @@ public class SubjectService {
         if (dto.hasSubjectName()) {
             subjects.updateSubjectName(dto.getSubjectName());
         }
+        if (dto.hasDate()) {
+            subjects.updateDate(dto.getDate());
+        }
         if (dto.hasClassDay()) {
             subjects.updateClassDay(dto.getClassDay());
         }
@@ -81,6 +87,9 @@ public class SubjectService {
         }
         if (dto.hasClassTime()) {
             subjects.updateClassTime(dto.getClassTime());
+        }
+        if (dto.hasColor()) {
+            subjects.updateColor(dto.getColor());
         }
     }
 
@@ -142,5 +151,16 @@ public class SubjectService {
     public List<SubjectResponseDto> getMyClass(Long scheduleId, ClassDay day, PrincipalDetails user) {
         return SubjectResponseDto.of(
                 subjectQueryRepository.findAllByScheduleIdAndUserIdAndClassDay(scheduleId, user.getId(), day));
+    }
+
+    @Transactional(readOnly = true)
+    public List<SubjectResponseDto> getTodayClass(Long scheduleId, PrincipalDetails user, LocalDate date) {
+
+        if (date.equals(LocalDate.now())) {
+            return SubjectResponseDto.of(
+                    subjectQueryRepository.findAllByScheduleIdAndUserIdAndDate(scheduleId, user.getId(), date));
+        }
+        throw new SubjectsException(SubjectsErrorResult.TODAY_IS_WRONG_WITH_DATE);
+
     }
 }
