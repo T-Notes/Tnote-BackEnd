@@ -1,6 +1,10 @@
 package com.example.tnote.boundedContext.home.repository;
 
+import static com.example.tnote.boundedContext.observation.entity.QObservation.observation;
+
+import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -9,12 +13,11 @@ import org.springframework.stereotype.Repository;
 public class ObservationQueryRepository {
     private final JPAQueryFactory query;
 
-    // TODO ; observation 다 만들어지면 이거 열면 된다.
-//    public List<Observation> findAll(String studentName) {
-//        return query
-//                .selectFrom(obsevation)
-//                .where(obsevation.studentName.like("%" + studentName + "%"))
-//                .orderBy(obsevation.id.desc())
-//                .fetch();
-//    }
+    public List<Observation> findAll(String studentName) {
+        return query
+                .selectFrom(observation)
+                .where(observation.studentName.like("%" + studentName + "%"))
+                .orderBy(observation.id.desc())
+                .fetch();
+    }
 }

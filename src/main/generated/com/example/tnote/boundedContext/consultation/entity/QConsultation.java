@@ -26,6 +26,8 @@ public class QConsultation extends EntityPathBase<Consultation> {
 
     public final StringPath consultationContents = createString("consultationContents");
 
+    public final ListPath<ConsultationImage, QConsultationImage> consultationImage = this.<ConsultationImage, QConsultationImage>createList("consultationImage", ConsultationImage.class, QConsultationImage.class, PathInits.DIRECT2);
+
     public final StringPath consultationResult = createString("consultationResult");
 
     public final EnumPath<CounselingField> counselingField = createEnum("counselingField", CounselingField.class);

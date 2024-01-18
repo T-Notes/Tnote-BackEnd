@@ -9,7 +9,9 @@ import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.service.ConsultationService;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.repository.ConsultationQueryRepository;
+import com.example.tnote.boundedContext.home.repository.ObservationQueryRepository;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
@@ -29,12 +31,13 @@ import org.springframework.stereotype.Service;
 public class HomeService {
 
     private final ConsultationQueryRepository consultationQueryRepository;
-    // private final ObservationQueryRepository observationQueryRepository;
+    private final ObservationQueryRepository observationQueryRepository;
     private final UserRepository userRepository;
     private final ClassLogService classLogService;
     private final ProceedingService proceedingService;
     private final ConsultationService consultationService;
     private final ObservationService observationService;
+
     public List<ConsultationResponseDto> findAllOfConsultation(String studentName, PrincipalDetails user) {
 
         if (!checkCurrentUser(user.getId())) {
@@ -48,18 +51,17 @@ public class HomeService {
                 .toList();
     }
 
-    // TODO : observation 다 만들어지면 이거 열면 된다
-//    public List<ObservationResponseDto> findAllOfObservation(String studentName, PrincipalDetails user) {
+    public List<ObservationResponseDto> findAllOfObservation(String studentName, PrincipalDetails user) {
 
-//        if (!checkCurrentUser(user.getId())) {
-//            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-//        }
-//        List<Observation> observations = observationQueryRepository.findAll(studentName);
-//
-//        return observations.stream()
-//                .map(ObservationResponseDto::of)
-//                .toList();
-//    }
+        if (!checkCurrentUser(user.getId())) {
+            throw new UserException(UserErrorResult.USER_NOT_FOUND);
+        }
+        List<Observation> observations = observationQueryRepository.findAll(studentName);
+
+        return observations.stream()
+                .map(ObservationResponseDto::of)
+                .toList();
+    }
 
     private Boolean checkCurrentUser(Long id) {
         Optional<User> currentUser = userRepository.findById(id);

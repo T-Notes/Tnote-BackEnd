@@ -33,6 +33,8 @@ public class QProceeding extends EntityPathBase<Proceeding> {
 
     public final StringPath location = createString("location");
 
+    public final ListPath<ProceedingImage, QProceedingImage> proceedingImage = this.<ProceedingImage, QProceedingImage>createList("proceedingImage", ProceedingImage.class, QProceedingImage.class, PathInits.DIRECT2);
+
     public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
 
     public final StringPath title = createString("title");

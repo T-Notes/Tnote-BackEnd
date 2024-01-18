@@ -49,7 +49,7 @@ public class TodoController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    // 홈페이지에서 "오늘" 버튼 눌렀을때 옆에 나오게끔 한다.
+    // 홈페이지에서 "오늘" 버튼 및 특정 요일 눌렀을때 옆에 나오게끔 한다.
     @GetMapping("/{scheduleId}")
     public ResponseEntity<Result> findTodo(@PathVariable Long scheduleId,
                                            @RequestParam(defaultValue = "1970-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
