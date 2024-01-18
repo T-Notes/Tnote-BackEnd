@@ -91,7 +91,7 @@ public class ConsultationService {
         if (requestDto.hasConsultationResult()) {
             consultation.updateConsultationResult(requestDto.getConsultationResult());
         }
-        if (!consultationImages.isEmpty()) {
+        if (consultationImages != null && !consultationImages.isEmpty()) {
             consultation.updateConsultationImages(
                     deleteExistedImagesAndUploadNewImages(consultation, consultationImages));
         }

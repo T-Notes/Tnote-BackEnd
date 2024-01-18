@@ -93,7 +93,7 @@ public class ObservationService {
         if (requestDto.hasGuidance()) {
             observation.updateGuidance(requestDto.getGuidance());
         }
-        if (!observationImages.isEmpty()) {
+        if (observationImages != null && !observationImages.isEmpty()) {
             observation.updateObservationImage(deleteExistedImagesAndUploadNewImages(observation, observationImages));
         }
     }

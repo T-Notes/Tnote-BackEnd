@@ -99,7 +99,7 @@ public class ClassLogService {
         if (classLogUpdateRequestDto.hasMagnitude()) {
             classLog.updateMagnitude(classLogUpdateRequestDto.getMagnitude());
         }
-        if (!classLogImages.isEmpty()) {
+        if (classLogImages != null && !classLogImages.isEmpty()) {
             classLog.updateClassLogImages(
                     deleteExistedImagesAndUploadNewImages(classLog, classLogImages));
         }

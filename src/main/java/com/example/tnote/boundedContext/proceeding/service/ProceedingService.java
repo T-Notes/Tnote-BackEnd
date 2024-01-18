@@ -97,7 +97,7 @@ public class ProceedingService {
         if (updateRequestDto.hasWorkContents()) {
             proceeding.updateWorkContents(updateRequestDto.getWorkContents());
         }
-        if (!proceedingImages.isEmpty()) {
+        if (proceedingImages != null && !proceedingImages.isEmpty()) {
             proceeding.updateProceedingImage(deleteExistedImagesAndUploadNewImages(proceeding, proceedingImages));
         }
     }
