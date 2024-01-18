@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.subject.dto;
 
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
+import java.time.LocalDate;
 import lombok.Getter;
 
 @Getter
@@ -11,13 +12,23 @@ public class SubjectsUpdateRequestDto {
     private ClassDay classDay;
     private String classLocation;
     private String memo;
+    private String color;
+    private LocalDate date;
 
     public boolean hasSubjectName() {
         return subjectName != null;
     }
 
+    public boolean hasDate() {
+        return date != null;
+    }
+
     public boolean hasClassTime() {
         return classTime != null;
+    }
+
+    public boolean hasColor() {
+        return color != null;
     }
 
     public boolean hasClassDay() {

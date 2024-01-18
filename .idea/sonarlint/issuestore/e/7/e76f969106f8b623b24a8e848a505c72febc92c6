@@ -1,0 +1,7 @@
+
+{	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(©‚øõûÿÿÿÿ8”×˜ûÌ1
+o	java:S116-"NRename this field "KEY" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ô±¦şÿÿÿÿ8™×˜ûÌ1
+T
+java:S1874W"2Remove this use of "JSONParser"; it is deprecated.(ÁòÇæÿÿÿÿÿ8«Ò¥ûÌ1
+k
+java:S1858W"I"result" is already a string, there's no need to call "toString()" on it.(ÁòÇæÿÿÿÿÿ8¢×˜ûÌ1

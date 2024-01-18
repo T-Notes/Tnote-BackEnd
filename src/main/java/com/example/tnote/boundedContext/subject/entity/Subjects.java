@@ -14,6 +14,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,10 +34,13 @@ public class Subjects extends BaseTimeEntity {
 
     private String subjectName;
     private String classTime;
-    @Enumerated(EnumType.STRING)
-    private ClassDay classDay;
     private String classLocation;
     private String memo;
+    private String color;
+    private LocalDate date;
+
+    @Enumerated(EnumType.STRING)
+    private ClassDay classDay;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id")
@@ -60,5 +64,13 @@ public class Subjects extends BaseTimeEntity {
 
     public void updateMemo(String memo) {
         this.memo = memo;
+    }
+
+    public void updateColor(String color) {
+        this.color = color;
+    }
+
+    public void updateDate(LocalDate date) {
+        this.date = date;
     }
 }

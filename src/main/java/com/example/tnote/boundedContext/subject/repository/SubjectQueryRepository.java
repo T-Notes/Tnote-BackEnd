@@ -6,6 +6,7 @@ import static com.example.tnote.boundedContext.subject.entity.QSubjects.subjects
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.querydsl.jpa.impl.JPAQueryFactory;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -27,5 +28,17 @@ public class SubjectQueryRepository {
                 .orderBy(schedule.id.desc())
                 .fetch();
 
+    }
+
+    public List<Subjects> findAllByScheduleIdAndUserIdAndDate(Long scheduleId, Long userId, LocalDate date) {
+        return query
+                .selectFrom(subjects)
+                .where(
+                        subjects.schedule.id.eq(scheduleId)
+                                .and(subjects.schedule.user.id.eq(userId))
+                                .and(subjects.date.eq(date))
+                )
+                .orderBy(schedule.id.desc())
+                .fetch();
     }
 }
