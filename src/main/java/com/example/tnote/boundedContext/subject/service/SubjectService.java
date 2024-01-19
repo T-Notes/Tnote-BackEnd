@@ -127,6 +127,7 @@ public class SubjectService {
 
     private User checkCurrentUser(Long id) {
         Optional<User> currentUser = userRepository.findById(id);
+        //이부분도 .orElseThorw로 커스텀한 Exception 처리를 하는게 더 가독성이 좋아질것 같아요
 
         if (currentUser.isEmpty()) {
             log.warn("해당하는 유저가 없습니다. currentUser : {}", currentUser);
