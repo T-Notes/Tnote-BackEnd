@@ -19,6 +19,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -142,13 +143,24 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<ScheduleResponseDto> findAll(PrincipalDetails user) {
+    public List<ScheduleResponseDto> findSchedule(Long scheduleId, PrincipalDetails user) {
         if (user == null) {
             log.warn("없는 user 입니다");
             throw new UserException(UserErrorResult.USER_NOT_FOUND);
         }
 
-        return ScheduleResponseDto.excludeLastDayAndLastClassOf(scheduleRepository.findAll());
+        return ScheduleResponseDto.excludeLastDayOf(scheduleRepository.findAllById(scheduleId));
+    }
+
+    @Transactional(readOnly = true)
+    public List<String> findScheduleList(PrincipalDetails user) {
+        User currentUser = checkCurrentUser(user.getId());
+
+        List<Schedule> scheduleList = scheduleRepository.findAllByUserId(currentUser.getId());
+
+        return scheduleList.stream()
+                .map(Schedule::getSemesterName)
+                .collect(Collectors.toList());
     }
 
     @Transactional

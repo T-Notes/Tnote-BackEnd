@@ -30,31 +30,30 @@ public class TodoController {
 
     private final TodoService todoService;
 
-    @PostMapping("/{scheduleId}")
+    @PostMapping
     public ResponseEntity<Result> saveTodo(@RequestBody TodoRequestDto dto,
-                                           @PathVariable Long scheduleId,
                                            @AuthenticationPrincipal PrincipalDetails user) {
 
-        TodoResponseDto response = todoService.saveTodo(dto, scheduleId, user);
+        TodoResponseDto response = todoService.saveTodo(dto, user);
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @DeleteMapping("/{scheduleId}/{todoId}")
-    public ResponseEntity<Result> deleteTodo(@PathVariable Long scheduleId,
-                                             @PathVariable Long todoId,
+    @DeleteMapping("/{todoId}")
+    public ResponseEntity<Result> deleteTodo(@PathVariable Long todoId,
                                              @AuthenticationPrincipal PrincipalDetails user) {
 
-        TodoDeleteResponseDto response = todoService.deleteTodo(scheduleId, todoId, user);
+        TodoDeleteResponseDto response = todoService.deleteTodo(todoId, user);
 
         return ResponseEntity.ok(Result.of(response));
     }
 
     // 홈페이지에서 "오늘" 버튼 및 특정 요일 눌렀을때 옆에 나오게끔 한다.
-    @GetMapping("/{scheduleId}")
-    public ResponseEntity<Result> findTodo(@PathVariable Long scheduleId,
-                                           @RequestParam(defaultValue = "1970-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-                                           @AuthenticationPrincipal PrincipalDetails user) {
-        List<TodoResponseDto> response = todoService.findAllTodos(scheduleId, date, user);
+    @GetMapping
+    public ResponseEntity<Result> findTodo(
+            @RequestParam(defaultValue = "1970-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+            @AuthenticationPrincipal PrincipalDetails user) {
+
+        List<TodoResponseDto> response = todoService.findAllTodos(date, user);
         return ResponseEntity.ok(Result.of(response));
     }
 }

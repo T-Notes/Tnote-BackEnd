@@ -33,7 +33,7 @@ public class ScheduleController {
     private final ScheduleService scheduleService;
 
     @PostMapping
-    public ResponseEntity<Result> saveSemester(@RequestBody ScheduleRequestDto dto,
+    public ResponseEntity<Result> saveSchedule(@RequestBody ScheduleRequestDto dto,
                                                @AuthenticationPrincipal PrincipalDetails user) {
 
         log.info("Schedule controller principal user : {}", user);
@@ -42,13 +42,23 @@ public class ScheduleController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @GetMapping
-    public ResponseEntity<Result> findAll(@AuthenticationPrincipal PrincipalDetails user) {
+    // 하나의 학기에 대한 정보 전달 ( 학기명, 기간, 마지막 교시 등 )
+    @GetMapping("/{scheduleId}")
+    public ResponseEntity<Result> findSchedule(@PathVariable Long scheduleId,
+                                               @AuthenticationPrincipal PrincipalDetails user) {
 
-        List<ScheduleResponseDto> response = scheduleService.findAll(user);
+        List<ScheduleResponseDto> response = scheduleService.findSchedule(scheduleId, user);
 
         return ResponseEntity.ok(Result.of(response));
+    }
 
+    // 학기 리스트 조회
+    @GetMapping("/list")
+    public ResponseEntity<Result> findScheduleList(@AuthenticationPrincipal PrincipalDetails user) {
+
+        List<String> response = scheduleService.findScheduleList(user);
+
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @PatchMapping("/{scheduleId}")
