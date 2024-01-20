@@ -12,8 +12,8 @@ public enum UserErrorResult {
     NOT_VALID_FIELD(HttpStatus.BAD_REQUEST, "field is not valid"),
     WRONG_USRE(HttpStatus.BAD_REQUEST, "wrong user"),
     ALREADY_EXISTS_ROLE(HttpStatus.BAD_REQUEST, "already role exists"),
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "user is not found")
-    ;
+    WRONG_EMAIL(HttpStatus.BAD_REQUEST, "작성하신 메일이 틀렸습니다."),
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "user is not found");
 
     private final HttpStatus httpStatus;
     private final String message;
