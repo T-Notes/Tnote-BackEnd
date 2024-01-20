@@ -4,7 +4,6 @@ import com.example.tnote.base.exception.UserErrorResult;
 import com.example.tnote.base.exception.UserException;
 import com.example.tnote.base.utils.CookieUtils;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
-import com.example.tnote.boundedContext.user.dto.UserRequest;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
 import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -12,14 +11,6 @@ import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,8 +18,11 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Transactional(readOnly = true)
 @Service
@@ -37,6 +31,7 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+
     @Transactional
     public UserResponse signUp(String email, String name) {
 
@@ -60,32 +55,32 @@ public class UserService {
     }
 
     private void updateUserItem(UserUpdateRequest dto, User user) {
-        if (dto.hasSchoolName()){
+        if (dto.hasSchoolName()) {
             user.updateSchool(dto.getSchoolName());
         }
-        if (dto.hasSubject()){
+        if (dto.hasSubject()) {
             user.updateSubject(dto.getSubject());
         }
-        if (dto.hasCareer()){
+        if (dto.hasCareer()) {
             user.updateCareer(dto.getCareer());
         }
-        if (dto.hasAlarm()){
+        if (dto.hasAlarm()) {
             user.updateAlarm(dto.isAlarm());
         }
     }
 
     @Transactional
-    public void deleteUser(PrincipalDetails user) {
+    public void deleteUser(PrincipalDetails user, String email) {
 
-        Optional<User> currentUser = userRepository.findById(user.getId());
+        User currentUser = userRepository.findById(user.getId()).orElseThrow();
 
-        if (currentUser.isEmpty()) {
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
+        if (!email.equals(currentUser.getEmail())) {
+            throw new UserException(UserErrorResult.WRONG_EMAIL);
         }
 
         log.info("refresh token, user entity 삭제");
-        refreshTokenRepository.deleteByKeyEmail(currentUser.get().getEmail());
-        userRepository.delete(currentUser.get());
+        refreshTokenRepository.deleteByKeyEmail(currentUser.getEmail());
+        userRepository.delete(currentUser);
     }
 
     public void logout(HttpServletRequest request, HttpServletResponse response, PrincipalDetails user) {
@@ -106,7 +101,7 @@ public class UserService {
         urlConnection.setRequestMethod("GET");
         urlConnection.setDoInput(true);
 
-        if(urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+        if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
             throw new IOException("HTTP error code : " + urlConnection.getResponseCode());
         }
 
@@ -114,13 +109,13 @@ public class UserService {
     }
 
     /* InputStream을 전달받아 문자열로 변환 후 반환 */
-    public String readStreamToString(InputStream stream) throws IOException{
+    public String readStreamToString(InputStream stream) throws IOException {
         StringBuilder result = new StringBuilder();
 
         BufferedReader br = new BufferedReader(new InputStreamReader(stream, "UTF-8"));
 
         String readLine;
-        while((readLine = br.readLine()) != null) {
+        while ((readLine = br.readLine()) != null) {
             result.append(readLine + "\n\r");
         }
 
