@@ -64,6 +64,7 @@ public class HomeService {
     }
 
     private Boolean checkCurrentUser(Long id) {
+        //이부분은 .orElseThrow 로 Exception처리를 넘겨주는게 어떠신가요?
         Optional<User> currentUser = userRepository.findById(id);
 
         return currentUser.isPresent();

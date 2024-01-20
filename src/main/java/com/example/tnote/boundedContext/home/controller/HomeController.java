@@ -35,7 +35,8 @@ public class HomeController {
 
         List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(studentName, user);
         List<ObservationResponseDto> observation = homeService.findAllOfObservation(studentName, user);
-
+        //자바 17버전에서 는 toList()만으로도 바꿀수 있어요! 한번 사용해 보세욥 ㅎㅎ
+        //그리고 List<String> 보다는 객체를 하나 만들어서 넘겨주는게 더 좋아보여요 굳이 저렇게 형변환을 하는것 보다 더 일이 적을것 같구요 어떻게 생각하시나요??
         List<String> response = (List<String>) Stream.of(consultation, observation)
                 .flatMap(x -> x.stream())
                 .collect(Collectors.toList());
