@@ -1,7 +1,5 @@
 package com.example.tnote.boundedContext.home.service;
 
-import com.example.tnote.base.exception.UserErrorResult;
-import com.example.tnote.base.exception.UserException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
@@ -15,12 +13,10 @@ import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
-import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -40,9 +36,7 @@ public class HomeService {
 
     public List<ConsultationResponseDto> findAllOfConsultation(String studentName, PrincipalDetails user) {
 
-        if (!checkCurrentUser(user.getId())) {
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
+        userRepository.findById(user.getId()).orElseThrow();
 
         List<Consultation> consultations = consultationQueryRepository.findAll(studentName);
 
@@ -53,20 +47,13 @@ public class HomeService {
 
     public List<ObservationResponseDto> findAllOfObservation(String studentName, PrincipalDetails user) {
 
-        if (!checkCurrentUser(user.getId())) {
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
+        userRepository.findById(user.getId()).orElseThrow();
+
         List<Observation> observations = observationQueryRepository.findAll(studentName);
 
         return observations.stream()
                 .map(ObservationResponseDto::of)
                 .toList();
-    }
-
-    private Boolean checkCurrentUser(Long id) {
-        Optional<User> currentUser = userRepository.findById(id);
-
-        return currentUser.isPresent();
     }
 
     public ArchiveResponseDto readDailyLogs(Long userId, LocalDate date) {
