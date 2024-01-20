@@ -7,9 +7,8 @@ import com.example.tnote.boundedContext.home.service.HomeService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -36,9 +35,15 @@ public class HomeController {
         List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(studentName, user);
         List<ObservationResponseDto> observation = homeService.findAllOfObservation(studentName, user);
 
-        List<String> response = (List<String>) Stream.of(consultation, observation)
-                .flatMap(x -> x.stream())
-                .collect(Collectors.toList());
+//        List<Object> response = new ArrayList<>();
+//        response = Stream.of(consultation, observation)
+//                .flatMap(Collection::stream)
+//                .toList();
+
+        List<Object> response = new ArrayList<>();
+        response.addAll(consultation);
+        response.addAll(observation);
+
         return ResponseEntity.ok(Result.of(response));
 
     }

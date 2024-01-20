@@ -148,8 +148,6 @@ Ssrc/main/java/com/example/tnote/boundedContext/schedule/dto/ScheduleRequestDto.
 Rsrc/main/java/com/example/tnote/boundedContext/subject/dto/SubjectResponseDto.java,1/1/1167f582c8d6167c4819eefa02fa945dc49b434b
 à
 Xsrc/main/java/com/example/tnote/boundedContext/subject/dto/SubjectsUpdateRequestDto.java,a/2/a23a08beadbdd1c74dd43edae75948392778342a
-Ç
-Rsrc/main/java/com/example/tnote/boundedContext/subject/service/SubjectService.java,e/2/e2636a2c7558f0d2e7134c7e2e89183447772177
 {
 Ksrc/main/java/com/example/tnote/boundedContext/subject/entity/Subjects.java,5/f/5ffc931190014ed9128c505377cd7255a84545d4
 ç

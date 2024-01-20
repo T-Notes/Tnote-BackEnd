@@ -126,14 +126,7 @@ public class SubjectService {
     }
 
     private User checkCurrentUser(Long id) {
-        Optional<User> currentUser = userRepository.findById(id);
-
-        if (currentUser.isEmpty()) {
-            log.warn("해당하는 유저가 없습니다. currentUser : {}", currentUser);
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
-
-        return currentUser.get();
+        return userRepository.findById(id).orElseThrow();
     }
 
     private Schedule checkCurrentSchedule(Long scheduleId) {
