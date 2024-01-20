@@ -4,6 +4,7 @@ import com.example.tnote.base.exception.UserErrorResult;
 import com.example.tnote.base.exception.UserException;
 import com.example.tnote.base.utils.CookieUtils;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
+import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
 import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -160,5 +161,10 @@ public class UserService {
         }
 
         return result;
+    }
+
+    public UserMailResponse getMail(PrincipalDetails user) {
+        User currentUser = userRepository.findById(user.getId()).orElseThrow();
+        return UserMailResponse.of(currentUser);
     }
 }

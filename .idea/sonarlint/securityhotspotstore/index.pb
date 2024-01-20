@@ -46,8 +46,6 @@ Rsrc/main/java/com/example/tnote/boundedContext/user/repository/UserRepository.j
 Usrc/main/java/com/example/tnote/boundedContext/user/entity/auth/PrincipalDetails.java,e/7/e7e0864bc262c1d2e9f611a595846d557f3c70cd
 
 Osrc/main/java/com/example/tnote/boundedContext/user/service/RequestService.java,e/c/ec9378c781c60c92876bb79fce0ea3ee9d71e7d1
-y
-Isrc/main/java/com/example/tnote/boundedContext/user/dto/UserResponse.java,e/b/eb5de5decf21a974cfbb74d4084a722707364aae
 z
 Jsrc/main/java/com/example/tnote/boundedContext/user/dto/TokenResponse.java,3/2/32378ffee80f9c54aba01ee4d259a15ffb46ca3a
 y

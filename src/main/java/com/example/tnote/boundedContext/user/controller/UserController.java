@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.user.controller;
 
 import com.example.tnote.base.response.Result;
+import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserRequest;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
 import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
@@ -147,5 +148,19 @@ public class UserController {
         userService.deleteUser(user, email);
 
         return ResponseEntity.ok(Result.of("탈퇴 처리가 완료 되었습니다."));
+    }
+
+    // 탈퇴할때 작성할 회원의 메일 조회
+    @GetMapping("/mail")
+    public ResponseEntity<Result> getMail(@AuthenticationPrincipal PrincipalDetails user) {
+
+        if (user == null) {
+            log.warn("PrincipalDetails is null");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
+        }
+
+        UserMailResponse response = userService.getMail(user);
+
+        return ResponseEntity.ok(Result.of(response));
     }
 }
