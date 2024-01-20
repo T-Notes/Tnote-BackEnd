@@ -1,7 +1,7 @@
 package com.example.tnote.boundedContext.todo.entity;
 
 import com.example.tnote.base.entity.BaseTimeEntity;
-import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.user.entity.User;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -34,6 +34,6 @@ public class Todo extends BaseTimeEntity {
     private String content;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "schedule_id")
-    private Schedule schedule;
+    @JoinColumn(name = "user_id")
+    private User user;
 }

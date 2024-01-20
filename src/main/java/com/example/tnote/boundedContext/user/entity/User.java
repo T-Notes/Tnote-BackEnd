@@ -6,8 +6,14 @@ import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
-import jakarta.persistence.*;
-
+import com.example.tnote.boundedContext.todo.entity.Todo;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.AllArgsConstructor;
@@ -20,7 +26,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Table(name="USER_TB")
+@Table(name = "USER_TB")
 public class User extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -54,18 +60,25 @@ public class User extends BaseTimeEntity {
     @OneToMany(mappedBy = "user")
     private List<Schedule> schedules = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "user")
+    private List<Todo> todos = new ArrayList<>();
+
     /*
         연관관계 메서드
     */
     public void updateSubject(String subject) {
         this.subject = subject;
     }
+
     public void updateCareer(int career) {
         this.career = career;
     }
+
     public void updateAlarm(boolean alarm) {
         this.alarm = alarm;
     }
+
     public void updateSchool(String school) {
         this.school = school;
     }

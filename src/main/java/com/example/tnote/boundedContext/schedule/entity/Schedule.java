@@ -2,7 +2,6 @@ package com.example.tnote.boundedContext.schedule.entity;
 
 import com.example.tnote.base.entity.BaseTimeEntity;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
-import com.example.tnote.boundedContext.todo.entity.Todo;
 import com.example.tnote.boundedContext.user.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -51,10 +50,6 @@ public class Schedule extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Subjects> subjectsList = new ArrayList<>();
-
-    @Builder.Default
-    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Todo> todoList = new ArrayList<>();
 
     public void updateSemesterName(String semesterName) {
         this.semesterName = semesterName;

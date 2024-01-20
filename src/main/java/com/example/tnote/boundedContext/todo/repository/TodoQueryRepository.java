@@ -15,11 +15,10 @@ import org.springframework.stereotype.Repository;
 public class TodoQueryRepository {
     private final JPAQueryFactory query;
 
-    public List<Todo> findAllByUserIdAndScheduleIdAndDate(Long userId, Long scheduleId, LocalDate date) {
+    public List<Todo> findAllByUserIdAndDate(Long userId, LocalDate date) {
         return query
                 .selectFrom(todo)
-                .where(todo.schedule.user.id.eq(userId)
-                        .and(todo.schedule.id.eq(scheduleId))
+                .where(todo.user.id.eq(userId)
                         .and(todo.date.eq(date))
                 )
                 .orderBy(todo.id.asc())

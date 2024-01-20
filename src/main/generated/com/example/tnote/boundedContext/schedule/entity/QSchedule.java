@@ -39,8 +39,6 @@ public class QSchedule extends EntityPathBase<Schedule> {
 
     public final ListPath<com.example.tnote.boundedContext.subject.entity.Subjects, com.example.tnote.boundedContext.subject.entity.QSubjects> subjectsList = this.<com.example.tnote.boundedContext.subject.entity.Subjects, com.example.tnote.boundedContext.subject.entity.QSubjects>createList("subjectsList", com.example.tnote.boundedContext.subject.entity.Subjects.class, com.example.tnote.boundedContext.subject.entity.QSubjects.class, PathInits.DIRECT2);
 
-    public final ListPath<com.example.tnote.boundedContext.todo.entity.Todo, com.example.tnote.boundedContext.todo.entity.QTodo> todoList = this.<com.example.tnote.boundedContext.todo.entity.Todo, com.example.tnote.boundedContext.todo.entity.QTodo>createList("todoList", com.example.tnote.boundedContext.todo.entity.Todo.class, com.example.tnote.boundedContext.todo.entity.QTodo.class, PathInits.DIRECT2);
-
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 

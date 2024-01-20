@@ -51,20 +51,21 @@ public class ScheduleResponseDto {
     }
 
 
-    public static ScheduleResponseDto excludeLastDayAndLastClassOf(Schedule schedule) {
+    public static ScheduleResponseDto excludeLastDayOf(Schedule schedule) {
 
         return ScheduleResponseDto.builder()
                 .id(schedule.getId())
                 .email(schedule.getUser().getEmail())
                 .semesterName(schedule.getSemesterName())
+                .lastClass(schedule.getLastClass())
                 .startDate(schedule.getStartDate())
                 .endDate(schedule.getEndDate())
                 .build();
     }
 
-    public static List<ScheduleResponseDto> excludeLastDayAndLastClassOf(List<Schedule> schedules) {
+    public static List<ScheduleResponseDto> excludeLastDayOf(List<Schedule> schedules) {
         return schedules.stream()
-                .map(ScheduleResponseDto::excludeLastDayAndLastClassOf)
+                .map(ScheduleResponseDto::excludeLastDayOf)
                 .toList();
     }
 }
