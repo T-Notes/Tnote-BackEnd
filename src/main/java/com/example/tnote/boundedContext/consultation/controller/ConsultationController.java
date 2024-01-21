@@ -1,10 +1,6 @@
 package com.example.tnote.boundedContext.consultation.controller;
 
 import com.example.tnote.base.response.Result;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
@@ -26,8 +22,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -52,6 +46,7 @@ public class ConsultationController {
         return ResponseEntity.ok(Result.of(response));
     }
 
+    // classlog에 작성한 코멘트랑 같은 생각입니다!
     @PostMapping(value = "/consultations", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -62,6 +57,7 @@ public class ConsultationController {
         return ResponseEntity.ok(Result.of(consultationResponseDto));
     }
 
+    // classlog에 작성한 코멘트랑 같은 생각입니다!
     @GetMapping("/consultations")
     public ResponseEntity<Result> getAllConsultations(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         List<ConsultationResponseDto> consultationResponseDtos = consultationService.readAllConsultation(

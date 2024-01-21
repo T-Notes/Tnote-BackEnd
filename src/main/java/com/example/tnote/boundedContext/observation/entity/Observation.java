@@ -1,11 +1,19 @@
 package com.example.tnote.boundedContext.observation.entity;
 
 import com.example.tnote.base.entity.BaseTimeEntity;
-import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import jakarta.persistence.*;
-
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +42,8 @@ public class Observation extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    // 전체적으로 이미지가 있는 entity JsonManagedRef를 붙여놓으셨는데, 순환참조 외에 특별한 이유가 있으신지 궁금합니다!
     @JsonManagedReference
     @OneToMany(mappedBy = "observation", cascade = CascadeType.ALL)
     private List<ObservationImage> observationImage = new ArrayList<>();

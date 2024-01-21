@@ -6,7 +6,6 @@ import com.example.tnote.boundedContext.observation.dto.ObservationDetailRespons
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
-import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.util.List;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ObservationController {
     private final ObservationService observationService;
 
+    // classLog에 작성한 comment와 같은 생각입니다!
     @PostMapping(value = "/observations", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
@@ -44,6 +43,7 @@ public class ObservationController {
         return ResponseEntity.ok(Result.of(observationResponseDto));
     }
 
+    // classLog에 작성한 comment와 같은 생각입니다!
     @GetMapping("/observations")
     public ResponseEntity<Result> getAllObservations(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         List<ObservationResponseDto> observations = observationService.readAllObservation(principalDetails.getId());
