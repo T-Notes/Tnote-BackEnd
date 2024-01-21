@@ -35,11 +35,6 @@ public class HomeController {
         List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(studentName, user);
         List<ObservationResponseDto> observation = homeService.findAllOfObservation(studentName, user);
 
-//        List<Object> response = new ArrayList<>();
-//        response = Stream.of(consultation, observation)
-//                .flatMap(Collection::stream)
-//                .toList();
-
         List<Object> response = new ArrayList<>();
         response.addAll(consultation);
         response.addAll(observation);
