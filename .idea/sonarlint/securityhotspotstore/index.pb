@@ -88,8 +88,6 @@ Xsrc/main/java/com/example/tnote/boundedContext/proceeding/service/ProceedingSer
 Tsrc/main/java/com/example/tnote/boundedContext/classLog/dto/ClassLogResponseDto.java,c/e/ce2c0b501a48fb45f213469ad6dd95eee64a357d
 ‚
 Rsrc/main/java/com/example/tnote/boundedContext/todo/repository/TodoRepository.java,f/6/f63df896c1bdbcb0442681228b4881dab4d78618
-o
-?src/main/java/com/example/tnote/base/entity/BaseTimeEntity.java,3/a/3ad83d8826341656ef3b187ed908d34591a2e4da
 Š
 Zsrc/main/java/com/example/tnote/boundedContext/schedule/dto/ScheduleDeleteResponseDto.java,c/b/cb38ca6aa9c333c21d7de2c6d3c3664627cf366d
 s
@@ -104,14 +102,10 @@ z
 Jsrc/main/java/com/example/tnote/base/exception/GlobalExceptionHandler.java,0/c/0cafa457c6985368f9847ca7d79f1c9cc687eaec
 i
 9src/main/java/com/example/tnote/base/response/Result.java,4/5/45d877f3409841917d0f9f323d916ef2dc2f598d
-„
-Tsrc/main/java/com/example/tnote/boundedContext/consultation/entity/Consultation.java,7/5/75df46ee46917a1acf1d0fdcc7639be8859e080e
 ‚
 Rsrc/main/java/com/example/tnote/boundedContext/observation/entity/Observation.java,e/3/e3543ab1a2b84dd2e22e6146527f04c7dc094986
 €
 Psrc/main/java/com/example/tnote/boundedContext/proceeding/entity/Proceeding.java,6/0/60414019fcc56c0c26eb05feeb36373a8439f1f1
-Œ
-\src/main/java/com/example/tnote/boundedContext/consultation/dto/ConsultationResponseDto.java,c/0/c0f0b2138b02c1d49c63c60131c597d20cf45385
 ’
 bsrc/main/java/com/example/tnote/boundedContext/consultation/dto/ConsultationDetailResponseDto.java,4/8/48700ab4c4f9e187261f0ed960cc8d47d66ae4a5
 |
