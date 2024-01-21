@@ -1,28 +1,27 @@
 package com.example.tnote.base.utils;
 
 import com.example.tnote.base.constant.Constants;
-import com.example.tnote.base.exception.JwtException;
 import com.example.tnote.base.exception.JwtErrorResult;
+import com.example.tnote.base.exception.JwtException;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.user.dto.Token;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.service.auth.PrincipalDetailService;
-import io.jsonwebtoken.security.Keys;
-import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.SignatureException;
+import io.jsonwebtoken.UnsupportedJwtException;
+import java.util.Date;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import io.jsonwebtoken.*;
 import org.springframework.stereotype.Component;
-
-import javax.crypto.SecretKey;
-import java.util.Base64;
-import java.util.Date;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -61,7 +60,7 @@ public class JwtTokenProvider {
     }
 
     public Authentication getAuthentication(String token) {
-        log.info("token~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:{}",token);
+        log.info("token~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:{}", token);
         PrincipalDetails principalDetails = principalDetailService.loadUserByUsername(getPayload(token));
         log.info("getAuthentication, email={}", principalDetails.getUsername());
         return new UsernamePasswordAuthenticationToken(principalDetails, "", principalDetails.getAuthorities());
@@ -88,7 +87,7 @@ public class JwtTokenProvider {
         }
     }
 
-    public boolean validateRefreshToken(RefreshToken refreshTokenObj){
+    public boolean validateRefreshToken(RefreshToken refreshTokenObj) {
         // refresh 객체에서 refreshToken 추출
         String refreshToken = refreshTokenObj.getRefreshToken();
 
@@ -110,7 +109,7 @@ public class JwtTokenProvider {
         return false;
     }
 
-    public String recreationAccessToken(String email){
+    public String recreationAccessToken(String email) {
         Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위
         Date now = new Date();
 
@@ -121,6 +120,7 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
+
     public String getPayload(String token) {
         try {
             return Jwts.parserBuilder()

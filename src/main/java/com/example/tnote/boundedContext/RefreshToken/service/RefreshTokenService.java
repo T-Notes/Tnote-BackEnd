@@ -6,13 +6,10 @@ import com.example.tnote.base.exception.JwtErrorResult;
 import com.example.tnote.base.exception.JwtException;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
-import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -24,13 +21,11 @@ public class RefreshTokenService {
 
     @Transactional
     public RefreshToken save(String refreshToken, String email) {
-        Optional<User> opUser = userRepository.findByEmail(email);
-        if(opUser.isEmpty()) {
-            throw new CommonException(CommonErrorResult.BAD_REQUEST);
-        }
+        userRepository.findByEmail(email)
+                .orElseThrow(() -> new CommonException(CommonErrorResult.BAD_REQUEST));
 
         // 기존의 만료된 리프레시 토큰 삭제
-        if(refreshTokenRepository.existsByKeyEmail(email)) {
+        if (refreshTokenRepository.existsByKeyEmail(email)) {
             refreshTokenRepository.deleteByKeyEmail(email);
         }
 

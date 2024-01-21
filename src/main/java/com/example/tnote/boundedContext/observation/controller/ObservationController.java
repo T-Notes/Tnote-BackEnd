@@ -6,7 +6,6 @@ import com.example.tnote.boundedContext.observation.dto.ObservationDetailRespons
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
-import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.util.List;
@@ -20,7 +19,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;

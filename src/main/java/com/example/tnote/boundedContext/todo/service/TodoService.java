@@ -15,7 +15,6 @@ import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -34,24 +33,16 @@ public class TodoService {
 
         User currentUser = checkCurrentUser(user.getId());
 
-        Todo todo = Todo.builder()
-                .date(dto.getDate())
-                .content(dto.getContent())
-                .user(currentUser)
-                .build();
+        Todo todo = dto.toEntity(currentUser);
 
         return TodoResponseDto.of(todoRepository.save(todo));
     }
 
     private User checkCurrentUser(Long id) {
-        Optional<User> currentUser = userRepository.findById(id);
+        User currentUser = userRepository.findById(id)
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
-        if (currentUser.isEmpty()) {
-            log.warn("해당하는 유저가 없습니다. currentUser : {}", currentUser);
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
-
-        return currentUser.get();
+        return currentUser;
     }
 
     private Todo authorization(Long id, User member) {

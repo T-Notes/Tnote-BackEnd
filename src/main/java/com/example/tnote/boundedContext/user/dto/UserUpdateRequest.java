@@ -10,16 +10,19 @@ public class UserUpdateRequest {
     private int career;
     private boolean alarm;
 
-    public boolean hasSchoolName(){
+    public boolean hasSchoolName() {
         return schoolName != null;
     }
-    public boolean hasSubject(){
+
+    public boolean hasSubject() {
         return subject != null;
     }
-    public boolean hasCareer(){
+
+    public boolean hasCareer() {
         return career != 0;
     }
-    public boolean hasAlarm(){
+
+    public boolean hasAlarm() {
         return alarm != false;
     }
 }

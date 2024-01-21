@@ -23,7 +23,6 @@ import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -44,16 +43,7 @@ public class SubjectService {
 
         Schedule currentSchedule = checkCurrentSchedule(dto.getScheduleId());
 
-        Subjects subjects = Subjects.builder()
-                .memo(dto.getMemo())
-                .classLocation(dto.getClassLocation())
-                .classTime(dto.getClassTime())
-                .classDay(dto.getClassDay())
-                .subjectName(dto.getSubjectName())
-                .color(dto.getColor())
-                .date(dto.getDate())
-                .schedule(currentSchedule)
-                .build();
+        Subjects subjects = dto.toEntity(currentSchedule);
 
         return SubjectResponseDto.of(subjectRepository.save(subjects));
     }
@@ -98,7 +88,8 @@ public class SubjectService {
 
         User currentUser = checkCurrentUser(user.getId());
         Subjects subject = authorization(subjectsId, currentUser);
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow();
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
 
         if (!subject.getSchedule().equals(schedule)) {
             log.warn("해당하는 학기가 존재하지 않습니다");
@@ -130,14 +121,8 @@ public class SubjectService {
     }
 
     private Schedule checkCurrentSchedule(Long scheduleId) {
-        Optional<Schedule> currentSchedule = scheduleRepository.findById(scheduleId);
-
-        if (currentSchedule.isEmpty()) {
-            log.warn("해당하는 학기가 없습니다. currentSchedule : {}", currentSchedule);
-            throw new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND);
-        }
-
-        return currentSchedule.get();
+        return scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
     }
 
     @Transactional(readOnly = true)
