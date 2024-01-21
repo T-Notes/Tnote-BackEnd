@@ -19,7 +19,6 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -45,7 +44,7 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponse updateExtraInfo(Long userId, UserUpdateRequest dto) throws IOException {
+    public UserResponse updateExtraInfo(Long userId, UserUpdateRequest dto) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
@@ -73,7 +72,8 @@ public class UserService {
     @Transactional
     public void deleteUser(PrincipalDetails user, String email) {
 
-        User currentUser = userRepository.findById(user.getId()).orElseThrow();
+        User currentUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
         if (!email.equals(currentUser.getEmail())) {
             throw new UserException(UserErrorResult.WRONG_EMAIL);
@@ -86,11 +86,8 @@ public class UserService {
 
     public void logout(HttpServletRequest request, HttpServletResponse response, PrincipalDetails user) {
 
-        Optional<User> currentUser = userRepository.findById(user.getId());
-
-        if (currentUser.isEmpty()) {
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
+        User currentUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
         CookieUtils.deleteCookie(request, response, "AccessToken");
     }
@@ -164,7 +161,8 @@ public class UserService {
     }
 
     public UserMailResponse getMail(PrincipalDetails user) {
-        User currentUser = userRepository.findById(user.getId()).orElseThrow();
+        User currentUser = userRepository.findById(user.getId())
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
         return UserMailResponse.of(currentUser);
     }
 }

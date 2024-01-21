@@ -5,10 +5,8 @@ import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Builder

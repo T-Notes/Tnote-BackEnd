@@ -1,11 +1,11 @@
 package com.example.tnote.boundedContext.schedule.dto;
 
-import com.example.tnote.boundedContext.schedule.entity.ClassDay;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import lombok.*;
-
 import java.time.LocalDate;
-import java.time.LocalDateTime;
+import lombok.Builder;
+import lombok.Getter;
 
 
 @Builder
@@ -20,4 +20,14 @@ public class ScheduleRequestDto {
     private LocalDate startDate;
     @JsonFormat(pattern = "yyyy-MM-dd")
     private LocalDate endDate;
+
+    public Schedule toEntity(User user) {
+        return Schedule.builder()
+                .semesterName(this.semesterName)
+                .lastClass(this.lastClass)
+                .startDate(this.startDate)
+                .endDate(this.endDate)
+                .user(user)
+                .build();
+    }
 }

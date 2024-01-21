@@ -1,5 +1,7 @@
 package com.example.tnote.boundedContext.home.service;
 
+import com.example.tnote.base.exception.UserErrorResult;
+import com.example.tnote.base.exception.UserException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
@@ -36,7 +38,8 @@ public class HomeService {
 
     public List<ConsultationResponseDto> findAllOfConsultation(String studentName, PrincipalDetails user) {
 
-        userRepository.findById(user.getId()).orElseThrow();
+        userRepository.findById(user.getId()).orElseThrow(
+                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
         List<Consultation> consultations = consultationQueryRepository.findAll(studentName);
 
@@ -47,7 +50,8 @@ public class HomeService {
 
     public List<ObservationResponseDto> findAllOfObservation(String studentName, PrincipalDetails user) {
 
-        userRepository.findById(user.getId()).orElseThrow();
+        userRepository.findById(user.getId()).orElseThrow(
+                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
         List<Observation> observations = observationQueryRepository.findAll(studentName);
 

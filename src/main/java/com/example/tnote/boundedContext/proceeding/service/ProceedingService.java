@@ -1,16 +1,9 @@
 package com.example.tnote.boundedContext.proceeding.service;
 
-import com.example.tnote.base.exception.CommonErrorResult;
-import com.example.tnote.base.exception.CommonException;
 import com.example.tnote.base.exception.UserErrorResult;
 import com.example.tnote.base.exception.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
-import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;

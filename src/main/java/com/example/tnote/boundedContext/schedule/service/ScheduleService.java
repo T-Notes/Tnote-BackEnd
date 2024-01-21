@@ -18,7 +18,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,19 +35,10 @@ public class ScheduleService {
     @Transactional
     public ScheduleResponseDto addSchedule(ScheduleRequestDto dto, PrincipalDetails user) {
 
-        Optional<User> currentUser = userRepository.findById(user.getId());
-        if (currentUser.isEmpty()) {
-            log.warn("user is empty : {}", currentUser);
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
+        User currentUser = userRepository.findById(user.getId()).orElseThrow(
+                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
-        Schedule schedule = Schedule.builder()
-                .semesterName(dto.getSemesterName())
-                .lastClass(dto.getLastClass())
-                .startDate(dto.getStartDate())
-                .endDate(dto.getEndDate())
-                .user(currentUser.get())
-                .build();
+        Schedule schedule = dto.toEntity(currentUser);
 
         return ScheduleResponseDto.of(scheduleRepository.save(schedule));
     }
@@ -103,14 +93,8 @@ public class ScheduleService {
     }
 
     private User checkCurrentUser(Long id) {
-        Optional<User> currentUser = userRepository.findById(id);
-
-        if (currentUser.isEmpty()) {
-            log.warn("해당하는 유저가 없습니다. currentUser : {}", currentUser);
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
-
-        return currentUser.get();
+        return userRepository.findById(id).orElseThrow(
+                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
     }
 
 
@@ -127,14 +111,11 @@ public class ScheduleService {
     public List<ScheduleResponseDto> getAll(Long scheduleId, PrincipalDetails user) {
 
         User currentUser = checkCurrentUser(user.getId());
-        Optional<Schedule> schedule = scheduleRepository.findById(scheduleId);
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
+        ;
 
-        if (schedule.isEmpty()) {
-            log.warn("없는 학기입니다.");
-            throw new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND);
-        }
-
-        if (!schedule.get().getUser().equals(currentUser)) {
+        if (!schedule.getUser().equals(currentUser)) {
             log.warn("스케쥴 작성자와 현재 유저가 다른 유저입니다.");
             throw new UserException(UserErrorResult.WRONG_USRE);
         }
@@ -182,20 +163,14 @@ public class ScheduleService {
             map.put(dayOfWeek, map.get(dayOfWeek) + 1);
         }
 
-        Optional<Schedule> schedule = scheduleRepository.findById(scheduleId);
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow();
 
-        if (schedule.isEmpty()) {
-            log.warn("schedule is empty");
-            throw new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND);
-        }
-
-        for (Subjects s : schedule.get().getSubjectsList()) {
+        for (Subjects s : schedule.getSubjectsList()) {
 
             if (map.containsKey(String.valueOf(s.getClassDay()))) {
                 totalCnt += map.get(String.valueOf(s.getClassDay()));
             }
         }
-        log.info("totalCnt : {}", totalCnt);
 
         return totalCnt;
     }

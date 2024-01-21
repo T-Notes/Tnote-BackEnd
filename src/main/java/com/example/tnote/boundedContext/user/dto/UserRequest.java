@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.user.dto;
 
-import lombok.*;
+import lombok.Builder;
+import lombok.Getter;
 
 @Builder
 @Getter
@@ -14,4 +15,5 @@ public class UserRequest {
     private String subject;
     private int career;
     private boolean alarm;
+
 }

@@ -7,10 +7,8 @@ import com.example.tnote.boundedContext.consultation.entity.CounselingType;
 import com.example.tnote.boundedContext.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Builder
@@ -23,6 +21,7 @@ public class ConsultationRequestDto {
     private String consultationContents;
     private String consultationResult;
     private boolean isAllDay;
+
     public void validateEnums() {
         validateCounselingField();
         validateCounselingType();
@@ -46,12 +45,13 @@ public class ConsultationRequestDto {
                     .noneMatch(e -> e.name().equals(enumName));
         }
     }
+
     public Consultation toEntity(User user) {
         return Consultation.builder()
                 .user(user)
                 .studentName(this.studentName)
-                .startDate(DateUtils.adjustStartDateTime(this.startDate,this.isAllDay))
-                .endDate(DateUtils.adjustEndDateTime(this.startDate,this.isAllDay))
+                .startDate(DateUtils.adjustStartDateTime(this.startDate, this.isAllDay))
+                .endDate(DateUtils.adjustEndDateTime(this.startDate, this.isAllDay))
                 .counselingField(this.counselingField)
                 .counselingType(this.counselingType)
                 .consultationContents(this.consultationContents)

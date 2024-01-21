@@ -1,6 +1,8 @@
 package com.example.tnote.boundedContext.subject.dto;
 
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.subject.entity.Subjects;
 import java.time.LocalDate;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,4 +19,17 @@ public class SubjectRequestDto {
     private String color;
     private LocalDate date;
     private Long scheduleId;  // 연관관계를 위함.
+
+    public Subjects toEntity(Schedule schedule) {
+        return Subjects.builder()
+                .memo(this.memo)
+                .classLocation(this.classLocation)
+                .classTime(this.classTime)
+                .classDay(this.classDay)
+                .subjectName(this.subjectName)
+                .color(this.color)
+                .date(this.date)
+                .schedule(schedule)
+                .build();
+    }
 }

@@ -5,10 +5,8 @@ import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
-import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @Builder
@@ -19,6 +17,7 @@ public class ObservationRequestDto {
     private String observationContents; // 관찰 내용
     private String guidance; // 해석 및 지도 방안
     private boolean isAllDay;
+
     public Observation toEntity(User user) {
         return Observation.builder()
                 .user(user)
