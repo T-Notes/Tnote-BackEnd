@@ -14,6 +14,8 @@ public class ObservationResponseDto {
     private LocalDateTime endDate;
     private String observationContents; // 관찰 내용
     private String guidance; // 해석 및 지도 방안
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public static ObservationResponseDto of(Observation observation) {
         return ObservationResponseDto.builder()
@@ -23,6 +25,8 @@ public class ObservationResponseDto {
                 .endDate(observation.getEndDate())
                 .observationContents(observation.getObservationContents())
                 .guidance(observation.getGuidance())
+                .createdAt(observation.getCreatedAt())
+                .updatedAt(observation.getUpdatedAt())
                 .build();
     }
 }

@@ -16,6 +16,8 @@ public class ObservationDetailResponseDto {
     private String observationContents; // 관찰 내용
     private String guidance; // 해석 및 지도 방안
     private List<String> observationImageUrls;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public ObservationDetailResponseDto(Observation observation, List<ObservationImage> observationImages) {
         this.id = observation.getId();
@@ -26,5 +28,7 @@ public class ObservationDetailResponseDto {
         this.observationContents = observation.getObservationContents();
         this.guidance = observation.getGuidance();
         this.observationImageUrls = observationImages.stream().map(ObservationImage::getObservationImageUrl).toList();
+        this.createdAt = observation.getCreatedAt();
+        this.updatedAt = observation.getUpdatedAt();
     }
 }
