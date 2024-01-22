@@ -44,7 +44,7 @@ public class ObservationService {
             List<ObservationImage> uploadedImages = uploadObservationImages(observation, observationImages);
             observation.getObservationImage().addAll(uploadedImages); // 이미지 리스트에 추가
         }
-        return ObservationResponseDto.of(observation);
+        return ObservationResponseDto.of(observationRepository.save(observation));
     }
 
     @Transactional(readOnly = true)
