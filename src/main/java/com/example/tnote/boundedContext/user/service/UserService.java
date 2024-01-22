@@ -86,7 +86,7 @@ public class UserService {
 
     public void logout(HttpServletRequest request, HttpServletResponse response, PrincipalDetails user) {
 
-        User currentUser = userRepository.findById(user.getId())
+        userRepository.findById(user.getId())
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
         CookieUtils.deleteCookie(request, response, "AccessToken");

@@ -52,8 +52,6 @@ public class UserController {
     @GetMapping("/school")
     public ResponseEntity<Result> findSchool(@RequestBody UserRequest dto) throws IOException, ParseException {
 
-        log.info("api 사용해서 특정 학교 찾기");
-
         HttpURLConnection urlConnection = null;
         InputStream stream = null;
         String result = null;
@@ -110,9 +108,7 @@ public class UserController {
 
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<Result> updateExtraInfo(@PathVariable Long userId, @RequestBody UserUpdateRequest dto)
-            throws IOException {
-        log.info(" user controller - user 추가 정보 등록 / 수정 같은 api 사용, alarm 수신 여부만 바꿔도 여기서 처리");
+    public ResponseEntity<Result> updateExtraInfo(@PathVariable Long userId, @RequestBody UserUpdateRequest dto) {
 
         UserResponse response = userService.updateExtraInfo(userId, dto);
 
@@ -123,8 +119,6 @@ public class UserController {
     public ResponseEntity<Result> logout(HttpServletRequest request,
                                          HttpServletResponse response,
                                          @AuthenticationPrincipal PrincipalDetails user) {
-
-        log.info("PrincipalDetails in user - controller / logout : {}", user);
 
         if (user == null) {
             log.warn("PrincipalDetails is null");
