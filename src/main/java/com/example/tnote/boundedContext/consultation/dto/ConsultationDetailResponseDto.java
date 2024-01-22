@@ -21,6 +21,8 @@ public class ConsultationDetailResponseDto {
     private String consultationContents;
     private String consultationResult;
     private List<String> consultationImageUrls;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public ConsultationDetailResponseDto(Consultation consultation, List<ConsultationImage> consultationImages) {
         this.id = consultation.getId();
@@ -34,5 +36,7 @@ public class ConsultationDetailResponseDto {
         this.consultationContents = consultation.getConsultationContents();
         this.consultationImageUrls = consultationImages.stream().map(ConsultationImage::getConsultationImageUrl)
                 .toList();
+        this.createdAt = consultation.getCreatedAt();
+        this.updatedAt = consultation.getUpdatedAt();
     }
 }

@@ -18,7 +18,8 @@ public class ConsultationResponseDto {
     private CounselingType counselingType;
     private String consultationContents;
     private String consultationResult;
-
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
     public static ConsultationResponseDto of(Consultation consultation) {
         return ConsultationResponseDto.builder()
                 .id(consultation.getId())
@@ -29,6 +30,8 @@ public class ConsultationResponseDto {
                 .counselingType(consultation.getCounselingType())
                 .consultationContents(consultation.getConsultationContents())
                 .consultationResult(consultation.getConsultationResult())
+                .createdAt(consultation.getCreatedAt())
+                .updatedAt(consultation.getUpdatedAt())
                 .build();
     }
 }
