@@ -17,6 +17,8 @@ public class ProceedingDetailResponseDto {
     private String location;
     private String workContents;
     private List<String> proceedingImageUrls;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public ProceedingDetailResponseDto(Proceeding proceeding, List<ProceedingImage> proceedingImages) {
         this.id = proceeding.getId();
@@ -27,5 +29,7 @@ public class ProceedingDetailResponseDto {
         this.location = proceeding.getLocation();
         this.workContents = proceeding.getWorkContents();
         this.proceedingImageUrls = proceedingImages.stream().map(ProceedingImage::getProceedingImageUrl).toList();
+        this.createdAt = proceeding.getCreatedAt();
+        this.updatedAt = proceeding.getUpdatedAt();
     }
 }
