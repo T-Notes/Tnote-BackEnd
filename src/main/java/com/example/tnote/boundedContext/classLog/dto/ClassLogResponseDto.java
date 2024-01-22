@@ -16,6 +16,8 @@ public class ClassLogResponseDto {
     private String classContents;
     private String submission;
     private String magnitude;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public static ClassLogResponseDto of(ClassLog classLog) {
         return ClassLogResponseDto.builder()
@@ -27,6 +29,8 @@ public class ClassLogResponseDto {
                 .classContents(classLog.getClassContents())
                 .submission(classLog.getSubmission())
                 .magnitude(classLog.getMagnitude())
+                .createdAt(classLog.getCreatedAt())
+                .updatedAt(classLog.getUpdatedAt())
                 .build();
     }
 
