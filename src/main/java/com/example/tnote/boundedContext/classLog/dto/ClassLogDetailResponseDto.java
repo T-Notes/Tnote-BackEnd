@@ -19,6 +19,8 @@ public class ClassLogDetailResponseDto {
     private String submission;
     private String magnitude;
     private List<String> classLogImageUrls;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public ClassLogDetailResponseDto(ClassLog classLog, List<ClassLogImage> classLogImages) {
         this.id = classLog.getId();
@@ -33,5 +35,7 @@ public class ClassLogDetailResponseDto {
         this.classLogImageUrls = classLogImages.stream()
                 .map(ClassLogImage::getClassLogImageUrl)
                 .toList();
+        this.createdAt = classLog.getCreatedAt();
+        this.updatedAt = classLog.getUpdatedAt();
     }
 }
