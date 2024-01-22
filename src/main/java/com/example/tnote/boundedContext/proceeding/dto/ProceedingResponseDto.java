@@ -14,6 +14,8 @@ public class ProceedingResponseDto {
     private LocalDateTime endDate;
     private String location;
     private String workContents;
+    private LocalDateTime createdAt;
+    private LocalDateTime updatedAt;
 
     public static ProceedingResponseDto of(Proceeding proceeding) {
         return ProceedingResponseDto.builder()
@@ -23,6 +25,8 @@ public class ProceedingResponseDto {
                 .endDate(proceeding.getEndDate())
                 .location(proceeding.getLocation())
                 .workContents(proceeding.getWorkContents())
+                .createdAt(proceeding.getCreatedAt())
+                .updatedAt(proceeding.getUpdatedAt())
                 .build();
     }
 }
