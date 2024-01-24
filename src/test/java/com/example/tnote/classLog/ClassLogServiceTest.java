@@ -19,8 +19,8 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.web.multipart.MultipartFile;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
-import static org.junit.jupiter.api.Assertions.*;
 @ExtendWith(MockitoExtension.class)
 public class ClassLogServiceTest {
     @Mock
@@ -57,8 +57,8 @@ public class ClassLogServiceTest {
         // 테스트 실행
         ClassLogResponseDto result = classLogService.save(userId, requestDto, Collections.emptyList());
 
-        // 검증
-        assertNotNull(result);
+        assertThat(result).isNotNull();
+        assertThat(result.getTitle()).isEqualTo(requestDto.getTitle());
         verify(classLogRepository).save(any(ClassLog.class));
     }
 
