@@ -122,5 +122,3 @@ Isrc/main/java/com/example/tnote/boundedContext/user/dto/UserResponse.java,e/b/
 Msrc/main/java/com/example/tnote/boundedContext/user/dto/UserMailResponse.java,1/2/1233977888a03c04a09fdf125c5fefeb315a02ff
 Š
 Zsrc/main/java/com/example/tnote/boundedContext/observation/dto/ObservationResponseDto.java,d/f/dfc831a0095f61a9a27cea935bd5f75b78de1800
-‚
-Rsrc/main/java/com/example/tnote/boundedContext/user/controller/UserController.java,e/7/e76f969106f8b623b24a8e848a505c72febc92c6

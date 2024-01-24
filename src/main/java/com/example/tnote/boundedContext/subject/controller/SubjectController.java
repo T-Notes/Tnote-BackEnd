@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/subjects")
+@RequestMapping("/tnote/subjects")
 public class SubjectController {
 
     private final SubjectService subjectService;
