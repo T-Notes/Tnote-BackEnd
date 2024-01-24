@@ -1,0 +1,13 @@
+
+v
+java:S1192|"YDefine a constant instead of duplicating this literal "PrincipalDetails is null" 3 times.(ü“Ã8ÒÚÎÒ1
+o
+java:S1192}"MDefine a constant instead of duplicating this literal "Unauthorized" 3 times.(ÃŒ“ıÿÿÿÿ8ÓÚÎÒ1
+{	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(©‚øõûÿÿÿÿ8Š µ¹Ò1
+f
+java:S2259X"DA "NullPointerException" could be thrown; "result" is nullable here.(ÁòÇæÿÿÿÿÿ8ÄÀæüÒ1
+o	java:S116/"NRename this field "KEY" to match the regular expression '^[a-z][a-zA-Z0-9]*$'.(Ô±¦şÿÿÿÿ8ÚÚÎÒ1
+T
+java:S1874X"2Remove this use of "JSONParser"; it is deprecated.(ÁòÇæÿÿÿÿÿ8çÚÎÒ1
+k
+java:S1858X"I"result" is already a string, there's no need to call "toString()" on it.(ÁòÇæÿÿÿÿÿ8éÚÎÒ1

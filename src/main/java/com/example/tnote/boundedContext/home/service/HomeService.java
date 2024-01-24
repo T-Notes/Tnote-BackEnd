@@ -3,17 +3,21 @@ package com.example.tnote.boundedContext.home.service;
 import com.example.tnote.base.exception.UserErrorResult;
 import com.example.tnote.base.exception.UserException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.service.ConsultationService;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
+import com.example.tnote.boundedContext.home.repository.ClassLogQueryRepository;
 import com.example.tnote.boundedContext.home.repository.ConsultationQueryRepository;
 import com.example.tnote.boundedContext.home.repository.ObservationQueryRepository;
+import com.example.tnote.boundedContext.home.repository.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
+import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
@@ -30,6 +34,8 @@ public class HomeService {
 
     private final ConsultationQueryRepository consultationQueryRepository;
     private final ObservationQueryRepository observationQueryRepository;
+    private final ClassLogQueryRepository classLogQueryRepository;
+    private final ProceedingQueryRepository proceedingQueryRepository;
     private final UserRepository userRepository;
     private final ClassLogService classLogService;
     private final ProceedingService proceedingService;
@@ -38,8 +44,7 @@ public class HomeService {
 
     public List<ConsultationResponseDto> findAllOfConsultation(String studentName, PrincipalDetails user) {
 
-        userRepository.findById(user.getId()).orElseThrow(
-                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
+        findUser(user);
 
         List<Consultation> consultations = consultationQueryRepository.findAll(studentName);
 
@@ -50,14 +55,39 @@ public class HomeService {
 
     public List<ObservationResponseDto> findAllOfObservation(String studentName, PrincipalDetails user) {
 
-        userRepository.findById(user.getId()).orElseThrow(
-                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
+        findUser(user);
 
         List<Observation> observations = observationQueryRepository.findAll(studentName);
 
         return observations.stream()
                 .map(ObservationResponseDto::of)
                 .toList();
+    }
+
+    public List<ClassLogResponseDto> findAllOfClassLog(String title, PrincipalDetails user) {
+
+        findUser(user);
+
+        List<ClassLog> classLogs = classLogQueryRepository.findAll(title);
+
+        return classLogs.stream()
+                .map(ClassLogResponseDto::of)
+                .toList();
+    }
+
+    public List<ProceedingResponseDto> findAllOfProceeding(String title, PrincipalDetails user) {
+        findUser(user);
+
+        List<Proceeding> proceedings = proceedingQueryRepository.findAll(title);
+
+        return proceedings.stream()
+                .map(ProceedingResponseDto::of)
+                .toList();
+    }
+
+    private void findUser(PrincipalDetails user) {
+        userRepository.findById(user.getId()).orElseThrow(
+                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
     }
 
     public ArchiveResponseDto readDailyLogs(Long userId, LocalDate date) {
@@ -73,5 +103,6 @@ public class HomeService {
                 .proceedings(proceedings)
                 .build();
     }
+
 
 }
