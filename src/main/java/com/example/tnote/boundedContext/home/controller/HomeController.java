@@ -1,10 +1,12 @@
 package com.example.tnote.boundedContext.home.controller;
 
 import com.example.tnote.base.response.Result;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.service.HomeService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -29,15 +31,21 @@ public class HomeController {
 
     // 학생 이름 검색 했을때 나올 내용
     @GetMapping("/searching")
-    public ResponseEntity<Result> findAll(@RequestParam(name = "studentName", defaultValue = "") String studentName,
-                                          @AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> findAll(
+            @RequestParam(name = "studentName", required = false, defaultValue = "") String studentName,
+            @RequestParam(name = "title", required = false, defaultValue = "") String title,
+            @AuthenticationPrincipal PrincipalDetails user) {
 
         List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(studentName, user);
         List<ObservationResponseDto> observation = homeService.findAllOfObservation(studentName, user);
+        List<ClassLogResponseDto> classLog = homeService.findAllOfClassLog(title, user);
+        List<ProceedingResponseDto> proceeding = homeService.findAllOfProceeding(title, user);
 
         List<Object> response = new ArrayList<>();
         response.addAll(consultation);
         response.addAll(observation);
+        response.addAll(classLog);
+        response.addAll(proceeding);
 
         return ResponseEntity.ok(Result.of(response));
 
