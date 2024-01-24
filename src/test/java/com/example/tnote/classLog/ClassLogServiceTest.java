@@ -1,8 +1,11 @@
 package com.example.tnote.classLog;
 
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
+import com.example.tnote.boundedContext.classLog.repository.ClassLogImageRepository;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -29,6 +32,8 @@ public class ClassLogServiceTest {
 
     @Mock
     private ClassLogRepository classLogRepository;
+    @Mock
+    private ClassLogImageRepository classLogImageRepository;
 
     @InjectMocks
     private ClassLogService classLogService;
@@ -79,5 +84,35 @@ public class ClassLogServiceTest {
                 .hasSize(2);
 
         verify(classLogRepository).findAllByUserId(userId);
+    }
+    @Test
+    void getClassLogDetailTest() {
+        Long userId = 1L;
+        Long classLogId = 1L;
+
+        User mockUser = mock(User.class);
+        when(mockUser.getId()).thenReturn(userId);
+
+        ClassLog mockClassLog = mock(ClassLog.class);
+        when(mockClassLog.getId()).thenReturn(classLogId);
+        when(mockClassLog.getUser()).thenReturn(mockUser);
+
+        ClassLogImage mockClassLogImage1 = mock(ClassLogImage.class);
+        ClassLogImage mockClassLogImage2 = mock(ClassLogImage.class);
+
+        List<ClassLogImage> mockClassLogImages = List.of(mockClassLogImage1, mockClassLogImage2);
+
+        when(classLogRepository.findByIdAndUserId(userId, classLogId)).thenReturn(Optional.of(mockClassLog));
+        when(classLogImageRepository.findClassLogImagesByClassLog_Id(classLogId)).thenReturn(mockClassLogImages);
+
+        ClassLogDetailResponseDto result = classLogService.getClassLogDetail(userId, classLogId);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(classLogId);
+        assertThat(result.getUserId()).isEqualTo(userId);
+        assertThat(result.getClassLogImageUrls()).hasSize(mockClassLogImages.size());
+
+        verify(classLogRepository).findByIdAndUserId(userId, classLogId);
+        verify(classLogImageRepository).findClassLogImagesByClassLog_Id(classLogId);
     }
 }
