@@ -49,6 +49,7 @@ public class ClassLogService {
 
     public ClassLogDeleteResponseDto deleteClassLog(Long userId, Long classLogId) {
         ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
+        deleteExistedImages(classLog);
         classLogRepository.delete(classLog);
 
         return ClassLogDeleteResponseDto.builder()
