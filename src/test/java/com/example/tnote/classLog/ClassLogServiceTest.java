@@ -9,6 +9,7 @@ import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -62,5 +63,21 @@ public class ClassLogServiceTest {
         verify(classLogRepository).save(any(ClassLog.class));
     }
 
+    @Test
+    void readAllClassLogTest() {
+        Long userId = 1L;
 
+        ClassLog mockClassLog1 = mock(ClassLog.class);
+        ClassLog mockClassLog2 = mock(ClassLog.class);
+        List<ClassLog> mockClassLogs = Arrays.asList(mockClassLog1, mockClassLog2);
+
+        when(classLogRepository.findAllByUserId(userId)).thenReturn(mockClassLogs);
+        List<ClassLogResponseDto> result = classLogService.readAllClassLog(userId);
+
+        assertThat(result)
+                .isNotNull()
+                .hasSize(2);
+
+        verify(classLogRepository).findAllByUserId(userId);
+    }
 }
