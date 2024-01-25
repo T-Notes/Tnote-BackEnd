@@ -4,6 +4,7 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogImageRepository;
@@ -134,4 +135,21 @@ public class ClassLogServiceTest {
         verify(classLogRepository).findByIdAndUserId(userId, classLogId);
         verify(classLogRepository).delete(mockClassLog);
     }
+    @Test
+    void updateClassLogTest() {
+        Long userId = 1L;
+        Long classLogId = 1L;
+        ClassLog mockClassLog = mock(ClassLog.class);
+        ClassLogUpdateRequestDto classLogUpdateRequestDto = mock(ClassLogUpdateRequestDto.class);
+        List<MultipartFile> classLogImages = Collections.emptyList();
+
+        when(classLogRepository.findByIdAndUserId(userId, classLogId)).thenReturn(Optional.of(mockClassLog));
+
+        ClassLogResponseDto result = classLogService.updateClassLog(userId, classLogId, classLogUpdateRequestDto,
+                classLogImages);
+
+        assertThat(result).isNotNull();
+        verify(classLogRepository).findByIdAndUserId(userId, classLogId);
+    }
+
 }
