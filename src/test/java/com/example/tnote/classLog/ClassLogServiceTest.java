@@ -1,5 +1,6 @@
 package com.example.tnote.classLog;
 
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
@@ -114,5 +115,23 @@ public class ClassLogServiceTest {
 
         verify(classLogRepository).findByIdAndUserId(userId, classLogId);
         verify(classLogImageRepository).findClassLogImagesByClassLog_Id(classLogId);
+    }
+    @Test
+    void deleteClassLogTest() {
+        Long userId = 1L;
+        Long classLogId = 1L;
+
+        ClassLog mockClassLog = mock(ClassLog.class);
+        when(mockClassLog.getId()).thenReturn(classLogId);
+
+        when(classLogRepository.findByIdAndUserId(userId, classLogId)).thenReturn(Optional.of(mockClassLog));
+
+        ClassLogDeleteResponseDto result = classLogService.deleteClassLog(userId, classLogId);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(classLogId);
+
+        verify(classLogRepository).findByIdAndUserId(userId, classLogId);
+        verify(classLogRepository).delete(mockClassLog);
     }
 }
