@@ -74,7 +74,8 @@ public class ClassLogService {
 
     @Transactional(readOnly = true)
     public ClassLogDetailResponseDto getClassLogDetail(Long userId, Long classLogId) {
-        ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
+        ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId)
+                .orElseThrow(() -> new ClassLogException(ClassLogErrorResult.CLASS_LOG_NOT_FOUNT));
         List<ClassLogImage> classLogImages = classLogImageRepository.findClassLogImagesByClassLog_Id(classLogId);
         return new ClassLogDetailResponseDto(classLog, classLogImages);
     }
@@ -82,7 +83,8 @@ public class ClassLogService {
     public ClassLogResponseDto updateClassLog(Long userId, Long classLogId,
                                               ClassLogUpdateRequestDto classLogUpdateRequestDto,
                                               List<MultipartFile> classLogImages) {
-        ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
+        ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId)
+                .orElseThrow(() -> new ClassLogException(ClassLogErrorResult.CLASS_LOG_NOT_FOUNT));
         updateEachClassLogItem(classLogUpdateRequestDto, classLog, classLogImages);
 
         return ClassLogResponseDto.of(classLog);
