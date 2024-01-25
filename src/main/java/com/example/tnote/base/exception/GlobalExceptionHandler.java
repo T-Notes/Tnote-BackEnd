@@ -66,6 +66,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }
+    @ExceptionHandler({ClassLogException.class})
+    public ResponseEntity<ErrorResponse> handleClassLogException(final ClassLogException exception) {
+        log.warn("ClassLogException occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getClassLogErrorResult());
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final ClassLogErrorResult errorResult) {
+        return ResponseEntity.status(errorResult.getHttpStatus())
+                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
+    }
+
 
     @Getter
     @RequiredArgsConstructor
