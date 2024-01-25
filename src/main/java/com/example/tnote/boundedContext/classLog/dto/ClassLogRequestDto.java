@@ -1,5 +1,7 @@
 package com.example.tnote.boundedContext.classLog.dto;
 
+import com.example.tnote.base.exception.ClassLogErrorResult;
+import com.example.tnote.base.exception.ClassLogException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -21,6 +23,7 @@ public class ClassLogRequestDto {
     private boolean isAllDay;
 
     public ClassLog toEntity(User user) {
+        validate();
         return ClassLog.builder()
                 .user(user)
                 .title(this.title)
@@ -32,5 +35,19 @@ public class ClassLogRequestDto {
                 .magnitude(this.magnitude)
                 .classLogImage(new ArrayList<>()) // 이미지 리스트는 여기서 초기화
                 .build();
+    }
+    private void validate() {
+        if (title == null || title.trim().isEmpty()) {
+            throw new ClassLogException(ClassLogErrorResult.INVALID_CLASS_LOG_DATA);
+        }
+        if (startDate == null) {
+            throw new ClassLogException(ClassLogErrorResult.INVALID_CLASS_LOG_DATA);
+        }
+        if (endDate == null) {
+            throw new ClassLogException(ClassLogErrorResult.INVALID_CLASS_LOG_DATA);
+        }
+        if (endDate.isBefore(startDate)) {
+            throw new ClassLogException(ClassLogErrorResult.INVALID_CLASS_LOG_DATA);
+        }
     }
 }
