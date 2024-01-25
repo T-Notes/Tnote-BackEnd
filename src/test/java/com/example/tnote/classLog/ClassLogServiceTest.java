@@ -41,7 +41,7 @@ public class ClassLogServiceTest {
     private ClassLogService classLogService;
 
     @Test
-    void saveClassLogTest() {
+    void 학급일지_작성() {
         Long userId = 1L;
         User mockUser = mock(User.class);
 
@@ -71,7 +71,7 @@ public class ClassLogServiceTest {
     }
 
     @Test
-    void readAllClassLogTest() {
+    void 유저별_학급일지_전체조() {
         Long userId = 1L;
 
         ClassLog mockClassLog1 = mock(ClassLog.class);
@@ -88,7 +88,7 @@ public class ClassLogServiceTest {
         verify(classLogRepository).findAllByUserId(userId);
     }
     @Test
-    void getClassLogDetailTest() {
+    void 학급일지_상세조회() {
         Long userId = 1L;
         Long classLogId = 1L;
 
@@ -118,7 +118,7 @@ public class ClassLogServiceTest {
         verify(classLogImageRepository).findClassLogImagesByClassLog_Id(classLogId);
     }
     @Test
-    void deleteClassLogTest() {
+    void 학급일지_삭제() {
         Long userId = 1L;
         Long classLogId = 1L;
 
@@ -136,7 +136,7 @@ public class ClassLogServiceTest {
         verify(classLogRepository).delete(mockClassLog);
     }
     @Test
-    void updateClassLogTest() {
+    void 학급일지_수정() {
         Long userId = 1L;
         Long classLogId = 1L;
         ClassLog mockClassLog = mock(ClassLog.class);
