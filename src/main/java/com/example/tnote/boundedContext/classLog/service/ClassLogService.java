@@ -1,5 +1,7 @@
 package com.example.tnote.boundedContext.classLog.service;
 
+import com.example.tnote.base.exception.ClassLogErrorResult;
+import com.example.tnote.base.exception.ClassLogException;
 import com.example.tnote.base.exception.UserErrorResult;
 import com.example.tnote.base.exception.UserException;
 import com.example.tnote.base.utils.DateUtils;
@@ -48,7 +50,9 @@ public class ClassLogService {
     }
 
     public ClassLogDeleteResponseDto deleteClassLog(Long userId, Long classLogId) {
-        ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
+        ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId)
+                .orElseThrow(() -> new ClassLogException(ClassLogErrorResult.CLASS_LOG_NOT_FOUNT));
+
         deleteExistedImages(classLog);
         classLogRepository.delete(classLog);
 
@@ -56,6 +60,7 @@ public class ClassLogService {
                 .id(classLog.getId())
                 .build();
     }
+
 
     @Transactional(readOnly = true)
     public List<ClassLogResponseDto> readAllClassLog(Long userId) {
