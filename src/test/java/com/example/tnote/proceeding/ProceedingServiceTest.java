@@ -9,6 +9,8 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.tnote.base.exception.UserException;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
@@ -18,6 +20,7 @@ import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -85,5 +88,22 @@ public class ProceedingServiceTest {
         verify(userRepository).findById(userId);
         verify(proceedingRepository, never()).save(any(Proceeding.class));
     }
+    @DisplayName("업무일지 조회: 작성자가 작성한 모든 업무일지 조회 확인")
+    @Test
+    void getClassLogs() {
+        Long userId = 1L;
 
+        Proceeding mockProceeding1 = mock(Proceeding.class);
+        Proceeding mockProceeding2 = mock(Proceeding.class);
+        List<Proceeding> mockProceedings = Arrays.asList(mockProceeding1, mockProceeding2);
+
+        when(proceedingRepository.findAllByUserId(userId)).thenReturn(mockProceedings);
+        List<ProceedingResponseDto> result = proceedingService.readAllProceeding(userId);
+
+        assertThat(result)
+                .isNotNull()
+                .hasSize(2);
+
+        verify(proceedingRepository).findAllByUserId(userId);
+    }
 }
