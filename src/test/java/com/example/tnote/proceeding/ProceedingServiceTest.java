@@ -70,5 +70,20 @@ public class ProceedingServiceTest {
         assertThat(result.getTitle()).isEqualTo(requestDto.getTitle());
         verify(proceedingRepository).save(any(Proceeding.class));
     }
+    @DisplayName("업무일지 저장: 존재하지 않는 사용자로 인한 예외 발생 확인")
+    @Test
+    void noUserSave() {
+        Long userId = 1L;
+        ProceedingRequestDto requestDto = mock(ProceedingRequestDto.class);
+        List<MultipartFile> proceedingImages = Collections.emptyList();
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        assertThatExceptionOfType(UserException.class)
+                .isThrownBy(() -> proceedingService.save(userId, requestDto, proceedingImages));
+
+        verify(userRepository).findById(userId);
+        verify(proceedingRepository, never()).save(any(Proceeding.class));
+    }
 
 }
