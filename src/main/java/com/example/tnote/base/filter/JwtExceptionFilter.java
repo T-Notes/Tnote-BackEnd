@@ -1,6 +1,6 @@
 package com.example.tnote.base.filter;
 
-import com.example.tnote.base.exception.JwtException;
+import com.example.tnote.base.exception.jwt.JwtException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

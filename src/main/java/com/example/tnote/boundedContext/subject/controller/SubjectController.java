@@ -1,7 +1,7 @@
 package com.example.tnote.boundedContext.subject.controller;
 
-import com.example.tnote.base.exception.CommonErrorResult;
-import com.example.tnote.base.exception.CommonException;
+import com.example.tnote.base.exception.common.CommonErrorResult;
+import com.example.tnote.base.exception.common.CommonException;
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.subject.dto.SubjectRequestDto;

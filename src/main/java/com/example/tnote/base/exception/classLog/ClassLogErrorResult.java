@@ -1,4 +1,4 @@
-package com.example.tnote.base.exception;
+package com.example.tnote.base.exception.classLog;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

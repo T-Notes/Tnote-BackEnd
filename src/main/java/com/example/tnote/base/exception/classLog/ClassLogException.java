@@ -1,5 +1,6 @@
-package com.example.tnote.base.exception;
+package com.example.tnote.base.exception.classLog;
 
+import com.example.tnote.base.exception.classLog.ClassLogErrorResult;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

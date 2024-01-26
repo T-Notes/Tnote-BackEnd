@@ -1,4 +1,4 @@
-package com.example.tnote.base.exception;
+package com.example.tnote.base.exception.jwt;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

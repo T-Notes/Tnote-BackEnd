@@ -1,8 +1,7 @@
 package com.example.tnote.classLog;
 
-import com.example.tnote.base.exception.ClassLogErrorResult;
-import com.example.tnote.base.exception.ClassLogException;
-import com.example.tnote.base.exception.UserException;
+import com.example.tnote.base.exception.classLog.ClassLogException;
+import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
@@ -16,7 +15,6 @@ import com.example.tnote.boundedContext.classLog.service.ClassLogService;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;

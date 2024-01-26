@@ -1,9 +1,9 @@
 package com.example.tnote.boundedContext.classLog.service;
 
-import com.example.tnote.base.exception.ClassLogErrorResult;
-import com.example.tnote.base.exception.ClassLogException;
-import com.example.tnote.base.exception.UserErrorResult;
-import com.example.tnote.base.exception.UserException;
+import com.example.tnote.base.exception.classLog.ClassLogErrorResult;
+import com.example.tnote.base.exception.classLog.ClassLogException;
+import com.example.tnote.base.exception.user.UserErrorResult;
+import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;

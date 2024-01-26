@@ -1,5 +1,6 @@
-package com.example.tnote.base.exception;
+package com.example.tnote.base.exception.schedule;
 
+import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 

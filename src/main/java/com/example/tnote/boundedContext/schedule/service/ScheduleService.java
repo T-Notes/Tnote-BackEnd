@@ -1,9 +1,9 @@
 package com.example.tnote.boundedContext.schedule.service;
 
-import com.example.tnote.base.exception.ScheduleErrorResult;
-import com.example.tnote.base.exception.ScheduleException;
-import com.example.tnote.base.exception.UserErrorResult;
-import com.example.tnote.base.exception.UserException;
+import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
+import com.example.tnote.base.exception.schedule.ScheduleException;
+import com.example.tnote.base.exception.user.UserErrorResult;
+import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleDeleteResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;

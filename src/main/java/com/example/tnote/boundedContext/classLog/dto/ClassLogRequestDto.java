@@ -1,7 +1,7 @@
 package com.example.tnote.boundedContext.classLog.dto;
 
-import com.example.tnote.base.exception.ClassLogErrorResult;
-import com.example.tnote.base.exception.ClassLogException;
+import com.example.tnote.base.exception.classLog.ClassLogErrorResult;
+import com.example.tnote.base.exception.classLog.ClassLogException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.user.entity.User;
