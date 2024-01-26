@@ -12,11 +12,14 @@ import static org.mockito.Mockito.when;
 import com.example.tnote.base.exception.proceeding.ProceedingException;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingImageRepository;
@@ -158,7 +161,7 @@ public class ProceedingServiceTest {
     }
     @DisplayName("업무일지 삭제: 업무일지 삭제 작업 확인")
     @Test
-    void deleteClassLog() {
+    void deleteProceeding() {
         Long userId = 1L;
         Long proceedingId = 1L;
 
@@ -174,5 +177,22 @@ public class ProceedingServiceTest {
 
         verify(proceedingRepository).findByIdAndUserId(userId, proceedingId);
         verify(proceedingRepository).delete(mockProceeding);
+    }
+    @DisplayName("업무일지 수정: 요청된 값에 따른 업무일지 수정 확인")
+    @Test
+    void updateClassLog() {
+        Long userId = 1L;
+        Long proceedingId = 1L;
+        Proceeding mockProceeding = mock(Proceeding.class);
+        ProceedingUpdateRequestDto proceedingUpdateRequestDto = mock(ProceedingUpdateRequestDto.class);
+        List<MultipartFile> proceedingImages = Collections.emptyList();
+
+        when(proceedingRepository.findByIdAndUserId(userId, proceedingId)).thenReturn(Optional.of(mockProceeding));
+
+        ProceedingResponseDto result = proceedingService.updateProceeding(userId, proceedingId, proceedingUpdateRequestDto,
+                proceedingImages);
+
+        assertThat(result).isNotNull();
+        verify(proceedingRepository).findByIdAndUserId(userId, proceedingId);
     }
 }
