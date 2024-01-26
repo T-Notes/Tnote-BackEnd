@@ -1,5 +1,7 @@
 package com.example.tnote.classLog;
 
+import com.example.tnote.base.exception.ClassLogErrorResult;
+import com.example.tnote.base.exception.ClassLogException;
 import com.example.tnote.base.exception.UserException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
@@ -29,6 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -74,6 +77,7 @@ public class ClassLogServiceTest {
         assertThat(result.getTitle()).isEqualTo(requestDto.getTitle());
         verify(classLogRepository).save(any(ClassLog.class));
     }
+
     @DisplayName("학급일지 저장: 존재하지 않는 사용자로 인한 예외 발생 확인")
     @Test
     void noUserSave() {
@@ -89,6 +93,7 @@ public class ClassLogServiceTest {
         verify(userRepository).findById(userId);
         verify(classLogRepository, never()).save(any(ClassLog.class));
     }
+
     @DisplayName("학급일지 조회: 작성자가 작성한 모든 학급일지 조회 확인")
     @Test
     void getClassLogs() {
@@ -107,6 +112,7 @@ public class ClassLogServiceTest {
 
         verify(classLogRepository).findAllByUserId(userId);
     }
+
     @DisplayName("학급일지 상세 조회: 학급일지 상세 정보 조회 확인")
     @Test
     void getClassLogDetails() {
@@ -138,6 +144,19 @@ public class ClassLogServiceTest {
         verify(classLogRepository).findByIdAndUserId(userId, classLogId);
         verify(classLogImageRepository).findClassLogImagesByClassLog_Id(classLogId);
     }
+
+    @DisplayName("존재하지 않는 학급일지의 상세정보 조회 시 예외 발생")
+    @Test
+    void getClassLogDetailException() {
+        Long userId = 1L;
+        Long classLogId = 100L;
+
+        when(classLogRepository.findByIdAndUserId(userId, classLogId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> classLogService.getClassLogDetail(userId, classLogId))
+                .isInstanceOf(ClassLogException.class);
+    }
+
     @DisplayName("학급일지 삭제: 학급일지 삭제 작업 확인")
     @Test
     void deleteClassLog() {
@@ -157,6 +176,7 @@ public class ClassLogServiceTest {
         verify(classLogRepository).findByIdAndUserId(userId, classLogId);
         verify(classLogRepository).delete(mockClassLog);
     }
+
     @DisplayName("학급일지 수정: 요청된 값에 따른 학급일지 수정 확인")
     @Test
     void updateClassLog() {
