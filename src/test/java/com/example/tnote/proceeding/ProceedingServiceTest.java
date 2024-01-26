@@ -2,17 +2,16 @@ package com.example.tnote.proceeding;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.tnote.base.exception.UserException;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
-import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
+import com.example.tnote.base.exception.classLog.ClassLogException;
+import com.example.tnote.base.exception.proceeding.ProceedingException;
+import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
@@ -77,6 +76,7 @@ public class ProceedingServiceTest {
         assertThat(result.getTitle()).isEqualTo(requestDto.getTitle());
         verify(proceedingRepository).save(any(Proceeding.class));
     }
+
     @DisplayName("업무일지 저장: 존재하지 않는 사용자로 인한 예외 발생 확인")
     @Test
     void noUserSave() {
@@ -92,6 +92,7 @@ public class ProceedingServiceTest {
         verify(userRepository).findById(userId);
         verify(proceedingRepository, never()).save(any(Proceeding.class));
     }
+
     @DisplayName("업무일지 조회: 작성자가 작성한 모든 업ㅔ일지 조회 확인")
     @Test
     void getProceedings() {
@@ -110,6 +111,7 @@ public class ProceedingServiceTest {
 
         verify(proceedingRepository).findAllByUserId(userId);
     }
+
     @DisplayName("업무일지 상세 조회: 업무일지 상세 정보 조회 확인")
     @Test
     void getProceedingDetails() {
@@ -139,5 +141,17 @@ public class ProceedingServiceTest {
 
         verify(proceedingRepository).findByIdAndUserId(userId, proceedingId);
         verify(proceedingImageRepository).findProceedingImageById(proceedingId);
+    }
+
+    @DisplayName("존재하지 않는 업무일지의 상세정보 조회 시 예외 발생")
+    @Test
+    void getClassLogDetailException() {
+        Long userId = 1L;
+        Long proceedingId = 100L;
+
+        when(proceedingRepository.findByIdAndUserId(proceedingId, userId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> proceedingService.getProceedingDetails(userId, proceedingId))
+                .isInstanceOf(ProceedingException.class);
     }
 }
