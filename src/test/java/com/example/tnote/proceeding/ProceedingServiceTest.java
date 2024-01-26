@@ -9,9 +9,11 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.tnote.base.exception.classLog.ClassLogException;
 import com.example.tnote.base.exception.proceeding.ProceedingException;
 import com.example.tnote.base.exception.user.UserException;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
@@ -153,5 +155,24 @@ public class ProceedingServiceTest {
 
         assertThatThrownBy(() -> proceedingService.getProceedingDetails(userId, proceedingId))
                 .isInstanceOf(ProceedingException.class);
+    }
+    @DisplayName("업무일지 삭제: 업무일지 삭제 작업 확인")
+    @Test
+    void deleteClassLog() {
+        Long userId = 1L;
+        Long proceedingId = 1L;
+
+        Proceeding mockProceeding = mock(Proceeding.class);
+        when(mockProceeding.getId()).thenReturn(proceedingId);
+
+        when(proceedingRepository.findByIdAndUserId(userId, proceedingId)).thenReturn(Optional.of(mockProceeding));
+
+        ProceedingDeleteResponseDto result = proceedingService.deleteProceeding(userId, proceedingId);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(proceedingId);
+
+        verify(proceedingRepository).findByIdAndUserId(userId, proceedingId);
+        verify(proceedingRepository).delete(mockProceeding);
     }
 }
