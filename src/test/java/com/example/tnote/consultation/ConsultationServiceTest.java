@@ -75,5 +75,25 @@ public class ConsultationServiceTest {
         verify(consultationRepository).save(any(Consultation.class));
     }
 
+    @DisplayName("상담일지 저장: 올바르지 않은 상수가 입력되었을 때 예외 발생 확인")
+    @Test
+    void saveWithInvalidEnums() {
+        Long userId = 1L;
 
+        LocalDateTime now = LocalDateTime.now();
+
+        ConsultationRequestDto requestDto = ConsultationRequestDto.builder()
+                .studentName("김태")
+                .startDate(now)
+                .endDate(now.plusHours(2))
+                .counselingField(null)
+                .counselingType(null)
+                .consultationContents("상담내용")
+                .consultationResult("상담결과")
+                .isAllDay(false)
+                .build();
+
+        assertThatThrownBy(() -> consultationService.save(userId, requestDto, Collections.emptyList()))
+                .isInstanceOf(ConsultationException.class);
+    }
 }
