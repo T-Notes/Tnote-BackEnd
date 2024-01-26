@@ -43,6 +43,15 @@ public class UserService {
         return UserResponse.of(userRepository.save(user));
     }
 
+    @Transactional(readOnly = true)
+    public UserResponse getUserInfo(Long userId) {
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+
+        return UserResponse.of(user);
+    }
+
     @Transactional
     public UserResponse updateExtraInfo(Long userId, UserUpdateRequest dto) {
 
@@ -165,4 +174,6 @@ public class UserService {
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
         return UserMailResponse.of(currentUser);
     }
+
+
 }

@@ -106,6 +106,14 @@ public class UserController {
         return ResponseEntity.ok(Result.of(schoolList));
     }
 
+    @GetMapping("/{userId}")
+    public ResponseEntity<Result> getUserInfo(@PathVariable Long userId) {
+
+        UserResponse response = userService.getUserInfo(userId);
+
+        return ResponseEntity.ok(Result.of(response));
+    }
+
 
     @PatchMapping("/{userId}")
     public ResponseEntity<Result> updateExtraInfo(@PathVariable Long userId, @RequestBody UserUpdateRequest dto) {

@@ -114,8 +114,6 @@ Dsrc/main/java/com/example/tnote/boundedContext/user/entity/User.java,4/8/48c5c
 Lsrc/main/java/com/example/tnote/boundedContext/todo/service/TodoService.java,3/b/3bc15ea259e8cda00e2902dc1cbf658e86529ddc
 }
 Msrc/main/java/com/example/tnote/boundedContext/user/dto/UserMailResponse.java,1/2/1233977888a03c04a09fdf125c5fefeb315a02ff
-y
-Isrc/main/java/com/example/tnote/boundedContext/user/dto/UserResponse.java,e/b/eb5de5decf21a974cfbb74d4084a722707364aae
 x
 Hsrc/main/java/com/example/tnote/boundedContext/user/dto/UserRequest.java,3/8/38d5392fbd324fc2c9e81888206841b7d8eddd69
 ‚
