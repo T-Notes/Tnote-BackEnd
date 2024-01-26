@@ -11,10 +11,6 @@ import static org.mockito.Mockito.when;
 
 import com.example.tnote.base.exception.proceeding.ProceedingException;
 import com.example.tnote.base.exception.user.UserException;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
@@ -74,7 +70,6 @@ public class ProceedingServiceTest {
         Proceeding proceeding = requestDto.toEntity(mockUser);
         when(proceedingRepository.save(any(Proceeding.class))).thenReturn(proceeding);
 
-        // 테스트 실행
         ProceedingResponseDto result = proceedingService.save(userId, requestDto, Collections.emptyList());
 
         assertThat(result).isNotNull();
@@ -98,7 +93,7 @@ public class ProceedingServiceTest {
         verify(proceedingRepository, never()).save(any(Proceeding.class));
     }
 
-    @DisplayName("업무일지 조회: 작성자가 작성한 모든 업ㅔ일지 조회 확인")
+    @DisplayName("업무일지 조회: 작성자가 작성한 모든 업무일지 조회 확인")
     @Test
     void getProceedings() {
         Long userId = 1L;
