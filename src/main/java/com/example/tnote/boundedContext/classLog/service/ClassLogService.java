@@ -44,7 +44,7 @@ public class ClassLogService {
 
         if (classLogImages != null && !classLogImages.isEmpty()) {
             List<ClassLogImage> uploadedImages = uploadClassLogImages(classLog, classLogImages);
-            classLog.getClassLogImage().addAll(uploadedImages); // 이미지 리스트에 추가
+            classLog.getClassLogImage().addAll(uploadedImages);
         }
         return ClassLogResponseDto.of(classLogRepository.save(classLog));
     }
