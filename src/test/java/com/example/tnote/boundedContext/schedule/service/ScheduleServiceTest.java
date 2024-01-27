@@ -55,6 +55,7 @@ class ScheduleServiceTest {
                 LocalDate.parse("2024-06-01"));
         principalDetails = principalDetailService.loadUserByUsername(user1.getEmail());
 
+        // 스케쥴 내에서 과목 조회를 위한 더미 데이터 추가
         List<Subjects> subjectsList = new ArrayList<>();
         subjects1 = testSyUtils.createSubjects("물리", "1교시", ClassDay.MONDAY, "3반교실", "memo", "green",
                 LocalDate.parse("2024-03-01"), schedule1);
@@ -66,6 +67,7 @@ class ScheduleServiceTest {
                 LocalDate.parse("2024-03-01"), schedule1);
         subjects5 = testSyUtils.createSubjects("물리", "1교시", ClassDay.FRIDAY, "3반교실", "memo", "green",
                 LocalDate.parse("2024-03-01"), schedule1);
+
         subjectsList.add(subjects1);
         subjectsList.add(subjects2);
         subjectsList.add(subjects3);
