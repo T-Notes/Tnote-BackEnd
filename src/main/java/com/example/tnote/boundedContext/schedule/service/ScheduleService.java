@@ -43,9 +43,9 @@ public class ScheduleService {
         return ScheduleResponseDto.of(scheduleRepository.save(schedule));
     }
 
-    public ScheduleResponseDto updateSchedule(ScheduleUpdateRequestDto dto, Long scheduleId, PrincipalDetails user) {
+    public ScheduleResponseDto updateSchedule(ScheduleUpdateRequestDto dto, Long scheduleId, Long userId) {
 
-        User currentUser = checkCurrentUser(user.getId());
+        User currentUser = checkCurrentUser(userId);
         Schedule schedule = authorizationWriter(scheduleId, currentUser);
 
         updateEachScheduleItem(dto, schedule);

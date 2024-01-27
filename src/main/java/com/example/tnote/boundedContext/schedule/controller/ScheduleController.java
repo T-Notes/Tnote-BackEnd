@@ -66,7 +66,7 @@ public class ScheduleController {
                                                  @PathVariable("scheduleId") Long scheduleId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        ScheduleResponseDto response = scheduleService.updateSchedule(dto, scheduleId, user);
+        ScheduleResponseDto response = scheduleService.updateSchedule(dto, scheduleId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }

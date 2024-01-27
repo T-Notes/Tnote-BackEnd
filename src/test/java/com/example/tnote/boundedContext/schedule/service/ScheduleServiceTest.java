@@ -3,7 +3,11 @@ package com.example.tnote.boundedContext.schedule.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.example.tnote.base.exception.schedule.ScheduleException;
+import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
+import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
+import com.example.tnote.boundedContext.schedule.dto.ScheduleUpdateRequestDto;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
@@ -90,7 +94,95 @@ class ScheduleServiceTest {
     }
 
     @Test
+    @DisplayName("학기 세부 정보 수정 성공")
     void updateSchedule() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        ScheduleUpdateRequestDto dto = ScheduleUpdateRequestDto.builder()
+                .semesterName("test1")
+                .lastClass("9교시")
+                .email(user1.getEmail())
+                .startDate(LocalDate.parse("2024-03-01"))
+                .endDate(LocalDate.parse("2024-06-01"))
+                .build();
+
+        ScheduleResponseDto response = scheduleService.updateSchedule(dto, schedule1.getId(), user1.getId());
+
+        // then
+        assertThat(response.getSemesterName()).isEqualTo(dto.getSemesterName());
+        assertThat(response.getLastClass()).isEqualTo(dto.getLastClass());
+        assertThat(response.getEmail()).isEqualTo(dto.getEmail());
+        assertThat(response.getStartDate()).isEqualTo(dto.getStartDate());
+        assertThat(response.getEndDate()).isEqualTo(dto.getEndDate());
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저의 학기 세부 정보 수정 실패")
+    void otherUserUpdateSchedule() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        ScheduleUpdateRequestDto dto = ScheduleUpdateRequestDto.builder()
+                .semesterName("test1")
+                .lastClass("9교시")
+                .email(user1.getEmail())
+                .startDate(LocalDate.parse("2024-03-01"))
+                .endDate(LocalDate.parse("2024-06-01"))
+                .build();
+
+        // then
+        assertThatThrownBy(() -> scheduleService.updateSchedule(dto, schedule1.getId(), 222L))
+                .isInstanceOf(UserException.class);
+    }
+
+    @Test
+    @DisplayName("존재 하지 않은 학기 세부 정보 수정 실패")
+    void notExistUpdateSchedule() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        ScheduleUpdateRequestDto dto = ScheduleUpdateRequestDto.builder()
+                .semesterName("test1")
+                .lastClass("9교시")
+                .email(user1.getEmail())
+                .startDate(LocalDate.parse("2024-03-01"))
+                .endDate(LocalDate.parse("2024-06-01"))
+                .build();
+
+        // then
+        assertThatThrownBy(() -> scheduleService.updateSchedule(dto, 222L, user1.getId()))
+                .isInstanceOf(ScheduleException.class);
+    }
+
+    @Test
+    @DisplayName("다른 유저의 학기 세부 정보 수정 실패")
+    void notLoginUpdateSchedule() {
+
+        // given
+
+        // when
+
+        ScheduleUpdateRequestDto dto = ScheduleUpdateRequestDto.builder()
+                .semesterName("test1")
+                .lastClass("9교시")
+                .email(user1.getEmail())
+                .startDate(LocalDate.parse("2024-03-01"))
+                .endDate(LocalDate.parse("2024-06-01"))
+                .build();
+
+        // then
+        assertThatThrownBy(() -> scheduleService.updateSchedule(dto, schedule1.getId(), null))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
     @Test
