@@ -1,9 +1,9 @@
 package com.example.tnote.boundedContext.todo.service;
 
-import com.example.tnote.base.exception.TodoErrorResult;
-import com.example.tnote.base.exception.TodoException;
-import com.example.tnote.base.exception.UserErrorResult;
-import com.example.tnote.base.exception.UserException;
+import com.example.tnote.base.exception.todo.TodoErrorResult;
+import com.example.tnote.base.exception.todo.TodoException;
+import com.example.tnote.base.exception.user.UserErrorResult;
+import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.todo.dto.TodoDeleteResponseDto;
 import com.example.tnote.boundedContext.todo.dto.TodoRequestDto;
 import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;

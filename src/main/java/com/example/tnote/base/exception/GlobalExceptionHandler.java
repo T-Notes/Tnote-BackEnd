@@ -1,6 +1,18 @@
 package com.example.tnote.base.exception;
 
 
+import com.example.tnote.base.exception.classLog.ClassLogErrorResult;
+import com.example.tnote.base.exception.classLog.ClassLogException;
+import com.example.tnote.base.exception.common.CommonErrorResult;
+import com.example.tnote.base.exception.common.CommonException;
+import com.example.tnote.base.exception.jwt.JwtErrorResult;
+import com.example.tnote.base.exception.jwt.JwtException;
+import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
+import com.example.tnote.base.exception.schedule.ScheduleException;
+import com.example.tnote.base.exception.subject.SubjectsErrorResult;
+import com.example.tnote.base.exception.subject.SubjectsException;
+import com.example.tnote.base.exception.todo.TodoErrorResult;
+import com.example.tnote.base.exception.todo.TodoException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -66,6 +78,17 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return ResponseEntity.status(errorResult.getHttpStatus())
                 .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
     }
+    @ExceptionHandler({ClassLogException.class})
+    public ResponseEntity<ErrorResponse> handleClassLogException(final ClassLogException exception) {
+        log.warn("ClassLogException occur: ", exception);
+        return this.makeErrorResponseEntity(exception.getClassLogErrorResult());
+    }
+
+    private ResponseEntity<ErrorResponse> makeErrorResponseEntity(final ClassLogErrorResult errorResult) {
+        return ResponseEntity.status(errorResult.getHttpStatus())
+                .body(new ErrorResponse(errorResult.name(), errorResult.getMessage()));
+    }
+
 
     @Getter
     @RequiredArgsConstructor

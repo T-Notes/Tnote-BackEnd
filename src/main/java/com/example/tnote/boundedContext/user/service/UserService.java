@@ -1,7 +1,7 @@
 package com.example.tnote.boundedContext.user.service;
 
-import com.example.tnote.base.exception.UserErrorResult;
-import com.example.tnote.base.exception.UserException;
+import com.example.tnote.base.exception.user.UserErrorResult;
+import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.CookieUtils;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;

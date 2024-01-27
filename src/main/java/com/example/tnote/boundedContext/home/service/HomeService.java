@@ -1,7 +1,7 @@
 package com.example.tnote.boundedContext.home.service;
 
-import com.example.tnote.base.exception.UserErrorResult;
-import com.example.tnote.base.exception.UserException;
+import com.example.tnote.base.exception.user.UserErrorResult;
+import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;

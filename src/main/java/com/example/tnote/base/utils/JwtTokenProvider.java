@@ -1,8 +1,8 @@
 package com.example.tnote.base.utils;
 
 import com.example.tnote.base.constant.Constants;
-import com.example.tnote.base.exception.JwtErrorResult;
-import com.example.tnote.base.exception.JwtException;
+import com.example.tnote.base.exception.jwt.JwtErrorResult;
+import com.example.tnote.base.exception.jwt.JwtException;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.user.dto.Token;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;

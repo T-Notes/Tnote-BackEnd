@@ -1,7 +1,9 @@
 package com.example.tnote.boundedContext.proceeding.service;
 
-import com.example.tnote.base.exception.UserErrorResult;
-import com.example.tnote.base.exception.UserException;
+import com.example.tnote.base.exception.proceeding.ProceedingErrorResult;
+import com.example.tnote.base.exception.proceeding.ProceedingException;
+import com.example.tnote.base.exception.user.UserErrorResult;
+import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
@@ -58,7 +60,9 @@ public class ProceedingService {
     }
 
     public ProceedingDeleteResponseDto deleteProceeding(Long userId, Long proceedingId) {
-        Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId).orElseThrow();
+        Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
+                .orElseThrow(() -> new ProceedingException(
+                        ProceedingErrorResult.PROCEEDING_NOT_FOUNT));
         proceedingRepository.delete(proceeding);
 
         return ProceedingDeleteResponseDto.builder()
@@ -67,7 +71,9 @@ public class ProceedingService {
     }
 
     public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
-        Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId).orElseThrow();
+        Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
+                .orElseThrow(() -> new ProceedingException(
+                        ProceedingErrorResult.PROCEEDING_NOT_FOUNT));
         List<ProceedingImage> proceedingImages = proceedingImageRepository.findProceedingImageById(proceedingId);
 
         return new ProceedingDetailResponseDto(proceeding, proceedingImages);
@@ -76,7 +82,9 @@ public class ProceedingService {
     public ProceedingResponseDto updateProceeding(Long userId, Long proceedingId,
                                                   ProceedingUpdateRequestDto updateRequestDto,
                                                   List<MultipartFile> proceedingImages) {
-        Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId).orElseThrow();
+        Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
+                .orElseThrow(() -> new ProceedingException(
+                        ProceedingErrorResult.PROCEEDING_NOT_FOUNT));
         updateEachItem(updateRequestDto, proceeding, proceedingImages);
 
         return ProceedingResponseDto.of(proceeding);

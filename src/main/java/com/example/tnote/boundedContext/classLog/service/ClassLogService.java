@@ -1,7 +1,9 @@
 package com.example.tnote.boundedContext.classLog.service;
 
-import com.example.tnote.base.exception.UserErrorResult;
-import com.example.tnote.base.exception.UserException;
+import com.example.tnote.base.exception.classLog.ClassLogErrorResult;
+import com.example.tnote.base.exception.classLog.ClassLogException;
+import com.example.tnote.base.exception.user.UserErrorResult;
+import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
@@ -42,19 +44,23 @@ public class ClassLogService {
 
         if (classLogImages != null && !classLogImages.isEmpty()) {
             List<ClassLogImage> uploadedImages = uploadClassLogImages(classLog, classLogImages);
-            classLog.getClassLogImage().addAll(uploadedImages); // 이미지 리스트에 추가
+            classLog.getClassLogImage().addAll(uploadedImages);
         }
         return ClassLogResponseDto.of(classLogRepository.save(classLog));
     }
 
     public ClassLogDeleteResponseDto deleteClassLog(Long userId, Long classLogId) {
-        ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
+        ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
+                .orElseThrow(() -> new ClassLogException(ClassLogErrorResult.CLASS_LOG_NOT_FOUNT));
+
+        deleteExistedImages(classLog);
         classLogRepository.delete(classLog);
 
         return ClassLogDeleteResponseDto.builder()
                 .id(classLog.getId())
                 .build();
     }
+
 
     @Transactional(readOnly = true)
     public List<ClassLogResponseDto> readAllClassLog(Long userId) {
@@ -68,15 +74,17 @@ public class ClassLogService {
 
     @Transactional(readOnly = true)
     public ClassLogDetailResponseDto getClassLogDetail(Long userId, Long classLogId) {
-        ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
-        List<ClassLogImage> classLogImages = classLogImageRepository.findClassLogImagesByClassLog_Id(classLogId);
+        ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
+                .orElseThrow(() -> new ClassLogException(ClassLogErrorResult.CLASS_LOG_NOT_FOUNT));
+        List<ClassLogImage> classLogImages = classLogImageRepository.findClassLogImagesByClassLogId(classLogId);
         return new ClassLogDetailResponseDto(classLog, classLogImages);
     }
 
     public ClassLogResponseDto updateClassLog(Long userId, Long classLogId,
                                               ClassLogUpdateRequestDto classLogUpdateRequestDto,
                                               List<MultipartFile> classLogImages) {
-        ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId).orElseThrow();
+        ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
+                .orElseThrow(() -> new ClassLogException(ClassLogErrorResult.CLASS_LOG_NOT_FOUNT));
         updateEachClassLogItem(classLogUpdateRequestDto, classLog, classLogImages);
 
         return ClassLogResponseDto.of(classLog);

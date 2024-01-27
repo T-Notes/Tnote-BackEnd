@@ -1,7 +1,11 @@
 package com.example.tnote.boundedContext.consultation.service;
 
-import com.example.tnote.base.exception.UserErrorResult;
-import com.example.tnote.base.exception.UserException;
+import com.example.tnote.base.exception.classLog.ClassLogErrorResult;
+import com.example.tnote.base.exception.classLog.ClassLogException;
+import com.example.tnote.base.exception.consultation.ConsultationErrorResult;
+import com.example.tnote.base.exception.consultation.ConsultationException;
+import com.example.tnote.base.exception.user.UserErrorResult;
+import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
@@ -59,7 +63,10 @@ public class ConsultationService {
     }
 
     public ConsultationDeleteResponseDto deleteClassLog(Long userId, Long consultationId) {
-        Consultation consultation = consultationRepository.findByIdAndUserId(userId, consultationId).orElseThrow();
+        Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
+                .orElseThrow(() -> new ConsultationException(
+                        ConsultationErrorResult.CONSULTATION_NOT_FOUNT));
+        ;
         consultationRepository.delete(consultation);
 
         return ConsultationDeleteResponseDto.builder()
@@ -69,8 +76,10 @@ public class ConsultationService {
 
     @Transactional(readOnly = true)
     public ConsultationDetailResponseDto getConsultationDetail(Long userId, Long consultationId) {
-        Consultation consultation = consultationRepository.findByIdAndUserId(userId, consultationId).orElseThrow();
-        List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultation_Id(
+        Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
+                .orElseThrow(() -> new ConsultationException(
+                        ConsultationErrorResult.CONSULTATION_NOT_FOUNT));
+        List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultationId(
                 consultationId);
         return new ConsultationDetailResponseDto(consultation, consultationImages);
     }
@@ -78,7 +87,10 @@ public class ConsultationService {
     public ConsultationResponseDto updateConsultation(Long userId, Long consultationId,
                                                       ConsultationUpdateRequestDto requestDto,
                                                       List<MultipartFile> consultationImages) {
-        Consultation consultation = consultationRepository.findByIdAndUserId(userId, consultationId).orElseThrow();
+        Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
+                .orElseThrow(() -> new ConsultationException(
+                        ConsultationErrorResult.CONSULTATION_NOT_FOUNT));
+        ;
         updateEachItems(consultation, requestDto, consultationImages);
         return ConsultationResponseDto.of(consultation);
     }

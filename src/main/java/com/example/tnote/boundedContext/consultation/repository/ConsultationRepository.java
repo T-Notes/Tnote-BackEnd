@@ -14,7 +14,7 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
 
     @Query("select c from Consultation c " +
             "where c.id = :consultationId and c.user.id = :userId")
-    Optional<Consultation> findByIdAndUserId(Long userId, Long consultationId);
+    Optional<Consultation> findByIdAndUserId(Long consultationId, Long userId);
 
     List<Consultation> findByUserIdAndStartDateBetween(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay);
 }
