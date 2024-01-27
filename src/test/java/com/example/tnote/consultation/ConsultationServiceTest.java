@@ -16,12 +16,14 @@ import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
@@ -203,5 +205,22 @@ public class ConsultationServiceTest {
 
         verify(consultationRepository).findByIdAndUserId(userId, consultationId);
         verify(consultationRepository).delete(mockConsultation);
+    }
+    @DisplayName("상담일지 수정: 요청된 값에 따른 상담일지 수정 확인")
+    @Test
+    void updateConsultation() {
+        Long userId = 1L;
+        Long consultationId = 1L;
+        Consultation mockConsultation = mock(Consultation.class);
+        ConsultationUpdateRequestDto classLogUpdateRequestDto = mock(ConsultationUpdateRequestDto.class);
+        List<MultipartFile> consultationImages = Collections.emptyList();
+
+        when(consultationRepository.findByIdAndUserId(userId, consultationId)).thenReturn(Optional.of(mockConsultation));
+
+        ConsultationResponseDto result = consultationService.updateConsultation(userId, consultationId, classLogUpdateRequestDto,
+                consultationImages);
+
+        assertThat(result).isNotNull();
+        verify(consultationRepository).findByIdAndUserId(userId, consultationId);
     }
 }
