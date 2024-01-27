@@ -16,12 +16,14 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.entity.ObservationImage;
 import com.example.tnote.boundedContext.observation.repository.ObservationImageRepository;
@@ -161,7 +163,7 @@ public class ObservationServiceTest {
     }
     @DisplayName("관찰일지 삭제: 관찰일지 삭제 작업 확인")
     @Test
-    void deleteClassLog() {
+    void delete() {
         Long userId = 1L;
         Long observationId = 1L;
 
@@ -176,5 +178,22 @@ public class ObservationServiceTest {
 
         verify(observationRepository).findByIdAndUserId(observationId,userId);
         verify(observationRepository).delete(mockObservation);
+    }
+    @DisplayName("관찰일지 수정: 요청된 값에 따른 관찰일지 수정 확인")
+    @Test
+    void update() {
+        Long userId = 1L;
+        Long observationId = 1L;
+        Observation mockObservation = mock(Observation.class);
+        ObservationUpdateRequestDto observationUpdateRequestDto = mock(ObservationUpdateRequestDto.class);
+        List<MultipartFile> observationImages = Collections.emptyList();
+
+        when(observationRepository.findByIdAndUserId(observationId,userId)).thenReturn(Optional.of(mockObservation));
+
+        ObservationResponseDto result = observationService.updateObservation(userId, observationId, observationUpdateRequestDto,
+                observationImages);
+
+        assertThat(result).isNotNull();
+        verify(observationRepository).findByIdAndUserId(observationId,userId);
     }
 }
