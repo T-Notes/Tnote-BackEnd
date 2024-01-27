@@ -21,6 +21,7 @@ import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -86,4 +87,27 @@ public class ObservationServiceTest {
         verify(userRepository).findById(userId);
         verify(observationRepository, never()).save(any(Observation.class));
     }
+    @DisplayName("관찰일지 조회: 작성자가 작성한 모든 관찰일지 확인")
+    @Test
+    void getClassLogsExcludingNonUserLogs() {
+        Long userId = 1L;
+        Long otherUserId = 2L;
+
+        Observation mockObservation1 = mock(Observation.class);
+        Observation mockObservation2 = mock(Observation.class);
+
+        Observation otherObservation = mock(Observation.class);
+
+        List<Observation> mockObservations = Arrays.asList(mockObservation1, mockObservation2);
+
+        when(observationRepository.findAllByUserId(userId)).thenReturn(mockObservations);
+        List<ObservationResponseDto> result = observationService.readAllObservation(userId);
+
+        assertThat(result)
+                .isNotNull()
+                .hasSize(2);
+
+        verify(observationRepository).findAllByUserId(userId);
+    }
+
 }
