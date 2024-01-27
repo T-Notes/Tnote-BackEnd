@@ -134,7 +134,7 @@ public class TodoServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        todoService.deleteTodo(todo1.getId(), todo1.getUser().getId());
+        todoService.deleteTodo(todo1.getId(), user1.getId());
 
         // then
         assertThatThrownBy(() -> todoService.deleteTodo(todo1.getId(), user1.getId()))

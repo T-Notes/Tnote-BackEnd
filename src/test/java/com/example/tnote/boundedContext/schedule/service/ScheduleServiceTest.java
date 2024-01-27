@@ -186,8 +186,59 @@ class ScheduleServiceTest {
     }
 
     @Test
+    @DisplayName("학기 정보 삭제 성공")
     void deleteSchedule() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        scheduleService.deleteSchedule(schedule1.getId(), user1.getId());
     }
+
+    @Test
+    @DisplayName("존재하지 않는 학기 정보 삭제 실패")
+    void notExistDeleteSchedule() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> scheduleService.deleteSchedule(222L, user1.getId()))
+                .isInstanceOf(ScheduleException.class);
+    }
+
+    @Test
+    @DisplayName("다른 유저의 학기 정보 삭제 실패")
+    void otherUserDeleteSchedule() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> scheduleService.deleteSchedule(schedule1.getId(), 222L))
+                .isInstanceOf(UserException.class);
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저의 학기 정보 삭제 실패")
+    void notLoginDeleteSchedule() {
+
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> scheduleService.deleteSchedule(schedule1.getId(), null))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
+    }
+
 
     @Test
     void countLeftDays() {

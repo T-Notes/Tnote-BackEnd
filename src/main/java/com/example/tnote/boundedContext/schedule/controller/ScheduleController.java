@@ -75,7 +75,7 @@ public class ScheduleController {
     public ResponseEntity<Result> deleteSchedule(@PathVariable("scheduleId") Long scheduleId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        ScheduleDeleteResponseDto response = scheduleService.deleteSchedule(scheduleId, user);
+        ScheduleDeleteResponseDto response = scheduleService.deleteSchedule(scheduleId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }

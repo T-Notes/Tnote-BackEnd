@@ -68,9 +68,9 @@ public class ScheduleService {
         }
     }
 
-    public ScheduleDeleteResponseDto deleteSchedule(Long scheduleId, PrincipalDetails user) {
+    public ScheduleDeleteResponseDto deleteSchedule(Long scheduleId, Long userId) {
 
-        User currentUser = checkCurrentUser(user.getId());
+        User currentUser = checkCurrentUser(userId);
         Schedule own = authorizationWriter(scheduleId, currentUser);
 
         scheduleRepository.deleteById(own.getId());
