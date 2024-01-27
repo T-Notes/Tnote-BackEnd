@@ -129,7 +129,7 @@ public class ProceedingServiceTest {
 
         List<ProceedingImage> mockProceedingImages = List.of(mockProceedingImage);
 
-        when(proceedingRepository.findByIdAndUserId(userId, proceedingId)).thenReturn(Optional.of(mockProceeding));
+        when(proceedingRepository.findByIdAndUserId(proceedingId, userId)).thenReturn(Optional.of(mockProceeding));
         when(proceedingImageRepository.findProceedingImageById(proceedingId)).thenReturn(mockProceedingImages);
 
         ProceedingDetailResponseDto result = proceedingService.getProceedingDetails(userId, proceedingId);
@@ -139,7 +139,7 @@ public class ProceedingServiceTest {
         assertThat(result.getUserId()).isEqualTo(userId);
         assertThat(result.getProceedingImageUrls()).hasSize(mockProceedingImages.size());
 
-        verify(proceedingRepository).findByIdAndUserId(userId, proceedingId);
+        verify(proceedingRepository).findByIdAndUserId(proceedingId, userId);
         verify(proceedingImageRepository).findProceedingImageById(proceedingId);
     }
 
@@ -154,6 +154,7 @@ public class ProceedingServiceTest {
         assertThatThrownBy(() -> proceedingService.getProceedingDetails(userId, proceedingId))
                 .isInstanceOf(ProceedingException.class);
     }
+
     @DisplayName("업무일지 삭제: 업무일지 삭제 작업 확인")
     @Test
     void deleteProceeding() {
@@ -173,6 +174,7 @@ public class ProceedingServiceTest {
         verify(proceedingRepository).findByIdAndUserId(userId, proceedingId);
         verify(proceedingRepository).delete(mockProceeding);
     }
+
     @DisplayName("업무일지 수정: 요청된 값에 따른 업무일지 수정 확인")
     @Test
     void updateClassLog() {
@@ -184,7 +186,8 @@ public class ProceedingServiceTest {
 
         when(proceedingRepository.findByIdAndUserId(userId, proceedingId)).thenReturn(Optional.of(mockProceeding));
 
-        ProceedingResponseDto result = proceedingService.updateProceeding(userId, proceedingId, proceedingUpdateRequestDto,
+        ProceedingResponseDto result = proceedingService.updateProceeding(userId, proceedingId,
+                proceedingUpdateRequestDto,
                 proceedingImages);
 
         assertThat(result).isNotNull();
