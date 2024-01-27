@@ -43,9 +43,9 @@ public class ScheduleService {
         return ScheduleResponseDto.of(scheduleRepository.save(schedule));
     }
 
-    public ScheduleResponseDto updateSchedule(ScheduleUpdateRequestDto dto, Long scheduleId, PrincipalDetails user) {
+    public ScheduleResponseDto updateSchedule(ScheduleUpdateRequestDto dto, Long scheduleId, Long userId) {
 
-        User currentUser = checkCurrentUser(user.getId());
+        User currentUser = checkCurrentUser(userId);
         Schedule schedule = authorizationWriter(scheduleId, currentUser);
 
         updateEachScheduleItem(dto, schedule);
@@ -68,9 +68,9 @@ public class ScheduleService {
         }
     }
 
-    public ScheduleDeleteResponseDto deleteSchedule(Long scheduleId, PrincipalDetails user) {
+    public ScheduleDeleteResponseDto deleteSchedule(Long scheduleId, Long userId) {
 
-        User currentUser = checkCurrentUser(user.getId());
+        User currentUser = checkCurrentUser(userId);
         Schedule own = authorizationWriter(scheduleId, currentUser);
 
         scheduleRepository.deleteById(own.getId());
@@ -99,7 +99,7 @@ public class ScheduleService {
 
 
     // 학기당 남은 일수
-    @Transactional
+    @Transactional(readOnly = true)
     public long countLeftDays(LocalDate startDate, LocalDate endDate) {
 
         log.info(" 날짜 차이 : {} 일", startDate.until(endDate, ChronoUnit.DAYS));

@@ -134,7 +134,7 @@ public class TodoServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        todoService.deleteTodo(todo1.getId(), todo1.getUser().getId());
+        todoService.deleteTodo(todo1.getId(), user1.getId());
 
         // then
         assertThatThrownBy(() -> todoService.deleteTodo(todo1.getId(), user1.getId()))
@@ -227,11 +227,11 @@ public class TodoServiceTest {
                 .content("test1")
                 .build();
 
-        todoService.updateTodos(dto, todo1.getId(), user1.getId());
+        TodoResponseDto response = todoService.updateTodos(dto, todo1.getId(), user1.getId());
 
         // then
-        assertThat(todo1.getContent()).isEqualTo(dto.getContent());
-        assertThat(todo1.getDate()).isEqualTo(dto.getDate());
+        assertThat(response.getContent()).isEqualTo(dto.getContent());
+        assertThat(response.getDate()).isEqualTo(dto.getDate());
     }
 
     @Test

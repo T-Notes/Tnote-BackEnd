@@ -62,7 +62,7 @@ public class TodoController {
     // 홈페이지에서 특정 날짜에 대한 todo list 조회 ( 날짜 안넘겨주면 오늘 날짜로 기본으로 매핑 )
     @GetMapping
     public ResponseEntity<Result> findTodo(
-            @RequestParam(defaultValue = "1970-01-01", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @AuthenticationPrincipal PrincipalDetails user) {
 
         if (date == null) {

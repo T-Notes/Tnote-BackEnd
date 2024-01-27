@@ -40,10 +40,8 @@ public class TodoService {
     }
 
     private User checkCurrentUser(Long id) {
-        User currentUser = userRepository.findById(id)
+        return userRepository.findById(id)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
-
-        return currentUser;
     }
 
     private Todo authorization(Long id, User member) {
