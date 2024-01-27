@@ -79,7 +79,7 @@ public class ConsultationService {
         Consultation consultation = consultationRepository.findByIdAndUserId(userId, consultationId)
                 .orElseThrow(() -> new ConsultationException(
                         ConsultationErrorResult.CONSULTATION_NOT_FOUNT));
-        List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultation_Id(
+        List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultationId(
                 consultationId);
         return new ConsultationDetailResponseDto(consultation, consultationImages);
     }

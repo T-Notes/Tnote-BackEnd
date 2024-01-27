@@ -153,7 +153,7 @@ public class ConsultationServiceTest {
         List<ConsultationImage> mockClassLogImages = new ArrayList<>();
 
         when(consultationRepository.findByIdAndUserId(userId, consultationId)).thenReturn(Optional.of(mockConsultation));
-        when(consultationImageRepository.findConsultationImageByConsultation_Id(consultationId)).thenReturn(mockClassLogImages);
+        when(consultationImageRepository.findConsultationImageByConsultationId(consultationId)).thenReturn(mockClassLogImages);
 
         ConsultationDetailResponseDto result = consultationService.getConsultationDetail(userId, consultationId);
 
@@ -163,7 +163,7 @@ public class ConsultationServiceTest {
         assertThat(result.getConsultationImageUrls()).hasSize(mockClassLogImages.size());
 
         verify(consultationRepository).findByIdAndUserId(userId, consultationId);
-        verify(consultationImageRepository).findConsultationImageByConsultation_Id(consultationId);
+        verify(consultationImageRepository).findConsultationImageByConsultationId(consultationId);
     }
     @DisplayName("존재하지 않는 상담일지의 상세정보 조회 시 예외 발생")
     @Test
