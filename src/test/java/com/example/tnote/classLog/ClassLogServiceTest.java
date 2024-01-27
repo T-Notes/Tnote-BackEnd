@@ -130,7 +130,7 @@ public class ClassLogServiceTest {
         List<ClassLogImage> mockClassLogImages = List.of(mockClassLogImage1, mockClassLogImage2);
 
         when(classLogRepository.findByIdAndUserId(userId, classLogId)).thenReturn(Optional.of(mockClassLog));
-        when(classLogImageRepository.findClassLogImagesByClassLog_Id(classLogId)).thenReturn(mockClassLogImages);
+        when(classLogImageRepository.findClassLogImagesByClassLogId(classLogId)).thenReturn(mockClassLogImages);
 
         ClassLogDetailResponseDto result = classLogService.getClassLogDetail(userId, classLogId);
 
@@ -140,7 +140,7 @@ public class ClassLogServiceTest {
         assertThat(result.getClassLogImageUrls()).hasSize(mockClassLogImages.size());
 
         verify(classLogRepository).findByIdAndUserId(userId, classLogId);
-        verify(classLogImageRepository).findClassLogImagesByClassLog_Id(classLogId);
+        verify(classLogImageRepository).findClassLogImagesByClassLogId(classLogId);
     }
 
     @DisplayName("존재하지 않는 학급일지의 상세정보 조회 시 예외 발생")

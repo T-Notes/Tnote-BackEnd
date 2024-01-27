@@ -76,7 +76,7 @@ public class ClassLogService {
     public ClassLogDetailResponseDto getClassLogDetail(Long userId, Long classLogId) {
         ClassLog classLog = classLogRepository.findByIdAndUserId(userId, classLogId)
                 .orElseThrow(() -> new ClassLogException(ClassLogErrorResult.CLASS_LOG_NOT_FOUNT));
-        List<ClassLogImage> classLogImages = classLogImageRepository.findClassLogImagesByClassLog_Id(classLogId);
+        List<ClassLogImage> classLogImages = classLogImageRepository.findClassLogImagesByClassLogId(classLogId);
         return new ClassLogDetailResponseDto(classLog, classLogImages);
     }
 
