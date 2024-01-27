@@ -1,5 +1,7 @@
 package com.example.tnote.utils;
 
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.todo.entity.Todo;
 import com.example.tnote.boundedContext.todo.repository.TodoRepository;
 import com.example.tnote.boundedContext.user.dto.UserRequest;
@@ -18,6 +20,7 @@ public class TestSyUtils {
 
     private final UserRepository userRepository;
     private final TodoRepository todoRepository;
+    private final ScheduleRepository scheduleRepository;
 
     public void login(PrincipalDetails user) {
         SecurityContextHolder.getContext()
@@ -54,6 +57,19 @@ public class TestSyUtils {
                 .build();
 
         return todoRepository.save(todo);
+    }
+
+    public Schedule createSchedule(String semesterName, String lastClass, User user, LocalDate startDate,
+                                   LocalDate endDate) {
+        Schedule schedule = Schedule.builder()
+                .semesterName(semesterName)
+                .lastClass(lastClass)
+                .user(user)
+                .startDate(startDate)
+                .endDate(endDate)
+                .build();
+
+        return scheduleRepository.save(schedule);
     }
 
     public UserRequest createUserRequest(String email, String name) {
