@@ -12,6 +12,7 @@ import static org.mockito.Mockito.when;
 import com.example.tnote.base.exception.classLog.ClassLogException;
 import com.example.tnote.base.exception.observation.ObservationException;
 import com.example.tnote.base.exception.user.UserException;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
@@ -157,5 +158,23 @@ public class ObservationServiceTest {
 
         assertThatThrownBy(() -> observationService.readObservationDetail(userId, observationId))
                 .isInstanceOf(ObservationException.class);
+    }
+    @DisplayName("관찰일지 삭제: 관찰일지 삭제 작업 확인")
+    @Test
+    void deleteClassLog() {
+        Long userId = 1L;
+        Long observationId = 1L;
+
+        Observation mockObservation = mock(Observation.class);
+        when(mockObservation.getId()).thenReturn(observationId);
+        when(observationRepository.findByIdAndUserId(observationId, userId)).thenReturn(Optional.of(mockObservation));
+
+        ObservationDeleteResponseDto result = observationService.deleteObservation(userId, observationId);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(observationId);
+
+        verify(observationRepository).findByIdAndUserId(observationId,userId);
+        verify(observationRepository).delete(mockObservation);
     }
 }
