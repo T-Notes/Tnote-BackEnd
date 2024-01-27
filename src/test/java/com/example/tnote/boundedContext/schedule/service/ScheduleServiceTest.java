@@ -241,7 +241,17 @@ class ScheduleServiceTest {
 
 
     @Test
+    @DisplayName("학기 남은 날짜 계산")
     void countLeftDays() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+        long diffDays = scheduleService.countLeftDays(schedule1.getStartDate(), schedule1.getEndDate());
+
+        // then
+        assertThat(diffDays).isEqualTo(92);
     }
 
     @Test

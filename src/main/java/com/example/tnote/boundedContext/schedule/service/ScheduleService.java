@@ -99,7 +99,7 @@ public class ScheduleService {
 
 
     // 학기당 남은 일수
-    @Transactional
+    @Transactional(readOnly = true)
     public long countLeftDays(LocalDate startDate, LocalDate endDate) {
 
         log.info(" 날짜 차이 : {} 일", startDate.until(endDate, ChronoUnit.DAYS));
