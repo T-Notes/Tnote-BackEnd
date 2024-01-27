@@ -1,14 +1,19 @@
 package com.example.tnote.consultation;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.tnote.base.exception.consultation.ConsultationErrorResult;
 import com.example.tnote.base.exception.consultation.ConsultationException;
+import com.example.tnote.base.exception.user.UserException;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
@@ -23,7 +28,9 @@ import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -31,6 +38,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
 public class ConsultationServiceTest {
@@ -96,4 +104,39 @@ public class ConsultationServiceTest {
         assertThatThrownBy(() -> consultationService.save(userId, requestDto, Collections.emptyList()))
                 .isInstanceOf(ConsultationException.class);
     }
+    @DisplayName("상담일지 저장: 존재하지 않는 사용자로 인한 예외 발생 확인")
+    @Test
+    void noUserSave() {
+        Long userId = 1L;
+        ConsultationRequestDto requestDto = mock(ConsultationRequestDto.class);
+        List<MultipartFile> consultationImages = Collections.emptyList();
+
+        when(userRepository.findById(userId)).thenReturn(Optional.empty());
+
+        assertThatExceptionOfType(UserException.class)
+                .isThrownBy(() -> consultationService.save(userId, requestDto, consultationImages));
+
+        verify(userRepository).findById(userId);
+        verify(consultationRepository, never()).save(any(Consultation.class));
+    }
+
+    @DisplayName("상담일지 조회: 작성자가 작성한 모든 상담일지 조회 확인")
+    @Test
+    void getConsultations() {
+        Long userId = 1L;
+
+        Consultation mockConsultation1 = mock(Consultation.class);
+        Consultation mockConsultation2 = mock(Consultation.class);
+        List<Consultation> mockConsultations = Arrays.asList(mockConsultation1, mockConsultation2);
+
+        when(consultationRepository.findAllByUserId(userId)).thenReturn(mockConsultations);
+        List<ConsultationResponseDto> result = consultationService.readAllConsultation(userId);
+
+        assertThat(result)
+                .isNotNull()
+                .hasSize(2);
+
+        verify(consultationRepository).findAllByUserId(userId);
+    }
+
 }
