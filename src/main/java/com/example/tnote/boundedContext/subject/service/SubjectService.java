@@ -39,9 +39,15 @@ public class SubjectService {
     private final SubjectQueryRepository subjectQueryRepository;
 
     @Transactional
-    public SubjectResponseDto addSubjects(SubjectRequestDto dto) {
+    public SubjectResponseDto addSubjects(SubjectRequestDto dto, Long userId) {
 
         Schedule currentSchedule = checkCurrentSchedule(dto.getScheduleId());
+        User currentUser = checkCurrentUser(userId);
+
+        if (!currentUser.equals(currentSchedule.getUser())) {
+            log.warn("현재 유저와 스케쥴을 작성한 유저가 다릅니다");
+            throw new SubjectsException(SubjectsErrorResult.SUBJECT_NOT_FOUND);
+        }
 
         Subjects subjects = dto.toEntity(currentSchedule);
 

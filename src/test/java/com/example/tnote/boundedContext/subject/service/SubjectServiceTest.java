@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.subject.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -74,6 +76,30 @@ class SubjectServiceTest {
         assertThat(sub.getClassDay()).isEqualTo(ClassDay.WEDNESDAY);
         assertThat(sub.getClassLocation()).isEqualTo("3반교실");
         assertThat(sub.getSchedule().getId()).isEqualTo(schedule1.getId());
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저가 과목 작성 실패")
+    void notLoginAddSubjects() {
+
+        // given
+
+        SubjectRequestDto dto = SubjectRequestDto.builder()
+                .memo("test1")
+                .classLocation("3반교실")
+                .classTime("9교시")
+                .classDay(ClassDay.WEDNESDAY)
+                .subjectName("물리")
+                .color("green")
+                .date(LocalDate.parse("2024-01-27"))
+                .scheduleId(schedule1.getId())
+                .build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> subjectService.addSubjects(dto, null))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
     @Test
