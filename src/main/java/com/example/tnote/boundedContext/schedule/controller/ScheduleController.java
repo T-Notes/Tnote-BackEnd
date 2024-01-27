@@ -120,7 +120,7 @@ public class ScheduleController {
     public ResponseEntity<Result> findWeek(@PathVariable("scheduleId") Long scheduleId,
                                            @AuthenticationPrincipal PrincipalDetails user) {
 
-        List<ScheduleResponseDto> response = scheduleService.getAll(scheduleId, user);
+        List<ScheduleResponseDto> response = scheduleService.getAll(scheduleId, user.getId());
         return ResponseEntity.ok(Result.of(response));
     }
 

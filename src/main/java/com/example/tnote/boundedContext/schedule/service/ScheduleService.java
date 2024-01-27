@@ -108,9 +108,9 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<ScheduleResponseDto> getAll(Long scheduleId, PrincipalDetails user) {
+    public List<ScheduleResponseDto> getAll(Long scheduleId, Long userId) {
 
-        User currentUser = checkCurrentUser(user.getId());
+        User currentUser = checkCurrentUser(userId);
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
         ;

@@ -14,6 +14,7 @@ import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.service.auth.PrincipalDetailService;
 import com.example.tnote.utils.TestSyUtils;
 import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -255,7 +256,63 @@ class ScheduleServiceTest {
     }
 
     @Test
+    @DisplayName("학기 정보 조회 성공")
     void getAll() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+        List<ScheduleResponseDto> all = scheduleService.getAll(schedule1.getId(), user1.getId());
+
+        // then
+        assertThat(all.get(0).getSemesterName()).isEqualTo(schedule1.getSemesterName());
+        assertThat(all.get(0).getLastClass()).isEqualTo(schedule1.getLastClass());
+        assertThat(all.get(0).getEmail()).isEqualTo(schedule1.getUser().getEmail());
+        assertThat(all.get(0).getStartDate()).isEqualTo(schedule1.getStartDate());
+        assertThat(all.get(0).getEndDate()).isEqualTo(schedule1.getEndDate());
+
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 학기 정보 조회 실패")
+    void notExistGetAll() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> scheduleService.getAll(222L, user1.getId()))
+                .isInstanceOf(ScheduleException.class);
+    }
+
+    @Test
+    @DisplayName("다른 유저의 학기 정보 조회 실패")
+    void otherUserGetAll() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> scheduleService.getAll(schedule1.getId(), 222L))
+                .isInstanceOf(UserException.class);
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저의 학기 정보 조회 실패")
+    void notLoginGetAll() {
+
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> scheduleService.getAll(schedule1.getId(), null))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
     @Test
