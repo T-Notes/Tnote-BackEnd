@@ -13,7 +13,8 @@ public interface ClassLogRepository extends JpaRepository<ClassLog, Long> {
 
     @Query("select cl from ClassLog cl " +
             "where cl.id = :classLogId and cl.user.id = :userId")
-    Optional<ClassLog> findByIdAndUserId(Long userId, Long classLogId);
+    Optional<ClassLog> findByIdAndUserId(Long classLogId, Long userId);
+
     List<ClassLog> findByUserIdAndStartDateBetween(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay);
 
 }

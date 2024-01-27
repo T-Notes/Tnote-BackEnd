@@ -129,7 +129,7 @@ public class ClassLogServiceTest {
 
         List<ClassLogImage> mockClassLogImages = List.of(mockClassLogImage1, mockClassLogImage2);
 
-        when(classLogRepository.findByIdAndUserId(userId, classLogId)).thenReturn(Optional.of(mockClassLog));
+        when(classLogRepository.findByIdAndUserId(classLogId, userId)).thenReturn(Optional.of(mockClassLog));
         when(classLogImageRepository.findClassLogImagesByClassLogId(classLogId)).thenReturn(mockClassLogImages);
 
         ClassLogDetailResponseDto result = classLogService.getClassLogDetail(userId, classLogId);
@@ -149,7 +149,7 @@ public class ClassLogServiceTest {
         Long userId = 1L;
         Long classLogId = 100L;
 
-        when(classLogRepository.findByIdAndUserId(userId, classLogId)).thenReturn(Optional.empty());
+        when(classLogRepository.findByIdAndUserId(classLogId, userId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> classLogService.getClassLogDetail(userId, classLogId))
                 .isInstanceOf(ClassLogException.class);
@@ -164,7 +164,7 @@ public class ClassLogServiceTest {
         ClassLog mockClassLog = mock(ClassLog.class);
         when(mockClassLog.getId()).thenReturn(classLogId);
 
-        when(classLogRepository.findByIdAndUserId(userId, classLogId)).thenReturn(Optional.of(mockClassLog));
+        when(classLogRepository.findByIdAndUserId(classLogId, userId)).thenReturn(Optional.of(mockClassLog));
 
         ClassLogDeleteResponseDto result = classLogService.deleteClassLog(userId, classLogId);
 
@@ -184,7 +184,7 @@ public class ClassLogServiceTest {
         ClassLogUpdateRequestDto classLogUpdateRequestDto = mock(ClassLogUpdateRequestDto.class);
         List<MultipartFile> classLogImages = Collections.emptyList();
 
-        when(classLogRepository.findByIdAndUserId(userId, classLogId)).thenReturn(Optional.of(mockClassLog));
+        when(classLogRepository.findByIdAndUserId(classLogId, userId)).thenReturn(Optional.of(mockClassLog));
 
         ClassLogResponseDto result = classLogService.updateClassLog(userId, classLogId, classLogUpdateRequestDto,
                 classLogImages);
