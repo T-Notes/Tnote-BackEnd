@@ -4,6 +4,7 @@ import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.todo.dto.TodoDeleteResponseDto;
 import com.example.tnote.boundedContext.todo.dto.TodoRequestDto;
 import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
+import com.example.tnote.boundedContext.todo.dto.TodoUpdateRequestDto;
 import com.example.tnote.boundedContext.todo.service.TodoService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.time.LocalDate;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -34,7 +36,17 @@ public class TodoController {
     public ResponseEntity<Result> saveTodo(@RequestBody TodoRequestDto dto,
                                            @AuthenticationPrincipal PrincipalDetails user) {
 
-        TodoResponseDto response = todoService.saveTodo(dto, user);
+        TodoResponseDto response = todoService.saveTodo(dto, user.getId());
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    @PatchMapping("/{todoId}")
+    public ResponseEntity<Result> updateSubjects(@RequestBody TodoUpdateRequestDto dto,
+                                                 @PathVariable("todoId") Long todoId,
+                                                 @AuthenticationPrincipal PrincipalDetails user) {
+
+        TodoResponseDto response = todoService.updateTodos(dto, todoId, user.getId());
+
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -42,7 +54,7 @@ public class TodoController {
     public ResponseEntity<Result> deleteTodo(@PathVariable Long todoId,
                                              @AuthenticationPrincipal PrincipalDetails user) {
 
-        TodoDeleteResponseDto response = todoService.deleteTodo(todoId, user);
+        TodoDeleteResponseDto response = todoService.deleteTodo(todoId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -57,7 +69,7 @@ public class TodoController {
             date = LocalDate.now();
         }
 
-        List<TodoResponseDto> response = todoService.findAllTodos(date, user);
+        List<TodoResponseDto> response = todoService.findAllTodos(date, user.getId());
         return ResponseEntity.ok(Result.of(response));
     }
 }

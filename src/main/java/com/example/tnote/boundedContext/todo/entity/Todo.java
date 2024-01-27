@@ -36,4 +36,13 @@ public class Todo extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    public void updateDate(LocalDate date) {
+        this.date = date;
+    }
+
+    public void updateContent(String content) {
+        this.content = content;
+    }
+
 }

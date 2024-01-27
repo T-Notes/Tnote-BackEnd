@@ -1,8 +1,10 @@
 package com.example.tnote.boundedContext.user.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class UserUpdateRequest {
 
     private String schoolName;
