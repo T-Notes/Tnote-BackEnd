@@ -7,11 +7,11 @@ import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.todo.dto.TodoDeleteResponseDto;
 import com.example.tnote.boundedContext.todo.dto.TodoRequestDto;
 import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
+import com.example.tnote.boundedContext.todo.dto.TodoUpdateRequestDto;
 import com.example.tnote.boundedContext.todo.entity.Todo;
 import com.example.tnote.boundedContext.todo.repository.TodoQueryRepository;
 import com.example.tnote.boundedContext.todo.repository.TodoRepository;
 import com.example.tnote.boundedContext.user.entity.User;
-import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -29,9 +29,10 @@ public class TodoService {
     private final TodoRepository todoRepository;
     private final TodoQueryRepository todoQueryRepository;
 
-    public TodoResponseDto saveTodo(TodoRequestDto dto, PrincipalDetails user) {
+    @Transactional
+    public TodoResponseDto saveTodo(TodoRequestDto dto, Long userId) {
 
-        User currentUser = checkCurrentUser(user.getId());
+        User currentUser = checkCurrentUser(userId);
 
         Todo todo = dto.toEntity(currentUser);
 
@@ -58,9 +59,10 @@ public class TodoService {
 
     }
 
-    public TodoDeleteResponseDto deleteTodo(Long todoId, PrincipalDetails user) {
+    @Transactional
+    public TodoDeleteResponseDto deleteTodo(Long todoId, Long userId) {
 
-        User currentUser = checkCurrentUser(user.getId());
+        User currentUser = checkCurrentUser(userId);
         Todo todo = authorization(todoId, currentUser);
 
         todoRepository.deleteById(todo.getId());
@@ -70,9 +72,29 @@ public class TodoService {
     }
 
     @Transactional(readOnly = true)
-    public List<TodoResponseDto> findAllTodos(LocalDate date, PrincipalDetails user) {
+    public List<TodoResponseDto> findAllTodos(LocalDate date, Long userId) {
 
         return TodoResponseDto.of(
-                todoQueryRepository.findAllByUserIdAndDate(user.getId(), date));
+                todoQueryRepository.findAllByUserIdAndDate(userId, date));
+    }
+
+    @Transactional
+    public TodoResponseDto updateTodos(TodoUpdateRequestDto dto, Long todoId, Long userId) {
+
+        User currentUser = checkCurrentUser(userId);
+        Todo todos = authorization(todoId, currentUser);
+
+        updateEachTodosItem(dto, todos);
+
+        return TodoResponseDto.of(todos);
+    }
+
+    private void updateEachTodosItem(TodoUpdateRequestDto dto, Todo todos) {
+        if (dto.hasDate()) {
+            todos.updateDate(dto.getDate());
+        }
+        if (dto.hasContent()) {
+            todos.updateContent(dto.getContent());
+        }
     }
 }

@@ -4,11 +4,11 @@ import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.CookieUtils;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
+import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
 import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
 import com.example.tnote.boundedContext.user.entity.User;
-import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -79,9 +79,9 @@ public class UserService {
     }
 
     @Transactional
-    public void deleteUser(PrincipalDetails user, String email) {
+    public UserDeleteResponseDto deleteUser(Long userId, String email) {
 
-        User currentUser = userRepository.findById(user.getId())
+        User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
         if (!email.equals(currentUser.getEmail())) {
@@ -91,11 +91,15 @@ public class UserService {
         log.info("refresh token, user entity 삭제");
         refreshTokenRepository.deleteByKeyEmail(currentUser.getEmail());
         userRepository.delete(currentUser);
+
+        return UserDeleteResponseDto.builder()
+                .id(currentUser.getId())
+                .build();
     }
 
-    public void logout(HttpServletRequest request, HttpServletResponse response, PrincipalDetails user) {
+    public void logout(HttpServletRequest request, HttpServletResponse response, Long userId) {
 
-        userRepository.findById(user.getId())
+        userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
         CookieUtils.deleteCookie(request, response, "AccessToken");
@@ -169,8 +173,9 @@ public class UserService {
         return result;
     }
 
-    public UserMailResponse getMail(PrincipalDetails user) {
-        User currentUser = userRepository.findById(user.getId())
+    @Transactional(readOnly = true)
+    public UserMailResponse getMail(Long userId) {
+        User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
         return UserMailResponse.of(currentUser);
     }
