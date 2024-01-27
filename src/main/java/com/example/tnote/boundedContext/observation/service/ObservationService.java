@@ -73,7 +73,7 @@ public class ObservationService {
     public ObservationDeleteResponseDto deleteObservation(Long userId, Long observationId) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
                 .orElseThrow(() -> new ObservationException(
-                        ObservationErrorResult.OBSERVATION_NOT_FOUNT);
+                        ObservationErrorResult.OBSERVATION_NOT_FOUNT));
         observationRepository.delete(observation);
 
         return ObservationDeleteResponseDto.builder()

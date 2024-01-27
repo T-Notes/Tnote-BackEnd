@@ -2,12 +2,15 @@ package com.example.tnote.observation;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.example.tnote.base.exception.classLog.ClassLogException;
+import com.example.tnote.base.exception.observation.ObservationException;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
@@ -144,5 +147,15 @@ public class ObservationServiceTest {
         verify(observationRepository).findByIdAndUserId(userId, observationId);
         verify(observationImageRepository).findObservationImageById(observationId);
     }
+    @DisplayName("존재하지 않는 관찰일지의 상세정보 조회 시 예외 발생")
+    @Test
+    void getDetailException() {
+        Long userId = 1L;
+        Long observationId = 100L;
 
+        when(observationRepository.findByIdAndUserId(observationId, userId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> observationService.readObservationDetail(userId, observationId))
+                .isInstanceOf(ObservationException.class);
+    }
 }
