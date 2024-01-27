@@ -16,7 +16,6 @@ import com.example.tnote.boundedContext.user.service.auth.PrincipalDetailService
 import com.example.tnote.utils.TestSyUtils;
 import java.time.LocalDate;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -27,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-@Slf4j
 public class TodoServiceTest {
     @Autowired
     TestSyUtils testSyUtils;
@@ -71,6 +69,24 @@ public class TodoServiceTest {
         // then
         assertThat(todo.getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
         assertThat(todo.getContent()).isEqualTo("test1");
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 user todo 작성 실패")
+    void notLoginSaveTodo() {
+
+        // given
+
+        TodoRequestDto dto = TodoRequestDto.builder()
+                .date(LocalDate.parse("2024-01-27"))
+                .content("test1")
+                .build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> todoService.saveTodo(dto, null))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
     @Test
