@@ -1,5 +1,9 @@
 package com.example.tnote.boundedContext.observation.service;
 
+import com.example.tnote.base.exception.consultation.ConsultationErrorResult;
+import com.example.tnote.base.exception.consultation.ConsultationException;
+import com.example.tnote.base.exception.observation.ObservationErrorResult;
+import com.example.tnote.base.exception.observation.ObservationException;
 import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
@@ -59,13 +63,17 @@ public class ObservationService {
 
     @Transactional(readOnly = true)
     public ObservationDetailResponseDto readObservationDetail(Long userId, Long observationId) {
-        Observation observation = observationRepository.findByIdAndUserId(observationId, userId).orElseThrow();
+        Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
+                .orElseThrow(() -> new ObservationException(
+                        ObservationErrorResult.OBSERVATION_NOT_FOUNT));
         List<ObservationImage> observationImages = observationImageRepository.findObservationImageById(observationId);
         return new ObservationDetailResponseDto(observation, observationImages);
     }
 
     public ObservationDeleteResponseDto deleteObservation(Long userId, Long observationId) {
-        Observation observation = observationRepository.findByIdAndUserId(observationId, userId).orElseThrow();
+        Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
+                .orElseThrow(() -> new ObservationException(
+                        ObservationErrorResult.OBSERVATION_NOT_FOUNT);
         observationRepository.delete(observation);
 
         return ObservationDeleteResponseDto.builder()
@@ -76,7 +84,9 @@ public class ObservationService {
     public ObservationResponseDto updateObservation(Long userId, Long observationId,
                                                     ObservationUpdateRequestDto requestDto,
                                                     List<MultipartFile> observationImages) {
-        Observation observation = observationRepository.findByIdAndUserId(observationId, userId).orElseThrow();
+        Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
+                .orElseThrow(() -> new ObservationException(
+                        ObservationErrorResult.OBSERVATION_NOT_FOUNT));
         updateEachItem(observation, requestDto, observationImages);
         return ObservationResponseDto.of(observation);
     }
