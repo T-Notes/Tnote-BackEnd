@@ -12,11 +12,15 @@ import static org.mockito.Mockito.when;
 import com.example.tnote.base.exception.consultation.ConsultationErrorResult;
 import com.example.tnote.base.exception.consultation.ConsultationException;
 import com.example.tnote.base.exception.user.UserException;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
+import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationImageRepository;
@@ -28,6 +32,7 @@ import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -138,5 +143,32 @@ public class ConsultationServiceTest {
 
         verify(consultationRepository).findAllByUserId(userId);
     }
+    @DisplayName("상담일지 상세 조회: 상담일지 상세 정보 조회 확인")
+    @Test
+    void getConsultationDetails() {
+        Long userId = 1L;
+        Long consultationId = 1L;
 
+        User mockUser = mock(User.class);
+        when(mockUser.getId()).thenReturn(userId);
+
+        Consultation mockConsultation = mock(Consultation.class);
+        when(mockConsultation.getId()).thenReturn(consultationId);
+        when(mockConsultation.getUser()).thenReturn(mockUser);
+
+        List<ConsultationImage> mockClassLogImages = new ArrayList<>();
+
+        when(consultationRepository.findByIdAndUserId(userId, consultationId)).thenReturn(Optional.of(mockConsultation));
+        when(consultationImageRepository.findConsultationImageByConsultation_Id(consultationId)).thenReturn(mockClassLogImages);
+
+        ConsultationDetailResponseDto result = consultationService.getConsultationDetail(userId, consultationId);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(consultationId);
+        assertThat(result.getUserId()).isEqualTo(userId);
+        assertThat(result.getConsultationImageUrls()).hasSize(mockClassLogImages.size());
+
+        verify(consultationRepository).findByIdAndUserId(userId, consultationId);
+        verify(consultationImageRepository).findConsultationImageByConsultation_Id(consultationId);
+    }
 }
