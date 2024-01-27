@@ -39,9 +39,7 @@ public class TodoServiceTest {
     PrincipalDetailService principalDetailService;
 
     User user1;
-    User user2;
     PrincipalDetails principalDetails;
-    PrincipalDetails principalDetails2;
     Todo todo1;
     Todo todo2;
 
