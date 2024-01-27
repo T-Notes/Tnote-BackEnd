@@ -152,7 +152,7 @@ public class ConsultationServiceTest {
 
         List<ConsultationImage> mockClassLogImages = new ArrayList<>();
 
-        when(consultationRepository.findByIdAndUserId(userId, consultationId)).thenReturn(Optional.of(mockConsultation));
+        when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(Optional.of(mockConsultation));
         when(consultationImageRepository.findConsultationImageByConsultationId(consultationId)).thenReturn(mockClassLogImages);
 
         ConsultationDetailResponseDto result = consultationService.getConsultationDetail(userId, consultationId);
@@ -162,7 +162,7 @@ public class ConsultationServiceTest {
         assertThat(result.getUserId()).isEqualTo(userId);
         assertThat(result.getConsultationImageUrls()).hasSize(mockClassLogImages.size());
 
-        verify(consultationRepository).findByIdAndUserId(userId, consultationId);
+        verify(consultationRepository).findByIdAndUserId(consultationId, userId);
         verify(consultationImageRepository).findConsultationImageByConsultationId(consultationId);
     }
     @DisplayName("존재하지 않는 상담일지의 상세정보 조회 시 예외 발생")
@@ -171,7 +171,7 @@ public class ConsultationServiceTest {
         Long userId = 1L;
         Long consultationId = 100L;
 
-        when(consultationRepository.findByIdAndUserId(userId, consultationId)).thenReturn(Optional.empty());
+        when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> consultationService.getConsultationDetail(userId, consultationId))
                 .isInstanceOf(ConsultationException.class);
@@ -185,7 +185,7 @@ public class ConsultationServiceTest {
         Consultation mockConsultation = mock(Consultation.class);
         when(mockConsultation.getId()).thenReturn(consultationId);
 
-        when(consultationRepository.findByIdAndUserId(userId, consultationId)).thenReturn(Optional.of(mockConsultation));
+        when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(Optional.of(mockConsultation));
 
         ConsultationDeleteResponseDto result = consultationService.deleteClassLog(userId, consultationId);
 
@@ -204,7 +204,7 @@ public class ConsultationServiceTest {
         ConsultationUpdateRequestDto classLogUpdateRequestDto = mock(ConsultationUpdateRequestDto.class);
         List<MultipartFile> consultationImages = Collections.emptyList();
 
-        when(consultationRepository.findByIdAndUserId(userId, consultationId)).thenReturn(Optional.of(mockConsultation));
+        when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(Optional.of(mockConsultation));
 
         ConsultationResponseDto result = consultationService.updateConsultation(userId, consultationId, classLogUpdateRequestDto,
                 consultationImages);

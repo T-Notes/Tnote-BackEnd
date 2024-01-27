@@ -63,7 +63,7 @@ public class ConsultationService {
     }
 
     public ConsultationDeleteResponseDto deleteClassLog(Long userId, Long consultationId) {
-        Consultation consultation = consultationRepository.findByIdAndUserId(userId, consultationId)
+        Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> new ConsultationException(
                         ConsultationErrorResult.CONSULTATION_NOT_FOUNT));
         ;
@@ -76,7 +76,7 @@ public class ConsultationService {
 
     @Transactional(readOnly = true)
     public ConsultationDetailResponseDto getConsultationDetail(Long userId, Long consultationId) {
-        Consultation consultation = consultationRepository.findByIdAndUserId(userId, consultationId)
+        Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> new ConsultationException(
                         ConsultationErrorResult.CONSULTATION_NOT_FOUNT));
         List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultationId(
@@ -87,7 +87,7 @@ public class ConsultationService {
     public ConsultationResponseDto updateConsultation(Long userId, Long consultationId,
                                                       ConsultationUpdateRequestDto requestDto,
                                                       List<MultipartFile> consultationImages) {
-        Consultation consultation = consultationRepository.findByIdAndUserId(userId, consultationId)
+        Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> new ConsultationException(
                         ConsultationErrorResult.CONSULTATION_NOT_FOUNT));
         ;
