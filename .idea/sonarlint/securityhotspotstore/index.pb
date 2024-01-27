@@ -110,13 +110,9 @@ Tsrc/main/java/com/example/tnote/boundedContext/user/service/KakaoRequestService
 Tsrc/main/java/com/example/tnote/boundedContext/schedule/service/ScheduleService.java,9/a/9a0af27bf70aa23b7959dfd952eeaa0c63fe1803
 t
 Dsrc/main/java/com/example/tnote/boundedContext/user/entity/User.java,4/8/48c5cafe1b3b645340e1572a62a864e2c6922c38
-|
-Lsrc/main/java/com/example/tnote/boundedContext/todo/service/TodoService.java,3/b/3bc15ea259e8cda00e2902dc1cbf658e86529ddc
 }
 Msrc/main/java/com/example/tnote/boundedContext/user/dto/UserMailResponse.java,1/2/1233977888a03c04a09fdf125c5fefeb315a02ff
 x
 Hsrc/main/java/com/example/tnote/boundedContext/user/dto/UserRequest.java,3/8/38d5392fbd324fc2c9e81888206841b7d8eddd69
-‚
-Rsrc/main/java/com/example/tnote/boundedContext/subject/service/SubjectService.java,e/2/e2636a2c7558f0d2e7134c7e2e89183447772177
 Š
 Zsrc/main/java/com/example/tnote/boundedContext/observation/dto/ObservationResponseDto.java,d/f/dfc831a0095f61a9a27cea935bd5f75b78de1800
