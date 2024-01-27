@@ -13,10 +13,12 @@ import com.example.tnote.base.exception.classLog.ClassLogException;
 import com.example.tnote.base.exception.consultation.ConsultationErrorResult;
 import com.example.tnote.base.exception.consultation.ConsultationException;
 import com.example.tnote.base.exception.user.UserException;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
@@ -182,5 +184,24 @@ public class ConsultationServiceTest {
 
         assertThatThrownBy(() -> consultationService.getConsultationDetail(userId, consultationId))
                 .isInstanceOf(ConsultationException.class);
+    }
+    @DisplayName("상담일지 삭제: 상담일지 삭제 작업 확인")
+    @Test
+    void deleteConsultation() {
+        Long userId = 1L;
+        Long consultationId = 1L;
+
+        Consultation mockConsultation = mock(Consultation.class);
+        when(mockConsultation.getId()).thenReturn(consultationId);
+
+        when(consultationRepository.findByIdAndUserId(userId, consultationId)).thenReturn(Optional.of(mockConsultation));
+
+        ConsultationDeleteResponseDto result = consultationService.deleteClassLog(userId, consultationId);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(consultationId);
+
+        verify(consultationRepository).findByIdAndUserId(userId, consultationId);
+        verify(consultationRepository).delete(mockConsultation);
     }
 }
