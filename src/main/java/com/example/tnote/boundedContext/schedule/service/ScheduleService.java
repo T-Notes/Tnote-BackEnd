@@ -33,9 +33,9 @@ public class ScheduleService {
     private final UserRepository userRepository;
 
     @Transactional
-    public ScheduleResponseDto addSchedule(ScheduleRequestDto dto, PrincipalDetails user) {
+    public ScheduleResponseDto addSchedule(ScheduleRequestDto dto, Long userId) {
 
-        User currentUser = userRepository.findById(user.getId()).orElseThrow(
+        User currentUser = userRepository.findById(userId).orElseThrow(
                 () -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
         Schedule schedule = dto.toEntity(currentUser);

@@ -37,7 +37,7 @@ public class ScheduleController {
                                                @AuthenticationPrincipal PrincipalDetails user) {
 
         log.info("Schedule controller principal user : {}", user);
-        ScheduleResponseDto response = scheduleService.addSchedule(dto, user);
+        ScheduleResponseDto response = scheduleService.addSchedule(dto, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }

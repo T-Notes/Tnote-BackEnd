@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.schedule.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -60,10 +62,31 @@ class ScheduleServiceTest {
 
         // then
         assertThat(schedule.getSemesterName()).isEqualTo("test1");
-        assertThat(schedule.getLastClass()).isEqualTo("test1");
+        assertThat(schedule.getLastClass()).isEqualTo("9교시");
         assertThat(schedule.getUser()).isEqualTo(user1);
         assertThat(schedule.getStartDate()).isEqualTo("2024-03-01");
         assertThat(schedule.getEndDate()).isEqualTo(LocalDate.parse("2024-06-01"));
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저의 학기 작성 실패")
+    void notLoginAddSchedule() {
+
+        // given
+
+        ScheduleRequestDto dto = ScheduleRequestDto.builder()
+                .semesterName("test1")
+                .lastClass("9교시")
+                .email(user1.getEmail())
+                .startDate(LocalDate.parse("2024-03-01"))
+                .endDate(LocalDate.parse("2024-06-01"))
+                .build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> scheduleService.addSchedule(dto, null))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
     @Test
