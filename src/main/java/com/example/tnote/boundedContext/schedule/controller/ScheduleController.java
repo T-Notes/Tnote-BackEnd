@@ -47,7 +47,7 @@ public class ScheduleController {
     public ResponseEntity<Result> findSchedule(@PathVariable Long scheduleId,
                                                @AuthenticationPrincipal PrincipalDetails user) {
 
-        List<ScheduleResponseDto> response = scheduleService.findSchedule(scheduleId, user);
+        List<ScheduleResponseDto> response = scheduleService.findSchedule(scheduleId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -56,7 +56,7 @@ public class ScheduleController {
     @GetMapping("/list")
     public ResponseEntity<Result> findScheduleList(@AuthenticationPrincipal PrincipalDetails user) {
 
-        List<String> response = scheduleService.findScheduleList(user);
+        List<String> response = scheduleService.findScheduleList(user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -120,7 +120,7 @@ public class ScheduleController {
     public ResponseEntity<Result> findWeek(@PathVariable("scheduleId") Long scheduleId,
                                            @AuthenticationPrincipal PrincipalDetails user) {
 
-        List<ScheduleResponseDto> response = scheduleService.getAll(scheduleId, user);
+        List<ScheduleResponseDto> response = scheduleService.getAllSubjectsInfoBySchedule(scheduleId, user.getId());
         return ResponseEntity.ok(Result.of(response));
     }
 
