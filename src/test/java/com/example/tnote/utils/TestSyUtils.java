@@ -4,7 +4,6 @@ import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.todo.entity.Todo;
 import com.example.tnote.boundedContext.todo.repository.TodoRepository;
-import com.example.tnote.boundedContext.user.dto.UserRequest;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
@@ -70,21 +69,5 @@ public class TestSyUtils {
                 .build();
 
         return scheduleRepository.save(schedule);
-    }
-
-    public UserRequest createUserRequest(String email, String name) {
-        return createUserRequest(email, name, null, null, 0, false);
-    }
-
-    public UserRequest createUserRequest(String email, String name, String schoolName, String subject, int career,
-                                         boolean alarm) {
-        return UserRequest.builder()
-                .email(email)
-                .name(name)
-                .schoolName(schoolName)
-                .subject(subject)
-                .career(career)
-                .alarm(alarm)
-                .build();
     }
 }

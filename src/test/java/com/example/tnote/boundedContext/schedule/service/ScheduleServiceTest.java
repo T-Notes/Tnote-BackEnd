@@ -256,14 +256,14 @@ class ScheduleServiceTest {
     }
 
     @Test
-    @DisplayName("학기 정보 조회 성공")
+    @DisplayName("월~금 시간표에 넣을 데이터 조회 성공")
     void getAll() {
 
         // given
         testSyUtils.login(principalDetails);
 
         // when
-        List<ScheduleResponseDto> all = scheduleService.getAll(schedule1.getId(), user1.getId());
+        List<ScheduleResponseDto> all = scheduleService.getAllSubjectsInfoBySchedule(schedule1.getId(), user1.getId());
 
         // then
         assertThat(all.get(0).getSemesterName()).isEqualTo(schedule1.getSemesterName());
@@ -275,7 +275,7 @@ class ScheduleServiceTest {
     }
 
     @Test
-    @DisplayName("존재하지 않는 학기 정보 조회 실패")
+    @DisplayName("존재하지 않는 학기 월~금 시간표에 넣을 데이터 조회 실패")
     void notExistGetAll() {
 
         // given
@@ -284,12 +284,12 @@ class ScheduleServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> scheduleService.getAll(222L, user1.getId()))
+        assertThatThrownBy(() -> scheduleService.getAllSubjectsInfoBySchedule(222L, user1.getId()))
                 .isInstanceOf(ScheduleException.class);
     }
 
     @Test
-    @DisplayName("다른 유저의 학기 정보 조회 실패")
+    @DisplayName("다른 유저의 학기 월~금 시간표에 넣을 데이터 조회 실패")
     void otherUserGetAll() {
 
         // given
@@ -298,12 +298,12 @@ class ScheduleServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> scheduleService.getAll(schedule1.getId(), 222L))
+        assertThatThrownBy(() -> scheduleService.getAllSubjectsInfoBySchedule(schedule1.getId(), 222L))
                 .isInstanceOf(UserException.class);
     }
 
     @Test
-    @DisplayName("로그인 하지 않은 유저의 학기 정보 조회 실패")
+    @DisplayName("로그인 하지 않은 유저의 학기 월~금 시간표에 넣을 데이터 조회 실패")
     void notLoginGetAll() {
 
         // given
@@ -311,12 +311,67 @@ class ScheduleServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> scheduleService.getAll(schedule1.getId(), null))
+        assertThatThrownBy(() -> scheduleService.getAllSubjectsInfoBySchedule(schedule1.getId(), null))
                 .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
     @Test
+    @DisplayName("학기 조회 성공")
     void findSchedule() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+        List<ScheduleResponseDto> schedule = scheduleService.findSchedule(schedule1.getId(), user1.getId());
+
+        // then
+        assertThat(schedule.get(0).getSemesterName()).isEqualTo(schedule1.getSemesterName());
+        assertThat(schedule.get(0).getLastClass()).isEqualTo(schedule1.getLastClass());
+        assertThat(schedule.get(0).getEmail()).isEqualTo(schedule1.getUser().getEmail());
+        assertThat(schedule.get(0).getStartDate()).isEqualTo(schedule1.getStartDate());
+        assertThat(schedule.get(0).getEndDate()).isEqualTo(schedule1.getEndDate());
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저의 학기 조회 실패")
+    void notLoginFindSchedule() {
+
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> scheduleService.findSchedule(schedule1.getId(), null))
+                .isInstanceOf(UserException.class);
+    }
+
+    @Test
+    @DisplayName("다른 유저의 학기 조회 실패")
+    void otherUserFindSchedule() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> scheduleService.findSchedule(schedule1.getId(), 222L))
+                .isInstanceOf(UserException.class);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 학기 조회 실패")
+    void notExistFindSchedule() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> scheduleService.findSchedule(null, user1.getId()))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
     @Test
