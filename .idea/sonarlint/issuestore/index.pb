@@ -106,16 +106,12 @@ Ksrc/main/java/com/example/tnote/boundedContext/subject/entity/Subjects.java,5/
 ^src/main/java/com/example/tnote/boundedContext/home/repository/ObservationQueryRepository.java,e/6/e6af8557c8b086da3a19a32007adb746a04b1842
 „
 Tsrc/main/java/com/example/tnote/boundedContext/schedule/service/ScheduleService.java,9/a/9a0af27bf70aa23b7959dfd952eeaa0c63fe1803
-|
-Lsrc/main/java/com/example/tnote/boundedContext/todo/service/TodoService.java,3/b/3bc15ea259e8cda00e2902dc1cbf658e86529ddc
 t
 Dsrc/main/java/com/example/tnote/boundedContext/user/entity/User.java,4/8/48c5cafe1b3b645340e1572a62a864e2c6922c38
 „
 Tsrc/main/java/com/example/tnote/boundedContext/user/service/KakaoRequestService.java,d/d/dd1a6eb04f6028fd25ee62e53037139ed15e9c5b
 x
 Hsrc/main/java/com/example/tnote/boundedContext/user/dto/UserRequest.java,3/8/38d5392fbd324fc2c9e81888206841b7d8eddd69
-‚
-Rsrc/main/java/com/example/tnote/boundedContext/subject/service/SubjectService.java,e/2/e2636a2c7558f0d2e7134c7e2e89183447772177
 }
 Msrc/main/java/com/example/tnote/boundedContext/user/dto/UserMailResponse.java,1/2/1233977888a03c04a09fdf125c5fefeb315a02ff
 Š
