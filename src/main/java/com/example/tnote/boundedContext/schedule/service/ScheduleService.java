@@ -12,7 +12,6 @@ import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.example.tnote.boundedContext.user.entity.User;
-import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
@@ -148,8 +147,8 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<String> findScheduleList(PrincipalDetails user) {
-        User currentUser = checkCurrentUser(user.getId());
+    public List<String> findScheduleList(Long userId) {
+        User currentUser = checkCurrentUser(userId);
 
         List<Schedule> scheduleList = scheduleRepository.findAllByUserId(currentUser.getId());
 
@@ -177,7 +176,7 @@ public class ScheduleService {
             map.put(dayOfWeek, map.get(dayOfWeek) + 1);
         }
 
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow();
+        Schedule schedule = getSchedule(scheduleId);
 
         for (Subjects s : schedule.getSubjectsList()) {
 

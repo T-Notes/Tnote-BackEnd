@@ -56,7 +56,7 @@ public class ScheduleController {
     @GetMapping("/list")
     public ResponseEntity<Result> findScheduleList(@AuthenticationPrincipal PrincipalDetails user) {
 
-        List<String> response = scheduleService.findScheduleList(user);
+        List<String> response = scheduleService.findScheduleList(user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }

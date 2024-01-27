@@ -8,12 +8,15 @@ import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleUpdateRequestDto;
+import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.service.auth.PrincipalDetailService;
 import com.example.tnote.utils.TestSyUtils;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -37,6 +40,12 @@ class ScheduleServiceTest {
 
     User user1;
     Schedule schedule1;
+    Schedule schedule2;
+    Subjects subjects1;
+    Subjects subjects2;
+    Subjects subjects3;
+    Subjects subjects4;
+    Subjects subjects5;
     PrincipalDetails principalDetails;
 
     @BeforeEach
@@ -45,6 +54,26 @@ class ScheduleServiceTest {
         schedule1 = testSyUtils.createSchedule("test1", "9교시", user1, LocalDate.parse("2024-03-01"),
                 LocalDate.parse("2024-06-01"));
         principalDetails = principalDetailService.loadUserByUsername(user1.getEmail());
+
+        List<Subjects> subjectsList = new ArrayList<>();
+        subjects1 = testSyUtils.createSubjects("물리", "1교시", ClassDay.MONDAY, "3반교실", "memo", "green",
+                LocalDate.parse("2024-03-01"), schedule1);
+        subjects2 = testSyUtils.createSubjects("물리", "1교시", ClassDay.TUESDAY, "3반교실", "memo", "green",
+                LocalDate.parse("2024-03-01"), schedule1);
+        subjects3 = testSyUtils.createSubjects("물리", "1교시", ClassDay.WEDNESDAY, "3반교실", "memo", "green",
+                LocalDate.parse("2024-03-01"), schedule1);
+        subjects4 = testSyUtils.createSubjects("물리", "1교시", ClassDay.THURSDAY, "3반교실", "memo", "green",
+                LocalDate.parse("2024-03-01"), schedule1);
+        subjects5 = testSyUtils.createSubjects("물리", "1교시", ClassDay.FRIDAY, "3반교실", "memo", "green",
+                LocalDate.parse("2024-03-01"), schedule1);
+        subjectsList.add(subjects1);
+        subjectsList.add(subjects2);
+        subjectsList.add(subjects3);
+        subjectsList.add(subjects4);
+        subjectsList.add(subjects5);
+
+        schedule2 = testSyUtils.createSchedule("test1", "9교시", user1, LocalDate.parse("2024-03-01"),
+                LocalDate.parse("2024-06-01"), subjectsList);
     }
 
     @Test
@@ -271,7 +300,6 @@ class ScheduleServiceTest {
         assertThat(all.get(0).getEmail()).isEqualTo(schedule1.getUser().getEmail());
         assertThat(all.get(0).getStartDate()).isEqualTo(schedule1.getStartDate());
         assertThat(all.get(0).getEndDate()).isEqualTo(schedule1.getEndDate());
-
     }
 
     @Test
@@ -375,10 +403,19 @@ class ScheduleServiceTest {
     }
 
     @Test
-    void findScheduleList() {
-    }
-
-    @Test
+    @DisplayName("학기 남은 수업 조회 성공")
     void countLeftClasses() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        LocalDate startDate = LocalDate.parse("2024-03-01");
+        LocalDate endDate = LocalDate.parse("2024-06-01");
+
+        // when
+        long countClasses = scheduleService.countLeftClasses(startDate, endDate, schedule2.getId());
+
+        // then
+        assertThat(countClasses).isEqualTo(14);
     }
 }
