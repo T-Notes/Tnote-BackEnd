@@ -9,12 +9,17 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.tnote.base.exception.user.UserException;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
+import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
+import com.example.tnote.boundedContext.observation.entity.ObservationImage;
 import com.example.tnote.boundedContext.observation.repository.ObservationImageRepository;
 import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
@@ -89,7 +94,7 @@ public class ObservationServiceTest {
     }
     @DisplayName("관찰일지 조회: 작성자가 작성한 모든 관찰일지 확인")
     @Test
-    void getClassLogsExcludingNonUserLogs() {
+    void getLogs() {
         Long userId = 1L;
         Long otherUserId = 2L;
 
@@ -108,6 +113,36 @@ public class ObservationServiceTest {
                 .hasSize(2);
 
         verify(observationRepository).findAllByUserId(userId);
+    }
+    @DisplayName("관찰일지 상세 조회: 관찰일지 상세 정보 조회 확인")
+    @Test
+    void getDetails() {
+        Long userId = 1L;
+        Long observationId = 1L;
+
+        User mockUser = mock(User.class);
+        when(mockUser.getId()).thenReturn(userId);
+
+        Observation mockObservation = mock(Observation.class);
+        when(mockObservation.getId()).thenReturn(observationId);
+        when(mockObservation.getUser()).thenReturn(mockUser);
+
+        ObservationImage mockObservationImage = mock(ObservationImage.class);
+
+        List<ObservationImage> mockObservationImages = List.of(mockObservationImage);
+
+        when(observationRepository.findByIdAndUserId(userId, observationId)).thenReturn(Optional.of(mockObservation));
+        when(observationImageRepository.findObservationImageById(observationId)).thenReturn(mockObservationImages);
+
+        ObservationDetailResponseDto result = observationService.readObservationDetail(userId, observationId);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(observationId);
+        assertThat(result.getUserId()).isEqualTo(userId);
+        assertThat(result.getObservationImageUrls()).hasSize(mockObservationImages.size());
+
+        verify(observationRepository).findByIdAndUserId(userId, observationId);
+        verify(observationImageRepository).findObservationImageById(observationId);
     }
 
 }
