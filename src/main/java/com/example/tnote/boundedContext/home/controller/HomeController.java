@@ -36,10 +36,10 @@ public class HomeController {
             @RequestParam(name = "title", required = false, defaultValue = "") String title,
             @AuthenticationPrincipal PrincipalDetails user) {
 
-        List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(studentName, user);
-        List<ObservationResponseDto> observation = homeService.findAllOfObservation(studentName, user);
-        List<ClassLogResponseDto> classLog = homeService.findAllOfClassLog(title, user);
-        List<ProceedingResponseDto> proceeding = homeService.findAllOfProceeding(title, user);
+        List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(studentName, user.getId());
+        List<ObservationResponseDto> observation = homeService.findAllOfObservation(studentName, user.getId());
+        List<ClassLogResponseDto> classLog = homeService.findAllOfClassLog(title, user.getId());
+        List<ProceedingResponseDto> proceeding = homeService.findAllOfProceeding(title, user.getId());
 
         List<Object> response = new ArrayList<>();
         response.addAll(consultation);
