@@ -19,13 +19,13 @@ import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
-import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Slf4j
 @Service
@@ -42,9 +42,10 @@ public class HomeService {
     private final ConsultationService consultationService;
     private final ObservationService observationService;
 
-    public List<ConsultationResponseDto> findAllOfConsultation(String studentName, PrincipalDetails user) {
+    @Transactional(readOnly = true)
+    public List<ConsultationResponseDto> findAllOfConsultation(String studentName, Long userId) {
 
-        findUser(user);
+        findUser(userId);
 
         List<Consultation> consultations = consultationQueryRepository.findAll(studentName);
 
@@ -53,9 +54,10 @@ public class HomeService {
                 .toList();
     }
 
-    public List<ObservationResponseDto> findAllOfObservation(String studentName, PrincipalDetails user) {
+    @Transactional(readOnly = true)
+    public List<ObservationResponseDto> findAllOfObservation(String studentName, Long userId) {
 
-        findUser(user);
+        findUser(userId);
 
         List<Observation> observations = observationQueryRepository.findAll(studentName);
 
@@ -64,9 +66,10 @@ public class HomeService {
                 .toList();
     }
 
-    public List<ClassLogResponseDto> findAllOfClassLog(String title, PrincipalDetails user) {
+    @Transactional(readOnly = true)
+    public List<ClassLogResponseDto> findAllOfClassLog(String title, Long userId) {
 
-        findUser(user);
+        findUser(userId);
 
         List<ClassLog> classLogs = classLogQueryRepository.findAll(title);
 
@@ -75,8 +78,9 @@ public class HomeService {
                 .toList();
     }
 
-    public List<ProceedingResponseDto> findAllOfProceeding(String title, PrincipalDetails user) {
-        findUser(user);
+    @Transactional(readOnly = true)
+    public List<ProceedingResponseDto> findAllOfProceeding(String title, Long userId) {
+        findUser(userId);
 
         List<Proceeding> proceedings = proceedingQueryRepository.findAll(title);
 
@@ -85,8 +89,8 @@ public class HomeService {
                 .toList();
     }
 
-    private void findUser(PrincipalDetails user) {
-        userRepository.findById(user.getId()).orElseThrow(
+    private void findUser(Long userId) {
+        userRepository.findById(userId).orElseThrow(
                 () -> new UserException(UserErrorResult.USER_NOT_FOUND));
     }
 

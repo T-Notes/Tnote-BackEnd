@@ -15,8 +15,6 @@ Lsrc/main/java/com/example/tnote/boundedContext/classLog/entity/ClassLog.java,f
 ]src/main/java/com/example/tnote/boundedContext/home/repository/ProceedingQueryRepository.java,9/8/98e6df53a5c9835028c30e0beed7f6143b34ebce
 ã
 [src/main/java/com/example/tnote/boundedContext/home/repository/ClassLogQueryRepository.java,e/0/e09b0e203d03cc712a29c049f125539a57b733e5
-|
-Lsrc/main/java/com/example/tnote/boundedContext/home/service/HomeService.java,3/4/34cb333d847dfdb231a69d206c7b51bf04ce1f85
 y
 Isrc/main/java/com/example/tnote/boundedContext/user/dto/TokenRequest.java,a/2/a2ed01a7d158250ddf22cd6f4860387b43b74534
 ê
@@ -83,7 +81,5 @@ Rsrc/main/java/com/example/tnote/boundedContext/todo/controller/TodoController.j
 ^src/main/java/com/example/tnote/boundedContext/proceeding/controller/ProceedingController.java,9/8/981f0a154ed73d6db3dc0cec6a90ec6409822b85
 ê
 `src/main/java/com/example/tnote/boundedContext/observation/controller/ObservationController.java,b/6/b6fce64a6c06faddea3d504e64c3b951a8e1812b
-Ç
-Rsrc/main/java/com/example/tnote/boundedContext/home/controller/HomeController.java,5/1/51b68623ee57359f527bf5ee8e230c2b6e859dc4
 {
 Ksrc/main/java/com/example/tnote/boundedContext/subject/entity/Subjects.java,5/f/5ffc931190014ed9128c505377cd7255a84545d4
