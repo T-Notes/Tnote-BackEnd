@@ -55,10 +55,10 @@ public class SubjectService {
     }
 
     @Transactional
-    public SubjectResponseDto updateSubjects(SubjectsUpdateRequestDto dto, Long subjectsId, PrincipalDetails user) {
+    public SubjectResponseDto updateSubjects(SubjectsUpdateRequestDto dto, Long subjectsId, Long userId) {
 
-        User currentUser = checkCurrentUser(user.getId());
-        Subjects subjects = authorization(subjectsId, currentUser);
+        User currentUser = checkCurrentUser(userId);
+        Subjects subjects = authorization(subjectsId, currentUser.getId());
 
         updateEachSubjectsItem(dto, subjects);
 
@@ -93,7 +93,7 @@ public class SubjectService {
     public SubjectsDeleteResponseDto deleteSubjects(Long scheduleId, Long subjectsId, PrincipalDetails user) {
 
         User currentUser = checkCurrentUser(user.getId());
-        Subjects subject = authorization(subjectsId, currentUser);
+        Subjects subject = authorization(subjectsId, currentUser.getId());
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
 
@@ -109,12 +109,12 @@ public class SubjectService {
                 .build();
     }
 
-    private Subjects authorization(Long id, User member) {
+    private Subjects authorization(Long id, Long userId) {
 
         Subjects subjects = subjectRepository.findById(id).orElseThrow(
                 () -> new SubjectsException(SubjectsErrorResult.SUBJECT_NOT_FOUND));
 
-        if (!subjects.getSchedule().getUser().getId().equals(member.getId())) {
+        if (!subjects.getSchedule().getUser().getId().equals(userId)) {
             log.warn("member doesn't have authentication , user {}", subjects.getSchedule().getUser());
             throw new UserException(UserErrorResult.USER_NOT_FOUND);
         }
@@ -123,7 +123,8 @@ public class SubjectService {
     }
 
     private User checkCurrentUser(Long id) {
-        return userRepository.findById(id).orElseThrow();
+        return userRepository.findById(id).orElseThrow(
+                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
     }
 
     private Schedule checkCurrentSchedule(Long scheduleId) {

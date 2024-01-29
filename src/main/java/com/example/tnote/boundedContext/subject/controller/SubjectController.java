@@ -47,7 +47,7 @@ public class SubjectController {
                                                  @PathVariable("subjectsId") Long subjectsId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        SubjectResponseDto response = subjectService.updateSubjects(dto, subjectsId, user);
+        SubjectResponseDto response = subjectService.updateSubjects(dto, subjectsId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }

@@ -3,9 +3,12 @@ package com.example.tnote.boundedContext.subject.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.subject.dto.SubjectRequestDto;
+import com.example.tnote.boundedContext.subject.dto.SubjectResponseDto;
+import com.example.tnote.boundedContext.subject.dto.SubjectsUpdateRequestDto;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
@@ -35,6 +38,7 @@ class SubjectServiceTest {
     User user1;
     PrincipalDetails principalDetails;
     Schedule schedule1;
+    Subjects subjects;
 
     @BeforeEach
     void before() {
@@ -44,6 +48,8 @@ class SubjectServiceTest {
 
         schedule1 = testSyUtils.createSchedule("test1", "9교시", user1, LocalDate.parse("2024-03-01"),
                 LocalDate.parse("2024-06-01"));
+        subjects = testSyUtils.createSubjects("3학년 1학기", "4교시", ClassDay.WEDNESDAY, "3반 교실", "memo", "green",
+                LocalDate.parse("2024-03-01"), schedule1);
     }
 
     @Test
@@ -103,7 +109,104 @@ class SubjectServiceTest {
     }
 
     @Test
+    @DisplayName("과목 정보 수정 - 성공")
     void updateSubjects() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        SubjectsUpdateRequestDto dto = SubjectsUpdateRequestDto.builder()
+                .memo("test1")
+                .classLocation("3반교실")
+                .classTime("9교시")
+                .classDay(ClassDay.WEDNESDAY)
+                .subjectName("물리")
+                .color("green")
+                .date(LocalDate.parse("2024-01-27"))
+                .build();
+
+        // when
+        SubjectResponseDto response = subjectService.updateSubjects(dto, subjects.getId(), user1.getId());
+
+        // then
+        assertThat(response.getSubjectName()).isEqualTo("물리");
+        assertThat(response.getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
+        assertThat(response.getColor()).isEqualTo("green");
+        assertThat(response.getMemo()).isEqualTo("test1");
+        assertThat(response.getClassTime()).isEqualTo("9교시");
+        assertThat(response.getClassDay()).isEqualTo(ClassDay.WEDNESDAY);
+        assertThat(response.getClassLocation()).isEqualTo("3반교실");
+        assertThat(response.getSemesterName()).isEqualTo(schedule1.getSemesterName());
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저 과목 정보 수정 - 실패")
+    void notLoginUpdateSubjects() {
+
+        // given
+        SubjectsUpdateRequestDto dto = SubjectsUpdateRequestDto.builder()
+                .memo("test1")
+                .classLocation("3반교실")
+                .classTime("9교시")
+                .classDay(ClassDay.WEDNESDAY)
+                .subjectName("물리")
+                .color("green")
+                .date(LocalDate.parse("2024-01-27"))
+                .build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> subjectService.updateSubjects(dto, subjects.getId(), null))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
+    }
+
+    @Test
+    @DisplayName("존재 하지 않은 과목 정보 수정 - 실패")
+    void notExistUpdateSubjects() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        SubjectsUpdateRequestDto dto = SubjectsUpdateRequestDto.builder()
+                .memo("test1")
+                .classLocation("3반교실")
+                .classTime("9교시")
+                .classDay(ClassDay.WEDNESDAY)
+                .subjectName("물리")
+                .color("green")
+                .date(LocalDate.parse("2024-01-27"))
+                .build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> subjectService.updateSubjects(dto, null, user1.getId()))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
+    }
+
+    @Test
+    @DisplayName("다른 유저 과목 정보 수정 - 실패")
+    void otherUserUpdateSubjects() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        SubjectsUpdateRequestDto dto = SubjectsUpdateRequestDto.builder()
+                .memo("test1")
+                .classLocation("3반교실")
+                .classTime("9교시")
+                .classDay(ClassDay.WEDNESDAY)
+                .subjectName("물리")
+                .color("green")
+                .date(LocalDate.parse("2024-01-27"))
+                .build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> subjectService.updateSubjects(dto, subjects.getId(), 222L))
+                .isInstanceOf(UserException.class);
     }
 
     @Test
