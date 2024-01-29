@@ -47,7 +47,7 @@ public class SubjectController {
                                                  @PathVariable("subjectsId") Long subjectsId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        SubjectResponseDto response = subjectService.updateSubjects(dto, subjectsId, user);
+        SubjectResponseDto response = subjectService.updateSubjects(dto, subjectsId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -57,7 +57,7 @@ public class SubjectController {
                                                  @PathVariable Long subjectsId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        SubjectsDeleteResponseDto response = subjectService.deleteSubjects(scheduleId, subjectsId, user);
+        SubjectsDeleteResponseDto response = subjectService.deleteSubjects(scheduleId, subjectsId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -68,7 +68,7 @@ public class SubjectController {
                                           @PathVariable ClassDay day,
                                           @AuthenticationPrincipal PrincipalDetails user) {
 
-        List<SubjectResponseDto> response = subjectService.getMyClass(scheduleId, day, user);
+        List<SubjectResponseDto> response = subjectService.getMyClass(scheduleId, day, user.getId());
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -78,7 +78,7 @@ public class SubjectController {
                                             @AuthenticationPrincipal PrincipalDetails user,
                                             @RequestParam(defaultValue = "1970-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate today) {
         log.info("today : {} --------------------------", today);
-        List<SubjectResponseDto> response = subjectService.getTodayClass(scheduleId, user, today);
+        List<SubjectResponseDto> response = subjectService.getTodayClass(scheduleId, user.getId(), today);
         return ResponseEntity.ok(Result.of(response));
     }
 }

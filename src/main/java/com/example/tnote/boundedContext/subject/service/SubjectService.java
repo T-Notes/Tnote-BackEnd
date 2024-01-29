@@ -19,7 +19,6 @@ import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.example.tnote.boundedContext.subject.repository.SubjectQueryRepository;
 import com.example.tnote.boundedContext.subject.repository.SubjectRepository;
 import com.example.tnote.boundedContext.user.entity.User;
-import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -55,10 +54,10 @@ public class SubjectService {
     }
 
     @Transactional
-    public SubjectResponseDto updateSubjects(SubjectsUpdateRequestDto dto, Long subjectsId, PrincipalDetails user) {
+    public SubjectResponseDto updateSubjects(SubjectsUpdateRequestDto dto, Long subjectsId, Long userId) {
 
-        User currentUser = checkCurrentUser(user.getId());
-        Subjects subjects = authorization(subjectsId, currentUser);
+        User currentUser = checkCurrentUser(userId);
+        Subjects subjects = authorization(subjectsId, currentUser.getId());
 
         updateEachSubjectsItem(dto, subjects);
 
@@ -90,10 +89,10 @@ public class SubjectService {
     }
 
     @Transactional
-    public SubjectsDeleteResponseDto deleteSubjects(Long scheduleId, Long subjectsId, PrincipalDetails user) {
+    public SubjectsDeleteResponseDto deleteSubjects(Long scheduleId, Long subjectsId, Long userId) {
 
-        User currentUser = checkCurrentUser(user.getId());
-        Subjects subject = authorization(subjectsId, currentUser);
+        User currentUser = checkCurrentUser(userId);
+        Subjects subject = authorization(subjectsId, currentUser.getId());
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
 
@@ -109,12 +108,12 @@ public class SubjectService {
                 .build();
     }
 
-    private Subjects authorization(Long id, User member) {
+    private Subjects authorization(Long id, Long userId) {
 
         Subjects subjects = subjectRepository.findById(id).orElseThrow(
                 () -> new SubjectsException(SubjectsErrorResult.SUBJECT_NOT_FOUND));
 
-        if (!subjects.getSchedule().getUser().getId().equals(member.getId())) {
+        if (!subjects.getSchedule().getUser().getId().equals(userId)) {
             log.warn("member doesn't have authentication , user {}", subjects.getSchedule().getUser());
             throw new UserException(UserErrorResult.USER_NOT_FOUND);
         }
@@ -123,7 +122,8 @@ public class SubjectService {
     }
 
     private User checkCurrentUser(Long id) {
-        return userRepository.findById(id).orElseThrow();
+        return userRepository.findById(id).orElseThrow(
+                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
     }
 
     private Schedule checkCurrentSchedule(Long scheduleId) {
@@ -132,17 +132,26 @@ public class SubjectService {
     }
 
     @Transactional(readOnly = true)
-    public List<SubjectResponseDto> getMyClass(Long scheduleId, ClassDay day, PrincipalDetails user) {
+    public List<SubjectResponseDto> getMyClass(Long scheduleId, ClassDay day, Long userId) {
+        User currentUser = checkCurrentUser(userId);
+        Schedule schedule = checkCurrentSchedule(scheduleId);
+
+        if (!currentUser.equals(schedule.getUser())) {
+            log.warn("현재 user와 학기를 작성한 유저가 다릅니다.");
+            throw new UserException(UserErrorResult.USER_NOT_FOUND);
+        }
+
         return SubjectResponseDto.of(
-                subjectQueryRepository.findAllByScheduleIdAndUserIdAndClassDay(scheduleId, user.getId(), day));
+                subjectQueryRepository.findAllByScheduleIdAndUserIdAndClassDay(schedule.getId(), currentUser.getId(),
+                        day));
     }
 
     @Transactional(readOnly = true)
-    public List<SubjectResponseDto> getTodayClass(Long scheduleId, PrincipalDetails user, LocalDate date) {
+    public List<SubjectResponseDto> getTodayClass(Long scheduleId, Long userId, LocalDate date) {
 
         if (date.equals(LocalDate.now())) {
             return SubjectResponseDto.of(
-                    subjectQueryRepository.findAllByScheduleIdAndUserIdAndDate(scheduleId, user.getId(), date));
+                    subjectQueryRepository.findAllByScheduleIdAndUserIdAndDate(scheduleId, userId, date));
         }
         throw new SubjectsException(SubjectsErrorResult.TODAY_IS_WRONG_WITH_DATE);
 
