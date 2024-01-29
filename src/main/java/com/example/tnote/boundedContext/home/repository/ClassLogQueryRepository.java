@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 public class ClassLogQueryRepository {
     private final JPAQueryFactory query;
 
+    // 작성 시간을 id의 역순으로 배치
     public List<ClassLog> findAll(String title) {
         return query
                 .selectFrom(classLog)

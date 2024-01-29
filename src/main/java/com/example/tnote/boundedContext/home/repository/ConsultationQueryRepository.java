@@ -13,6 +13,7 @@ import org.springframework.stereotype.Repository;
 public class ConsultationQueryRepository {
     private final JPAQueryFactory query;
 
+    // 작성 시간을 id의 역순으로 배치
     public List<Consultation> findAll(String studentName) {
         return query
                 .selectFrom(consultation)
