@@ -90,9 +90,9 @@ public class SubjectService {
     }
 
     @Transactional
-    public SubjectsDeleteResponseDto deleteSubjects(Long scheduleId, Long subjectsId, PrincipalDetails user) {
+    public SubjectsDeleteResponseDto deleteSubjects(Long scheduleId, Long subjectsId, Long userId) {
 
-        User currentUser = checkCurrentUser(user.getId());
+        User currentUser = checkCurrentUser(userId);
         Subjects subject = authorization(subjectsId, currentUser.getId());
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));

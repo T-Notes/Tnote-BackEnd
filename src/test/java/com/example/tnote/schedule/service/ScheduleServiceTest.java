@@ -1,4 +1,4 @@
-package com.example.tnote.boundedContext.schedule.service;
+package com.example.tnote.schedule.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -10,6 +10,7 @@ import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleUpdateRequestDto;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.service.ScheduleService;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;

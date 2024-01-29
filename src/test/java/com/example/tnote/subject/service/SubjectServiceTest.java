@@ -1,8 +1,9 @@
-package com.example.tnote.boundedContext.subject.service;
+package com.example.tnote.subject.service;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.example.tnote.base.exception.subject.SubjectsException;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
@@ -10,6 +11,7 @@ import com.example.tnote.boundedContext.subject.dto.SubjectRequestDto;
 import com.example.tnote.boundedContext.subject.dto.SubjectResponseDto;
 import com.example.tnote.boundedContext.subject.dto.SubjectsUpdateRequestDto;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
+import com.example.tnote.boundedContext.subject.service.SubjectService;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.service.auth.PrincipalDetailService;
@@ -210,7 +212,57 @@ class SubjectServiceTest {
     }
 
     @Test
+    @DisplayName("과목 삭제 - 성공")
     void deleteSubjects() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        subjectService.deleteSubjects(schedule1.getId(), subjects.getId(), user1.getId());
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저 과목 삭제 - 실패")
+    void notLoginDeleteSubjects() {
+
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> subjectService.deleteSubjects(schedule1.getId(), subjects.getId(), null))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
+    }
+
+    @Test
+    @DisplayName("다른 유저 과목 삭제 - 실패")
+    void otherUserDeleteSubjects() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> subjectService.deleteSubjects(schedule1.getId(), subjects.getId(), 222L))
+                .isInstanceOf(UserException.class);
+    }
+
+    @Test
+    @DisplayName("존재하지 않는 과목 삭제 - 실패")
+    void notExistDeleteSubjects() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> subjectService.deleteSubjects(schedule1.getId(), 222L, user1.getId()))
+                .isInstanceOf(SubjectsException.class);
     }
 
     @Test

@@ -57,7 +57,7 @@ public class SubjectController {
                                                  @PathVariable Long subjectsId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        SubjectsDeleteResponseDto response = subjectService.deleteSubjects(scheduleId, subjectsId, user);
+        SubjectsDeleteResponseDto response = subjectService.deleteSubjects(scheduleId, subjectsId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
