@@ -52,7 +52,7 @@ class SubjectServiceTest {
         schedule1 = testSyUtils.createSchedule("test1", "9교시", user1, LocalDate.parse("2024-03-01"),
                 LocalDate.parse("2024-06-01"));
         subjects = testSyUtils.createSubjects("3학년 1학기", "4교시", ClassDay.WEDNESDAY, "3반 교실", "memo", "green",
-                LocalDate.parse("2024-03-01"), schedule1);
+                LocalDate.now(), schedule1);
     }
 
     @Test
@@ -279,7 +279,7 @@ class SubjectServiceTest {
 
         // then
         assertThat(response.get(0).getMemo()).isEqualTo("memo");
-        assertThat(response.get(0).getDate()).isEqualTo(LocalDate.parse("2024-03-01"));
+        assertThat(response.get(0).getDate()).isEqualTo(LocalDate.now());
         assertThat(response.get(0).getColor()).isEqualTo("green");
         assertThat(response.get(0).getClassTime()).isEqualTo("4교시");
         assertThat(response.get(0).getClassDay()).isEqualTo(ClassDay.WEDNESDAY);
@@ -316,6 +316,49 @@ class SubjectServiceTest {
 
 
     @Test
+    @DisplayName("오늘 수업 과목 조회 - 성공")
     void getTodayClass() {
+        // given
+        testSyUtils.login(principalDetails);
+        LocalDate date = LocalDate.now();
+
+        // when
+        List<SubjectResponseDto> response = subjectService.getTodayClass(schedule1.getId(), user1.getId(), date);
+
+        // then
+        assertThat(response.get(0).getMemo()).isEqualTo("memo");
+        assertThat(response.get(0).getDate()).isEqualTo(LocalDate.now());
+        assertThat(response.get(0).getColor()).isEqualTo("green");
+        assertThat(response.get(0).getClassTime()).isEqualTo("4교시");
+        assertThat(response.get(0).getClassDay()).isEqualTo(ClassDay.WEDNESDAY);
+        assertThat(response.get(0).getClassLocation()).isEqualTo("3반 교실");
+        assertThat(response.get(0).getSemesterName()).isEqualTo("test1");
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저 오늘 수업 과목 조회 - 실패")
+    void notLoginGetTodayClass() {
+        // given
+        LocalDate date = LocalDate.now();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> subjectService.getTodayClass(schedule1.getId(), null, date))
+                .isInstanceOf(SubjectsException.class);
+    }
+
+    @Test
+    @DisplayName("다른 유저 오늘 수업 과목 조회 - 실패")
+    void otherUserGetTodayClass() {
+        // given
+        testSyUtils.login(principalDetails);
+        LocalDate date = LocalDate.now();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> subjectService.getTodayClass(schedule1.getId(), 222L, date))
+                .isInstanceOf(SubjectsException.class);
     }
 }
