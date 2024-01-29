@@ -1,6 +1,7 @@
 package com.example.tnote.home;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
@@ -25,6 +26,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -157,5 +159,57 @@ public class homeServiceTest {
         assertThat(response.get(0).getLocation()).isEqualTo("a");
         assertThat(response.get(0).getWorkContents()).isEqualTo("a");
 
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저 업무 일지 조회 - 실패")
+    void notLoginFindAllOfProceeding() {
+
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> homeService.findAllOfProceeding(proceeding.getTitle(), null))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저 학급 일지 조회 - 실패")
+    void notLoginFindAllOfClassLog() {
+
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> homeService.findAllOfProceeding(classLog.getTitle(), null))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저 업무 일지 조회 - 실패")
+    void notLoginFindAllOfConsultation() {
+
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> homeService.findAllOfProceeding(consultation.getStudentName(), null))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저 업무 일지 조회 - 실패")
+    void notLoginFindAllOfObservation() {
+
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> homeService.findAllOfProceeding(observation.getStudentName(), null))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 }
