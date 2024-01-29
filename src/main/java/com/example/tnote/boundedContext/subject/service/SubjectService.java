@@ -19,7 +19,6 @@ import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.example.tnote.boundedContext.subject.repository.SubjectQueryRepository;
 import com.example.tnote.boundedContext.subject.repository.SubjectRepository;
 import com.example.tnote.boundedContext.user.entity.User;
-import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.util.List;
@@ -133,17 +132,26 @@ public class SubjectService {
     }
 
     @Transactional(readOnly = true)
-    public List<SubjectResponseDto> getMyClass(Long scheduleId, ClassDay day, PrincipalDetails user) {
+    public List<SubjectResponseDto> getMyClass(Long scheduleId, ClassDay day, Long userId) {
+        User currentUser = checkCurrentUser(userId);
+        Schedule schedule = checkCurrentSchedule(scheduleId);
+
+        if (!currentUser.equals(schedule.getUser())) {
+            log.warn("현재 user와 학기를 작성한 유저가 다릅니다.");
+            throw new UserException(UserErrorResult.USER_NOT_FOUND);
+        }
+
         return SubjectResponseDto.of(
-                subjectQueryRepository.findAllByScheduleIdAndUserIdAndClassDay(scheduleId, user.getId(), day));
+                subjectQueryRepository.findAllByScheduleIdAndUserIdAndClassDay(schedule.getId(), currentUser.getId(),
+                        day));
     }
 
     @Transactional(readOnly = true)
-    public List<SubjectResponseDto> getTodayClass(Long scheduleId, PrincipalDetails user, LocalDate date) {
+    public List<SubjectResponseDto> getTodayClass(Long scheduleId, Long userId, LocalDate date) {
 
         if (date.equals(LocalDate.now())) {
             return SubjectResponseDto.of(
-                    subjectQueryRepository.findAllByScheduleIdAndUserIdAndDate(scheduleId, user.getId(), date));
+                    subjectQueryRepository.findAllByScheduleIdAndUserIdAndDate(scheduleId, userId, date));
         }
         throw new SubjectsException(SubjectsErrorResult.TODAY_IS_WRONG_WITH_DATE);
 

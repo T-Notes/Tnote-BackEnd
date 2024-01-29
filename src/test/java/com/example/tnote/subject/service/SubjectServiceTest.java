@@ -17,6 +17,7 @@ import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.service.auth.PrincipalDetailService;
 import com.example.tnote.utils.TestSyUtils;
 import java.time.LocalDate;
+import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -266,8 +267,53 @@ class SubjectServiceTest {
     }
 
     @Test
+    @DisplayName("과목 조회 - 성공")
     void getMyClass() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+        List<SubjectResponseDto> response = subjectService.getMyClass(schedule1.getId(), ClassDay.WEDNESDAY,
+                user1.getId());
+
+        // then
+        assertThat(response.get(0).getMemo()).isEqualTo("memo");
+        assertThat(response.get(0).getDate()).isEqualTo(LocalDate.parse("2024-03-01"));
+        assertThat(response.get(0).getColor()).isEqualTo("green");
+        assertThat(response.get(0).getClassTime()).isEqualTo("4교시");
+        assertThat(response.get(0).getClassDay()).isEqualTo(ClassDay.WEDNESDAY);
+        assertThat(response.get(0).getClassLocation()).isEqualTo("3반 교실");
+        assertThat(response.get(0).getSemesterName()).isEqualTo("test1");
     }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저 과목 조회 - 실패")
+    void notLoginGetMyClass() {
+
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> subjectService.getMyClass(schedule1.getId(), ClassDay.WEDNESDAY, null))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
+    }
+
+    @Test
+    @DisplayName("다른 유저 과목 조회 - 실패")
+    void otherUserGetMyClass() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> subjectService.getMyClass(schedule1.getId(), ClassDay.WEDNESDAY, 222L))
+                .isInstanceOf(UserException.class);
+    }
+
 
     @Test
     void getTodayClass() {
