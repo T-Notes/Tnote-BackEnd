@@ -82,17 +82,10 @@ public class ScheduleService {
 
         Schedule schedule = getSchedule(id);
 
-        if (!schedule.getUser().getId().equals(member.getId())) {
-            log.warn("member doesn't have authentication , user {}", schedule.getUser());
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
+        matchUserWithSchedule(schedule.getId(), member.getId());
+
         return schedule;
 
-    }
-
-    private User checkCurrentUser(Long id) {
-        return userRepository.findById(id).orElseThrow(
-                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
     }
 
 
@@ -108,13 +101,7 @@ public class ScheduleService {
     @Transactional(readOnly = true)
     public List<ScheduleResponseDto> getAllSubjectsInfoBySchedule(Long scheduleId, Long userId) {
 
-        User currentUser = checkCurrentUser(userId);
-        Schedule schedule = getSchedule(scheduleId);
-
-        if (!schedule.getUser().equals(currentUser)) {
-            log.warn("스케쥴 작성자와 현재 유저가 다른 유저입니다.");
-            throw new UserException(UserErrorResult.WRONG_USRE);
-        }
+        matchUserWithSchedule(scheduleId, userId);
 
         return ScheduleResponseDto.of(scheduleRepository.findAllById(scheduleId));
     }
@@ -137,13 +124,6 @@ public class ScheduleService {
         }
 
         return ScheduleResponseDto.excludeLastDayOf(scheduleRepository.findAllById(scheduleId));
-    }
-
-    private void checkUser(Long userId) {
-        if (userId == null) {
-            log.warn("없는 user 입니다");
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
     }
 
     @Transactional(readOnly = true)
@@ -186,5 +166,27 @@ public class ScheduleService {
         }
 
         return totalCnt;
+    }
+
+    private User checkCurrentUser(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
+    }
+
+    private void matchUserWithSchedule(Long scheduleId, Long userId) {
+        User currentUser = checkCurrentUser(userId);
+        Schedule schedule = getSchedule(scheduleId);
+
+        if (!schedule.getUser().equals(currentUser)) {
+            log.warn("스케쥴 작성자와 현재 유저가 다른 유저입니다.");
+            throw new UserException(UserErrorResult.WRONG_USRE);
+        }
+    }
+
+    private void checkUser(Long userId) {
+        if (userId == null) {
+            log.warn("없는 user 입니다");
+            throw new UserException(UserErrorResult.USER_NOT_FOUND);
+        }
     }
 }

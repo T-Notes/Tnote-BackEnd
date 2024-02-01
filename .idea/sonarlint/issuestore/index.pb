@@ -61,12 +61,8 @@ q
 Asrc/test/java/com/example/tnote/todo/service/TodoServiceTest.java,c/3/c3bfa8c2ecea4ac6dfc57d9098d63816ea296373
 |
 Lsrc/main/java/com/example/tnote/boundedContext/schedule/entity/Schedule.java,c/c/cc3302a970c894ca46d1124be33443c76b4ee7bd
-ä
-Zsrc/main/java/com/example/tnote/boundedContext/schedule/controller/ScheduleController.java,e/2/e2dbdac0f5051fa5c58f400ed073329724c3a543
 Å
 Qsrc/main/java/com/example/tnote/boundedContext/subject/dto/SubjectRequestDto.java,a/a/aa545e4fd92481d3924f9f50b99930e4a873625f
-Ñ
-Tsrc/main/java/com/example/tnote/boundedContext/schedule/service/ScheduleService.java,9/a/9a0af27bf70aa23b7959dfd952eeaa0c63fe1803
 f
 6src/test/java/com/example/tnote/utils/TestSyUtils.java,a/0/a0279f3ae97a406c36f32c9a5bc88a5ad8fab6e6
 ã

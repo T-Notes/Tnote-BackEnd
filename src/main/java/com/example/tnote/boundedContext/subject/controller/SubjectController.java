@@ -61,7 +61,7 @@ public class SubjectController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    // 시간표에서 특정 요일에 대한 데이터 조회
+    // 시간표에서 특정 요일[하루]에 대한 데이터 조회
     @GetMapping("/{scheduleId}/{day}")
     public ResponseEntity<Result> findDay(@PathVariable Long scheduleId,
                                           @PathVariable ClassDay day,
