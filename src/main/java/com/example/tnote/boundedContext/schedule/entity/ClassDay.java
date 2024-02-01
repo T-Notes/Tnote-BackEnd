@@ -9,13 +9,14 @@ public enum ClassDay {
     SATURDAY("토요일"),
     SUNDAY("일요일");
 
+
     private String day;
 
     private ClassDay(String day) {
         this.day = day;
     }
 
-    public String getClassDay() {
-        return day;
+    public String getDay() {
+        return this.day;
     }
 }
