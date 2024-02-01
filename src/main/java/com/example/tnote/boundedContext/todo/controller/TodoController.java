@@ -63,8 +63,9 @@ public class TodoController {
     }
 
     // 홈페이지에서 특정 날짜에 대한 todo list 조회 ( 날짜 안넘겨주면 오늘 날짜로 기본으로 매핑 )
-    @GetMapping
+    @GetMapping("/{scheduleId}")
     public ResponseEntity<Result> findTodo(
+            @PathVariable Long scheduleId,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @AuthenticationPrincipal PrincipalDetails user) {
 
@@ -72,7 +73,7 @@ public class TodoController {
             date = LocalDate.now();
         }
 
-        List<TodoResponseDto> response = todoService.findAllTodos(date, user.getId());
+        List<TodoResponseDto> response = todoService.findAllTodos(date, scheduleId, user.getId());
         return ResponseEntity.ok(Result.of(response));
     }
 }

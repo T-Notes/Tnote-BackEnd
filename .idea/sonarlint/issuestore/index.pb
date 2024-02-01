@@ -33,8 +33,6 @@ e
 5src/main/java/com/example/tnote/TNoteApplication.java,1/1/11fe0f695348285f26324100d44baacdf9d25b03
 Å
 Qsrc/main/java/com/example/tnote/boundedContext/todo/dto/TodoUpdateRequestDto.java,0/8/08b78957cd0bdba97414511c1b1f62757e6d03ab
-{
-Ksrc/main/java/com/example/tnote/boundedContext/todo/dto/TodoRequestDto.java,2/0/208018f4e4072bfa190913efa10c704049f85163
 j
 :src/test/java/com/example/tnote/TNoteApplicationTests.java,e/6/e699ed4b41cf394373cafba026a5786a2d96628c
 q
@@ -51,8 +49,6 @@ Tsrc/main/java/com/example/tnote/boundedContext/classLog/service/ClassLogService
 ^src/main/java/com/example/tnote/boundedContext/proceeding/controller/ProceedingController.java,9/8/981f0a154ed73d6db3dc0cec6a90ec6409822b85
 Å
 Qsrc/main/java/com/example/tnote/boundedContext/subject/dto/SubjectRequestDto.java,a/a/aa545e4fd92481d3924f9f50b99930e4a873625f
-f
-6src/test/java/com/example/tnote/utils/TestSyUtils.java,a/0/a0279f3ae97a406c36f32c9a5bc88a5ad8fab6e6
 ã
 [src/main/java/com/example/tnote/boundedContext/consultation/dto/ConsultationRequestDto.java,6/d/6dbc2a8514ecfa5b7aba1e6f11a312871c69a5dc
 â
