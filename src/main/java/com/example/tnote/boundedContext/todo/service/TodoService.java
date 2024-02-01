@@ -1,9 +1,13 @@
 package com.example.tnote.boundedContext.todo.service;
 
+import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
+import com.example.tnote.base.exception.schedule.ScheduleException;
 import com.example.tnote.base.exception.todo.TodoErrorResult;
 import com.example.tnote.base.exception.todo.TodoException;
 import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.todo.dto.TodoDeleteResponseDto;
 import com.example.tnote.boundedContext.todo.dto.TodoRequestDto;
 import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
@@ -26,42 +30,23 @@ import org.springframework.transaction.annotation.Transactional;
 public class TodoService {
 
     private final UserRepository userRepository;
+    private final ScheduleRepository scheduleRepository;
     private final TodoRepository todoRepository;
     private final TodoQueryRepository todoQueryRepository;
 
     @Transactional
-    public TodoResponseDto saveTodo(TodoRequestDto dto, Long userId) {
+    public TodoResponseDto saveTodo(TodoRequestDto dto, Long scheduleId, Long userId) {
 
-        User currentUser = checkCurrentUser(userId);
-
-        Todo todo = dto.toEntity(currentUser);
+        matchUserWithSchedule(scheduleId, userId);
+        Todo todo = dto.toEntity(checkCurrentUser(userId));
 
         return TodoResponseDto.of(todoRepository.save(todo));
     }
 
-    private User checkCurrentUser(Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
-    }
-
-    private Todo authorization(Long id, User member) {
-
-        Todo todos = todoRepository.findById(id).orElseThrow(
-                () -> new TodoException(TodoErrorResult.TODO_NOT_FOUND));
-
-        if (!todos.getUser().getId().equals(member.getId())) {
-            log.warn("member doesn't have authentication , user {}", todos.getUser());
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
-        return todos;
-
-    }
-
     @Transactional
-    public TodoDeleteResponseDto deleteTodo(Long todoId, Long userId) {
+    public TodoDeleteResponseDto deleteTodo(Long todoId, Long scheduleId, Long userId) {
 
-        User currentUser = checkCurrentUser(userId);
-        Todo todo = authorization(todoId, currentUser);
+        Todo todo = getTodo(scheduleId, todoId, userId);
 
         todoRepository.deleteById(todo.getId());
         return TodoDeleteResponseDto.builder()
@@ -77,10 +62,9 @@ public class TodoService {
     }
 
     @Transactional
-    public TodoResponseDto updateTodos(TodoUpdateRequestDto dto, Long todoId, Long userId) {
+    public TodoResponseDto updateTodos(TodoUpdateRequestDto dto, Long scheduleId, Long todoId, Long userId) {
 
-        User currentUser = checkCurrentUser(userId);
-        Todo todos = authorization(todoId, currentUser);
+        Todo todos = getTodo(scheduleId, todoId, userId);
 
         updateEachTodosItem(dto, todos);
 
@@ -94,5 +78,47 @@ public class TodoService {
         if (dto.hasContent()) {
             todos.updateContent(dto.getContent());
         }
+    }
+
+    private Todo getTodo(Long scheduleId, Long todoId, Long userId) {
+        User currentUser = checkCurrentUser(userId);
+
+        matchUserWithSchedule(scheduleId, currentUser.getId());
+        Todo todos = authorization(todoId, currentUser);
+        return todos;
+    }
+
+    private void matchUserWithSchedule(Long scheduleId, Long userId) {
+        Schedule schedule = checkSchedule(scheduleId);
+        User currentUser = checkCurrentUser(userId);
+
+        if (!schedule.getUser().equals(currentUser)) {
+            log.warn("학기를 작성한 user와 현 user가 다릅니다");
+            throw new UserException(UserErrorResult.USER_NOT_FOUND);
+        }
+    }
+
+    private User checkCurrentUser(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+    }
+
+    private Schedule checkSchedule(Long id) {
+        return scheduleRepository.findById(id)
+                .orElseThrow(() -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
+    }
+
+
+    private Todo authorization(Long id, User member) {
+
+        Todo todos = todoRepository.findById(id).orElseThrow(
+                () -> new TodoException(TodoErrorResult.TODO_NOT_FOUND));
+
+        if (!todos.getUser().getId().equals(member.getId())) {
+            log.warn("member doesn't have authentication , user {}", todos.getUser());
+            throw new UserException(UserErrorResult.USER_NOT_FOUND);
+        }
+        return todos;
+
     }
 }

@@ -37,6 +37,8 @@ public class QObservation extends EntityPathBase<Observation> {
 
     public final ListPath<ObservationImage, QObservationImage> observationImage = this.<ObservationImage, QObservationImage>createList("observationImage", ObservationImage.class, QObservationImage.class, PathInits.DIRECT2);
 
+    public final com.example.tnote.boundedContext.schedule.entity.QSchedule schedule;
+
     public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
 
     public final StringPath studentName = createString("studentName");
@@ -64,6 +66,7 @@ public class QObservation extends EntityPathBase<Observation> {
 
     public QObservation(Class<? extends Observation> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.schedule = inits.isInitialized("schedule") ? new com.example.tnote.boundedContext.schedule.entity.QSchedule(forProperty("schedule"), inits.get("schedule")) : null;
         this.user = inits.isInitialized("user") ? new com.example.tnote.boundedContext.user.entity.QUser(forProperty("user")) : null;
     }
 

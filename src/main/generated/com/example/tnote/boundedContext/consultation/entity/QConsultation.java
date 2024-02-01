@@ -41,6 +41,8 @@ public class QConsultation extends EntityPathBase<Consultation> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final com.example.tnote.boundedContext.schedule.entity.QSchedule schedule;
+
     public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
 
     public final StringPath studentName = createString("studentName");
@@ -68,6 +70,7 @@ public class QConsultation extends EntityPathBase<Consultation> {
 
     public QConsultation(Class<? extends Consultation> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.schedule = inits.isInitialized("schedule") ? new com.example.tnote.boundedContext.schedule.entity.QSchedule(forProperty("schedule"), inits.get("schedule")) : null;
         this.user = inits.isInitialized("user") ? new com.example.tnote.boundedContext.user.entity.QUser(forProperty("user")) : null;
     }
 
