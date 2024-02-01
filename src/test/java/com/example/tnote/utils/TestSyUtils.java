@@ -69,11 +69,12 @@ public class TestSyUtils {
         return userRepository.save(user);
     }
 
-    public Todo createTodo(String content, LocalDate date, User user) {
+    public Todo createTodo(String content, LocalDate date, User user, Schedule schedule) {
         Todo todo = Todo.builder()
                 .content(content)
                 .date(date)
                 .user(user)
+                .schedule(schedule)
                 .build();
 
         return todoRepository.save(todo);

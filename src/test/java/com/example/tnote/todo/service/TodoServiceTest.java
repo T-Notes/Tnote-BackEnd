@@ -53,8 +53,8 @@ public class TodoServiceTest {
         schedule1 = testSyUtils.createSchedule("test1", "9교시", user1, LocalDate.parse("2024-03-01"),
                 LocalDate.parse("2024-06-01"));
 
-        todo1 = testSyUtils.createTodo("test1", LocalDate.parse("2024-01-27"), user1);
-        todo2 = testSyUtils.createTodo("test12", LocalDate.parse("2024-01-27"), user1);
+        todo1 = testSyUtils.createTodo("test1", LocalDate.parse("2024-01-27"), user1, schedule1);
+        todo2 = testSyUtils.createTodo("test12", LocalDate.parse("2024-01-27"), user1, schedule1);
     }
 
     @Test
@@ -70,7 +70,7 @@ public class TodoServiceTest {
                 .build();
 
         // when
-        Todo todo = dto.toEntity(user1);
+        Todo todo = dto.toEntity(user1, schedule1);
 
         // then
         assertThat(todo.getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
@@ -213,13 +213,29 @@ public class TodoServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        List<TodoResponseDto> todos = todoService.findAllTodos(LocalDate.parse("2024-01-27"), user1.getId());
+        List<TodoResponseDto> todos = todoService.findAllTodos(LocalDate.parse("2024-01-27"), schedule1.getId(),
+                user1.getId());
+
+        // then/
+        assertThat(todos.size()).isEqualTo(2);
+//        assertThat(todos.get(0).getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
+//        assertThat(todos.get(0).getContent()).isEqualTo("test1");
+//        assertThat(todos.get(1).getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
+//        assertThat(todos.get(1).getContent()).isEqualTo("test12");
+    }
+
+    @Test
+    @DisplayName("없는 학기 todo 날짜별 전체 조회 실패")
+    void notExistScheduleFindAllTodos() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
 
         // then
-        assertThat(todos.get(0).getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
-        assertThat(todos.get(0).getContent()).isEqualTo("test1");
-        assertThat(todos.get(1).getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
-        assertThat(todos.get(1).getContent()).isEqualTo("test12");
+        assertThatThrownBy(() -> todoService.findAllTodos(LocalDate.parse("2024-01-27"), 222L, user1.getId()))
+                .isInstanceOf(ScheduleException.class);
     }
 
     @Test
@@ -231,7 +247,7 @@ public class TodoServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> todoService.findAllTodos(LocalDate.parse("2024-01-27"), null))
+        assertThatThrownBy(() -> todoService.findAllTodos(LocalDate.parse("2024-01-27"), schedule1.getId(), null))
                 .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 

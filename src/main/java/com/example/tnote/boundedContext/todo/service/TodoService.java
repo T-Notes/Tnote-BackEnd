@@ -38,7 +38,7 @@ public class TodoService {
     public TodoResponseDto saveTodo(TodoRequestDto dto, Long scheduleId, Long userId) {
 
         matchUserWithSchedule(scheduleId, userId);
-        Todo todo = dto.toEntity(checkCurrentUser(userId));
+        Todo todo = dto.toEntity(checkCurrentUser(userId), checkSchedule(scheduleId));
 
         return TodoResponseDto.of(todoRepository.save(todo));
     }
@@ -55,10 +55,12 @@ public class TodoService {
     }
 
     @Transactional(readOnly = true)
-    public List<TodoResponseDto> findAllTodos(LocalDate date, Long userId) {
+    public List<TodoResponseDto> findAllTodos(LocalDate date, Long scheduleId, Long userId) {
+
+        checkSchedule(scheduleId);
 
         return TodoResponseDto.of(
-                todoQueryRepository.findAllByUserIdAndDate(userId, date));
+                todoQueryRepository.findAllByUserIdAndDate(userId, scheduleId, date));
     }
 
     @Transactional

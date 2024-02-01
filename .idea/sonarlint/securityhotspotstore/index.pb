@@ -35,8 +35,6 @@ e
 5src/main/java/com/example/tnote/TNoteApplication.java,1/1/11fe0f695348285f26324100d44baacdf9d25b03
 Å
 Qsrc/main/java/com/example/tnote/boundedContext/todo/dto/TodoUpdateRequestDto.java,0/8/08b78957cd0bdba97414511c1b1f62757e6d03ab
-{
-Ksrc/main/java/com/example/tnote/boundedContext/todo/dto/TodoRequestDto.java,2/0/208018f4e4072bfa190913efa10c704049f85163
 q
 Asrc/test/java/com/example/tnote/user/service/UserServiceTest.java,0/0/00b32f5cb188d0b7d454a11f0fa847a9a70ee8bb
 ä
@@ -59,8 +57,6 @@ Ssrc/main/java/com/example/tnote/boundedContext/classLog/dto/ClassLogRequestDto.
 Wsrc/main/java/com/example/tnote/boundedContext/proceeding/dto/ProceedingRequestDto.java,8/7/87930cd4c2567f86d0f5c8fdbb5eb08d4ecaf2f9
 â
 Ysrc/main/java/com/example/tnote/boundedContext/observation/dto/ObservationRequestDto.java,0/2/026aa10dcb66fcc62b3da4126185e8b0f6e3ea4a
-f
-6src/test/java/com/example/tnote/utils/TestSyUtils.java,a/0/a0279f3ae97a406c36f32c9a5bc88a5ad8fab6e6
 ä
 Zsrc/main/java/com/example/tnote/boundedContext/observation/dto/ObservationResponseDto.java,d/f/dfc831a0095f61a9a27cea935bd5f75b78de1800
 Ñ
