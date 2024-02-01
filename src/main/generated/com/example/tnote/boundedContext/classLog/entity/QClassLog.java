@@ -39,6 +39,8 @@ public class QClassLog extends EntityPathBase<ClassLog> {
 
     public final StringPath plan = createString("plan");
 
+    public final com.example.tnote.boundedContext.schedule.entity.QSchedule schedule;
+
     public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
 
     public final StringPath submission = createString("submission");
@@ -68,6 +70,7 @@ public class QClassLog extends EntityPathBase<ClassLog> {
 
     public QClassLog(Class<? extends ClassLog> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.schedule = inits.isInitialized("schedule") ? new com.example.tnote.boundedContext.schedule.entity.QSchedule(forProperty("schedule"), inits.get("schedule")) : null;
         this.user = inits.isInitialized("user") ? new com.example.tnote.boundedContext.user.entity.QUser(forProperty("user")) : null;
     }
 

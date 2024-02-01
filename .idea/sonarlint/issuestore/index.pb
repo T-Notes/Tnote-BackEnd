@@ -49,10 +49,6 @@ Tsrc/main/java/com/example/tnote/boundedContext/classLog/service/ClassLogService
 `src/main/java/com/example/tnote/boundedContext/observation/controller/ObservationController.java,b/6/b6fce64a6c06faddea3d504e64c3b951a8e1812b
 é
 ^src/main/java/com/example/tnote/boundedContext/proceeding/controller/ProceedingController.java,9/8/981f0a154ed73d6db3dc0cec6a90ec6409822b85
-|
-Lsrc/main/java/com/example/tnote/boundedContext/todo/service/TodoService.java,3/b/3bc15ea259e8cda00e2902dc1cbf658e86529ddc
-q
-Asrc/test/java/com/example/tnote/todo/service/TodoServiceTest.java,c/3/c3bfa8c2ecea4ac6dfc57d9098d63816ea296373
 Å
 Qsrc/main/java/com/example/tnote/boundedContext/subject/dto/SubjectRequestDto.java,a/a/aa545e4fd92481d3924f9f50b99930e4a873625f
 f

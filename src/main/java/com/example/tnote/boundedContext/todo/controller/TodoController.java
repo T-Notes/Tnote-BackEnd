@@ -32,29 +32,32 @@ public class TodoController {
 
     private final TodoService todoService;
 
-    @PostMapping
+    @PostMapping("/{scheduleId}")
     public ResponseEntity<Result> saveTodo(@RequestBody TodoRequestDto dto,
+                                           @PathVariable Long scheduleId,
                                            @AuthenticationPrincipal PrincipalDetails user) {
 
-        TodoResponseDto response = todoService.saveTodo(dto, user.getId());
+        TodoResponseDto response = todoService.saveTodo(dto, scheduleId, user.getId());
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @PatchMapping("/{todoId}")
+    @PatchMapping("/{scheduleId}/{todoId}")
     public ResponseEntity<Result> updateSubjects(@RequestBody TodoUpdateRequestDto dto,
+                                                 @PathVariable Long scheduleId,
                                                  @PathVariable("todoId") Long todoId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        TodoResponseDto response = todoService.updateTodos(dto, todoId, user.getId());
+        TodoResponseDto response = todoService.updateTodos(dto, scheduleId, todoId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @DeleteMapping("/{todoId}")
+    @DeleteMapping("/{scheduleId}/{todoId}")
     public ResponseEntity<Result> deleteTodo(@PathVariable Long todoId,
+                                             @PathVariable Long scheduleId,
                                              @AuthenticationPrincipal PrincipalDetails user) {
 
-        TodoDeleteResponseDto response = todoService.deleteTodo(todoId, user.getId());
+        TodoDeleteResponseDto response = todoService.deleteTodo(todoId, scheduleId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }

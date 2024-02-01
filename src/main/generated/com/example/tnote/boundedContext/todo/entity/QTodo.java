@@ -33,6 +33,8 @@ public class QTodo extends EntityPathBase<Todo> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final com.example.tnote.boundedContext.schedule.entity.QSchedule schedule;
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
@@ -56,6 +58,7 @@ public class QTodo extends EntityPathBase<Todo> {
 
     public QTodo(Class<? extends Todo> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.schedule = inits.isInitialized("schedule") ? new com.example.tnote.boundedContext.schedule.entity.QSchedule(forProperty("schedule"), inits.get("schedule")) : null;
         this.user = inits.isInitialized("user") ? new com.example.tnote.boundedContext.user.entity.QUser(forProperty("user")) : null;
     }
 

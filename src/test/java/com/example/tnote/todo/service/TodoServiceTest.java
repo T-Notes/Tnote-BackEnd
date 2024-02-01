@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.tnote.base.exception.todo.TodoException;
 import com.example.tnote.base.exception.user.UserException;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.todo.dto.TodoRequestDto;
 import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
 import com.example.tnote.boundedContext.todo.dto.TodoUpdateRequestDto;
@@ -40,12 +41,16 @@ public class TodoServiceTest {
     PrincipalDetails principalDetails;
     Todo todo1;
     Todo todo2;
+    Schedule schedule1;
 
     @BeforeEach
     void before() {
         user1 = testSyUtils.createUser("user1@test.com", "user1", "신갈고등학교", "체육", 4, true);
 
         principalDetails = principalDetailService.loadUserByUsername(user1.getEmail());
+
+        schedule1 = testSyUtils.createSchedule("test1", "9교시", user1, LocalDate.parse("2024-03-01"),
+                LocalDate.parse("2024-06-01"));
 
         todo1 = testSyUtils.createTodo("test1", LocalDate.parse("2024-01-27"), user1);
         todo2 = testSyUtils.createTodo("test12", LocalDate.parse("2024-01-27"), user1);
@@ -85,7 +90,7 @@ public class TodoServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> todoService.saveTodo(dto, null))
+        assertThatThrownBy(() -> todoService.saveTodo(dto, schedule1.getId(), null))
                 .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
@@ -104,27 +109,10 @@ public class TodoServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> todoService.saveTodo(dto, 222L))
+        assertThatThrownBy(() -> todoService.saveTodo(dto, schedule1.getId(), 222L))
                 .isInstanceOf(UserException.class);
     }
 
-    @Test
-    @DisplayName("로그인 하지 않은 유저 todo 작성 실패")
-    void NotLoginSaveTodo() {
-
-        // given
-
-        TodoRequestDto dto = TodoRequestDto.builder()
-                .date(LocalDate.parse("2024-01-27"))
-                .content("test1")
-                .build();
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> todoService.saveTodo(dto, null))
-                .isInstanceOf(InvalidDataAccessApiUsageException.class);
-    }
 
     @Test
     @DisplayName("todo 삭제 성공")
@@ -134,10 +122,10 @@ public class TodoServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        todoService.deleteTodo(todo1.getId(), user1.getId());
+        todoService.deleteTodo(todo1.getId(), schedule1.getId(), user1.getId());
 
         // then
-        assertThatThrownBy(() -> todoService.deleteTodo(todo1.getId(), user1.getId()))
+        assertThatThrownBy(() -> todoService.deleteTodo(todo1.getId(), schedule1.getId(), user1.getId()))
                 .isInstanceOf(TodoException.class);
     }
 
@@ -151,7 +139,7 @@ public class TodoServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> todoService.deleteTodo(todo1.getId(), 222L))
+        assertThatThrownBy(() -> todoService.deleteTodo(todo1.getId(), schedule1.getId(), 222L))
                 .isInstanceOf(UserException.class);
     }
 
@@ -164,7 +152,7 @@ public class TodoServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> todoService.deleteTodo(todo1.getId(), null))
+        assertThatThrownBy(() -> todoService.deleteTodo(todo1.getId(), schedule1.getId(), null))
                 .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
@@ -178,7 +166,7 @@ public class TodoServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> todoService.deleteTodo(222L, user1.getId()))
+        assertThatThrownBy(() -> todoService.deleteTodo(222L, schedule1.getId(), user1.getId()))
                 .isInstanceOf(TodoException.class);
     }
 
@@ -227,7 +215,7 @@ public class TodoServiceTest {
                 .content("test1")
                 .build();
 
-        TodoResponseDto response = todoService.updateTodos(dto, todo1.getId(), user1.getId());
+        TodoResponseDto response = todoService.updateTodos(dto, schedule1.getId(), todo1.getId(), user1.getId());
 
         // then
         assertThat(response.getContent()).isEqualTo(dto.getContent());
@@ -249,7 +237,7 @@ public class TodoServiceTest {
                 .build();
 
         // then
-        assertThatThrownBy(() -> todoService.updateTodos(dto, 222L, user1.getId()))
+        assertThatThrownBy(() -> todoService.updateTodos(dto, schedule1.getId(), 222L, user1.getId()))
                 .isInstanceOf(TodoException.class);
     }
 
@@ -267,7 +255,7 @@ public class TodoServiceTest {
                 .build();
 
         // then
-        assertThatThrownBy(() -> todoService.updateTodos(dto, todo1.getId(), null))
+        assertThatThrownBy(() -> todoService.updateTodos(dto, schedule1.getId(), todo1.getId(), null))
                 .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
@@ -286,7 +274,7 @@ public class TodoServiceTest {
                 .build();
 
         // then
-        assertThatThrownBy(() -> todoService.updateTodos(dto, todo1.getId(), 222L))
+        assertThatThrownBy(() -> todoService.updateTodos(dto, schedule1.getId(), todo1.getId(), 222L))
                 .isInstanceOf(UserException.class);
     }
 }

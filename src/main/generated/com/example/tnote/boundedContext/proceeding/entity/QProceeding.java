@@ -35,6 +35,8 @@ public class QProceeding extends EntityPathBase<Proceeding> {
 
     public final ListPath<ProceedingImage, QProceedingImage> proceedingImage = this.<ProceedingImage, QProceedingImage>createList("proceedingImage", ProceedingImage.class, QProceedingImage.class, PathInits.DIRECT2);
 
+    public final com.example.tnote.boundedContext.schedule.entity.QSchedule schedule;
+
     public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
 
     public final StringPath title = createString("title");
@@ -64,6 +66,7 @@ public class QProceeding extends EntityPathBase<Proceeding> {
 
     public QProceeding(Class<? extends Proceeding> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.schedule = inits.isInitialized("schedule") ? new com.example.tnote.boundedContext.schedule.entity.QSchedule(forProperty("schedule"), inits.get("schedule")) : null;
         this.user = inits.isInitialized("user") ? new com.example.tnote.boundedContext.user.entity.QUser(forProperty("user")) : null;
     }
 
