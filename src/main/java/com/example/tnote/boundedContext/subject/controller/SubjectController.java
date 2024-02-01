@@ -2,6 +2,7 @@ package com.example.tnote.boundedContext.subject.controller;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
+import com.example.tnote.boundedContext.subject.dto.SubjectDetailResponseDto;
 import com.example.tnote.boundedContext.subject.dto.SubjectRequestDto;
 import com.example.tnote.boundedContext.subject.dto.SubjectResponseDto;
 import com.example.tnote.boundedContext.subject.dto.SubjectsDeleteResponseDto;
@@ -12,7 +13,6 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -63,7 +62,7 @@ public class SubjectController {
     }
 
     // 시간표에서 특정 요일에 대한 데이터 조회
-    @GetMapping("/details/{scheduleId}/{day}")
+    @GetMapping("/{scheduleId}/{day}")
     public ResponseEntity<Result> findDay(@PathVariable Long scheduleId,
                                           @PathVariable ClassDay day,
                                           @AuthenticationPrincipal PrincipalDetails user) {
@@ -73,12 +72,20 @@ public class SubjectController {
     }
 
     // 홈페이지에서 오늘 데이터 조회
-    @GetMapping("/details/{scheduleId}")
+    @GetMapping("/{scheduleId}")
     public ResponseEntity<Result> findToday(@PathVariable Long scheduleId,
-                                            @AuthenticationPrincipal PrincipalDetails user,
-                                            @RequestParam(defaultValue = "1970-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate today) {
-        log.info("today : {} --------------------------", today);
-        List<SubjectResponseDto> response = subjectService.getTodayClass(scheduleId, user.getId(), today);
+                                            @AuthenticationPrincipal PrincipalDetails user) {
+
+        List<SubjectResponseDto> response = subjectService.getTodayClass(scheduleId, user.getId(), LocalDate.now());
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    // 특정 과목 조회
+    @GetMapping("/details/{scheduleId}/{subjectId}")
+    public ResponseEntity<Result> findSubject(@PathVariable Long scheduleId, @PathVariable Long subjectId,
+                                              @AuthenticationPrincipal PrincipalDetails user) {
+        SubjectDetailResponseDto response = subjectService.getSubject(scheduleId, subjectId, user.getId());
+
         return ResponseEntity.ok(Result.of(response));
     }
 }

@@ -11,6 +11,7 @@ import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
+import com.example.tnote.boundedContext.subject.dto.SubjectDetailResponseDto;
 import com.example.tnote.boundedContext.subject.dto.SubjectRequestDto;
 import com.example.tnote.boundedContext.subject.dto.SubjectResponseDto;
 import com.example.tnote.boundedContext.subject.dto.SubjectsDeleteResponseDto;
@@ -40,15 +41,9 @@ public class SubjectService {
     @Transactional
     public SubjectResponseDto addSubjects(SubjectRequestDto dto, Long userId) {
 
-        Schedule currentSchedule = checkCurrentSchedule(dto.getScheduleId());
-        User currentUser = checkCurrentUser(userId);
+        matchUserWithSchedule(dto.getScheduleId(), userId);
 
-        if (!currentUser.equals(currentSchedule.getUser())) {
-            log.warn("현재 유저와 스케쥴을 작성한 유저가 다릅니다");
-            throw new SubjectsException(SubjectsErrorResult.SUBJECT_NOT_FOUND);
-        }
-
-        Subjects subjects = dto.toEntity(currentSchedule);
+        Subjects subjects = dto.toEntity(checkCurrentSchedule(dto.getScheduleId()));
 
         return SubjectResponseDto.of(subjectRepository.save(subjects));
     }
@@ -108,42 +103,12 @@ public class SubjectService {
                 .build();
     }
 
-    private Subjects authorization(Long id, Long userId) {
-
-        Subjects subjects = subjectRepository.findById(id).orElseThrow(
-                () -> new SubjectsException(SubjectsErrorResult.SUBJECT_NOT_FOUND));
-
-        if (!subjects.getSchedule().getUser().getId().equals(userId)) {
-            log.warn("member doesn't have authentication , user {}", subjects.getSchedule().getUser());
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
-        return subjects;
-
-    }
-
-    private User checkCurrentUser(Long id) {
-        return userRepository.findById(id).orElseThrow(
-                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
-    }
-
-    private Schedule checkCurrentSchedule(Long scheduleId) {
-        return scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
-    }
-
     @Transactional(readOnly = true)
     public List<SubjectResponseDto> getMyClass(Long scheduleId, ClassDay day, Long userId) {
-        User currentUser = checkCurrentUser(userId);
-        Schedule schedule = checkCurrentSchedule(scheduleId);
-
-        if (!currentUser.equals(schedule.getUser())) {
-            log.warn("현재 user와 학기를 작성한 유저가 다릅니다.");
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
+        matchUserWithSchedule(scheduleId, userId);
 
         return SubjectResponseDto.of(
-                subjectQueryRepository.findAllByScheduleIdAndUserIdAndClassDay(schedule.getId(), currentUser.getId(),
-                        day));
+                subjectQueryRepository.findAllByScheduleIdAndUserIdAndClassDay(scheduleId, userId, day));
     }
 
     @Transactional(readOnly = true)
@@ -162,6 +127,48 @@ public class SubjectService {
                     subjectQueryRepository.findAllByScheduleIdAndUserIdAndDate(scheduleId, userId, date));
         }
         throw new SubjectsException(SubjectsErrorResult.TODAY_IS_WRONG_WITH_DATE);
+
+    }
+
+    @Transactional(readOnly = true)
+    public SubjectDetailResponseDto getSubject(Long scheduleId, Long subjectId, Long userId) {
+
+        matchUserWithSchedule(scheduleId, userId);
+        Subjects subject = authorization(subjectId, userId);
+
+        return SubjectDetailResponseDto.of(subject);
+    }
+
+    private User checkCurrentUser(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
+    }
+
+    private Schedule checkCurrentSchedule(Long scheduleId) {
+        return scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
+    }
+
+    private void matchUserWithSchedule(Long scheduleId, Long userId) {
+        User user = checkCurrentUser(userId);
+        Schedule schedule = checkCurrentSchedule(scheduleId);
+
+        if (!schedule.getUser().equals(user)) {
+            log.warn("스케쥴 user와 현 user가 다릅니다");
+            throw new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND);
+        }
+    }
+
+    private Subjects authorization(Long id, Long userId) {
+
+        Subjects subjects = subjectRepository.findById(id).orElseThrow(
+                () -> new SubjectsException(SubjectsErrorResult.SUBJECT_NOT_FOUND));
+
+        if (!subjects.getSchedule().getUser().getId().equals(userId)) {
+            log.warn("member doesn't have authentication , user {}", subjects.getSchedule().getUser());
+            throw new UserException(UserErrorResult.USER_NOT_FOUND);
+        }
+        return subjects;
 
     }
 }
