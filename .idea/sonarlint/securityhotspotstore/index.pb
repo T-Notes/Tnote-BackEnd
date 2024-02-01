@@ -1,12 +1,8 @@
 
 f
 6src/test/java/com/example/tnote/utils/TestThUtils.java,7/c/7c260c179fbf1f2df78583ecc2a7aebd81d8e034
-Ä
-Psrc/main/java/com/example/tnote/boundedContext/proceeding/entity/Proceeding.java,6/0/60414019fcc56c0c26eb05feeb36373a8439f1f1
 Å
 Qsrc/main/java/com/example/tnote/boundedContext/classLog/entity/ClassLogImage.java,7/9/799c19318a4b583206be9a445b7aac9cf0a82548
-|
-Lsrc/main/java/com/example/tnote/boundedContext/classLog/entity/ClassLog.java,f/0/f093fc66b9bc858bc58cd281be87a09313344a7b
 y
 Isrc/main/java/com/example/tnote/boundedContext/user/dto/TokenRequest.java,a/2/a2ed01a7d158250ddf22cd6f4860387b43b74534
 ê
@@ -45,8 +41,6 @@ q
 Asrc/test/java/com/example/tnote/user/service/UserServiceTest.java,0/0/00b32f5cb188d0b7d454a11f0fa847a9a70ee8bb
 ä
 Zsrc/main/java/com/example/tnote/boundedContext/classLog/controller/ClassLogController.java,8/0/80bfeca2fae88fa4cfc0ba5167f1d369c5791a10
-í
-bsrc/main/java/com/example/tnote/boundedContext/consultation/controller/ConsultationController.java,4/d/4d66c4107b6089c467a075e61d34d304998d085b
 Ñ
 Tsrc/main/java/com/example/tnote/boundedContext/classLog/service/ClassLogService.java,b/f/bfffc8d901bd646cbbe725d9352b3770563247d2
 å
@@ -59,8 +53,6 @@ Lsrc/main/java/com/example/tnote/boundedContext/todo/service/TodoService.java,3
 `src/main/java/com/example/tnote/boundedContext/observation/controller/ObservationController.java,b/6/b6fce64a6c06faddea3d504e64c3b951a8e1812b
 q
 Asrc/test/java/com/example/tnote/todo/service/TodoServiceTest.java,c/3/c3bfa8c2ecea4ac6dfc57d9098d63816ea296373
-|
-Lsrc/main/java/com/example/tnote/boundedContext/schedule/entity/Schedule.java,c/c/cc3302a970c894ca46d1124be33443c76b4ee7bd
 Å
 Qsrc/main/java/com/example/tnote/boundedContext/subject/dto/SubjectRequestDto.java,a/a/aa545e4fd92481d3924f9f50b99930e4a873625f
 ã
