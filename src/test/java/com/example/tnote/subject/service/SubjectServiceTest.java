@@ -7,6 +7,7 @@ import com.example.tnote.base.exception.subject.SubjectsException;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.subject.dto.SubjectDetailResponseDto;
 import com.example.tnote.boundedContext.subject.dto.SubjectRequestDto;
 import com.example.tnote.boundedContext.subject.dto.SubjectResponseDto;
 import com.example.tnote.boundedContext.subject.dto.SubjectsUpdateRequestDto;
@@ -359,6 +360,62 @@ class SubjectServiceTest {
 
         // then
         assertThatThrownBy(() -> subjectService.getTodayClass(schedule1.getId(), 222L, date))
+                .isInstanceOf(UserException.class);
+    }
+
+    @Test
+    @DisplayName(" 특정 과목 조회 - 성공")
+    void getSubject() {
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+        SubjectDetailResponseDto response = subjectService.getSubject(schedule1.getId(), subjects.getId(),
+                user1.getId());
+
+        // then
+        assertThat(response.getSubjectName()).isEqualTo("3학년 1학기");
+        assertThat(response.getMemo()).isEqualTo("memo");
+        assertThat(response.getClassTime()).isEqualTo("4교시");
+        assertThat(response.getClassDay()).isEqualTo(ClassDay.WEDNESDAY.getDay());
+        assertThat(response.getClassLocation()).isEqualTo("3반 교실");
+    }
+
+    @Test
+    @DisplayName(" 로그인 안한 유저 특정 과목 조회 - 실패")
+    void notLoginGetSubject() {
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> subjectService.getSubject(schedule1.getId(), subjects.getId(), null))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
+    }
+
+    @Test
+    @DisplayName(" 없는 과목 조회 - 실패")
+    void notExistGetSubject() {
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> subjectService.getSubject(schedule1.getId(), null, user1.getId()))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
+    }
+
+    @Test
+    @DisplayName(" 다른 유저 특정 과목 조회 - 실패")
+    void otherUserGetSubject() {
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> subjectService.getSubject(schedule1.getId(), subjects.getId(), 222L))
                 .isInstanceOf(UserException.class);
     }
 }
