@@ -3,6 +3,7 @@ package com.example.tnote.todo.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.example.tnote.base.exception.schedule.ScheduleException;
 import com.example.tnote.base.exception.todo.TodoException;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
@@ -95,6 +96,25 @@ public class TodoServiceTest {
     }
 
     @Test
+    @DisplayName("없는 학기 todo 작성 실패")
+    void notExistScheduleSaveTodo() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        TodoRequestDto dto = TodoRequestDto.builder()
+                .date(LocalDate.parse("2024-01-27"))
+                .content("test1")
+                .build();
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> todoService.saveTodo(dto, 222L, user1.getId()))
+                .isInstanceOf(ScheduleException.class);
+    }
+
+    @Test
     @DisplayName("다른 유저 todo 작성 실패")
     void otherUserSaveTodo() {
 
@@ -168,6 +188,20 @@ public class TodoServiceTest {
         // then
         assertThatThrownBy(() -> todoService.deleteTodo(222L, schedule1.getId(), user1.getId()))
                 .isInstanceOf(TodoException.class);
+    }
+
+    @Test
+    @DisplayName("없는 학기 todo 삭제 실패")
+    void notExistScheduleDeleteTodo() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> todoService.deleteTodo(todo1.getId(), 222L, user1.getId()))
+                .isInstanceOf(ScheduleException.class);
     }
 
 
@@ -275,6 +309,25 @@ public class TodoServiceTest {
 
         // then
         assertThatThrownBy(() -> todoService.updateTodos(dto, schedule1.getId(), todo1.getId(), 222L))
+                .isInstanceOf(UserException.class);
+    }
+
+    @Test
+    @DisplayName("없는 학기의 todo 수정 실패")
+    void notExistScheduleUpdateTodos() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        TodoUpdateRequestDto dto = TodoUpdateRequestDto.builder()
+                .date(LocalDate.parse("2024-01-27"))
+                .content("test1")
+                .build();
+
+        // then
+        assertThatThrownBy(() -> todoService.updateTodos(dto, 222L, todo1.getId(), 222L))
                 .isInstanceOf(UserException.class);
     }
 }
