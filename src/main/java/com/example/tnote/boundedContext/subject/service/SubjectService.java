@@ -149,6 +149,14 @@ public class SubjectService {
     @Transactional(readOnly = true)
     public List<SubjectResponseDto> getTodayClass(Long scheduleId, Long userId, LocalDate date) {
 
+        User user = checkCurrentUser(userId);
+        Schedule schedule = checkCurrentSchedule(scheduleId);
+
+        if (!schedule.getUser().equals(user)) {
+            log.warn("스케쥴 user와 현 user가 다릅니다");
+            throw new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND);
+        }
+
         if (date.equals(LocalDate.now())) {
             return SubjectResponseDto.of(
                     subjectQueryRepository.findAllByScheduleIdAndUserIdAndDate(scheduleId, userId, date));

@@ -82,7 +82,7 @@ class SubjectServiceTest {
         assertThat(sub.getColor()).isEqualTo("green");
         assertThat(sub.getMemo()).isEqualTo("test1");
         assertThat(sub.getClassTime()).isEqualTo("9교시");
-        assertThat(sub.getClassDay()).isEqualTo(ClassDay.WEDNESDAY);
+        assertThat(sub.getClassDay().getDay()).isEqualTo("수요일");
         assertThat(sub.getClassLocation()).isEqualTo("3반교실");
         assertThat(sub.getSchedule().getId()).isEqualTo(schedule1.getId());
     }
@@ -137,7 +137,7 @@ class SubjectServiceTest {
         assertThat(response.getColor()).isEqualTo("green");
         assertThat(response.getMemo()).isEqualTo("test1");
         assertThat(response.getClassTime()).isEqualTo("9교시");
-        assertThat(response.getClassDay()).isEqualTo(ClassDay.WEDNESDAY);
+        assertThat(response.getClassDay()).isEqualTo(ClassDay.WEDNESDAY.getDay());
         assertThat(response.getClassLocation()).isEqualTo("3반교실");
         assertThat(response.getSemesterName()).isEqualTo(schedule1.getSemesterName());
     }
@@ -282,7 +282,7 @@ class SubjectServiceTest {
         assertThat(response.get(0).getDate()).isEqualTo(LocalDate.now());
         assertThat(response.get(0).getColor()).isEqualTo("green");
         assertThat(response.get(0).getClassTime()).isEqualTo("4교시");
-        assertThat(response.get(0).getClassDay()).isEqualTo(ClassDay.WEDNESDAY);
+        assertThat(response.get(0).getClassDay()).isEqualTo(ClassDay.WEDNESDAY.getDay());
         assertThat(response.get(0).getClassLocation()).isEqualTo("3반 교실");
         assertThat(response.get(0).getSemesterName()).isEqualTo("test1");
     }
@@ -330,7 +330,7 @@ class SubjectServiceTest {
         assertThat(response.get(0).getDate()).isEqualTo(LocalDate.now());
         assertThat(response.get(0).getColor()).isEqualTo("green");
         assertThat(response.get(0).getClassTime()).isEqualTo("4교시");
-        assertThat(response.get(0).getClassDay()).isEqualTo(ClassDay.WEDNESDAY);
+        assertThat(response.get(0).getClassDay()).isEqualTo("수요일");
         assertThat(response.get(0).getClassLocation()).isEqualTo("3반 교실");
         assertThat(response.get(0).getSemesterName()).isEqualTo("test1");
     }
@@ -345,7 +345,7 @@ class SubjectServiceTest {
 
         // then
         assertThatThrownBy(() -> subjectService.getTodayClass(schedule1.getId(), null, date))
-                .isInstanceOf(SubjectsException.class);
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
     @Test
@@ -359,6 +359,6 @@ class SubjectServiceTest {
 
         // then
         assertThatThrownBy(() -> subjectService.getTodayClass(schedule1.getId(), 222L, date))
-                .isInstanceOf(SubjectsException.class);
+                .isInstanceOf(UserException.class);
     }
 }

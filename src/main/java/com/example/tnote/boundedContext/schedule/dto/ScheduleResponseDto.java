@@ -27,7 +27,7 @@ public class ScheduleResponseDto {
                         .subjectName(subject.getSubjectName())
                         .memo(subject.getMemo())
                         .classTime(subject.getClassTime())
-                        .classDay(subject.getClassDay())
+                        .classDay(subject.getClassDay().getDay())
                         .classLocation(subject.getClassLocation())
                         .build())
                 .toList();
