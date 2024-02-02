@@ -97,8 +97,6 @@ Zsrc/main/java/com/example/tnote/boundedContext/schedule/dto/ScheduleDeleteRespo
 Ysrc/main/java/com/example/tnote/boundedContext/schedule/dto/ScheduleUpdateRequestDto.java,c/1/c198e9098e9290e6572968c5691d56a233d81a11
 à
 Xsrc/main/java/com/example/tnote/boundedContext/subject/dto/SubjectsUpdateRequestDto.java,a/2/a23a08beadbdd1c74dd43edae75948392778342a
-|
-Lsrc/main/java/com/example/tnote/boundedContext/schedule/entity/ClassDay.java,9/3/93f7c9ecdd100eccfb07b71efa784eb84ef62a7f
 ç
 ]src/main/java/com/example/tnote/boundedContext/subject/repository/SubjectQueryRepository.java,0/c/0ca4a2d1e327cca3a7f3cb432c9f41f603628679
 Ç

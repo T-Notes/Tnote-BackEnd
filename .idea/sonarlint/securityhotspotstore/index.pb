@@ -89,8 +89,6 @@ bsrc/main/java/com/example/tnote/boundedContext/consultation/dto/ConsultationDet
 Wsrc/main/java/com/example/tnote/boundedContext/consultation/entity/CounselingField.java,0/9/09e3d86a3517e8201f318af7dd205df555c47a5d
 Œ
 \src/main/java/com/example/tnote/boundedContext/consultation/dto/ConsultationResponseDto.java,c/0/c0f0b2138b02c1d49c63c60131c597d20cf45385
-|
-Lsrc/main/java/com/example/tnote/boundedContext/schedule/entity/ClassDay.java,9/3/93f7c9ecdd100eccfb07b71efa784eb84ef62a7f
 ƒ
 Ssrc/main/java/com/example/tnote/boundedContext/schedule/dto/ScheduleRequestDto.java,2/f/2f1d57b2ba3a87bae3dc3fa76985d2693977ad8c
 Š
