@@ -48,7 +48,25 @@ public class Consultation extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+    public void updateStudentName(String studentName) {
+        this.studentName = studentName;
+    }
 
+    public void updateStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public void updateEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    public void updateCounselingField(CounselingField counselingField) {
+        this.counselingField = counselingField;
+    }
+
+    public void updateCounselingType(CounselingType counselingType) {
+        this.counselingType = counselingType;
+    }
     public void updateConsultationContents(String consultationContents) {
         this.consultationContents = consultationContents;
     }
