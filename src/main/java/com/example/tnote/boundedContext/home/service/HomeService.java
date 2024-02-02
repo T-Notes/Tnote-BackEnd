@@ -80,6 +80,7 @@ public class HomeService {
 
     @Transactional(readOnly = true)
     public List<ProceedingResponseDto> findAllOfProceeding(String title, Long userId) {
+
         findUser(userId);
 
         List<Proceeding> proceedings = proceedingQueryRepository.findAll(title);

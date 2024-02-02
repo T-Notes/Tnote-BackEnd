@@ -7,6 +7,8 @@ import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.service.HomeService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
+import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
+import com.example.tnote.boundedContext.schedule.service.ScheduleService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -28,6 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class HomeController {
 
     private final HomeService homeService;
+    private final ScheduleService scheduleService;
 
     // 학생 이름 검색 했을때 나올 내용
     @GetMapping("/searching")
@@ -49,6 +52,17 @@ public class HomeController {
 
         return ResponseEntity.ok(Result.of(response));
 
+    }
+
+    // 아카이브 명 검색 ( = 학기명 검색 )
+    @GetMapping("/semester")
+    public ResponseEntity<Result> findSemester(
+            @RequestParam(name = "semesterName", required = false, defaultValue = "") String semesterName,
+            @AuthenticationPrincipal PrincipalDetails user) {
+
+        List<SemesterNameResponseDto> response = scheduleService.searchSemester(semesterName, user.getId());
+
+        return ResponseEntity.ok(Result.of(response));
     }
 
     @GetMapping("/dailyLogs")
