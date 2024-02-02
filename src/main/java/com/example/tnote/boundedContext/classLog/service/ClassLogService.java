@@ -89,9 +89,24 @@ public class ClassLogService {
 
         return ClassLogResponseDto.of(classLog);
     }
-
     private void updateEachClassLogItem(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog,
                                         List<MultipartFile> classLogImages) {
+        updateClassLogFields(classLogUpdateRequestDto, classLog);
+        if (classLogImages != null && !classLogImages.isEmpty()) {
+            List<ClassLogImage> updatedImages = deleteExistedImagesAndUploadNewImages(classLog, classLogImages);
+            classLog.updateClassLogImages(updatedImages);
+        }
+    }
+    private void updateClassLogFields(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog) {
+        if (classLogUpdateRequestDto.hasTitle()) {
+            classLog.updateTitle(classLogUpdateRequestDto.getTitle());
+        }
+        if (classLogUpdateRequestDto.hasStartDate()) {
+            classLog.updateStartDate(classLogUpdateRequestDto.getStartDate());
+        }
+        if (classLogUpdateRequestDto.hasEndDate()) {
+            classLog.updateEndDate(classLogUpdateRequestDto.getEndDate());
+        }
         if (classLogUpdateRequestDto.hasPlan()) {
             classLog.updatePlan(classLogUpdateRequestDto.getPlan());
         }
@@ -103,10 +118,6 @@ public class ClassLogService {
         }
         if (classLogUpdateRequestDto.hasMagnitude()) {
             classLog.updateMagnitude(classLogUpdateRequestDto.getMagnitude());
-        }
-        if (classLogImages != null && !classLogImages.isEmpty()) {
-            classLog.updateClassLogImages(
-                    deleteExistedImagesAndUploadNewImages(classLog, classLogImages));
         }
     }
 
