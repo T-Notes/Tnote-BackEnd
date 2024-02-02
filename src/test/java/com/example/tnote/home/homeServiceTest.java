@@ -3,6 +3,7 @@ package com.example.tnote.home;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
@@ -111,8 +112,22 @@ public class homeServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> homeService.findAllOfProceeding(consultation.getStudentName(), null))
+        assertThatThrownBy(() -> homeService.findAllOfConsultation(consultation.getStudentName(), null))
                 .isInstanceOf(InvalidDataAccessApiUsageException.class);
+    }
+
+    @Test
+    @DisplayName("다른 유저 상담 일지 조회 - 실패")
+    void otherUserFindAllOfConsultation() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> homeService.findAllOfConsultation(consultation.getStudentName(), 222L))
+                .isInstanceOf(UserException.class);
     }
 
     @Test
@@ -147,9 +162,24 @@ public class homeServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> homeService.findAllOfProceeding(observation.getStudentName(), null))
+        assertThatThrownBy(() -> homeService.findAllOfObservation(observation.getStudentName(), null))
                 .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
+
+    @Test
+    @DisplayName("다른 유저 학급 관찰 조회 - 실패")
+    void otherUserFindAllOfObservation() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> homeService.findAllOfObservation(observation.getStudentName(), 222L))
+                .isInstanceOf(UserException.class);
+    }
+
 
     @Test
     @DisplayName("제 검색 : 학급일지 - 성공")
@@ -185,8 +215,22 @@ public class homeServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> homeService.findAllOfProceeding(classLog.getTitle(), null))
+        assertThatThrownBy(() -> homeService.findAllOfClassLog(classLog.getTitle(), null))
                 .isInstanceOf(InvalidDataAccessApiUsageException.class);
+    }
+
+    @Test
+    @DisplayName("다른  유저 학급 일지 조회 - 실패")
+    void otherUserFindAllOfClassLog() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> homeService.findAllOfClassLog(classLog.getTitle(), 222L))
+                .isInstanceOf(UserException.class);
     }
 
     @Test
@@ -226,6 +270,20 @@ public class homeServiceTest {
     }
 
     @Test
+    @DisplayName("다른 유저 업무 일지 조회 - 실패")
+    void otherUserFindAllOfProceeding() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> homeService.findAllOfProceeding(proceeding.getTitle(), 222L))
+                .isInstanceOf(UserException.class);
+    }
+
+    @Test
     @DisplayName("아카이브명 ( 학기명 ) 검색 - 성공")
     void searchSemester() {
         // given
@@ -248,7 +306,7 @@ public class homeServiceTest {
 
         // then
         assertThatThrownBy(() -> scheduleService.searchSemester("2024년 3학년 1학기", null))
-                .isInstanceOf(InvalidDataAccessApiUsageException.class);
+                .isInstanceOf(UserException.class);
     }
 
 }
