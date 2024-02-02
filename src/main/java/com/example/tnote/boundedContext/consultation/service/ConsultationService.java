@@ -8,6 +8,9 @@ import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
@@ -47,7 +50,7 @@ public class ConsultationService {
         Consultation consultation = requestDto.toEntity(user);
         if (consultationImages != null && !consultationImages.isEmpty()) {
             List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
-            consultation.getConsultationImage().addAll(uploadedImages); // 이미지 리스트에 추가
+            consultation.getConsultationImage().addAll(uploadedImages);
         }
         return ConsultationResponseDto.of(consultationRepository.save(consultation));
     }
@@ -90,22 +93,43 @@ public class ConsultationService {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> new ConsultationException(
                         ConsultationErrorResult.CONSULTATION_NOT_FOUNT));
-        ;
-        updateEachItems(consultation, requestDto, consultationImages);
+
+        updateConsultationItem(requestDto, consultation, consultationImages);
         return ConsultationResponseDto.of(consultation);
     }
 
-    private void updateEachItems(Consultation consultation, ConsultationUpdateRequestDto requestDto,
-                                 List<MultipartFile> consultationImages) {
+    private void updateConsultationItem(ConsultationUpdateRequestDto requestDto, Consultation consultation,
+                                        List<MultipartFile> consultationImages) {
+        updateConsultationFields(requestDto, consultation);
+        if (consultationImages != null && !consultationImages.isEmpty()) {
+            List<ConsultationImage> updatedImages = deleteExistedImagesAndUploadNewImages(consultation, consultationImages);
+            consultation.updateConsultationImages(updatedImages);
+        }
+    }
+
+    private void updateConsultationFields(ConsultationUpdateRequestDto requestDto, Consultation consultation) {
+        if (requestDto.hasStudentName()) {
+            consultation.updateStudentName(requestDto.getStudentName());
+        }
+        if (requestDto.hasStartDate()) {
+            consultation.updateStartDate(requestDto.getStartDate());
+        }
+        if (requestDto.hasEndDate()) {
+            consultation.updateEndDate(requestDto.getEndDate());
+        }
         if (requestDto.hasConsultationContents()) {
             consultation.updateConsultationContents(requestDto.getConsultationContents());
         }
         if (requestDto.hasConsultationResult()) {
             consultation.updateConsultationResult(requestDto.getConsultationResult());
         }
-        if (consultationImages != null && !consultationImages.isEmpty()) {
-            consultation.updateConsultationImages(
-                    deleteExistedImagesAndUploadNewImages(consultation, consultationImages));
+        if (requestDto.hasCounselingField()) {
+            requestDto.validateEnums();
+            consultation.updateCounselingField(requestDto.getCounselingField());
+        }
+        if (requestDto.hasCounselingType()) {
+            requestDto.validateEnums();
+            consultation.updateCounselingType(requestDto.getCounselingType());
         }
     }
 
