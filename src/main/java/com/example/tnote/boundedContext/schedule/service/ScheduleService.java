@@ -8,7 +8,9 @@ import com.example.tnote.boundedContext.schedule.dto.ScheduleDeleteResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleUpdateRequestDto;
+import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleQueryRepository;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -17,7 +19,6 @@ import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,6 +31,7 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
+    private final ScheduleQueryRepository scheduleQueryRepository;
 
     @Transactional
     public ScheduleResponseDto addSchedule(ScheduleRequestDto dto, Long userId) {
@@ -106,22 +108,21 @@ public class ScheduleService {
         return ScheduleResponseDto.of(scheduleRepository.findAllById(scheduleId));
     }
 
-    private Schedule getSchedule(Long scheduleId) {
-        return scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
+    @Transactional(readOnly = true)
+    public List<SemesterNameResponseDto> searchSemester(String semesterName, Long userId) {
+        checkUser(userId);
+
+        List<Schedule> schedules = scheduleQueryRepository.findAllBySemesterName(semesterName);
+
+        return schedules.stream()
+                .map(SemesterNameResponseDto::of)
+                .toList();
     }
 
     @Transactional(readOnly = true)
     public List<ScheduleResponseDto> findSchedule(Long scheduleId, Long userId) {
 
-        Schedule schedule = getSchedule(scheduleId);
-
-        checkUser(userId);
-
-        if (!schedule.getUser().getId().equals(userId)) {
-            log.warn("학기 user와 현재 user 가 다릅니다");
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
+        matchUserWithSchedule(scheduleId, userId);
 
         return ScheduleResponseDto.excludeLastDayOf(scheduleRepository.findAllById(scheduleId));
     }
@@ -134,7 +135,7 @@ public class ScheduleService {
 
         return scheduleList.stream()
                 .map(Schedule::getSemesterName)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
@@ -168,6 +169,11 @@ public class ScheduleService {
         return totalCnt;
     }
 
+    private Schedule getSchedule(Long scheduleId) {
+        return scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
+    }
+
     private User checkCurrentUser(Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new UserException(UserErrorResult.USER_NOT_FOUND));
@@ -189,4 +195,6 @@ public class ScheduleService {
             throw new UserException(UserErrorResult.USER_NOT_FOUND);
         }
     }
+
+
 }
