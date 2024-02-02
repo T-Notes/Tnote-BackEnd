@@ -8,6 +8,9 @@ import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
+import com.example.tnote.boundedContext.consultation.entity.Consultation;
+import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
@@ -46,7 +49,7 @@ public class ObservationService {
         Observation observation = requestDto.toEntity(user);
         if (observationImages != null && !observationImages.isEmpty()) {
             List<ObservationImage> uploadedImages = uploadObservationImages(observation, observationImages);
-            observation.getObservationImage().addAll(uploadedImages); // 이미지 리스트에 추가
+            observation.getObservationImage().addAll(uploadedImages);
         }
         return ObservationResponseDto.of(observationRepository.save(observation));
     }
@@ -56,59 +59,65 @@ public class ObservationService {
         //todo slice 형태로 바꿔야합니다
         List<Observation> observations = observationRepository.findAllByUserId(userId);
 
-        return observations.stream()
-                .map(ObservationResponseDto::of)
-                .toList();
+        return observations.stream().map(ObservationResponseDto::of).toList();
     }
 
     @Transactional(readOnly = true)
     public ObservationDetailResponseDto readObservationDetail(Long userId, Long observationId) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
-                .orElseThrow(() -> new ObservationException(
-                        ObservationErrorResult.OBSERVATION_NOT_FOUNT));
+                .orElseThrow(() -> new ObservationException(ObservationErrorResult.OBSERVATION_NOT_FOUNT));
         List<ObservationImage> observationImages = observationImageRepository.findObservationImageById(observationId);
         return new ObservationDetailResponseDto(observation, observationImages);
     }
 
     public ObservationDeleteResponseDto deleteObservation(Long userId, Long observationId) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
-                .orElseThrow(() -> new ObservationException(
-                        ObservationErrorResult.OBSERVATION_NOT_FOUNT));
+                .orElseThrow(() -> new ObservationException(ObservationErrorResult.OBSERVATION_NOT_FOUNT));
         observationRepository.delete(observation);
 
-        return ObservationDeleteResponseDto.builder()
-                .id(observation.getId())
-                .build();
+        return ObservationDeleteResponseDto.builder().id(observation.getId()).build();
     }
 
     public ObservationResponseDto updateObservation(Long userId, Long observationId,
                                                     ObservationUpdateRequestDto requestDto,
                                                     List<MultipartFile> observationImages) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
-                .orElseThrow(() -> new ObservationException(
-                        ObservationErrorResult.OBSERVATION_NOT_FOUNT));
-        updateEachItem(observation, requestDto, observationImages);
+                .orElseThrow(() -> new ObservationException(ObservationErrorResult.OBSERVATION_NOT_FOUNT));
+        updateObservationItem(requestDto, observation, observationImages);
         return ObservationResponseDto.of(observation);
     }
 
-    private void updateEachItem(Observation observation, ObservationUpdateRequestDto requestDto,
-                                List<MultipartFile> observationImages) {
+    private void updateObservationItem(ObservationUpdateRequestDto requestDto, Observation observation,
+                                       List<MultipartFile> observationImages) {
+        updateObservationFields(requestDto, observation);
+        if (observationImages != null && !observationImages.isEmpty()) {
+            List<ObservationImage> updatedImages = deleteExistedImagesAndUploadNewImages(observation,
+                    observationImages);
+            observation.updateObservationImage(updatedImages);
+        }
+    }
+
+    private void updateObservationFields(ObservationUpdateRequestDto requestDto, Observation observation) {
+        if (requestDto.hasStudentName()) {
+            observation.updateStudentName(requestDto.getStudentName());
+        }
+        if (requestDto.hasStartDate()) {
+            observation.updateStartDate(requestDto.getStartDate());
+        }
+        if (requestDto.hasEndDate()) {
+            observation.updateEndDate(requestDto.getEndDate());
+        }
         if (requestDto.hasObservationContents()) {
             observation.updateObservationContents(requestDto.getObservationContents());
         }
         if (requestDto.hasGuidance()) {
             observation.updateGuidance(requestDto.getGuidance());
         }
-        if (observationImages != null && !observationImages.isEmpty()) {
-            observation.updateObservationImage(deleteExistedImagesAndUploadNewImages(observation, observationImages));
-        }
     }
 
     private List<ObservationImage> uploadObservationImages(Observation observation,
                                                            List<MultipartFile> observationImages) {
-        return observationImages.stream()
-                .map(file -> createObservationImage(observation, file))
-                .toList();
+        return observationImages.stream().map(file -> createObservationImage(observation, file)).toList();
     }
 
     private ObservationImage createObservationImage(Observation observation, MultipartFile file) {
@@ -123,10 +132,8 @@ public class ObservationService {
         log.info("url = {}", url);
         observation.clearObservationImages();
 
-        return observationImageRepository.save(ObservationImage.builder()
-                .observationImageUrl(url)
-                .observation(observation)
-                .build());
+        return observationImageRepository.save(
+                ObservationImage.builder().observationImageUrl(url).observation(observation).build());
     }
 
     public List<ObservationResponseDto> readDailyObservations(Long userId, LocalDate date) {
@@ -135,9 +142,7 @@ public class ObservationService {
 
         List<Observation> classLogs = observationRepository.findByUserIdAndStartDateBetween(userId, startOfDay,
                 endOfDay);
-        return classLogs.stream()
-                .map(ObservationResponseDto::of)
-                .toList();
+        return classLogs.stream().map(ObservationResponseDto::of).toList();
     }
 
     private List<ObservationImage> deleteExistedImagesAndUploadNewImages(Observation observation,
