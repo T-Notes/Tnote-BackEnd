@@ -63,8 +63,6 @@ Zsrc/main/java/com/example/tnote/boundedContext/observation/dto/ObservationRespo
 Tsrc/main/java/com/example/tnote/boundedContext/classLog/dto/ClassLogResponseDto.java,c/e/ce2c0b501a48fb45f213469ad6dd95eee64a357d
 ˆ
 Xsrc/main/java/com/example/tnote/boundedContext/proceeding/dto/ProceedingResponseDto.java,8/d/8d33d193568561a48432c35e34b35a82c8ab52ca
-i
-9src/test/java/com/example/tnote/home/homeServiceTest.java,c/0/c0406a62d19152452fcaacab3701ab15ed3cc145
 |
 Lsrc/main/java/com/example/tnote/boundedContext/user/service/UserService.java,0/f/0f5de7ea407d4359a016553dfec07c85663b568a
 y
