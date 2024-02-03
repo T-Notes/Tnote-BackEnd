@@ -15,6 +15,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteRespo
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
@@ -28,6 +29,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -56,13 +59,19 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> readAllConsultation(Long userId) {
-        //todo slice 형태로 바꿔야합니다
+    public ConsultationSliceResponseDto readAllConsultation(Long userId, Pageable pageable) {
         List<Consultation> consultations = consultationRepository.findAllByUserId(userId);
+        Slice<Consultation> allConsultations = consultationRepository.findAllBy(pageable);
+        int numberOfConsultation = consultations.size();
+        List<ConsultationResponseDto> responseDtos = allConsultations.getContent().stream()
+                .map(ConsultationResponseDto::of).toList();
 
-        return consultations.stream()
-                .map(ConsultationResponseDto::of)
-                .toList();
+        return ConsultationSliceResponseDto.builder()
+                .consultations(responseDtos)
+                .numberOfConsultation(numberOfConsultation)
+                .page(allConsultations.getPageable().getPageNumber())
+                .isLast(allConsultations.isLast())
+                .build();
     }
 
     public ConsultationDeleteResponseDto deleteClassLog(Long userId, Long consultationId) {
@@ -102,7 +111,8 @@ public class ConsultationService {
                                         List<MultipartFile> consultationImages) {
         updateConsultationFields(requestDto, consultation);
         if (consultationImages != null && !consultationImages.isEmpty()) {
-            List<ConsultationImage> updatedImages = deleteExistedImagesAndUploadNewImages(consultation, consultationImages);
+            List<ConsultationImage> updatedImages = deleteExistedImagesAndUploadNewImages(consultation,
+                    consultationImages);
             consultation.updateConsultationImages(updatedImages);
         }
     }

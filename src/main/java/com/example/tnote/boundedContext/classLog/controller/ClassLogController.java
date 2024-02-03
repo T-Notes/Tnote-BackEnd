@@ -56,8 +56,8 @@ public class ClassLogController {
     public ResponseEntity<Result> getAllClassLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                   @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
-        PageRequest pageRequest = PageRequest.of(page,size);
-        ClassLogSliceResponseDto responseDto = classLogService.readAllClassLog(principalDetails.getId(),pageRequest);
+        PageRequest pageRequest = PageRequest.of(page, size);
+        ClassLogSliceResponseDto responseDto = classLogService.readAllClassLog(principalDetails.getId(), pageRequest);
 
         return ResponseEntity.ok(Result.of(responseDto));
     }

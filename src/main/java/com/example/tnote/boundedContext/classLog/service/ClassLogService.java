@@ -70,7 +70,8 @@ public class ClassLogService {
         List<ClassLog> classLogs = classLogRepository.findAllByUserId(userId);
         Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllBy(pageable);
         int numberOfClassLog = classLogs.size();
-        List<ClassLogResponseDto> classLogResponseDtos = allClassLogsSlice.getContent().stream().map(ClassLogResponseDto::of).toList();
+        List<ClassLogResponseDto> classLogResponseDtos = allClassLogsSlice.getContent().stream()
+                .map(ClassLogResponseDto::of).toList();
 
         return ClassLogSliceResponseDto.builder()
                 .classLogs(classLogResponseDtos)
@@ -97,6 +98,7 @@ public class ClassLogService {
 
         return ClassLogResponseDto.of(classLog);
     }
+
     private void updateEachClassLogItem(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog,
                                         List<MultipartFile> classLogImages) {
         updateClassLogFields(classLogUpdateRequestDto, classLog);
@@ -105,6 +107,7 @@ public class ClassLogService {
             classLog.updateClassLogImages(updatedImages);
         }
     }
+
     private void updateClassLogFields(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog) {
         if (classLogUpdateRequestDto.hasTitle()) {
             classLog.updateTitle(classLogUpdateRequestDto.getTitle());

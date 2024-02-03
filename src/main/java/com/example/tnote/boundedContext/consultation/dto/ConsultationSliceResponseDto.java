@@ -10,7 +10,7 @@ import lombok.Getter;
 public class ConsultationSliceResponseDto {
 
     List<ConsultationResponseDto> consultations;
-    private int numberOfClassLog;
+    private int numberOfConsultation;
 
     private long page;
     @JsonProperty(value = "isLast")
