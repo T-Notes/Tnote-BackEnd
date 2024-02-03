@@ -11,10 +11,12 @@ import static org.mockito.Mockito.when;
 
 import com.example.tnote.base.exception.proceeding.ProceedingException;
 import com.example.tnote.base.exception.user.UserException;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
@@ -34,6 +36,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
@@ -97,15 +103,17 @@ public class ProceedingServiceTest {
     @Test
     void getProceedings() {
         Long userId = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
 
         Proceeding mockProceeding1 = mock(Proceeding.class);
         Proceeding mockProceeding2 = mock(Proceeding.class);
-        List<Proceeding> mockProceedings = Arrays.asList(mockProceeding1, mockProceeding2);
+        List<Proceeding> mockProceedingList = Arrays.asList(mockProceeding1, mockProceeding2);
+        Slice<Proceeding> mockProceedings = new PageImpl<>(mockProceedingList, pageable, mockProceedingList.size());
 
-        when(proceedingRepository.findAllByUserId(userId)).thenReturn(mockProceedings);
-        List<ProceedingResponseDto> result = proceedingService.readAllProceeding(userId);
+        when(proceedingRepository.findAllBy(pageable)).thenReturn(mockProceedings);
+        ProceedingSliceResponseDto result = proceedingService.readAllProceeding(userId, pageable);
 
-        assertThat(result)
+        assertThat(result.getProceedings())
                 .isNotNull()
                 .hasSize(2);
 

@@ -5,12 +5,14 @@ import com.example.tnote.boundedContext.observation.dto.ObservationDeleteRespons
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,6 +22,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -43,10 +46,14 @@ public class ObservationController {
     }
 
     @GetMapping("/observations")
-    public ResponseEntity<Result> getAllObservations(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        List<ObservationResponseDto> observations = observationService.readAllObservation(principalDetails.getId());
+    public ResponseEntity<Result> getAllObservations(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                     @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                     @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        ObservationSliceResponseDto responseDto = observationService.readAllObservation(principalDetails.getId(),
+                pageRequest);
 
-        return ResponseEntity.ok(Result.of(observations));
+        return ResponseEntity.ok(Result.of(responseDto));
     }
 
     @GetMapping("/{observationId}")

@@ -4,6 +4,8 @@ import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -16,5 +18,7 @@ public interface ClassLogRepository extends JpaRepository<ClassLog, Long> {
     Optional<ClassLog> findByIdAndUserId(Long classLogId, Long userId);
 
     List<ClassLog> findByUserIdAndStartDateBetween(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay);
+    @Query("SELECT c FROM ClassLog c ORDER BY c.createdAt DESC")
+    Slice<ClassLog> findAllBy(Pageable pageable);
 
 }

@@ -6,10 +6,14 @@ import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
@@ -23,6 +27,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -50,13 +56,19 @@ public class ProceedingService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProceedingResponseDto> readAllProceeding(Long userId) {
-        //todo slice 형태로 바꿔야합니다
+    public ProceedingSliceResponseDto readAllProceeding(Long userId, Pageable pageable) {
         List<Proceeding> proceedings = proceedingRepository.findAllByUserId(userId);
+        Slice<Proceeding> allProceedingSlice = proceedingRepository.findAllBy(pageable);
+        int numberOfProceeding = proceedings.size();
+        List<ProceedingResponseDto> responseDto = allProceedingSlice.getContent().stream()
+                .map(ProceedingResponseDto::of).toList();
 
-        return proceedings.stream()
-                .map(ProceedingResponseDto::of)
-                .toList();
+        return ProceedingSliceResponseDto.builder()
+                .proceedings(responseDto)
+                .numberOfProceeding(numberOfProceeding)
+                .page(allProceedingSlice.getPageable().getPageNumber())
+                .isLast(allProceedingSlice.isLast())
+                .build();
     }
 
     public ProceedingDeleteResponseDto deleteProceeding(Long userId, Long proceedingId) {
@@ -85,21 +97,35 @@ public class ProceedingService {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
                 .orElseThrow(() -> new ProceedingException(
                         ProceedingErrorResult.PROCEEDING_NOT_FOUNT));
-        updateEachItem(updateRequestDto, proceeding, proceedingImages);
+        updateEachProceedingItem(updateRequestDto, proceeding, proceedingImages);
 
         return ProceedingResponseDto.of(proceeding);
     }
 
-    private void updateEachItem(ProceedingUpdateRequestDto updateRequestDto, Proceeding proceeding,
-                                List<MultipartFile> proceedingImages) {
-        if (updateRequestDto.hasLocation()) {
-            proceeding.updateLocation(updateRequestDto.getLocation());
-        }
-        if (updateRequestDto.hasWorkContents()) {
-            proceeding.updateWorkContents(updateRequestDto.getWorkContents());
-        }
+    private void updateEachProceedingItem(ProceedingUpdateRequestDto requestDto, Proceeding proceeding,
+                                          List<MultipartFile> proceedingImages) {
+        updateProceedingFields(requestDto, proceeding);
         if (proceedingImages != null && !proceedingImages.isEmpty()) {
-            proceeding.updateProceedingImage(deleteExistedImagesAndUploadNewImages(proceeding, proceedingImages));
+            List<ProceedingImage> updatedImages = deleteExistedImagesAndUploadNewImages(proceeding, proceedingImages);
+            proceeding.updateProceedingImage(updatedImages);
+        }
+    }
+
+    private void updateProceedingFields(ProceedingUpdateRequestDto requestDto, Proceeding proceeding) {
+        if (requestDto.hasTitle()) {
+            proceeding.updateTitle(requestDto.getTitle());
+        }
+        if (requestDto.hasStartDate()) {
+            proceeding.updateStartDate(requestDto.getStartDate());
+        }
+        if (requestDto.hasEndDate()) {
+            proceeding.updateEndDate(requestDto.getEndDate());
+        }
+        if (requestDto.hasLocation()) {
+            proceeding.updateLocation(requestDto.getLocation());
+        }
+        if (requestDto.hasWorkContents()) {
+            proceeding.updateWorkContents(requestDto.getWorkContents());
         }
     }
 

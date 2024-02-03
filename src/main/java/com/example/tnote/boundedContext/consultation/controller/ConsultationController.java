@@ -5,6 +5,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteRespo
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
@@ -14,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +25,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
@@ -57,11 +60,14 @@ public class ConsultationController {
     }
 
     @GetMapping("/consultations")
-    public ResponseEntity<Result> getAllConsultations(@AuthenticationPrincipal PrincipalDetails principalDetails) {
-        List<ConsultationResponseDto> consultationResponseDtos = consultationService.readAllConsultation(
-                principalDetails.getId());
+    public ResponseEntity<Result> getAllConsultations(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                      @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                      @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
+        PageRequest pageRequest = PageRequest.of(page, size);
+        ConsultationSliceResponseDto responseDto = consultationService.readAllConsultation(principalDetails.getId(),
+                pageRequest);
 
-        return ResponseEntity.ok(Result.of(consultationResponseDtos));
+        return ResponseEntity.ok(Result.of(responseDto));
     }
 
     @DeleteMapping("/{consultationId}")
