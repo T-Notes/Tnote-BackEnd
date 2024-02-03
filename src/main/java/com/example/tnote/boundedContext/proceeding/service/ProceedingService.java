@@ -13,6 +13,7 @@ import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseD
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
@@ -26,6 +27,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -53,13 +56,19 @@ public class ProceedingService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProceedingResponseDto> readAllProceeding(Long userId) {
-        //todo slice 형태로 바꿔야합니다
+    public ProceedingSliceResponseDto readAllProceeding(Long userId, Pageable pageable) {
         List<Proceeding> proceedings = proceedingRepository.findAllByUserId(userId);
+        Slice<Proceeding> allProceedingSlice = proceedingRepository.findAllBy(pageable);
+        int numberOfProceeding = proceedings.size();
+        List<ProceedingResponseDto> responseDto = allProceedingSlice.getContent().stream()
+                .map(ProceedingResponseDto::of).toList();
 
-        return proceedings.stream()
-                .map(ProceedingResponseDto::of)
-                .toList();
+        return ProceedingSliceResponseDto.builder()
+                .proceedings(responseDto)
+                .numberOfProceeding(numberOfProceeding)
+                .page(allProceedingSlice.getPageable().getPageNumber())
+                .isLast(allProceedingSlice.isLast())
+                .build();
     }
 
     public ProceedingDeleteResponseDto deleteProceeding(Long userId, Long proceedingId) {
