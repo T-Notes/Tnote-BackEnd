@@ -23,6 +23,7 @@ import com.example.tnote.boundedContext.observation.dto.ObservationDeleteRespons
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.entity.ObservationImage;
@@ -42,6 +43,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
@@ -103,22 +108,24 @@ public class ObservationServiceTest {
     void getLogs() {
         Long userId = 1L;
         Long otherUserId = 2L;
+        Pageable pageable = PageRequest.of(0, 10);
 
         Observation mockObservation1 = mock(Observation.class);
         Observation mockObservation2 = mock(Observation.class);
 
         Observation otherObservation = mock(Observation.class);
 
-        List<Observation> mockObservations = Arrays.asList(mockObservation1, mockObservation2);
+        List<Observation> mockObservationList = Arrays.asList(mockObservation1, mockObservation2);
+        Slice<Observation> mockObservations = new PageImpl<>(mockObservationList, pageable, mockObservationList.size());
 
-        when(observationRepository.findAllByUserId(userId)).thenReturn(mockObservations);
-        List<ObservationResponseDto> result = observationService.readAllObservation(userId);
+        when(observationRepository.findAllBy(pageable)).thenReturn(mockObservations);
+        ObservationSliceResponseDto result = observationService.readAllObservation(userId, pageable);
 
-        assertThat(result)
+        assertThat(result.getObservations())
                 .isNotNull()
                 .hasSize(2);
 
-        verify(observationRepository).findAllByUserId(userId);
+        verify(observationRepository).findAllBy(pageable);
     }
     @DisplayName("관찰일지 상세 조회: 관찰일지 상세 정보 조회 확인")
     @Test
