@@ -15,6 +15,7 @@ import com.example.tnote.boundedContext.observation.dto.ObservationDeleteRespons
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.entity.ObservationImage;
@@ -28,6 +29,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -55,11 +58,21 @@ public class ObservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> readAllObservation(Long userId) {
+    public ObservationSliceResponseDto readAllObservation(Long userId, Pageable pageable) {
         //todo slice 형태로 바꿔야합니다
         List<Observation> observations = observationRepository.findAllByUserId(userId);
+        Slice<Observation> allObservationSlice = observationRepository.findAllBy(pageable);
+        int numberOfObservation = observations.size();
 
-        return observations.stream().map(ObservationResponseDto::of).toList();
+        List<ObservationResponseDto> responseDto = allObservationSlice.getContent().stream()
+                .map(ObservationResponseDto::of).toList();
+
+        return ObservationSliceResponseDto.builder()
+                .observations(responseDto)
+                .numberOfObservation(numberOfObservation)
+                .page(allObservationSlice.getPageable().getPageNumber())
+                .isLast(allObservationSlice.isLast())
+                .build();
     }
 
     @Transactional(readOnly = true)
