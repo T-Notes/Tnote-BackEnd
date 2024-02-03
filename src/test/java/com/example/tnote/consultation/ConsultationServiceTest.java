@@ -11,10 +11,12 @@ import static org.mockito.Mockito.when;
 
 import com.example.tnote.base.exception.consultation.ConsultationException;
 import com.example.tnote.base.exception.user.UserException;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
@@ -37,6 +39,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
@@ -103,6 +109,7 @@ public class ConsultationServiceTest {
         assertThatThrownBy(() -> consultationService.save(userId, requestDto, Collections.emptyList()))
                 .isInstanceOf(ConsultationException.class);
     }
+
     @DisplayName("상담일지 저장: 존재하지 않는 사용자로 인한 예외 발생 확인")
     @Test
     void noUserSave() {
@@ -123,20 +130,24 @@ public class ConsultationServiceTest {
     @Test
     void getConsultations() {
         Long userId = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
 
         Consultation mockConsultation1 = mock(Consultation.class);
         Consultation mockConsultation2 = mock(Consultation.class);
-        List<Consultation> mockConsultations = Arrays.asList(mockConsultation1, mockConsultation2);
+        List<Consultation> mockConsultationList = Arrays.asList(mockConsultation1, mockConsultation2);
+        Slice<Consultation> mockConsultations = new PageImpl<>(mockConsultationList, pageable,
+                mockConsultationList.size());
 
-        when(consultationRepository.findAllByUserId(userId)).thenReturn(mockConsultations);
-        List<ConsultationResponseDto> result = consultationService.readAllConsultation(userId);
+        when(consultationRepository.findAllBy(pageable)).thenReturn(mockConsultations);
+        ConsultationSliceResponseDto result = consultationService.readAllConsultation(userId, pageable);
 
-        assertThat(result)
+        assertThat(result.getConsultations())
                 .isNotNull()
                 .hasSize(2);
 
-        verify(consultationRepository).findAllByUserId(userId);
+        verify(consultationRepository).findAllBy(pageable);
     }
+
     @DisplayName("상담일지 상세 조회: 상담일지 상세 정보 조회 확인")
     @Test
     void getConsultationDetails() {
@@ -152,8 +163,10 @@ public class ConsultationServiceTest {
 
         List<ConsultationImage> mockClassLogImages = new ArrayList<>();
 
-        when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(Optional.of(mockConsultation));
-        when(consultationImageRepository.findConsultationImageByConsultationId(consultationId)).thenReturn(mockClassLogImages);
+        when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(
+                Optional.of(mockConsultation));
+        when(consultationImageRepository.findConsultationImageByConsultationId(consultationId)).thenReturn(
+                mockClassLogImages);
 
         ConsultationDetailResponseDto result = consultationService.getConsultationDetail(userId, consultationId);
 
@@ -165,6 +178,7 @@ public class ConsultationServiceTest {
         verify(consultationRepository).findByIdAndUserId(consultationId, userId);
         verify(consultationImageRepository).findConsultationImageByConsultationId(consultationId);
     }
+
     @DisplayName("존재하지 않는 상담일지의 상세정보 조회 시 예외 발생")
     @Test
     void getConsultationDetailException() {
@@ -176,6 +190,7 @@ public class ConsultationServiceTest {
         assertThatThrownBy(() -> consultationService.getConsultationDetail(userId, consultationId))
                 .isInstanceOf(ConsultationException.class);
     }
+
     @DisplayName("상담일지 삭제: 상담일지 삭제 작업 확인")
     @Test
     void deleteConsultation() {
@@ -185,7 +200,8 @@ public class ConsultationServiceTest {
         Consultation mockConsultation = mock(Consultation.class);
         when(mockConsultation.getId()).thenReturn(consultationId);
 
-        when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(Optional.of(mockConsultation));
+        when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(
+                Optional.of(mockConsultation));
 
         ConsultationDeleteResponseDto result = consultationService.deleteClassLog(userId, consultationId);
 
@@ -195,6 +211,7 @@ public class ConsultationServiceTest {
         verify(consultationRepository).findByIdAndUserId(userId, consultationId);
         verify(consultationRepository).delete(mockConsultation);
     }
+
     @DisplayName("상담일지 수정: 요청된 값에 따른 상담일지 수정 확인")
     @Test
     void updateConsultation() {
@@ -204,9 +221,11 @@ public class ConsultationServiceTest {
         ConsultationUpdateRequestDto classLogUpdateRequestDto = mock(ConsultationUpdateRequestDto.class);
         List<MultipartFile> consultationImages = Collections.emptyList();
 
-        when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(Optional.of(mockConsultation));
+        when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(
+                Optional.of(mockConsultation));
 
-        ConsultationResponseDto result = consultationService.updateConsultation(userId, consultationId, classLogUpdateRequestDto,
+        ConsultationResponseDto result = consultationService.updateConsultation(userId, consultationId,
+                classLogUpdateRequestDto,
                 consultationImages);
 
         assertThat(result).isNotNull();
