@@ -24,6 +24,10 @@ public class QSchedule extends EntityPathBase<Schedule> {
 
     public final com.example.tnote.base.entity.QBaseTimeEntity _super = new com.example.tnote.base.entity.QBaseTimeEntity(this);
 
+    public final ListPath<com.example.tnote.boundedContext.classLog.entity.ClassLog, com.example.tnote.boundedContext.classLog.entity.QClassLog> classLogList = this.<com.example.tnote.boundedContext.classLog.entity.ClassLog, com.example.tnote.boundedContext.classLog.entity.QClassLog>createList("classLogList", com.example.tnote.boundedContext.classLog.entity.ClassLog.class, com.example.tnote.boundedContext.classLog.entity.QClassLog.class, PathInits.DIRECT2);
+
+    public final ListPath<com.example.tnote.boundedContext.consultation.entity.Consultation, com.example.tnote.boundedContext.consultation.entity.QConsultation> consultationList = this.<com.example.tnote.boundedContext.consultation.entity.Consultation, com.example.tnote.boundedContext.consultation.entity.QConsultation>createList("consultationList", com.example.tnote.boundedContext.consultation.entity.Consultation.class, com.example.tnote.boundedContext.consultation.entity.QConsultation.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
@@ -33,11 +37,17 @@ public class QSchedule extends EntityPathBase<Schedule> {
 
     public final StringPath lastClass = createString("lastClass");
 
+    public final ListPath<com.example.tnote.boundedContext.observation.entity.Observation, com.example.tnote.boundedContext.observation.entity.QObservation> observationList = this.<com.example.tnote.boundedContext.observation.entity.Observation, com.example.tnote.boundedContext.observation.entity.QObservation>createList("observationList", com.example.tnote.boundedContext.observation.entity.Observation.class, com.example.tnote.boundedContext.observation.entity.QObservation.class, PathInits.DIRECT2);
+
+    public final ListPath<com.example.tnote.boundedContext.proceeding.entity.Proceeding, com.example.tnote.boundedContext.proceeding.entity.QProceeding> proceedingList = this.<com.example.tnote.boundedContext.proceeding.entity.Proceeding, com.example.tnote.boundedContext.proceeding.entity.QProceeding>createList("proceedingList", com.example.tnote.boundedContext.proceeding.entity.Proceeding.class, com.example.tnote.boundedContext.proceeding.entity.QProceeding.class, PathInits.DIRECT2);
+
     public final StringPath semesterName = createString("semesterName");
 
     public final DatePath<java.time.LocalDate> startDate = createDate("startDate", java.time.LocalDate.class);
 
     public final ListPath<com.example.tnote.boundedContext.subject.entity.Subjects, com.example.tnote.boundedContext.subject.entity.QSubjects> subjectsList = this.<com.example.tnote.boundedContext.subject.entity.Subjects, com.example.tnote.boundedContext.subject.entity.QSubjects>createList("subjectsList", com.example.tnote.boundedContext.subject.entity.Subjects.class, com.example.tnote.boundedContext.subject.entity.QSubjects.class, PathInits.DIRECT2);
+
+    public final ListPath<com.example.tnote.boundedContext.todo.entity.Todo, com.example.tnote.boundedContext.todo.entity.QTodo> todoList = this.<com.example.tnote.boundedContext.todo.entity.Todo, com.example.tnote.boundedContext.todo.entity.QTodo>createList("todoList", com.example.tnote.boundedContext.todo.entity.Todo.class, com.example.tnote.boundedContext.todo.entity.QTodo.class, PathInits.DIRECT2);
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

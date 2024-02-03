@@ -1,6 +1,5 @@
 package com.example.tnote.boundedContext.subject.dto;
 
-import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
 import java.time.LocalDate;
 import java.util.List;
@@ -14,7 +13,7 @@ public class SubjectResponseDto {
     private Long id;
     private String subjectName;
     private String classTime;
-    private ClassDay classDay;
+    private String classDay;
     private String classLocation;
     private String memo;
     private String color;
@@ -27,7 +26,7 @@ public class SubjectResponseDto {
                 .id(subject.getId())
                 .subjectName(subject.getSubjectName())
                 .classTime(subject.getClassTime())
-                .classDay(subject.getClassDay())
+                .classDay(subject.getClassDay().getDay())
                 .classLocation(subject.getClassLocation())
                 .memo(subject.getMemo())
                 .color(subject.getColor())
@@ -41,4 +40,5 @@ public class SubjectResponseDto {
                 .map(SubjectResponseDto::of)
                 .toList();
     }
+
 }

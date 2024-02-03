@@ -8,17 +8,17 @@ import com.example.tnote.boundedContext.schedule.dto.ScheduleDeleteResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleUpdateRequestDto;
+import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleQueryRepository;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.example.tnote.boundedContext.user.entity.User;
-import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -31,11 +31,12 @@ public class ScheduleService {
 
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
+    private final ScheduleQueryRepository scheduleQueryRepository;
 
     @Transactional
-    public ScheduleResponseDto addSchedule(ScheduleRequestDto dto, PrincipalDetails user) {
+    public ScheduleResponseDto addSchedule(ScheduleRequestDto dto, Long userId) {
 
-        User currentUser = userRepository.findById(user.getId()).orElseThrow(
+        User currentUser = userRepository.findById(userId).orElseThrow(
                 () -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
         Schedule schedule = dto.toEntity(currentUser);
@@ -43,9 +44,9 @@ public class ScheduleService {
         return ScheduleResponseDto.of(scheduleRepository.save(schedule));
     }
 
-    public ScheduleResponseDto updateSchedule(ScheduleUpdateRequestDto dto, Long scheduleId, PrincipalDetails user) {
+    public ScheduleResponseDto updateSchedule(ScheduleUpdateRequestDto dto, Long scheduleId, Long userId) {
 
-        User currentUser = checkCurrentUser(user.getId());
+        User currentUser = checkCurrentUser(userId);
         Schedule schedule = authorizationWriter(scheduleId, currentUser);
 
         updateEachScheduleItem(dto, schedule);
@@ -68,9 +69,9 @@ public class ScheduleService {
         }
     }
 
-    public ScheduleDeleteResponseDto deleteSchedule(Long scheduleId, PrincipalDetails user) {
+    public ScheduleDeleteResponseDto deleteSchedule(Long scheduleId, Long userId) {
 
-        User currentUser = checkCurrentUser(user.getId());
+        User currentUser = checkCurrentUser(userId);
         Schedule own = authorizationWriter(scheduleId, currentUser);
 
         scheduleRepository.deleteById(own.getId());
@@ -81,25 +82,17 @@ public class ScheduleService {
 
     private Schedule authorizationWriter(Long id, User member) {
 
-        Schedule schedule = scheduleRepository.findById(id).orElseThrow(
-                () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
+        Schedule schedule = getSchedule(id);
 
-        if (!schedule.getUser().getId().equals(member.getId())) {
-            log.warn("member doesn't have authentication , user {}", schedule.getUser());
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
+        matchUserWithSchedule(schedule.getId(), member.getId());
+
         return schedule;
 
     }
 
-    private User checkCurrentUser(Long id) {
-        return userRepository.findById(id).orElseThrow(
-                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
-    }
-
 
     // 학기당 남은 일수
-    @Transactional
+    @Transactional(readOnly = true)
     public long countLeftDays(LocalDate startDate, LocalDate endDate) {
 
         log.info(" 날짜 차이 : {} 일", startDate.until(endDate, ChronoUnit.DAYS));
@@ -108,40 +101,41 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<ScheduleResponseDto> getAll(Long scheduleId, PrincipalDetails user) {
+    public List<ScheduleResponseDto> getAllSubjectsInfoBySchedule(Long scheduleId, Long userId) {
 
-        User currentUser = checkCurrentUser(user.getId());
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
-        ;
-
-        if (!schedule.getUser().equals(currentUser)) {
-            log.warn("스케쥴 작성자와 현재 유저가 다른 유저입니다.");
-            throw new UserException(UserErrorResult.WRONG_USRE);
-        }
+        matchUserWithSchedule(scheduleId, userId);
 
         return ScheduleResponseDto.of(scheduleRepository.findAllById(scheduleId));
     }
 
     @Transactional(readOnly = true)
-    public List<ScheduleResponseDto> findSchedule(Long scheduleId, PrincipalDetails user) {
-        if (user == null) {
-            log.warn("없는 user 입니다");
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
-        }
+    public List<SemesterNameResponseDto> searchSemester(String semesterName, Long userId) {
+        checkUser(userId);
+
+        List<Schedule> schedules = scheduleQueryRepository.findAllBySemesterName(semesterName);
+
+        return schedules.stream()
+                .map(SemesterNameResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ScheduleResponseDto> findSchedule(Long scheduleId, Long userId) {
+
+        matchUserWithSchedule(scheduleId, userId);
 
         return ScheduleResponseDto.excludeLastDayOf(scheduleRepository.findAllById(scheduleId));
     }
 
     @Transactional(readOnly = true)
-    public List<String> findScheduleList(PrincipalDetails user) {
-        User currentUser = checkCurrentUser(user.getId());
+    public List<String> findScheduleList(Long userId) {
+        User currentUser = checkCurrentUser(userId);
 
         List<Schedule> scheduleList = scheduleRepository.findAllByUserId(currentUser.getId());
 
         return scheduleList.stream()
                 .map(Schedule::getSemesterName)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     @Transactional
@@ -163,7 +157,7 @@ public class ScheduleService {
             map.put(dayOfWeek, map.get(dayOfWeek) + 1);
         }
 
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow();
+        Schedule schedule = getSchedule(scheduleId);
 
         for (Subjects s : schedule.getSubjectsList()) {
 
@@ -174,4 +168,33 @@ public class ScheduleService {
 
         return totalCnt;
     }
+
+    private Schedule getSchedule(Long scheduleId) {
+        return scheduleRepository.findById(scheduleId).orElseThrow(
+                () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
+    }
+
+    private User checkCurrentUser(Long id) {
+        return userRepository.findById(id).orElseThrow(
+                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
+    }
+
+    private void matchUserWithSchedule(Long scheduleId, Long userId) {
+        User currentUser = checkCurrentUser(userId);
+        Schedule schedule = getSchedule(scheduleId);
+
+        if (!schedule.getUser().equals(currentUser)) {
+            log.warn("스케쥴 작성자와 현재 유저가 다른 유저입니다.");
+            throw new UserException(UserErrorResult.WRONG_USRE);
+        }
+    }
+
+    private void checkUser(Long userId) {
+        if (userId == null) {
+            log.warn("없는 user 입니다");
+            throw new UserException(UserErrorResult.USER_NOT_FOUND);
+        }
+    }
+
+
 }

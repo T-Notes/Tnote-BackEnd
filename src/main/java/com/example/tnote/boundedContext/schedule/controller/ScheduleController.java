@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/schedule")
+@RequestMapping("/tnote/schedule")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
@@ -37,7 +37,7 @@ public class ScheduleController {
                                                @AuthenticationPrincipal PrincipalDetails user) {
 
         log.info("Schedule controller principal user : {}", user);
-        ScheduleResponseDto response = scheduleService.addSchedule(dto, user);
+        ScheduleResponseDto response = scheduleService.addSchedule(dto, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -47,7 +47,7 @@ public class ScheduleController {
     public ResponseEntity<Result> findSchedule(@PathVariable Long scheduleId,
                                                @AuthenticationPrincipal PrincipalDetails user) {
 
-        List<ScheduleResponseDto> response = scheduleService.findSchedule(scheduleId, user);
+        List<ScheduleResponseDto> response = scheduleService.findSchedule(scheduleId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -56,7 +56,7 @@ public class ScheduleController {
     @GetMapping("/list")
     public ResponseEntity<Result> findScheduleList(@AuthenticationPrincipal PrincipalDetails user) {
 
-        List<String> response = scheduleService.findScheduleList(user);
+        List<String> response = scheduleService.findScheduleList(user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -66,7 +66,7 @@ public class ScheduleController {
                                                  @PathVariable("scheduleId") Long scheduleId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        ScheduleResponseDto response = scheduleService.updateSchedule(dto, scheduleId, user);
+        ScheduleResponseDto response = scheduleService.updateSchedule(dto, scheduleId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -75,7 +75,7 @@ public class ScheduleController {
     public ResponseEntity<Result> deleteSchedule(@PathVariable("scheduleId") Long scheduleId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        ScheduleDeleteResponseDto response = scheduleService.deleteSchedule(scheduleId, user);
+        ScheduleDeleteResponseDto response = scheduleService.deleteSchedule(scheduleId, user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -83,8 +83,15 @@ public class ScheduleController {
     // 남은 수업 일수 체크
     @GetMapping("/leftClassDays")
     public ResponseEntity<Result> countLeftDays(
-            @RequestParam(defaultValue = "1970-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam(defaultValue = "1970-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
+
+        if (startDate == null) {
+            startDate = LocalDate.now();
+        } else if (endDate == null) {
+            endDate = LocalDate.now();
+        }
+
         long response = scheduleService.countLeftDays(startDate, endDate);
 
         return ResponseEntity.ok(Result.of(response));
@@ -93,9 +100,16 @@ public class ScheduleController {
     // 남은 수업 횟수 체크
     @GetMapping("/leftClasses/{scheduleId}")
     public ResponseEntity<Result> countLeftClasses(
-            @RequestParam(defaultValue = "1970-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam(defaultValue = "1970-01-01") @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
             @PathVariable("scheduleId") Long scheduleId) {
+
+        if (startDate == null) {
+            startDate = LocalDate.now();
+        } else if (endDate == null) {
+            endDate = LocalDate.now();
+        }
+
         long response = scheduleService.countLeftClasses(startDate, endDate, scheduleId);
 
         return ResponseEntity.ok(Result.of(response));
@@ -106,7 +120,7 @@ public class ScheduleController {
     public ResponseEntity<Result> findWeek(@PathVariable("scheduleId") Long scheduleId,
                                            @AuthenticationPrincipal PrincipalDetails user) {
 
-        List<ScheduleResponseDto> response = scheduleService.getAll(scheduleId, user);
+        List<ScheduleResponseDto> response = scheduleService.getAllSubjectsInfoBySchedule(scheduleId, user.getId());
         return ResponseEntity.ok(Result.of(response));
     }
 

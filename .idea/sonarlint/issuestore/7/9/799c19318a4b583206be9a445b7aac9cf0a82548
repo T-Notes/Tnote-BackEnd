@@ -1,5 +1,2 @@
 
 o	java:S120"ZRename this package name to match the regular expression '^[a-z_]+(\.[a-z_][a-z0-9_]*)*$'.(Íü³
-V	java:S125'"<This block of commented-out lines of code should be removed.(Ï·ºÄûÿÿÿÿ
-H
-java:S1128"+Remove this unused import 'lombok.Builder'.(§’Ğß8“†ºÏ1

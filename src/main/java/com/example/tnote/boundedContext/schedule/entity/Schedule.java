@@ -1,7 +1,12 @@
 package com.example.tnote.boundedContext.schedule.entity;
 
 import com.example.tnote.base.entity.BaseTimeEntity;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.consultation.entity.Consultation;
+import com.example.tnote.boundedContext.observation.entity.Observation;
+import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
+import com.example.tnote.boundedContext.todo.entity.Todo;
 import com.example.tnote.boundedContext.user.entity.User;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -32,6 +37,10 @@ public class Schedule extends BaseTimeEntity {
     /*
         Schedule [1] : Subjects [N]
         Schedule [1] : Todo [N]
+        Schedule [1] : ClassLog [N]
+        Schedule [1] : Observation [N]
+        Schedule [1] : Proceeding [N]
+        Schedule [1] : Consultation [N]
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -50,6 +59,26 @@ public class Schedule extends BaseTimeEntity {
     @Builder.Default
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Subjects> subjectsList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<ClassLog> classLogList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Observation> observationList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Proceeding> proceedingList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Consultation> consultationList = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Todo> todoList = new ArrayList<>();
 
     public void updateSemesterName(String semesterName) {
         this.semesterName = semesterName;

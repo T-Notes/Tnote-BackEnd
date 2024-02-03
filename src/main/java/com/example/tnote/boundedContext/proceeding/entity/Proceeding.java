@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.proceeding.entity;
 
 import com.example.tnote.base.entity.BaseTimeEntity;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
@@ -41,6 +42,10 @@ public class Proceeding extends BaseTimeEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "schedule_id")
+    private Schedule schedule;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "proceeding", cascade = CascadeType.ALL)

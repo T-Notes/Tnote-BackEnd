@@ -2,9 +2,11 @@ package com.example.tnote.boundedContext.schedule.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import java.time.LocalDate;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
 public class ScheduleUpdateRequestDto {
     private String semesterName;
     private String lastClass;
