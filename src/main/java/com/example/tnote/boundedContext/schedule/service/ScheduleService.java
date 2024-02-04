@@ -131,7 +131,7 @@ public class ScheduleService {
     public List<String> findScheduleList(Long userId) {
         User currentUser = checkCurrentUser(userId);
 
-        List<Schedule> scheduleList = scheduleRepository.findAllByUserId(currentUser.getId());
+        List<Schedule> scheduleList = scheduleQueryRepository.findAllByUserId(currentUser.getId());
 
         return scheduleList.stream()
                 .map(Schedule::getSemesterName)

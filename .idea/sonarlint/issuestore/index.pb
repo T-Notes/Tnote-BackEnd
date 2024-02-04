@@ -105,8 +105,6 @@ w
 Gsrc/test/java/com/example/tnote/subject/service/SubjectServiceTest.java,8/0/80e53bf3f32cd8a11d39d4f098026396deb39373
 ‚
 Rsrc/main/java/com/example/tnote/boundedContext/subject/service/SubjectService.java,e/2/e2636a2c7558f0d2e7134c7e2e89183447772177
-Š
-Zsrc/main/java/com/example/tnote/boundedContext/schedule/controller/ScheduleController.java,e/2/e2dbdac0f5051fa5c58f400ed073329724c3a543
 ˆ
 Xsrc/main/java/com/example/tnote/boundedContext/subject/dto/SubjectDetailResponseDto.java,c/0/c066dd7c6e620c41f29b27d63a87930f833c4f4b
 ˆ
@@ -137,5 +135,13 @@ Asrc/test/java/com/example/tnote/todo/service/TodoServiceTest.java,c/3/c3bfa8c2
 Lsrc/main/java/com/example/tnote/boundedContext/todo/service/TodoService.java,3/b/3bc15ea259e8cda00e2902dc1cbf658e86529ddc
 ‚
 Rsrc/main/java/com/example/tnote/boundedContext/todo/controller/TodoController.java,4/1/41830a2a3b2f7f13348faa1d391defcddb330a6d
-Š
-Zsrc/main/java/com/example/tnote/boundedContext/schedule/repository/ScheduleRepository.java,6/b/6b350da86136b5e9bf1a495504d7688ccbd41e79
+„
+Tsrc/main/java/com/example/tnote/boundedContext/schedule/dto/ScheduleResponseDto.java,d/2/d25b8d24199e33124ebcc2e3eb43e8e348f25693
+‡
+Wsrc/main/java/com/example/tnote/boundedContext/todo/repository/TodoQueryRepository.java,d/d/dd24c0986449f30f6bdb4c235fefbabc6882e570
+‹
+[src/main/java/com/example/tnote/boundedContext/home/repository/ClassLogQueryRepository.java,e/0/e09b0e203d03cc712a29c049f125539a57b733e5
+|
+Lsrc/main/java/com/example/tnote/boundedContext/schedule/entity/ClassDay.java,9/3/93f7c9ecdd100eccfb07b71efa784eb84ef62a7f
+|
+Lsrc/main/java/com/example/tnote/boundedContext/home/service/HomeService.java,3/4/34cb333d847dfdb231a69d206c7b51bf04ce1f85
