@@ -81,18 +81,16 @@ public class ScheduleController {
     }
 
     // 남은 수업 일수 체크
-    @GetMapping("/leftClassDays")
+    @GetMapping("/leftClassDays/{scheduleId}")
     public ResponseEntity<Result> countLeftDays(
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+            @PathVariable Long scheduleId) {
 
-        if (startDate == null) {
-            startDate = LocalDate.now();
-        } else if (endDate == null) {
-            endDate = LocalDate.now();
+        if (date == null) {
+            date = LocalDate.now();
         }
 
-        long response = scheduleService.countLeftDays(startDate, endDate);
+        long response = scheduleService.countLeftDays(date, scheduleId);
 
         return ResponseEntity.ok(Result.of(response));
     }

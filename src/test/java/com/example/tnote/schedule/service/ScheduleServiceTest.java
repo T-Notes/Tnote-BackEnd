@@ -281,7 +281,7 @@ class ScheduleServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        long diffDays = scheduleService.countLeftDays(schedule1.getStartDate(), schedule1.getEndDate());
+        long diffDays = scheduleService.countLeftDays(schedule1.getStartDate(), schedule1.getId());
 
         // then
         assertThat(diffDays).isEqualTo(92);
