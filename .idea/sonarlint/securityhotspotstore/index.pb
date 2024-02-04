@@ -123,8 +123,6 @@ bsrc/main/java/com/example/tnote/boundedContext/consultation/controller/Consulta
 Lsrc/main/java/com/example/tnote/boundedContext/classLog/entity/ClassLog.java,f/0/f093fc66b9bc858bc58cd281be87a09313344a7b
 ‚
 Rsrc/main/java/com/example/tnote/boundedContext/observation/entity/Observation.java,e/3/e3543ab1a2b84dd2e22e6146527f04c7dc094986
-y
-Isrc/test/java/com/example/tnote/schedule/service/ScheduleServiceTest.java,3/c/3c8ef3128dd0b46c733780d10927ab90e082d682
 ‚
 Rsrc/main/java/com/example/tnote/boundedContext/todo/controller/TodoController.java,4/1/41830a2a3b2f7f13348faa1d391defcddb330a6d
 {

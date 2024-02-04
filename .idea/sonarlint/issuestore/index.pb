@@ -123,8 +123,6 @@ Lsrc/main/java/com/example/tnote/boundedContext/classLog/entity/ClassLog.java,f
 Rsrc/main/java/com/example/tnote/boundedContext/observation/entity/Observation.java,e/3/e3543ab1a2b84dd2e22e6146527f04c7dc094986
 t
 Dsrc/main/java/com/example/tnote/boundedContext/todo/entity/Todo.java,3/9/39b1fb506614d9e734edb403de7892712ee9c158
-y
-Isrc/test/java/com/example/tnote/schedule/service/ScheduleServiceTest.java,3/c/3c8ef3128dd0b46c733780d10927ab90e082d682
 {
 Ksrc/main/java/com/example/tnote/boundedContext/todo/dto/TodoRequestDto.java,2/0/208018f4e4072bfa190913efa10c704049f85163
 f

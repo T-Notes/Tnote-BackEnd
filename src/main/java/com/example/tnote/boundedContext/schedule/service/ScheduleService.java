@@ -93,11 +93,13 @@ public class ScheduleService {
 
     // 학기당 남은 일수
     @Transactional(readOnly = true)
-    public long countLeftDays(LocalDate startDate, LocalDate endDate) {
+    public long countLeftDays(LocalDate date, Long scheduleId) {
 
-        log.info(" 날짜 차이 : {} 일", startDate.until(endDate, ChronoUnit.DAYS));
+        Schedule schedule = getSchedule(scheduleId);
 
-        return startDate.until(endDate, ChronoUnit.DAYS);
+        log.info(" 날짜 차이 : {} 일", date.until(schedule.getEndDate(), ChronoUnit.DAYS));
+
+        return date.until(schedule.getEndDate(), ChronoUnit.DAYS);
     }
 
     @Transactional(readOnly = true)
