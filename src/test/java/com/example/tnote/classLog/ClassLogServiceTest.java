@@ -15,6 +15,7 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
@@ -34,6 +35,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.web.multipart.MultipartFile;
 
 @ExtendWith(MockitoExtension.class)
@@ -100,19 +105,22 @@ public class ClassLogServiceTest {
     @Test
     void getClassLogs() {
         Long userId = 1L;
+        Pageable pageable = PageRequest.of(0, 10);
 
         ClassLog mockClassLog1 = mock(ClassLog.class);
         ClassLog mockClassLog2 = mock(ClassLog.class);
-        List<ClassLog> mockClassLogs = Arrays.asList(mockClassLog1, mockClassLog2);
+        List<ClassLog> mockClassLogsList = Arrays.asList(mockClassLog1, mockClassLog2);
+        Slice<ClassLog> mockClassLogs = new PageImpl<>(mockClassLogsList, pageable, mockClassLogsList.size());
 
-        when(classLogRepository.findAllByUserId(userId)).thenReturn(mockClassLogs);
-        List<ClassLogResponseDto> result = classLogService.readAllClassLog(userId);
+        when(classLogRepository.findAllBy(pageable)).thenReturn(mockClassLogs);
 
-        assertThat(result)
+        ClassLogSliceResponseDto result = classLogService.readAllClassLog(userId, pageable);
+
+        assertThat(result.getClassLogs())
                 .isNotNull()
                 .hasSize(2);
 
-        verify(classLogRepository).findAllByUserId(userId);
+        verify(classLogRepository).findAllBy(pageable);
     }
 
     @DisplayName("학급일지 상세 조회: 학급일지 상세 정보 조회 확인")

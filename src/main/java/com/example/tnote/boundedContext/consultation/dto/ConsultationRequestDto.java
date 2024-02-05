@@ -41,7 +41,7 @@ public class ConsultationRequestDto {
         }
     }
 
-    private static class EnumUtils {
+    static class EnumUtils {
         public static <E extends Enum<E>> boolean isValidEnum(Class<E> enumClass, String enumName) {
             return Arrays.stream(enumClass.getEnumConstants())
                     .noneMatch(e -> e.name().equals(enumName));

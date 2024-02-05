@@ -56,7 +56,17 @@ public class Observation extends BaseTimeEntity {
         this.observationImage.clear();
     }
 
+    public void updateStudentName(String studentName) {
+        this.studentName = studentName;
+    }
 
+    public void updateStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public void updateEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
     public void updateObservationContents(String observationContents) {
         this.observationContents = observationContents;
     }

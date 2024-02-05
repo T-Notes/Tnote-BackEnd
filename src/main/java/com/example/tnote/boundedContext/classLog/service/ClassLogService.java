@@ -10,6 +10,7 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
@@ -23,6 +24,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -63,13 +66,19 @@ public class ClassLogService {
 
 
     @Transactional(readOnly = true)
-    public List<ClassLogResponseDto> readAllClassLog(Long userId) {
-        //todo slice 형태로 바꿔야합니다
+    public ClassLogSliceResponseDto readAllClassLog(Long userId, Pageable pageable) {
         List<ClassLog> classLogs = classLogRepository.findAllByUserId(userId);
+        Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllBy(pageable);
+        int numberOfClassLog = classLogs.size();
+        List<ClassLogResponseDto> classLogResponseDtos = allClassLogsSlice.getContent().stream()
+                .map(ClassLogResponseDto::of).toList();
 
-        return classLogs.stream()
-                .map(ClassLogResponseDto::of)
-                .toList();
+        return ClassLogSliceResponseDto.builder()
+                .classLogs(classLogResponseDtos)
+                .numberOfClassLog(numberOfClassLog)
+                .page(allClassLogsSlice.getPageable().getPageNumber())
+                .isLast(allClassLogsSlice.isLast())
+                .build();
     }
 
     @Transactional(readOnly = true)
@@ -92,6 +101,23 @@ public class ClassLogService {
 
     private void updateEachClassLogItem(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog,
                                         List<MultipartFile> classLogImages) {
+        updateClassLogFields(classLogUpdateRequestDto, classLog);
+        if (classLogImages != null && !classLogImages.isEmpty()) {
+            List<ClassLogImage> updatedImages = deleteExistedImagesAndUploadNewImages(classLog, classLogImages);
+            classLog.updateClassLogImages(updatedImages);
+        }
+    }
+
+    private void updateClassLogFields(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog) {
+        if (classLogUpdateRequestDto.hasTitle()) {
+            classLog.updateTitle(classLogUpdateRequestDto.getTitle());
+        }
+        if (classLogUpdateRequestDto.hasStartDate()) {
+            classLog.updateStartDate(classLogUpdateRequestDto.getStartDate());
+        }
+        if (classLogUpdateRequestDto.hasEndDate()) {
+            classLog.updateEndDate(classLogUpdateRequestDto.getEndDate());
+        }
         if (classLogUpdateRequestDto.hasPlan()) {
             classLog.updatePlan(classLogUpdateRequestDto.getPlan());
         }
@@ -103,10 +129,6 @@ public class ClassLogService {
         }
         if (classLogUpdateRequestDto.hasMagnitude()) {
             classLog.updateMagnitude(classLogUpdateRequestDto.getMagnitude());
-        }
-        if (classLogImages != null && !classLogImages.isEmpty()) {
-            classLog.updateClassLogImages(
-                    deleteExistedImagesAndUploadNewImages(classLog, classLogImages));
         }
     }
 

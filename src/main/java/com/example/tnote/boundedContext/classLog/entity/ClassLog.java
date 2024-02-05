@@ -59,6 +59,18 @@ public class ClassLog extends BaseTimeEntity {
         this.classLogImage.clear();
     }
 
+    public void updateTitle(String title) {
+        this.title = title;
+    }
+
+    public void updateStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    public void updateEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
     public void updatePlan(String plan) {
         this.plan = plan;
     }
