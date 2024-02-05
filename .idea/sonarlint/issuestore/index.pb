@@ -27,8 +27,6 @@ Nsrc/main/java/com/example/tnote/boundedContext/user/dto/UserUpdateRequest.java
 Zsrc/main/java/com/example/tnote/boundedContext/classLog/dto/ClassLogDeleteResponseDto.java,b/6/b6ae6444ebec4ac200c6958aaf46b95bfc05a633
 Ö
 Usrc/main/java/com/example/tnote/boundedContext/user/entity/auth/PrincipalDetails.java,e/7/e7e0864bc262c1d2e9f611a595846d557f3c70cd
-Å
-Qsrc/main/java/com/example/tnote/boundedContext/todo/dto/TodoUpdateRequestDto.java,0/8/08b78957cd0bdba97414511c1b1f62757e6d03ab
 j
 :src/test/java/com/example/tnote/TNoteApplicationTests.java,e/6/e699ed4b41cf394373cafba026a5786a2d96628c
 q
@@ -97,10 +95,6 @@ Psrc/main/java/com/example/tnote/boundedContext/proceeding/entity/Proceeding.jav
 bsrc/main/java/com/example/tnote/boundedContext/consultation/controller/ConsultationController.java,4/d/4d66c4107b6089c467a075e61d34d304998d085b
 Ç
 Rsrc/main/java/com/example/tnote/boundedContext/observation/entity/Observation.java,e/3/e3543ab1a2b84dd2e22e6146527f04c7dc094986
-t
-Dsrc/main/java/com/example/tnote/boundedContext/todo/entity/Todo.java,3/9/39b1fb506614d9e734edb403de7892712ee9c158
-{
-Ksrc/main/java/com/example/tnote/boundedContext/todo/dto/TodoRequestDto.java,2/0/208018f4e4072bfa190913efa10c704049f85163
 f
 6src/test/java/com/example/tnote/utils/TestSyUtils.java,a/0/a0279f3ae97a406c36f32c9a5bc88a5ad8fab6e6
 Ñ

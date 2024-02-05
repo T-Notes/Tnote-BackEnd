@@ -13,6 +13,7 @@ public class TodoResponseDto {
     private Long id;
     private String content;
     private LocalDate date;
+    private Boolean status;
 
     public static TodoResponseDto of(Todo todo) {
 
@@ -20,6 +21,7 @@ public class TodoResponseDto {
                 .id(todo.getId())
                 .content(todo.getContent())
                 .date(todo.getDate())
+                .status(todo.getStatus())
                 .build();
     }
 

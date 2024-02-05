@@ -10,6 +10,7 @@ public class TodoUpdateRequestDto {
 
     private LocalDate date;
     private String content;
+    private Boolean status;
 
     public boolean hasDate() {
         return date != null;
@@ -17,5 +18,9 @@ public class TodoUpdateRequestDto {
 
     public boolean hasContent() {
         return content != null;
+    }
+
+    public boolean hasStatus() {
+        return status != null;
     }
 }
