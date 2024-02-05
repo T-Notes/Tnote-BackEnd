@@ -80,6 +80,9 @@ public class TodoService {
         if (dto.hasContent()) {
             todos.updateContent(dto.getContent());
         }
+        if (dto.hasStatus()) {
+            todos.updateStatus(dto.getStatus());
+        }
     }
 
     private Todo getTodo(Long scheduleId, Long todoId, Long userId) {

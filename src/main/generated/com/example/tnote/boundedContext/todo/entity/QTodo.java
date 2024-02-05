@@ -35,6 +35,8 @@ public class QTodo extends EntityPathBase<Todo> {
 
     public final com.example.tnote.boundedContext.schedule.entity.QSchedule schedule;
 
+    public final BooleanPath status = createBoolean("status");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 

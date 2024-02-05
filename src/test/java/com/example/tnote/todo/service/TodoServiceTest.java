@@ -53,8 +53,8 @@ public class TodoServiceTest {
         schedule1 = testSyUtils.createSchedule("test1", "9교시", user1, LocalDate.parse("2024-03-01"),
                 LocalDate.parse("2024-06-01"));
 
-        todo1 = testSyUtils.createTodo("test1", LocalDate.parse("2024-01-27"), user1, schedule1);
-        todo2 = testSyUtils.createTodo("test12", LocalDate.parse("2024-01-27"), user1, schedule1);
+        todo1 = testSyUtils.createTodo("test1", LocalDate.parse("2024-01-27"), false, user1, schedule1);
+        todo2 = testSyUtils.createTodo("test12", LocalDate.parse("2024-01-27"), false, user1, schedule1);
     }
 
     @Test
@@ -67,6 +67,7 @@ public class TodoServiceTest {
         TodoRequestDto dto = TodoRequestDto.builder()
                 .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
+                .status(false)
                 .build();
 
         // when
@@ -75,6 +76,7 @@ public class TodoServiceTest {
         // then
         assertThat(todo.getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
         assertThat(todo.getContent()).isEqualTo("test1");
+        assertThat(todo.getStatus()).isFalse();
     }
 
     @Test
@@ -86,6 +88,7 @@ public class TodoServiceTest {
         TodoRequestDto dto = TodoRequestDto.builder()
                 .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
+                .status(false)
                 .build();
 
         // when
@@ -105,6 +108,7 @@ public class TodoServiceTest {
         TodoRequestDto dto = TodoRequestDto.builder()
                 .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
+                .status(false)
                 .build();
 
         // when
@@ -124,6 +128,7 @@ public class TodoServiceTest {
         TodoRequestDto dto = TodoRequestDto.builder()
                 .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
+                .status(false)
                 .build();
 
         // when
@@ -218,10 +223,10 @@ public class TodoServiceTest {
 
         // then/
         assertThat(todos.size()).isEqualTo(2);
-//        assertThat(todos.get(0).getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
-//        assertThat(todos.get(0).getContent()).isEqualTo("test1");
-//        assertThat(todos.get(1).getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
-//        assertThat(todos.get(1).getContent()).isEqualTo("test12");
+        assertThat(todos.get(0).getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
+        assertThat(todos.get(0).getContent()).isEqualTo("test1");
+        assertThat(todos.get(1).getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
+        assertThat(todos.get(1).getContent()).isEqualTo("test12");
     }
 
     @Test
@@ -263,6 +268,7 @@ public class TodoServiceTest {
         TodoUpdateRequestDto dto = TodoUpdateRequestDto.builder()
                 .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
+                .status(true)
                 .build();
 
         TodoResponseDto response = todoService.updateTodos(dto, schedule1.getId(), todo1.getId(), user1.getId());
@@ -270,6 +276,7 @@ public class TodoServiceTest {
         // then
         assertThat(response.getContent()).isEqualTo(dto.getContent());
         assertThat(response.getDate()).isEqualTo(dto.getDate());
+        assertThat(response.getStatus()).isTrue();
     }
 
     @Test
@@ -284,6 +291,7 @@ public class TodoServiceTest {
         TodoUpdateRequestDto dto = TodoUpdateRequestDto.builder()
                 .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
+                .status(true)
                 .build();
 
         // then
@@ -302,6 +310,7 @@ public class TodoServiceTest {
         TodoUpdateRequestDto dto = TodoUpdateRequestDto.builder()
                 .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
+                .status(true)
                 .build();
 
         // then
@@ -321,6 +330,7 @@ public class TodoServiceTest {
         TodoUpdateRequestDto dto = TodoUpdateRequestDto.builder()
                 .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
+                .status(true)
                 .build();
 
         // then
@@ -340,6 +350,7 @@ public class TodoServiceTest {
         TodoUpdateRequestDto dto = TodoUpdateRequestDto.builder()
                 .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
+                .status(true)
                 .build();
 
         // then

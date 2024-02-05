@@ -34,6 +34,8 @@ public class Todo extends BaseTimeEntity {
 
     private String content;
 
+    private Boolean status;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -48,6 +50,10 @@ public class Todo extends BaseTimeEntity {
 
     public void updateContent(String content) {
         this.content = content;
+    }
+
+    public void updateStatus(boolean status) {
+        this.status = status;
     }
 
 }

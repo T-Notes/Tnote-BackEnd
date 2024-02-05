@@ -12,6 +12,7 @@ import lombok.Getter;
 public class TodoRequestDto {
     private LocalDate date;
     private String content;
+    private Boolean status;
 
     public Todo toEntity(User user, Schedule schedule) {
         return Todo.builder()
@@ -19,6 +20,7 @@ public class TodoRequestDto {
                 .content(this.content)
                 .user(user)
                 .schedule(schedule)
+                .status(false)
                 .build();
     }
 }
