@@ -95,8 +95,6 @@ Psrc/main/java/com/example/tnote/boundedContext/proceeding/entity/Proceeding.jav
 bsrc/main/java/com/example/tnote/boundedContext/consultation/controller/ConsultationController.java,4/d/4d66c4107b6089c467a075e61d34d304998d085b
 ‚
 Rsrc/main/java/com/example/tnote/boundedContext/observation/entity/Observation.java,e/3/e3543ab1a2b84dd2e22e6146527f04c7dc094986
-f
-6src/test/java/com/example/tnote/utils/TestSyUtils.java,a/0/a0279f3ae97a406c36f32c9a5bc88a5ad8fab6e6
 ‹
 [src/main/java/com/example/tnote/boundedContext/home/repository/ClassLogQueryRepository.java,e/0/e09b0e203d03cc712a29c049f125539a57b733e5
 „
