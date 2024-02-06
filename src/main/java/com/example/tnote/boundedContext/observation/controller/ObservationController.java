@@ -29,17 +29,18 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/observation")
+@RequestMapping("/tnote/observation")
 @RequiredArgsConstructor
 public class ObservationController {
     private final ObservationService observationService;
 
-    @PostMapping(value = "/observations", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/{scheduleId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                    @PathVariable Long scheduleId,
                                                     @RequestPart ObservationRequestDto observationRequestDto,
                                                     @RequestPart(name = "observationImages", required = false) List<MultipartFile> observationImages) {
-        ObservationResponseDto observationResponseDto = observationService.save(principalDetails.getId(),
+        ObservationResponseDto observationResponseDto = observationService.save(principalDetails.getId(), scheduleId,
                 observationRequestDto,
                 observationImages);
         return ResponseEntity.ok(Result.of(observationResponseDto));
