@@ -32,7 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/consultation")
+@RequestMapping("/tnote/consultation")
 @RequiredArgsConstructor
 public class ConsultationController {
     private final ConsultationService consultationService;
@@ -49,12 +49,13 @@ public class ConsultationController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @PostMapping(value = "/consultations", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/{scheduleId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                     @PathVariable Long scheduleId,
                                                      @RequestPart ConsultationRequestDto requestDto,
                                                      @RequestPart(name = "consultationImages", required = false) List<MultipartFile> consultationImages) {
-        ConsultationResponseDto consultationResponseDto = consultationService.save(principalDetails.getId(),
+        ConsultationResponseDto consultationResponseDto = consultationService.save(principalDetails.getId(), scheduleId,
                 requestDto, consultationImages);
         return ResponseEntity.ok(Result.of(consultationResponseDto));
     }
@@ -81,7 +82,6 @@ public class ConsultationController {
     @GetMapping("/{consultationId}")
     public ResponseEntity<Result> getClassLogDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @PathVariable Long consultationId) {
-        //Todo 나중에 아카이브 컨트롤러로 빼야할수도 있습니다 회의가 필요합니다.
         ConsultationDetailResponseDto detailResponseDto = consultationService.getConsultationDetail(
                 principalDetails.getId(),
                 consultationId);

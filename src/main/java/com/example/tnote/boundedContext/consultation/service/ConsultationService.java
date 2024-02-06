@@ -4,13 +4,12 @@ import com.example.tnote.base.exception.classLog.ClassLogErrorResult;
 import com.example.tnote.base.exception.classLog.ClassLogException;
 import com.example.tnote.base.exception.consultation.ConsultationErrorResult;
 import com.example.tnote.base.exception.consultation.ConsultationException;
+import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
+import com.example.tnote.base.exception.schedule.ScheduleException;
 import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
-import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
@@ -21,6 +20,8 @@ import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationImageRepository;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.io.IOException;
@@ -43,14 +44,17 @@ public class ConsultationService {
     private final ConsultationRepository consultationRepository;
     private final ConsultationImageRepository consultationImageRepository;
     private final UserRepository userRepository;
+    private final ScheduleRepository scheduleRepository;
 
-    public ConsultationResponseDto save(Long userId, ConsultationRequestDto requestDto,
+    public ConsultationResponseDto save(Long userId, Long scheduleId, ConsultationRequestDto requestDto,
                                         List<MultipartFile> consultationImages) {
         requestDto.validateEnums();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleException(
+                ScheduleErrorResult.SCHEDULE_NOT_FOUND));
 
-        Consultation consultation = requestDto.toEntity(user);
+        Consultation consultation = requestDto.toEntity(user, schedule);
         if (consultationImages != null && !consultationImages.isEmpty()) {
             List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
             consultation.getConsultationImage().addAll(uploadedImages);
