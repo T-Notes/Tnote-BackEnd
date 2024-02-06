@@ -105,6 +105,7 @@ public class ClassLogServiceTest {
     @Test
     void getClassLogs() {
         Long userId = 1L;
+        Long scheduleId = 2L; // 스케줄 ID 추가
         Pageable pageable = PageRequest.of(0, 10);
 
         ClassLog mockClassLog1 = mock(ClassLog.class);
@@ -112,15 +113,15 @@ public class ClassLogServiceTest {
         List<ClassLog> mockClassLogsList = Arrays.asList(mockClassLog1, mockClassLog2);
         Slice<ClassLog> mockClassLogs = new PageImpl<>(mockClassLogsList, pageable, mockClassLogsList.size());
 
-        when(classLogRepository.findAllBy(pageable)).thenReturn(mockClassLogs);
+        when(classLogRepository.findAllByScheduleId(scheduleId, pageable)).thenReturn(mockClassLogs);
 
-        ClassLogSliceResponseDto result = classLogService.readAllClassLog(userId, pageable);
+        ClassLogSliceResponseDto result = classLogService.readAllClassLog(userId, scheduleId, pageable);
 
         assertThat(result.getClassLogs())
                 .isNotNull()
                 .hasSize(2);
 
-        verify(classLogRepository).findAllBy(pageable);
+        verify(classLogRepository).findAllByScheduleId(scheduleId, pageable);
     }
 
     @DisplayName("학급일지 상세 조회: 학급일지 상세 정보 조회 확인")
