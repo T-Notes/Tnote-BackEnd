@@ -69,8 +69,6 @@ Wsrc/main/java/com/example/tnote/boundedContext/consultation/entity/CounselingFi
 Ysrc/main/java/com/example/tnote/boundedContext/consultation/entity/ConsultationImage.java,4/9/49607e5e10700a9cb93cc96a7efead5f77f7287f
 Œ
 \src/main/java/com/example/tnote/boundedContext/consultation/dto/ConsultationResponseDto.java,c/0/c0f0b2138b02c1d49c63c60131c597d20cf45385
-Š
-Zsrc/main/java/com/example/tnote/boundedContext/schedule/dto/ScheduleDeleteResponseDto.java,c/b/cb38ca6aa9c333c21d7de2c6d3c3664627cf366d
 ‰
 Ysrc/main/java/com/example/tnote/boundedContext/schedule/dto/ScheduleUpdateRequestDto.java,c/1/c198e9098e9290e6572968c5691d56a233d81a11
 ˆ
@@ -95,8 +93,6 @@ Psrc/main/java/com/example/tnote/boundedContext/proceeding/entity/Proceeding.jav
 bsrc/main/java/com/example/tnote/boundedContext/consultation/controller/ConsultationController.java,4/d/4d66c4107b6089c467a075e61d34d304998d085b
 ‚
 Rsrc/main/java/com/example/tnote/boundedContext/observation/entity/Observation.java,e/3/e3543ab1a2b84dd2e22e6146527f04c7dc094986
-„
-Tsrc/main/java/com/example/tnote/boundedContext/schedule/dto/ScheduleResponseDto.java,d/2/d25b8d24199e33124ebcc2e3eb43e8e348f25693
 ‡
 Wsrc/main/java/com/example/tnote/boundedContext/todo/repository/TodoQueryRepository.java,d/d/dd24c0986449f30f6bdb4c235fefbabc6882e570
 ‹

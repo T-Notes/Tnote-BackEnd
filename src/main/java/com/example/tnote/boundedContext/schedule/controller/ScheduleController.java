@@ -5,6 +5,7 @@ import com.example.tnote.boundedContext.schedule.dto.ScheduleDeleteResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleUpdateRequestDto;
+import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
 import com.example.tnote.boundedContext.schedule.service.ScheduleService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.time.LocalDate;
@@ -56,7 +57,7 @@ public class ScheduleController {
     @GetMapping("/list")
     public ResponseEntity<Result> findScheduleList(@AuthenticationPrincipal PrincipalDetails user) {
 
-        List<String> response = scheduleService.findScheduleList(user.getId());
+        List<SemesterNameResponseDto> response = scheduleService.findScheduleList(user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
