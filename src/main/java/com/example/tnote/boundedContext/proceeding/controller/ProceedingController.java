@@ -30,20 +30,22 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/proceeding")
+@RequestMapping("/tnote/proceeding")
 @RequiredArgsConstructor
 public class ProceedingController {
     private final ProceedingService proceedingService;
 
-    @PostMapping(value = "/proceedings", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/{scheduleId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                   @PathVariable Long scheduleId,
                                                    @RequestPart ProceedingRequestDto requestDto,
                                                    @RequestPart(name = "proceedingImages", required = false) List<MultipartFile> proceedingImages) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
         }
-        ProceedingResponseDto proceedingResponseDto = proceedingService.save(principalDetails.getId(), requestDto,
+        ProceedingResponseDto proceedingResponseDto = proceedingService.save(principalDetails.getId(), scheduleId,
+                requestDto,
                 proceedingImages);
         return ResponseEntity.ok(Result.of(proceedingResponseDto));
     }
