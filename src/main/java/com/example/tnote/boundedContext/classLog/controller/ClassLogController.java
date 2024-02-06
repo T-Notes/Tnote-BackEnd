@@ -32,21 +32,22 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/classLog")
+@RequestMapping("/tnote")
 @RequiredArgsConstructor
 public class ClassLogController {
     private final ClassLogService classLogService;
 
-    // requestMapping에서 공통 url을 잡아서 바로 아래와 get API에서 "/classlogs" 부분이 없는게 프론트에서 사용하기 조금 더 편할거 같아도 생각이 드는데 어떻게 생각하시나용??
-    @PostMapping(value = "/classLogs", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/{scheduleId}/classLogs", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createClassLog(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                 @PathVariable Long scheduleId,
                                                  @RequestPart ClassLogRequestDto classLogRequestDto,
                                                  @RequestPart(name = "classLogImages", required = false) List<MultipartFile> classLogImages) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of(UNAUTHORIZED.getMessage()));
         }
-        ClassLogResponseDto classLogResponseDto = classLogService.save(principalDetails.getId(), classLogRequestDto,
+        ClassLogResponseDto classLogResponseDto = classLogService.save(principalDetails.getId(), scheduleId,
+                classLogRequestDto,
                 classLogImages);
 
         return ResponseEntity.ok(Result.of(classLogResponseDto));
