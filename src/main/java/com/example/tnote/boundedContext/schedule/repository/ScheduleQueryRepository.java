@@ -25,10 +25,10 @@ public class ScheduleQueryRepository {
                 .fetch();
     }
 
-    public List<Schedule> findAllByUserId(Long id) {
+    public List<Schedule> findAllByUserId(Long userId) {
         return query
                 .selectFrom(schedule)
-                .where(schedule.id.eq(id))
+                .where(schedule.user.id.eq(userId))
                 .orderBy(schedule.id.desc())
                 .fetch();
     }

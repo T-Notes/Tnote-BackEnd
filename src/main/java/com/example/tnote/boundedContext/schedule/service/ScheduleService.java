@@ -130,14 +130,10 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<String> findScheduleList(Long userId) {
+    public List<SemesterNameResponseDto> findScheduleList(Long userId) {
         User currentUser = checkCurrentUser(userId);
 
-        List<Schedule> scheduleList = scheduleQueryRepository.findAllByUserId(currentUser.getId());
-
-        return scheduleList.stream()
-                .map(Schedule::getSemesterName)
-                .toList();
+        return SemesterNameResponseDto.of(scheduleQueryRepository.findAllByUserId(currentUser.getId()));
     }
 
     @Transactional
