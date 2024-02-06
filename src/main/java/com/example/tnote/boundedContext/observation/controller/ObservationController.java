@@ -46,12 +46,14 @@ public class ObservationController {
         return ResponseEntity.ok(Result.of(observationResponseDto));
     }
 
-    @GetMapping("/observations")
+    @GetMapping("/{scheduleId}/observations")
     public ResponseEntity<Result> getAllObservations(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                     @PathVariable Long scheduleId,
                                                      @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                      @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         ObservationSliceResponseDto responseDto = observationService.readAllObservation(principalDetails.getId(),
+                scheduleId,
                 pageRequest);
 
         return ResponseEntity.ok(Result.of(responseDto));
@@ -73,7 +75,8 @@ public class ObservationController {
         return ResponseEntity.ok(Result.of(responseDto));
     }
 
-    @PatchMapping("/{observationId}")
+    @PatchMapping(value = "/{observationId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> updateObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @PathVariable Long observationId,
                                                     @RequestPart ObservationUpdateRequestDto observationUpdateRequestDto,
