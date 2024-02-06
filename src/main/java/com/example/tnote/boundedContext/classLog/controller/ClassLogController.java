@@ -32,12 +32,12 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/tnote")
+@RequestMapping("/tnote/classLog")
 @RequiredArgsConstructor
 public class ClassLogController {
     private final ClassLogService classLogService;
 
-    @PostMapping(value = "/{scheduleId}/classLogs", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/{scheduleId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createClassLog(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                  @PathVariable Long scheduleId,
