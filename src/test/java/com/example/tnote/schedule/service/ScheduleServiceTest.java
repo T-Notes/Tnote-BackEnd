@@ -8,6 +8,7 @@ import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleUpdateRequestDto;
+import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.service.ScheduleService;
@@ -347,6 +348,33 @@ class ScheduleServiceTest {
     }
 
     @Test
+    @DisplayName("학기 list 조회 - 성공")
+    void findScheduleList() {
+
+        // given
+        testSyUtils.login(principalDetails);
+
+        // when
+        List<SemesterNameResponseDto> scheduleList = scheduleService.findScheduleList(user1.getId());
+
+        // then
+        assertThat(scheduleList.get(0).getSemesterName()).isEqualTo("test1");
+    }
+
+    @Test
+    @DisplayName("로그인 하지 않은 유저 학기 list 조회 - 실패")
+    void notLoginFindScheduleList() {
+
+        // given
+
+        // when
+
+        // then
+        assertThatThrownBy(() -> scheduleService.findScheduleList(null))
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
+    }
+
+    @Test
     @DisplayName("학기 조회 성공")
     void findSchedule() {
 
@@ -374,7 +402,7 @@ class ScheduleServiceTest {
 
         // then
         assertThatThrownBy(() -> scheduleService.findSchedule(schedule1.getId(), null))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
     @Test
