@@ -60,12 +60,14 @@ public class ConsultationController {
         return ResponseEntity.ok(Result.of(consultationResponseDto));
     }
 
-    @GetMapping("/consultations")
+    @GetMapping("/{scheduleId}/consultations")
     public ResponseEntity<Result> getAllConsultations(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                      @PathVariable Long scheduleId,
                                                       @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                       @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         ConsultationSliceResponseDto responseDto = consultationService.readAllConsultation(principalDetails.getId(),
+                scheduleId,
                 pageRequest);
 
         return ResponseEntity.ok(Result.of(responseDto));
@@ -88,7 +90,8 @@ public class ConsultationController {
         return ResponseEntity.ok(Result.of(detailResponseDto));
     }
 
-    @PatchMapping("/{consultationId}")
+    @PatchMapping(value = "/{consultationId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> updateConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                      @PathVariable Long consultationId,
                                                      @RequestPart ConsultationUpdateRequestDto requestDto,

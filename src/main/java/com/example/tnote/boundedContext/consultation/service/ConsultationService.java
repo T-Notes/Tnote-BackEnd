@@ -63,9 +63,9 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
-    public ConsultationSliceResponseDto readAllConsultation(Long userId, Pageable pageable) {
-        List<Consultation> consultations = consultationRepository.findAllByUserId(userId);
-        Slice<Consultation> allConsultations = consultationRepository.findAllBy(pageable);
+    public ConsultationSliceResponseDto readAllConsultation(Long userId, Long scheduleId, Pageable pageable) {
+        List<Consultation> consultations = consultationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
+        Slice<Consultation> allConsultations = consultationRepository.findAllByScheduleId(scheduleId, pageable);
         int numberOfConsultation = consultations.size();
         List<ConsultationResponseDto> responseDtos = allConsultations.getContent().stream()
                 .map(ConsultationResponseDto::of).toList();
