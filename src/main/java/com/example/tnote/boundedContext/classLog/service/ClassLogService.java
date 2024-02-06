@@ -74,9 +74,9 @@ public class ClassLogService {
 
 
     @Transactional(readOnly = true)
-    public ClassLogSliceResponseDto readAllClassLog(Long userId, Pageable pageable) {
-        List<ClassLog> classLogs = classLogRepository.findAllByUserId(userId);
-        Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllBy(pageable);
+    public ClassLogSliceResponseDto readAllClassLog(Long userId, Long scheduleId, Pageable pageable) {
+        List<ClassLog> classLogs = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
+        Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByScheduleId(scheduleId, pageable);
         int numberOfClassLog = classLogs.size();
         List<ClassLogResponseDto> classLogResponseDtos = allClassLogsSlice.getContent().stream()
                 .map(ClassLogResponseDto::of).toList();
