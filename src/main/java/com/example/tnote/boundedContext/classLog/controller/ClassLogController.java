@@ -59,7 +59,8 @@ public class ClassLogController {
                                                   @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                   @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        ClassLogSliceResponseDto responseDto = classLogService.readAllClassLog(principalDetails.getId(), scheduleId, pageRequest);
+        ClassLogSliceResponseDto responseDto = classLogService.readAllClassLog(principalDetails.getId(), scheduleId,
+                pageRequest);
 
         return ResponseEntity.ok(Result.of(responseDto));
     }
@@ -75,13 +76,13 @@ public class ClassLogController {
     @GetMapping("/{classLogId}")
     public ResponseEntity<Result> getClassLogDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @PathVariable Long classLogId) {
-        //Todo 나중에 아카이브 컨트롤러로 빼야할수도 있습니다 회의가 필요합니다.
         ClassLogDetailResponseDto detailResponseDto = classLogService.getClassLogDetail(principalDetails.getId(),
                 classLogId);
         return ResponseEntity.ok(Result.of(detailResponseDto));
     }
 
-    @PatchMapping("/{classLogId}")
+    @PatchMapping(value = "/{classLogId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> updateClassLog(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                  @PathVariable Long classLogId,
                                                  @RequestPart ClassLogUpdateRequestDto classLogUpdateRequestDto,
