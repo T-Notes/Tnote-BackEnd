@@ -82,7 +82,8 @@ public class ProceedingController {
         return ResponseEntity.ok(Result.of(proceedingDetailResponseDto));
     }
 
-    @PatchMapping("/{proceedingId}")
+    @PatchMapping(value = "/{proceedingId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> updateProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                    @PathVariable Long proceedingId,
                                                    @RequestPart ProceedingUpdateRequestDto updateRequestDto,
