@@ -65,9 +65,9 @@ public class ObservationService {
     }
 
     @Transactional(readOnly = true)
-    public ObservationSliceResponseDto readAllObservation(Long userId, Pageable pageable) {
-        List<Observation> observations = observationRepository.findAllByUserId(userId);
-        Slice<Observation> allObservationSlice = observationRepository.findAllBy(pageable);
+    public ObservationSliceResponseDto readAllObservation(Long userId, Long scheduleId, Pageable pageable) {
+        List<Observation> observations = observationRepository.findAllByUserIdAndScheduleId(userId,scheduleId);
+        Slice<Observation> allObservationSlice = observationRepository.findAllByScheduleId(scheduleId,pageable);
         int numberOfObservation = observations.size();
 
         List<ObservationResponseDto> responseDto = allObservationSlice.getContent().stream()
