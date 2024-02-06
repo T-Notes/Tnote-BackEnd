@@ -63,9 +63,9 @@ public class ProceedingService {
     }
 
     @Transactional(readOnly = true)
-    public ProceedingSliceResponseDto readAllProceeding(Long userId, Pageable pageable) {
-        List<Proceeding> proceedings = proceedingRepository.findAllByUserId(userId);
-        Slice<Proceeding> allProceedingSlice = proceedingRepository.findAllBy(pageable);
+    public ProceedingSliceResponseDto readAllProceeding(Long userId, Long scheduleId, Pageable pageable) {
+        List<Proceeding> proceedings = proceedingRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
+        Slice<Proceeding> allProceedingSlice = proceedingRepository.findAllByScheduleId(scheduleId, pageable);
         int numberOfProceeding = proceedings.size();
         List<ProceedingResponseDto> responseDto = allProceedingSlice.getContent().stream()
                 .map(ProceedingResponseDto::of).toList();

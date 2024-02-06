@@ -50,12 +50,14 @@ public class ProceedingController {
         return ResponseEntity.ok(Result.of(proceedingResponseDto));
     }
 
-    @GetMapping("/proceedings")
+    @GetMapping("/{scheduleId}/proceedings")
     public ResponseEntity<Result> getAllProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                   @PathVariable Long scheduleId,
                                                    @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                    @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         ProceedingSliceResponseDto responseDto = proceedingService.readAllProceeding(principalDetails.getId(),
+                scheduleId,
                 pageRequest);
 
         return ResponseEntity.ok(Result.of(responseDto));
