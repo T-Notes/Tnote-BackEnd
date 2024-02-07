@@ -177,9 +177,13 @@ public class ConsultationService {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
-        List<Consultation> consultations = consultationRepository.findByUserIdAndStartDateBetween(userId, startOfDay,
+        List<Consultation> consultations = consultationRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId,
+                scheduleId, startOfDay,
                 endOfDay);
-        Slice<Consultation> allConsultations = consultationRepository.findAllByScheduleId(scheduleId, pageable);
+        Slice<Consultation> allConsultations = consultationRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
+                userId, scheduleId, startOfDay,
+                endOfDay, pageable);
+
         int numberOfConsultation = consultations.size();
         List<ConsultationResponseDto> responseDtos = allConsultations.getContent().stream()
                 .map(ConsultationResponseDto::of).toList();
