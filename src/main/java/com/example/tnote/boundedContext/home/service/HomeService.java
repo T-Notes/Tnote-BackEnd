@@ -3,9 +3,11 @@ package com.example.tnote.boundedContext.home.service;
 import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.service.ConsultationService;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
@@ -14,9 +16,11 @@ import com.example.tnote.boundedContext.home.repository.ConsultationQueryReposit
 import com.example.tnote.boundedContext.home.repository.ObservationQueryRepository;
 import com.example.tnote.boundedContext.home.repository.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
@@ -25,6 +29,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,13 +101,16 @@ public class HomeService {
                 () -> new UserException(UserErrorResult.USER_NOT_FOUND));
     }
 
-    public ArchiveResponseDto readDailyLogs(Long userId, LocalDate startDate, LocalDate endDate) {
-        List<ClassLogResponseDto> classLogs = classLogService.readDailyClassLogs(userId, startDate, endDate);
-        List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, startDate,
-                endDate);
-        List<ObservationResponseDto> observations = observationService.readDailyObservations(userId, startDate,
-                endDate);
-        List<ProceedingResponseDto> proceedings = proceedingService.readDailyProceedings(userId, startDate, endDate);
+    public ArchiveResponseDto readDailyLogs(Long userId, Long scheduleId, LocalDate startDate, LocalDate endDate,
+                                            Pageable pageable) {
+        ClassLogSliceResponseDto classLogs = classLogService.readDailyClassLogs(userId, scheduleId, startDate,
+                endDate, pageable);
+        ConsultationSliceResponseDto consultations = consultationService.readDailyConsultations(userId, scheduleId, startDate,
+                endDate, pageable);
+        ObservationSliceResponseDto observations = observationService.readDailyObservations(userId, scheduleId, startDate,
+                endDate, pageable);
+        ProceedingSliceResponseDto proceedings = proceedingService.readDailyProceedings(userId, scheduleId, startDate,
+                endDate, pageable);
 
         return ArchiveResponseDto.builder()
                 .classLogs(classLogs)

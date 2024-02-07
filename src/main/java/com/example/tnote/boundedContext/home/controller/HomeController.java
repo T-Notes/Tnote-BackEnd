@@ -15,10 +15,12 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -65,12 +67,16 @@ public class HomeController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @GetMapping("/dailyLogs")
+    @GetMapping("/{scheduleId}/dailyLogs")
     public ResponseEntity<Result> readDailyLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                @PathVariable Long scheduleId,
                                                 @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
+                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+                                                @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                @RequestParam(value = "size", required = false, defaultValue = "8") int size) {
 
-        ArchiveResponseDto response = homeService.readDailyLogs(principalDetails.getId(), startDate, endDate);
+        PageRequest pageRequest = PageRequest.of(page, size);
+        ArchiveResponseDto response = homeService.readDailyLogs(principalDetails.getId(), scheduleId, startDate, endDate, pageRequest);
         return ResponseEntity.ok(Result.of(response));
     }
 }
