@@ -156,7 +156,7 @@ public class ObservationService {
                 ObservationImage.builder().observationImageUrl(url).observation(observation).build());
     }
 
-    public ObservationSliceResponseDto readDailyObservations(Long userId, Long scheduleId, LocalDate startDate,
+    public ObservationSliceResponseDto readObservationsByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                              LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);

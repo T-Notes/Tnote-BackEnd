@@ -164,7 +164,7 @@ public class ClassLogService {
                 .build());
     }
 
-    public ClassLogSliceResponseDto readDailyClassLogs(Long userId, Long scheduleId, LocalDate startDate,
+    public ClassLogSliceResponseDto readClassLogsByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                        LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);

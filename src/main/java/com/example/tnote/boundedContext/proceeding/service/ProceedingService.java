@@ -160,7 +160,7 @@ public class ProceedingService {
                 .build());
     }
 
-    public ProceedingSliceResponseDto readDailyProceedings(Long userId, Long scheduleId, LocalDate startDate,
+    public ProceedingSliceResponseDto readProceedingsByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                            LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);

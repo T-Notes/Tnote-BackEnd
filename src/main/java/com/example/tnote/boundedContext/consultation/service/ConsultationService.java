@@ -172,7 +172,7 @@ public class ConsultationService {
                 .build());
     }
 
-    public ConsultationSliceResponseDto readDailyConsultations(Long userId, Long scheduleId, LocalDate startDate,
+    public ConsultationSliceResponseDto readConsultationsByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                                LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
