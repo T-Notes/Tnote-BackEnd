@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.observation.repository;
 
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -18,8 +19,24 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             "where o.id = :observationId and o.user.id = :userId")
     Optional<Observation> findByIdAndUserId(Long observationId, Long userId);
 
-    List<Observation> findByUserIdAndStartDateBetween(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay);
-
+    @Query("SELECT o FROM Observation o "
+            + "WHERE o.user.id = :userId AND o.schedule.id = :scheduleId "
+            + "AND o.startDate >= :startOfDay AND o.endDate <= :endOfDay")
+    List<Observation> findByUserIdAndScheduleIdAndStartDateBetween(
+            Long userId,
+            Long scheduleId,
+            LocalDateTime startOfDay,
+            LocalDateTime endOfDay);
     @Query("SELECT o FROM Observation o where o.schedule.id = :scheduleId ORDER BY o.createdAt DESC")
     Slice<Observation> findAllByScheduleId(Long scheduleId, Pageable pageable);
+
+    @Query("SELECT o FROM Observation o "
+            + "WHERE o.user.id = :userId AND o.schedule.id = :scheduleId "
+            + "AND o.createdAt >= :startOfDay AND o.createdAt <= :endOfDay ORDER BY o.createdAt DESC")
+    Slice<Observation> findAllByUserIdAndScheduleIdAndCreatedAtBetween(
+            Long userId,
+            Long scheduleId,
+            LocalDateTime startOfDay,
+            LocalDateTime endOfDay,
+            Pageable pageable);
 }
