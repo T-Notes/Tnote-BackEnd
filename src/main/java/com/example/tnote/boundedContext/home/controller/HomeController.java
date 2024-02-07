@@ -67,12 +67,10 @@ public class HomeController {
 
     @GetMapping("/dailyLogs")
     public ResponseEntity<Result> readDailyLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        if (date == null) {
-            date = LocalDate.now(); // 날짜가 제공되지 않으면 현재 날짜 사용
-        }
+                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate) {
 
-        ArchiveResponseDto response = homeService.readDailyLogs(principalDetails.getId(), date);
+        ArchiveResponseDto response = homeService.readDailyLogs(principalDetails.getId(), startDate, endDate);
         return ResponseEntity.ok(Result.of(response));
     }
 }

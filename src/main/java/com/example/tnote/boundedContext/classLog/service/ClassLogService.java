@@ -164,9 +164,9 @@ public class ClassLogService {
                 .build());
     }
 
-    public List<ClassLogResponseDto> readDailyClassLogs(Long userId, LocalDate date) {
-        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
-        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
+    public List<ClassLogResponseDto> readDailyClassLogs(Long userId, LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
         List<ClassLog> classLogs = classLogRepository.findByUserIdAndStartDateBetween(userId, startOfDay, endOfDay);
         return classLogs.stream()

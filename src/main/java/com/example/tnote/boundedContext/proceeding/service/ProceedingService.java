@@ -160,9 +160,9 @@ public class ProceedingService {
                 .build());
     }
 
-    public List<ProceedingResponseDto> readDailyProceedings(Long userId, LocalDate date) {
-        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
-        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
+    public List<ProceedingResponseDto> readDailyProceedings(Long userId, LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
         List<Proceeding> proceedings = proceedingRepository.findByUserIdAndStartDateBetween(userId, startOfDay,
                 endOfDay);

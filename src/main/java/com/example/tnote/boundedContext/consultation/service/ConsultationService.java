@@ -172,9 +172,9 @@ public class ConsultationService {
                 .build());
     }
 
-    public List<ConsultationResponseDto> readDailyConsultations(Long userId, LocalDate date) {
-        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
-        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
+    public List<ConsultationResponseDto> readDailyConsultations(Long userId, LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
         List<Consultation> consultations = consultationRepository.findByUserIdAndStartDateBetween(userId, startOfDay,
                 endOfDay);

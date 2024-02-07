@@ -21,6 +21,7 @@ import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -95,11 +96,13 @@ public class HomeService {
                 () -> new UserException(UserErrorResult.USER_NOT_FOUND));
     }
 
-    public ArchiveResponseDto readDailyLogs(Long userId, LocalDate date) {
-        List<ClassLogResponseDto> classLogs = classLogService.readDailyClassLogs(userId, date);
-        List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, date);
-        List<ObservationResponseDto> observations = observationService.readDailyObservations(userId, date);
-        List<ProceedingResponseDto> proceedings = proceedingService.readDailyProceedings(userId, date);
+    public ArchiveResponseDto readDailyLogs(Long userId, LocalDate startDate, LocalDate endDate) {
+        List<ClassLogResponseDto> classLogs = classLogService.readDailyClassLogs(userId, startDate, endDate);
+        List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, startDate,
+                endDate);
+        List<ObservationResponseDto> observations = observationService.readDailyObservations(userId, startDate,
+                endDate);
+        List<ProceedingResponseDto> proceedings = proceedingService.readDailyProceedings(userId, startDate, endDate);
 
         return ArchiveResponseDto.builder()
                 .classLogs(classLogs)

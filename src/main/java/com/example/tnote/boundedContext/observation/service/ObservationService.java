@@ -155,9 +155,9 @@ public class ObservationService {
                 ObservationImage.builder().observationImageUrl(url).observation(observation).build());
     }
 
-    public List<ObservationResponseDto> readDailyObservations(Long userId, LocalDate date) {
-        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
-        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
+    public List<ObservationResponseDto> readDailyObservations(Long userId, LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
         List<Observation> classLogs = observationRepository.findByUserIdAndStartDateBetween(userId, startOfDay,
                 endOfDay);
