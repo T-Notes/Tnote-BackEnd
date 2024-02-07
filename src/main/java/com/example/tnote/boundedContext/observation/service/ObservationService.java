@@ -33,6 +33,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -66,8 +67,8 @@ public class ObservationService {
 
     @Transactional(readOnly = true)
     public ObservationSliceResponseDto readAllObservation(Long userId, Long scheduleId, Pageable pageable) {
-        List<Observation> observations = observationRepository.findAllByUserIdAndScheduleId(userId,scheduleId);
-        Slice<Observation> allObservationSlice = observationRepository.findAllByScheduleId(scheduleId,pageable);
+        List<Observation> observations = observationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
+        Slice<Observation> allObservationSlice = observationRepository.findAllByScheduleId(scheduleId, pageable);
         int numberOfObservation = observations.size();
 
         List<ObservationResponseDto> responseDto = allObservationSlice.getContent().stream()
@@ -155,13 +156,25 @@ public class ObservationService {
                 ObservationImage.builder().observationImageUrl(url).observation(observation).build());
     }
 
-    public List<ObservationResponseDto> readDailyObservations(Long userId, LocalDate startDate, LocalDate endDate) {
+    public ObservationSliceResponseDto readDailyObservations(Long userId, Long scheduleId, LocalDate startDate,
+                                                             LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
-        List<Observation> classLogs = observationRepository.findByUserIdAndStartDateBetween(userId, startOfDay,
+        List<Observation> observations = observationRepository.findByUserIdAndStartDateBetween(userId, startOfDay,
                 endOfDay);
-        return classLogs.stream().map(ObservationResponseDto::of).toList();
+        Slice<Observation> allObservationSlice = observationRepository.findAllByScheduleId(scheduleId, pageable);
+        int numberOfObservation = observations.size();
+
+        List<ObservationResponseDto> responseDto = allObservationSlice.getContent().stream()
+                .map(ObservationResponseDto::of).toList();
+
+        return ObservationSliceResponseDto.builder()
+                .observations(responseDto)
+                .numberOfObservation(numberOfObservation)
+                .page(allObservationSlice.getPageable().getPageNumber())
+                .isLast(allObservationSlice.isLast())
+                .build();
     }
 
     private List<ObservationImage> deleteExistedImagesAndUploadNewImages(Observation observation,

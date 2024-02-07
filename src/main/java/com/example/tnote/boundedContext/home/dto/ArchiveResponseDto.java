@@ -15,18 +15,9 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ArchiveResponseDto {
-    private List<ClassLogSliceResponseDto> classLogs;
-    private List<ObservationSliceResponseDto> observations;
-    private List<ConsultationSliceResponseDto> consultations;
-    private List<ProceedingSliceResponseDto> proceedings;
+    private ClassLogSliceResponseDto classLogs;
+    private ObservationSliceResponseDto observations;
+    private ConsultationSliceResponseDto consultations;
+    private ProceedingSliceResponseDto proceedings;
 
-    public static ArchiveResponseDto of(List<ClassLogSliceResponseDto> classLogs, List<ObservationSliceResponseDto> observations,
-                                 List<ConsultationSliceResponseDto> consultations, List<ProceedingSliceResponseDto> proceedings) {
-        return ArchiveResponseDto.builder()
-                .classLogs(classLogs)
-                .consultations(consultations)
-                .observations(observations)
-                .proceedings(proceedings)
-                .build();
-    }
 }

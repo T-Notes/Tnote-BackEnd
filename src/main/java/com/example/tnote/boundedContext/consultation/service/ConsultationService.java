@@ -172,15 +172,24 @@ public class ConsultationService {
                 .build());
     }
 
-    public List<ConsultationResponseDto> readDailyConsultations(Long userId, LocalDate startDate, LocalDate endDate) {
+    public ConsultationSliceResponseDto readDailyConsultations(Long userId, Long scheduleId, LocalDate startDate,
+                                                               LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
         List<Consultation> consultations = consultationRepository.findByUserIdAndStartDateBetween(userId, startOfDay,
                 endOfDay);
-        return consultations.stream()
-                .map(ConsultationResponseDto::of)
-                .toList();
+        Slice<Consultation> allConsultations = consultationRepository.findAllByScheduleId(scheduleId, pageable);
+        int numberOfConsultation = consultations.size();
+        List<ConsultationResponseDto> responseDtos = allConsultations.getContent().stream()
+                .map(ConsultationResponseDto::of).toList();
+
+        return ConsultationSliceResponseDto.builder()
+                .consultations(responseDtos)
+                .numberOfConsultation(numberOfConsultation)
+                .page(allConsultations.getPageable().getPageNumber())
+                .isLast(allConsultations.isLast())
+                .build();
     }
 
     private List<ConsultationImage> deleteExistedImagesAndUploadNewImages(Consultation consultation,

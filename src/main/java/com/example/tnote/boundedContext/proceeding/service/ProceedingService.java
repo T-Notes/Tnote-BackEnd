@@ -160,15 +160,24 @@ public class ProceedingService {
                 .build());
     }
 
-    public List<ProceedingResponseDto> readDailyProceedings(Long userId, LocalDate startDate, LocalDate endDate) {
+    public ProceedingSliceResponseDto readDailyProceedings(Long userId, Long scheduleId, LocalDate startDate,
+                                                           LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
         List<Proceeding> proceedings = proceedingRepository.findByUserIdAndStartDateBetween(userId, startOfDay,
                 endOfDay);
-        return proceedings.stream()
-                .map(ProceedingResponseDto::of)
-                .toList();
+        Slice<Proceeding> allProceedingSlice = proceedingRepository.findAllByScheduleId(scheduleId, pageable);
+        int numberOfProceeding = proceedings.size();
+        List<ProceedingResponseDto> responseDto = allProceedingSlice.getContent().stream()
+                .map(ProceedingResponseDto::of).toList();
+
+        return ProceedingSliceResponseDto.builder()
+                .proceedings(responseDto)
+                .numberOfProceeding(numberOfProceeding)
+                .page(allProceedingSlice.getPageable().getPageNumber())
+                .isLast(allProceedingSlice.isLast())
+                .build();
     }
 
     private List<ProceedingImage> deleteExistedImagesAndUploadNewImages(Proceeding proceeding,
