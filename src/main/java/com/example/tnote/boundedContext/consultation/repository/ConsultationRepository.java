@@ -26,7 +26,6 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
             "where c.id = :consultationId and c.user.id = :userId")
     Optional<Consultation> findByIdAndUserId(Long consultationId, Long userId);
 
-    List<Consultation> findByUserIdAndStartDateBetween(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay);
 
     @Query("SELECT c FROM Consultation c WHERE c.schedule.id = :scheduleId ORDER BY c.createdAt DESC")
     Slice<Consultation> findAllByScheduleId(Long scheduleId, Pageable pageable);
