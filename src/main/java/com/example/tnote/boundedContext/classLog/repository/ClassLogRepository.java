@@ -13,13 +13,29 @@ public interface ClassLogRepository extends JpaRepository<ClassLog, Long> {
     @Query("select cl from ClassLog cl where cl.user.id = :userId and cl.schedule.id = :scheduleId")
     List<ClassLog> findAllByUserIdAndScheduleId(Long userId, Long scheduleId);
 
-    @Query("select cl from ClassLog cl " +
-            "where cl.id = :classLogId and cl.user.id = :userId")
+    @Query("select c from ClassLog c " +
+            "where c.id = :classLogId and c.user.id = :userId")
     Optional<ClassLog> findByIdAndUserId(Long classLogId, Long userId);
 
-    List<ClassLog> findByUserIdAndStartDateBetween(Long userId, LocalDateTime startOfDay, LocalDateTime endOfDay);
+    @Query("SELECT c FROM ClassLog c "
+            + "WHERE c.user.id = :userId AND c.schedule.id = :scheduleId "
+            + "AND c.startDate >= :startOfDay AND c.endDate <= :endOfDay")
+    List<ClassLog> findByUserIdAndScheduleIdAndStartDateBetween(
+            Long userId,
+            Long scheduleId,
+            LocalDateTime startOfDay,
+            LocalDateTime endOfDay);
+
     @Query("SELECT c FROM ClassLog c WHERE c.schedule.id = :scheduleId ORDER BY c.createdAt DESC")
     Slice<ClassLog> findAllByScheduleId(Long scheduleId, Pageable pageable);
 
-
+    @Query("SELECT c FROM ClassLog c "
+            + "WHERE c.user.id = :userId AND c.schedule.id = :scheduleId "
+            + "AND c.createdAt >= :startOfDay AND c.createdAt <= :endOfDay ORDER BY c.createdAt DESC")
+    Slice<ClassLog> findAllByUserIdAndScheduleIdAndCreatedAtBetween(
+            Long userId,
+            Long scheduleId,
+            LocalDateTime startOfDay,
+            LocalDateTime endOfDay,
+            Pageable pageable);
 }
