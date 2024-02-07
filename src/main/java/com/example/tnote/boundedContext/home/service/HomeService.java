@@ -10,6 +10,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto
 import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.service.ConsultationService;
+import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.repository.ClassLogQueryRepository;
 import com.example.tnote.boundedContext.home.repository.ConsultationQueryRepository;
@@ -23,6 +24,8 @@ import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
+import com.example.tnote.boundedContext.todo.dto.TodoSliceResponseDto;
+import com.example.tnote.boundedContext.todo.service.TodoService;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -47,6 +50,7 @@ public class HomeService {
     private final ProceedingService proceedingService;
     private final ConsultationService consultationService;
     private final ObservationService observationService;
+    private final TodoService todoService;
 
     @Transactional(readOnly = true)
     public List<ConsultationResponseDto> findAllOfConsultation(String studentName, Long userId) {
@@ -101,23 +105,34 @@ public class HomeService {
                 () -> new UserException(UserErrorResult.USER_NOT_FOUND));
     }
 
-    public ArchiveResponseDto readDailyLogs(Long userId, Long scheduleId, LocalDate startDate, LocalDate endDate,
-                                            Pageable pageable) {
-        ClassLogSliceResponseDto classLogs = classLogService.readDailyClassLogs(userId, scheduleId, startDate,
-                endDate, pageable);
-        ConsultationSliceResponseDto consultations = consultationService.readDailyConsultations(userId, scheduleId, startDate,
-                endDate, pageable);
-        ObservationSliceResponseDto observations = observationService.readDailyObservations(userId, scheduleId, startDate,
-                endDate, pageable);
-        ProceedingSliceResponseDto proceedings = proceedingService.readDailyProceedings(userId, scheduleId, startDate,
-                endDate, pageable);
-
-        return ArchiveResponseDto.builder()
-                .classLogs(classLogs)
-                .consultations(consultations)
-                .observations(observations)
-                .proceedings(proceedings)
-                .build();
+    public ArchiveResponseDto readLogsByDate(Long userId, Long scheduleId, LocalDate startDate, LocalDate endDate,
+                                             LogType logType, Pageable pageable) {
+        if (logType == LogType.CLASS_LOG){
+            ClassLogSliceResponseDto classLogs = classLogService.readClassLogsByDate(userId, scheduleId, startDate,
+                    endDate, pageable);
+            return ArchiveResponseDto.builder().classLogs(classLogs).build();
+        }
+        if (logType == LogType.CONSULTATION){
+            ConsultationSliceResponseDto consultations = consultationService.readConsultationsByDate(userId, scheduleId, startDate,
+                    endDate, pageable);
+            return ArchiveResponseDto.builder().consultations(consultations).build();
+        }
+        if (logType == LogType.OBSERVATION){
+            ObservationSliceResponseDto observations = observationService.readObservationsByDate(userId, scheduleId, startDate,
+                    endDate, pageable);
+            return ArchiveResponseDto.builder().observations(observations).build();
+        }
+        if (logType == LogType.PROCEEDING){
+            ProceedingSliceResponseDto proceedings = proceedingService.readProceedingsByDate(userId, scheduleId, startDate,
+                    endDate, pageable);
+            return ArchiveResponseDto.builder().proceedings(proceedings).build();
+        }
+        if (logType == LogType.TODO){
+            TodoSliceResponseDto todos = todoService.readTodosByDate(userId, scheduleId, startDate,
+                    endDate, pageable);
+            return ArchiveResponseDto.builder().todos(todos).build();
+        }
+        return null;
     }
 
 

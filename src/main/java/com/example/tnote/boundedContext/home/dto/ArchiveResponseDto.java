@@ -8,6 +8,7 @@ import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
+import com.example.tnote.boundedContext.todo.dto.TodoSliceResponseDto;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,5 +20,5 @@ public class ArchiveResponseDto {
     private ObservationSliceResponseDto observations;
     private ConsultationSliceResponseDto consultations;
     private ProceedingSliceResponseDto proceedings;
-
+    private TodoSliceResponseDto todos;
 }

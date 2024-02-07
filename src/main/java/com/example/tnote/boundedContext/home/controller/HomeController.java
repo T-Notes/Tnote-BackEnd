@@ -3,6 +3,7 @@ package com.example.tnote.boundedContext.home.controller;
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.service.HomeService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
@@ -73,10 +74,12 @@ public class HomeController {
                                                 @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
                                                 @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                                 @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                @RequestParam(value = "size", required = false, defaultValue = "8") int size) {
+                                                @RequestParam(value = "size", required = false, defaultValue = "8") int size,
+                                                @RequestParam(value = "logType", required = false, defaultValue = "CLASS_LOG") LogType logType) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        ArchiveResponseDto response = homeService.readDailyLogs(principalDetails.getId(), scheduleId, startDate, endDate, pageRequest);
+        ArchiveResponseDto response = homeService.readLogsByDate(principalDetails.getId(), scheduleId, startDate,
+                endDate, logType, pageRequest);
         return ResponseEntity.ok(Result.of(response));
     }
 }

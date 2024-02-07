@@ -1,6 +1,5 @@
 package com.example.tnote.boundedContext.todo.repository;
 
-import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.todo.entity.Todo;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -21,7 +20,7 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
 
     @Query("SELECT t FROM Todo t "
             + "WHERE t.user.id = :userId AND t.schedule.id = :scheduleId "
-            + "AND t.createdAt >= :startOfDay AND t.createdAt <= :endOfDay ORDER BY p.createdAt DESC")
+            + "AND t.createdAt >= :startOfDay AND t.createdAt <= :endOfDay ORDER BY t.createdAt DESC")
     Slice<Todo> findAllByUserIdAndScheduleIdAndCreatedAtBetween(
             Long userId,
             Long scheduleId,
