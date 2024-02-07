@@ -19,7 +19,7 @@ public interface ClassLogRepository extends JpaRepository<ClassLog, Long> {
 
     @Query("SELECT c FROM ClassLog c "
             + "WHERE c.user.id = :userId AND c.schedule.id = :scheduleId "
-            + "AND c.startDate >= :startOfDay AND c.endDate <= :endOfDay")
+            + "AND c.createdAt >= :startOfDay AND c.createdAt <= :endOfDay")
     List<ClassLog> findByUserIdAndScheduleIdAndStartDateBetween(
             Long userId,
             Long scheduleId,

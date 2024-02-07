@@ -21,7 +21,7 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
 
     @Query("SELECT o FROM Observation o "
             + "WHERE o.user.id = :userId AND o.schedule.id = :scheduleId "
-            + "AND o.startDate >= :startOfDay AND o.endDate <= :endOfDay")
+            + "AND o.createdAt >= :startOfDay AND o.createdAt <= :endOfDay")
     List<Observation> findByUserIdAndScheduleIdAndStartDateBetween(
             Long userId,
             Long scheduleId,
