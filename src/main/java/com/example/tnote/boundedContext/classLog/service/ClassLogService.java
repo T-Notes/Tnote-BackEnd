@@ -195,10 +195,8 @@ public class ClassLogService {
         List<ClassLog> classLogs = classLogRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId,
                 startOfDay, endOfDay);
 
-        List<ClassLogResponseDto> classLogResponseDtos = classLogs.stream()
+        return classLogs.stream()
                 .map(ClassLogResponseDto::of).toList();
-
-        return classLogResponseDtos;
     }
 
     private List<ClassLogImage> deleteExistedImagesAndUploadNewImages(ClassLog classLog,
