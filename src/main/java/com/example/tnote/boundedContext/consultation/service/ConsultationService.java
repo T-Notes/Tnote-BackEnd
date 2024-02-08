@@ -196,8 +196,7 @@ public class ConsultationService {
                 .build();
     }
 
-    public List<ConsultationResponseDto> readDailyConsultations(Long userId, Long scheduleId,
-                                                               LocalDate date, Pageable pageable) {
+    public List<ConsultationResponseDto> readDailyConsultations(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 

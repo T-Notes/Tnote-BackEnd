@@ -180,8 +180,7 @@ public class ObservationService {
                 .build();
     }
 
-    public List<ObservationResponseDto> readDailyObservations(Long userId, Long scheduleId, LocalDate date,
-                                                              Pageable pageable) {
+    public List<ObservationResponseDto> readDailyObservations(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
