@@ -180,28 +180,17 @@ public class ObservationService {
                 .build();
     }
 
-    public ObservationSliceResponseDto readDailyObservations(Long userId, Long scheduleId, LocalDate date,
-                                                             Pageable pageable) {
+    public List<ObservationResponseDto> readDailyObservations(Long userId, Long scheduleId, LocalDate date,
+                                                              Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
         List<Observation> observations = observationRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId,
                 scheduleId, startOfDay,
                 endOfDay);
-        Slice<Observation> allObservationSlice = observationRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
-                userId, scheduleId, startOfDay,
-                endOfDay, pageable);
 
-        int numberOfObservation = observations.size();
-        List<ObservationResponseDto> responseDto = allObservationSlice.getContent().stream()
+        return observations.stream()
                 .map(ObservationResponseDto::of).toList();
-
-        return ObservationSliceResponseDto.builder()
-                .observations(responseDto)
-                .numberOfObservation(numberOfObservation)
-                .page(allObservationSlice.getPageable().getPageNumber())
-                .isLast(allObservationSlice.isLast())
-                .build();
     }
 
     private List<ObservationImage> deleteExistedImagesAndUploadNewImages(Observation observation,
