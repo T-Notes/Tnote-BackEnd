@@ -157,9 +157,33 @@ public class ObservationService {
     }
 
     public ObservationSliceResponseDto readObservationsByDate(Long userId, Long scheduleId, LocalDate startDate,
-                                                             LocalDate endDate, Pageable pageable) {
+                                                              LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+
+        List<Observation> observations = observationRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId,
+                scheduleId, startOfDay,
+                endOfDay);
+        Slice<Observation> allObservationSlice = observationRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
+                userId, scheduleId, startOfDay,
+                endOfDay, pageable);
+
+        int numberOfObservation = observations.size();
+        List<ObservationResponseDto> responseDto = allObservationSlice.getContent().stream()
+                .map(ObservationResponseDto::of).toList();
+
+        return ObservationSliceResponseDto.builder()
+                .observations(responseDto)
+                .numberOfObservation(numberOfObservation)
+                .page(allObservationSlice.getPageable().getPageNumber())
+                .isLast(allObservationSlice.isLast())
+                .build();
+    }
+
+    public ObservationSliceResponseDto readDailyObservations(Long userId, Long scheduleId, LocalDate date,
+                                                             Pageable pageable) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
         List<Observation> observations = observationRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId,
                 scheduleId, startOfDay,

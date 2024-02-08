@@ -183,7 +183,29 @@ public class ProceedingService {
                 .isLast(allProceedingSlice.isLast())
                 .build();
     }
+    public ProceedingSliceResponseDto readDailyProceedings(Long userId, Long scheduleId, LocalDate date,
+                                                             Pageable pageable) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
+        List<Proceeding> proceedings = proceedingRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId,
+                scheduleId, startOfDay,
+                endOfDay);
+        Slice<Proceeding> allProceedingSlice = proceedingRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
+                userId, scheduleId, startOfDay,
+                endOfDay, pageable);
+
+        int numberOfProceeding = proceedings.size();
+        List<ProceedingResponseDto> responseDto = allProceedingSlice.getContent().stream()
+                .map(ProceedingResponseDto::of).toList();
+
+        return ProceedingSliceResponseDto.builder()
+                .proceedings(responseDto)
+                .numberOfProceeding(numberOfProceeding)
+                .page(allProceedingSlice.getPageable().getPageNumber())
+                .isLast(allProceedingSlice.isLast())
+                .build();
+    }
     private List<ProceedingImage> deleteExistedImagesAndUploadNewImages(Proceeding proceeding,
                                                                         List<MultipartFile> proceedingImages) {
         deleteExistedImages(proceeding);

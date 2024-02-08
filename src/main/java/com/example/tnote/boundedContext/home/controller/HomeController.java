@@ -68,18 +68,33 @@ public class HomeController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @GetMapping("/{scheduleId}/dailyLogs")
-    public ResponseEntity<Result> readDailyLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                @PathVariable Long scheduleId,
-                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
-                                                @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                @RequestParam(value = "size", required = false, defaultValue = "8") int size,
-                                                @RequestParam(value = "logType", required = false, defaultValue = "CLASS_LOG") LogType logType) {
+    @GetMapping("/{scheduleId}/dateLogs")
+    public ResponseEntity<Result> readDateLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                               @PathVariable Long scheduleId,
+                                               @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                               @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+                                               @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                               @RequestParam(value = "size", required = false, defaultValue = "8") int size,
+                                               @RequestParam(value = "logType", required = false, defaultValue = "CLASS_LOG") LogType logType) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
         ArchiveResponseDto response = homeService.readLogsByDate(principalDetails.getId(), scheduleId, startDate,
                 endDate, logType, pageRequest);
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    @GetMapping("/{scheduleId}/dailyLogs")
+    public ResponseEntity<Result> readDailyLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                @PathVariable Long scheduleId,
+                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+                                                @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                @RequestParam(value = "size", required = false, defaultValue = "2") int size) {
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        ArchiveResponseDto response = homeService.readDailyLogs(principalDetails.getId(), scheduleId, date,
+                pageRequest);
         return ResponseEntity.ok(Result.of(response));
     }
 }

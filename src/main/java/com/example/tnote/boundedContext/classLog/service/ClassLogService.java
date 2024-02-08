@@ -165,7 +165,7 @@ public class ClassLogService {
     }
 
     public ClassLogSliceResponseDto readClassLogsByDate(Long userId, Long scheduleId, LocalDate startDate,
-                                                       LocalDate endDate, Pageable pageable) {
+                                                        LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
@@ -187,6 +187,27 @@ public class ClassLogService {
                 .build();
     }
 
+    public ClassLogSliceResponseDto readDailyClassLog(Long userId, Long scheduleId, LocalDate date, Pageable pageable) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
+
+        List<ClassLog> classLogs = classLogRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId,
+                startOfDay, endOfDay);
+        Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
+                userId, scheduleId,
+                startOfDay, endOfDay, pageable);
+        int numberOfClassLog = classLogs.size();
+        List<ClassLogResponseDto> classLogResponseDtos = allClassLogsSlice.getContent().stream()
+                .map(ClassLogResponseDto::of).toList();
+
+        return ClassLogSliceResponseDto.builder()
+                .classLogs(classLogResponseDtos)
+                .numberOfClassLog(numberOfClassLog)
+                .page(allClassLogsSlice.getPageable().getPageNumber())
+                .isLast(allClassLogsSlice.isLast())
+                .build();
+    }
+
     private List<ClassLogImage> deleteExistedImagesAndUploadNewImages(ClassLog classLog,
                                                                       List<MultipartFile> classLogImages) {
         deleteExistedImages(classLog);
@@ -196,4 +217,5 @@ public class ClassLogService {
     private void deleteExistedImages(ClassLog classLog) {
         classLogImageRepository.deleteByClassLogId(classLog.getId());
     }
+
 }
