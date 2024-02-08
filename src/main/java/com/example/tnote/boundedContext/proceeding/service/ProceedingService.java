@@ -2,6 +2,8 @@ package com.example.tnote.boundedContext.proceeding.service;
 
 import com.example.tnote.base.exception.proceeding.ProceedingErrorResult;
 import com.example.tnote.base.exception.proceeding.ProceedingException;
+import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
+import com.example.tnote.base.exception.schedule.ScheduleException;
 import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
@@ -19,6 +21,8 @@ import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingImageRepository;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.io.IOException;
@@ -39,26 +43,29 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class ProceedingService {
     private final UserRepository userRepository;
+    private final ScheduleRepository scheduleRepository;
     private final ProceedingRepository proceedingRepository;
     private final ProceedingImageRepository proceedingImageRepository;
 
-    public ProceedingResponseDto save(Long userId, ProceedingRequestDto requestDto,
+    public ProceedingResponseDto save(Long userId, Long scheduleId, ProceedingRequestDto requestDto,
                                       List<MultipartFile> proceedingImages) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleException(
+                ScheduleErrorResult.SCHEDULE_NOT_FOUND));
 
-        Proceeding proceeding = requestDto.toEntity(user);
+        Proceeding proceeding = requestDto.toEntity(user, schedule);
         if (proceedingImages != null && !proceedingImages.isEmpty()) {
             List<ProceedingImage> uploadedImages = uploadProceedingImages(proceeding, proceedingImages);
-            proceeding.getProceedingImage().addAll(uploadedImages); // 이미지 리스트에 추가
+            proceeding.getProceedingImage().addAll(uploadedImages);
         }
         return ProceedingResponseDto.of(proceedingRepository.save(proceeding));
     }
 
     @Transactional(readOnly = true)
-    public ProceedingSliceResponseDto readAllProceeding(Long userId, Pageable pageable) {
-        List<Proceeding> proceedings = proceedingRepository.findAllByUserId(userId);
-        Slice<Proceeding> allProceedingSlice = proceedingRepository.findAllBy(pageable);
+    public ProceedingSliceResponseDto readAllProceeding(Long userId, Long scheduleId, Pageable pageable) {
+        List<Proceeding> proceedings = proceedingRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
+        Slice<Proceeding> allProceedingSlice = proceedingRepository.findAllByScheduleId(scheduleId, pageable);
         int numberOfProceeding = proceedings.size();
         List<ProceedingResponseDto> responseDto = allProceedingSlice.getContent().stream()
                 .map(ProceedingResponseDto::of).toList();
@@ -153,17 +160,52 @@ public class ProceedingService {
                 .build());
     }
 
-    public List<ProceedingResponseDto> readDailyProceedings(Long userId, LocalDate date) {
+    public ProceedingSliceResponseDto readProceedingsByDate(Long userId, Long scheduleId, LocalDate startDate,
+                                                           LocalDate endDate, Pageable pageable) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+
+        List<Proceeding> proceedings = proceedingRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId,
+                scheduleId, startOfDay,
+                endOfDay);
+        Slice<Proceeding> allProceedingSlice = proceedingRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
+                userId, scheduleId, startOfDay,
+                endOfDay, pageable);
+
+        int numberOfProceeding = proceedings.size();
+        List<ProceedingResponseDto> responseDto = allProceedingSlice.getContent().stream()
+                .map(ProceedingResponseDto::of).toList();
+
+        return ProceedingSliceResponseDto.builder()
+                .proceedings(responseDto)
+                .numberOfProceeding(numberOfProceeding)
+                .page(allProceedingSlice.getPageable().getPageNumber())
+                .isLast(allProceedingSlice.isLast())
+                .build();
+    }
+    public ProceedingSliceResponseDto readDailyProceedings(Long userId, Long scheduleId, LocalDate date,
+                                                             Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
-        List<Proceeding> proceedings = proceedingRepository.findByUserIdAndStartDateBetween(userId, startOfDay,
+        List<Proceeding> proceedings = proceedingRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId,
+                scheduleId, startOfDay,
                 endOfDay);
-        return proceedings.stream()
-                .map(ProceedingResponseDto::of)
-                .toList();
-    }
+        Slice<Proceeding> allProceedingSlice = proceedingRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
+                userId, scheduleId, startOfDay,
+                endOfDay, pageable);
 
+        int numberOfProceeding = proceedings.size();
+        List<ProceedingResponseDto> responseDto = allProceedingSlice.getContent().stream()
+                .map(ProceedingResponseDto::of).toList();
+
+        return ProceedingSliceResponseDto.builder()
+                .proceedings(responseDto)
+                .numberOfProceeding(numberOfProceeding)
+                .page(allProceedingSlice.getPageable().getPageNumber())
+                .isLast(allProceedingSlice.isLast())
+                .build();
+    }
     private List<ProceedingImage> deleteExistedImagesAndUploadNewImages(Proceeding proceeding,
                                                                         List<MultipartFile> proceedingImages) {
         deleteExistedImages(proceeding);

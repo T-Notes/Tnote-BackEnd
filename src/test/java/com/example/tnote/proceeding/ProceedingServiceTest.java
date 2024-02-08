@@ -23,6 +23,8 @@ import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingImageRepository;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDateTime;
@@ -51,6 +53,8 @@ public class ProceedingServiceTest {
     private ProceedingRepository proceedingRepository;
     @Mock
     private ProceedingImageRepository proceedingImageRepository;
+    @Mock
+    private ScheduleRepository scheduleRepository;
     @InjectMocks
     private ProceedingService proceedingService;
 
@@ -59,7 +63,9 @@ public class ProceedingServiceTest {
     @Test
     void save() {
         Long userId = 1L;
+        Long scheduleId = 2L;
         User mockUser = mock(User.class);
+        Schedule mockSchedule = mock(Schedule.class);
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -73,10 +79,11 @@ public class ProceedingServiceTest {
                 .build();
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
-        Proceeding proceeding = requestDto.toEntity(mockUser);
+        Proceeding proceeding = requestDto.toEntity(mockUser, mockSchedule);
+        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(mockSchedule));
         when(proceedingRepository.save(any(Proceeding.class))).thenReturn(proceeding);
 
-        ProceedingResponseDto result = proceedingService.save(userId, requestDto, Collections.emptyList());
+        ProceedingResponseDto result = proceedingService.save(userId, scheduleId, requestDto, Collections.emptyList());
 
         assertThat(result).isNotNull();
         assertThat(result.getTitle()).isEqualTo(requestDto.getTitle());
@@ -87,13 +94,14 @@ public class ProceedingServiceTest {
     @Test
     void noUserSave() {
         Long userId = 1L;
+        Long scheduleId = 2L;
         ProceedingRequestDto requestDto = mock(ProceedingRequestDto.class);
         List<MultipartFile> proceedingImages = Collections.emptyList();
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         assertThatExceptionOfType(UserException.class)
-                .isThrownBy(() -> proceedingService.save(userId, requestDto, proceedingImages));
+                .isThrownBy(() -> proceedingService.save(userId, scheduleId, requestDto, proceedingImages));
 
         verify(userRepository).findById(userId);
         verify(proceedingRepository, never()).save(any(Proceeding.class));
@@ -103,6 +111,7 @@ public class ProceedingServiceTest {
     @Test
     void getProceedings() {
         Long userId = 1L;
+        Long scheduleId = 2L;
         Pageable pageable = PageRequest.of(0, 10);
 
         Proceeding mockProceeding1 = mock(Proceeding.class);
@@ -110,14 +119,14 @@ public class ProceedingServiceTest {
         List<Proceeding> mockProceedingList = Arrays.asList(mockProceeding1, mockProceeding2);
         Slice<Proceeding> mockProceedings = new PageImpl<>(mockProceedingList, pageable, mockProceedingList.size());
 
-        when(proceedingRepository.findAllBy(pageable)).thenReturn(mockProceedings);
-        ProceedingSliceResponseDto result = proceedingService.readAllProceeding(userId, pageable);
+        when(proceedingRepository.findAllByScheduleId(scheduleId, pageable)).thenReturn(mockProceedings);
+        ProceedingSliceResponseDto result = proceedingService.readAllProceeding(userId, scheduleId, pageable);
 
         assertThat(result.getProceedings())
                 .isNotNull()
                 .hasSize(2);
 
-        verify(proceedingRepository).findAllByUserId(userId);
+        verify(proceedingRepository).findAllByScheduleId(scheduleId,pageable);
     }
 
     @DisplayName("업무일지 상세 조회: 업무일지 상세 정보 조회 확인")

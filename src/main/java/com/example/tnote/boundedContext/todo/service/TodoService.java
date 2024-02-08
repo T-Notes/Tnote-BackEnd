@@ -6,11 +6,13 @@ import com.example.tnote.base.exception.todo.TodoErrorResult;
 import com.example.tnote.base.exception.todo.TodoException;
 import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
+import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.todo.dto.TodoDeleteResponseDto;
 import com.example.tnote.boundedContext.todo.dto.TodoRequestDto;
 import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
+import com.example.tnote.boundedContext.todo.dto.TodoSliceResponseDto;
 import com.example.tnote.boundedContext.todo.dto.TodoUpdateRequestDto;
 import com.example.tnote.boundedContext.todo.entity.Todo;
 import com.example.tnote.boundedContext.todo.repository.TodoQueryRepository;
@@ -18,9 +20,12 @@ import com.example.tnote.boundedContext.todo.repository.TodoRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -124,6 +129,48 @@ public class TodoService {
             throw new UserException(UserErrorResult.USER_NOT_FOUND);
         }
         return todos;
+
+    }
+
+    public TodoSliceResponseDto readTodosByDate(Long userId, Long scheduleId, LocalDate startDate,
+                                                LocalDate endDate, Pageable pageable) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Todo> todos = todoRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId, startOfDay,
+                endOfDay);
+        Slice<Todo> allTodos = todoRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(userId, scheduleId,
+                startOfDay, endOfDay, pageable);
+
+        int numberOfTodo = todos.size();
+        List<TodoResponseDto> responseDto = allTodos.getContent().stream().map(TodoResponseDto::of).toList();
+
+        return TodoSliceResponseDto.builder()
+                .todos(responseDto)
+                .numberOfTodo(numberOfTodo)
+                .page(allTodos.getPageable().getPageNumber())
+                .isLast(allTodos.isLast())
+                .build();
+
+    }
+
+    public TodoSliceResponseDto readDailyTodos(Long userId, Long scheduleId,
+                                               LocalDate date, Pageable pageable) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
+        List<Todo> todos = todoRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId, startOfDay,
+                endOfDay);
+        Slice<Todo> allTodos = todoRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(userId, scheduleId,
+                startOfDay, endOfDay, pageable);
+
+        int numberOfTodo = todos.size();
+        List<TodoResponseDto> responseDto = allTodos.getContent().stream().map(TodoResponseDto::of).toList();
+
+        return TodoSliceResponseDto.builder()
+                .todos(responseDto)
+                .numberOfTodo(numberOfTodo)
+                .page(allTodos.getPageable().getPageNumber())
+                .isLast(allTodos.isLast())
+                .build();
 
     }
 }

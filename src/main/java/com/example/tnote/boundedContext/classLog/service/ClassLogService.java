@@ -2,6 +2,8 @@ package com.example.tnote.boundedContext.classLog.service;
 
 import com.example.tnote.base.exception.classLog.ClassLogErrorResult;
 import com.example.tnote.base.exception.classLog.ClassLogException;
+import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
+import com.example.tnote.base.exception.schedule.ScheduleException;
 import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
@@ -16,6 +18,8 @@ import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogImageRepository;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.io.IOException;
@@ -38,12 +42,16 @@ public class ClassLogService {
     private final ClassLogRepository classLogRepository;
     private final ClassLogImageRepository classLogImageRepository;
     private final UserRepository userRepository;
+    private final ScheduleRepository scheduleRepository;
 
-    public ClassLogResponseDto save(Long userId, ClassLogRequestDto request, List<MultipartFile> classLogImages) {
+    public ClassLogResponseDto save(Long userId, Long scheduleId, ClassLogRequestDto request,
+                                    List<MultipartFile> classLogImages) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleException(
+                ScheduleErrorResult.SCHEDULE_NOT_FOUND));
 
-        ClassLog classLog = request.toEntity(user);
+        ClassLog classLog = request.toEntity(user, schedule);
 
         if (classLogImages != null && !classLogImages.isEmpty()) {
             List<ClassLogImage> uploadedImages = uploadClassLogImages(classLog, classLogImages);
@@ -66,9 +74,9 @@ public class ClassLogService {
 
 
     @Transactional(readOnly = true)
-    public ClassLogSliceResponseDto readAllClassLog(Long userId, Pageable pageable) {
-        List<ClassLog> classLogs = classLogRepository.findAllByUserId(userId);
-        Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllBy(pageable);
+    public ClassLogSliceResponseDto readAllClassLog(Long userId, Long scheduleId, Pageable pageable) {
+        List<ClassLog> classLogs = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
+        Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByScheduleId(scheduleId, pageable);
         int numberOfClassLog = classLogs.size();
         List<ClassLogResponseDto> classLogResponseDtos = allClassLogsSlice.getContent().stream()
                 .map(ClassLogResponseDto::of).toList();
@@ -156,14 +164,48 @@ public class ClassLogService {
                 .build());
     }
 
-    public List<ClassLogResponseDto> readDailyClassLogs(Long userId, LocalDate date) {
+    public ClassLogSliceResponseDto readClassLogsByDate(Long userId, Long scheduleId, LocalDate startDate,
+                                                        LocalDate endDate, Pageable pageable) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+
+        List<ClassLog> classLogs = classLogRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId,
+                startOfDay, endOfDay);
+        Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
+                userId, scheduleId,
+                startOfDay, endOfDay, pageable);
+
+        int numberOfClassLog = classLogs.size();
+        List<ClassLogResponseDto> classLogResponseDtos = allClassLogsSlice.getContent().stream()
+                .map(ClassLogResponseDto::of).toList();
+
+        return ClassLogSliceResponseDto.builder()
+                .classLogs(classLogResponseDtos)
+                .numberOfClassLog(numberOfClassLog)
+                .page(allClassLogsSlice.getPageable().getPageNumber())
+                .isLast(allClassLogsSlice.isLast())
+                .build();
+    }
+
+    public ClassLogSliceResponseDto readDailyClassLog(Long userId, Long scheduleId, LocalDate date, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
-        List<ClassLog> classLogs = classLogRepository.findByUserIdAndStartDateBetween(userId, startOfDay, endOfDay);
-        return classLogs.stream()
-                .map(ClassLogResponseDto::of)
-                .toList();
+        List<ClassLog> classLogs = classLogRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId,
+                startOfDay, endOfDay);
+        Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
+                userId, scheduleId,
+                startOfDay, endOfDay, pageable);
+        int numberOfClassLog = classLogs.size();
+        List<ClassLogResponseDto> classLogResponseDtos = allClassLogsSlice.getContent().stream()
+                .map(ClassLogResponseDto::of).toList();
+
+        return ClassLogSliceResponseDto.builder()
+                .classLogs(classLogResponseDtos)
+                .numberOfClassLog(numberOfClassLog)
+                .page(allClassLogsSlice.getPageable().getPageNumber())
+                .isLast(allClassLogsSlice.isLast())
+                .build();
     }
 
     private List<ClassLogImage> deleteExistedImagesAndUploadNewImages(ClassLog classLog,
@@ -175,4 +217,5 @@ public class ClassLogService {
     private void deleteExistedImages(ClassLog classLog) {
         classLogImageRepository.deleteByClassLogId(classLog.getId());
     }
+
 }

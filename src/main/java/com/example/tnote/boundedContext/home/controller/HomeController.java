@@ -3,6 +3,7 @@ package com.example.tnote.boundedContext.home.controller;
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.service.HomeService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
@@ -15,10 +16,12 @@ import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -65,14 +68,33 @@ public class HomeController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @GetMapping("/dailyLogs")
-    public ResponseEntity<Result> readDailyLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                @RequestParam(value = "date", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date) {
-        if (date == null) {
-            date = LocalDate.now(); // 날짜가 제공되지 않으면 현재 날짜 사용
-        }
+    @GetMapping("/{scheduleId}/dateLogs")
+    public ResponseEntity<Result> readDateLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                               @PathVariable Long scheduleId,
+                                               @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+                                               @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+                                               @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                               @RequestParam(value = "size", required = false, defaultValue = "8") int size,
+                                               @RequestParam(value = "logType", required = false, defaultValue = "CLASS_LOG") LogType logType) {
 
-        ArchiveResponseDto response = homeService.readDailyLogs(principalDetails.getId(), date);
+        PageRequest pageRequest = PageRequest.of(page, size);
+        ArchiveResponseDto response = homeService.readLogsByDate(principalDetails.getId(), scheduleId, startDate,
+                endDate, logType, pageRequest);
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    @GetMapping("/{scheduleId}/dailyLogs")
+    public ResponseEntity<Result> readDailyLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                @PathVariable Long scheduleId,
+                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+                                                @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                @RequestParam(value = "size", required = false, defaultValue = "2") int size) {
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        PageRequest pageRequest = PageRequest.of(page, size);
+        ArchiveResponseDto response = homeService.readDailyLogs(principalDetails.getId(), scheduleId, date,
+                pageRequest);
         return ResponseEntity.ok(Result.of(response));
     }
 }

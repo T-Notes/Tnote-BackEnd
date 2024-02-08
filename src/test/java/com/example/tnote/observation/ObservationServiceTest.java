@@ -22,6 +22,8 @@ import com.example.tnote.boundedContext.observation.entity.ObservationImage;
 import com.example.tnote.boundedContext.observation.repository.ObservationImageRepository;
 import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDateTime;
@@ -50,6 +52,8 @@ public class ObservationServiceTest {
     private ObservationRepository observationRepository;
     @Mock
     private ObservationImageRepository observationImageRepository;
+    @Mock
+    private ScheduleRepository scheduleRepository;
 
     @InjectMocks
     private ObservationService observationService;
@@ -58,7 +62,9 @@ public class ObservationServiceTest {
     @Test
     void save() {
         Long userId = 1L;
+        Long scheduleId = 2L;
         User mockUser = mock(User.class);
+        Schedule mockSchedule = mock(Schedule.class);
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -72,10 +78,12 @@ public class ObservationServiceTest {
                 .build();
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
-        Observation observation = requestDto.toEntity(mockUser);
+        Observation observation = requestDto.toEntity(mockUser, mockSchedule);
+        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(mockSchedule));
         when(observationRepository.save(any(Observation.class))).thenReturn(observation);
 
-        ObservationResponseDto result = observationService.save(userId, requestDto, Collections.emptyList());
+        ObservationResponseDto result = observationService.save(userId, scheduleId, requestDto,
+                Collections.emptyList());
 
         assertThat(result).isNotNull();
         assertThat(result.getStudentName()).isEqualTo(requestDto.getStudentName());
@@ -86,13 +94,14 @@ public class ObservationServiceTest {
     @Test
     void noUserSave() {
         Long userId = 1L;
+        Long scheduleId = 2L;
         ObservationRequestDto requestDto = mock(ObservationRequestDto.class);
         List<MultipartFile> observationImages = Collections.emptyList();
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         assertThatExceptionOfType(UserException.class)
-                .isThrownBy(() -> observationService.save(userId, requestDto, observationImages));
+                .isThrownBy(() -> observationService.save(userId, scheduleId, requestDto, observationImages));
 
         verify(userRepository).findById(userId);
         verify(observationRepository, never()).save(any(Observation.class));
@@ -102,6 +111,7 @@ public class ObservationServiceTest {
     @Test
     void getLogs() {
         Long userId = 1L;
+        Long scheduleId = 2L;
         Long otherUserId = 2L;
         Pageable pageable = PageRequest.of(0, 10);
 
@@ -113,14 +123,14 @@ public class ObservationServiceTest {
         List<Observation> mockObservationList = Arrays.asList(mockObservation1, mockObservation2);
         Slice<Observation> mockObservations = new PageImpl<>(mockObservationList, pageable, mockObservationList.size());
 
-        when(observationRepository.findAllBy(pageable)).thenReturn(mockObservations);
-        ObservationSliceResponseDto result = observationService.readAllObservation(userId, pageable);
+        when(observationRepository.findAllByScheduleId(scheduleId, pageable)).thenReturn(mockObservations);
+        ObservationSliceResponseDto result = observationService.readAllObservation(userId, scheduleId, pageable);
 
         assertThat(result.getObservations())
                 .isNotNull()
                 .hasSize(2);
 
-        verify(observationRepository).findAllBy(pageable);
+        verify(observationRepository).findAllByScheduleId(scheduleId, pageable);
     }
 
     @DisplayName("관찰일지 상세 조회: 관찰일지 상세 정보 조회 확인")

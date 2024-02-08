@@ -4,6 +4,7 @@ import com.example.tnote.base.exception.classLog.ClassLogErrorResult;
 import com.example.tnote.base.exception.classLog.ClassLogException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -22,7 +23,7 @@ public class ClassLogRequestDto {
     private String magnitude;
     private boolean isAllDay;
 
-    public ClassLog toEntity(User user) {
+    public ClassLog toEntity(User user, Schedule schedule) {
         validate();
         return ClassLog.builder()
                 .user(user)
@@ -33,7 +34,8 @@ public class ClassLogRequestDto {
                 .plan(this.plan)
                 .submission(this.submission)
                 .magnitude(this.magnitude)
-                .classLogImage(new ArrayList<>()) // 이미지 리스트는 여기서 초기화
+                .classLogImage(new ArrayList<>())
+                .schedule(schedule)
                 .build();
     }
     private void validate() {
