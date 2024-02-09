@@ -39,13 +39,13 @@ public class ProceedingController {
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                    @PathVariable Long scheduleId,
-                                                   @RequestPart ProceedingRequestDto requestDto,
+                                                   @RequestPart ProceedingRequestDto proceedingRequestDto,
                                                    @RequestPart(name = "proceedingImages", required = false) List<MultipartFile> proceedingImages) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
         }
         ProceedingResponseDto proceedingResponseDto = proceedingService.save(principalDetails.getId(), scheduleId,
-                requestDto,
+                proceedingRequestDto,
                 proceedingImages);
         return ResponseEntity.ok(Result.of(proceedingResponseDto));
     }
