@@ -187,25 +187,16 @@ public class ClassLogService {
                 .build();
     }
 
-    public ClassLogSliceResponseDto readDailyClassLog(Long userId, Long scheduleId, LocalDate date, Pageable pageable) {
+    public List<ClassLogResponseDto> readDailyClassLog(Long userId, Long scheduleId, LocalDate date) {
+
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
         List<ClassLog> classLogs = classLogRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId,
                 startOfDay, endOfDay);
-        Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
-                userId, scheduleId,
-                startOfDay, endOfDay, pageable);
-        int numberOfClassLog = classLogs.size();
-        List<ClassLogResponseDto> classLogResponseDtos = allClassLogsSlice.getContent().stream()
-                .map(ClassLogResponseDto::of).toList();
 
-        return ClassLogSliceResponseDto.builder()
-                .classLogs(classLogResponseDtos)
-                .numberOfClassLog(numberOfClassLog)
-                .page(allClassLogsSlice.getPageable().getPageNumber())
-                .isLast(allClassLogsSlice.isLast())
-                .build();
+        return classLogs.stream()
+                .map(ClassLogResponseDto::of).toList();
     }
 
     private List<ClassLogImage> deleteExistedImagesAndUploadNewImages(ClassLog classLog,

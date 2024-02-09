@@ -196,28 +196,16 @@ public class ConsultationService {
                 .build();
     }
 
-    public ConsultationSliceResponseDto readDailyConsultations(Long userId, Long scheduleId,
-                                                               LocalDate date, Pageable pageable) {
+    public List<ConsultationResponseDto> readDailyConsultations(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
         List<Consultation> consultations = consultationRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId,
                 scheduleId, startOfDay,
                 endOfDay);
-        Slice<Consultation> allConsultations = consultationRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
-                userId, scheduleId, startOfDay,
-                endOfDay, pageable);
 
-        int numberOfConsultation = consultations.size();
-        List<ConsultationResponseDto> responseDtos = allConsultations.getContent().stream()
+        return consultations.stream()
                 .map(ConsultationResponseDto::of).toList();
-
-        return ConsultationSliceResponseDto.builder()
-                .consultations(responseDtos)
-                .numberOfConsultation(numberOfConsultation)
-                .page(allConsultations.getPageable().getPageNumber())
-                .isLast(allConsultations.isLast())
-                .build();
     }
 
     private List<ConsultationImage> deleteExistedImagesAndUploadNewImages(Consultation consultation,
