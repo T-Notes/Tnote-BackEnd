@@ -153,24 +153,12 @@ public class TodoService {
 
     }
 
-    public TodoSliceResponseDto readDailyTodos(Long userId, Long scheduleId,
-                                               LocalDate date, Pageable pageable) {
+    public List<TodoResponseDto> readDailyTodos(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
         List<Todo> todos = todoRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId, startOfDay,
                 endOfDay);
-        Slice<Todo> allTodos = todoRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(userId, scheduleId,
-                startOfDay, endOfDay, pageable);
 
-        int numberOfTodo = todos.size();
-        List<TodoResponseDto> responseDto = allTodos.getContent().stream().map(TodoResponseDto::of).toList();
-
-        return TodoSliceResponseDto.builder()
-                .todos(responseDto)
-                .numberOfTodo(numberOfTodo)
-                .page(allTodos.getPageable().getPageNumber())
-                .isLast(allTodos.isLast())
-                .build();
-
+        return todos.stream().map(TodoResponseDto::of).toList();
     }
 }
