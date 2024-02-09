@@ -12,6 +12,7 @@ import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.service.ConsultationService;
 import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
+import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.home.repository.ClassLogQueryRepository;
 import com.example.tnote.boundedContext.home.repository.ConsultationQueryRepository;
 import com.example.tnote.boundedContext.home.repository.ObservationQueryRepository;
@@ -24,11 +25,11 @@ import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
+import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
 import com.example.tnote.boundedContext.todo.dto.TodoSliceResponseDto;
 import com.example.tnote.boundedContext.todo.service.TodoService;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -105,48 +106,45 @@ public class HomeService {
                 () -> new UserException(UserErrorResult.USER_NOT_FOUND));
     }
 
-    public ArchiveResponseDto readLogsByDate(Long userId, Long scheduleId, LocalDate startDate, LocalDate endDate,
-                                             LogType logType, Pageable pageable) {
+    public ArchiveSliceResponseDto readLogsByDate(Long userId, Long scheduleId, LocalDate startDate, LocalDate endDate,
+                                                  LogType logType, Pageable pageable) {
         if (logType == LogType.CLASS_LOG) {
             ClassLogSliceResponseDto classLogs = classLogService.readClassLogsByDate(userId, scheduleId, startDate,
                     endDate, pageable);
-            return ArchiveResponseDto.builder().classLogs(classLogs).build();
+            return ArchiveSliceResponseDto.builder().classLogs(classLogs).build();
         }
         if (logType == LogType.CONSULTATION) {
             ConsultationSliceResponseDto consultations = consultationService.readConsultationsByDate(userId, scheduleId,
                     startDate,
                     endDate, pageable);
-            return ArchiveResponseDto.builder().consultations(consultations).build();
+            return ArchiveSliceResponseDto.builder().consultations(consultations).build();
         }
         if (logType == LogType.OBSERVATION) {
             ObservationSliceResponseDto observations = observationService.readObservationsByDate(userId, scheduleId,
                     startDate,
                     endDate, pageable);
-            return ArchiveResponseDto.builder().observations(observations).build();
+            return ArchiveSliceResponseDto.builder().observations(observations).build();
         }
         if (logType == LogType.PROCEEDING) {
             ProceedingSliceResponseDto proceedings = proceedingService.readProceedingsByDate(userId, scheduleId,
                     startDate,
                     endDate, pageable);
-            return ArchiveResponseDto.builder().proceedings(proceedings).build();
+            return ArchiveSliceResponseDto.builder().proceedings(proceedings).build();
         }
         if (logType == LogType.TODO) {
             TodoSliceResponseDto todos = todoService.readTodosByDate(userId, scheduleId, startDate,
                     endDate, pageable);
-            return ArchiveResponseDto.builder().todos(todos).build();
+            return ArchiveSliceResponseDto.builder().todos(todos).build();
         }
         return null;
     }
 
-    public ArchiveResponseDto readDailyLogs(Long userId, Long scheduleId, LocalDate date, Pageable pageable) {
-        ClassLogSliceResponseDto classLogs = classLogService.readDailyClassLog(userId, scheduleId, date, pageable);
-        ConsultationSliceResponseDto consultations = consultationService.readDailyConsultations(userId, scheduleId,
-                date, pageable);
-        ObservationSliceResponseDto observations = observationService.readDailyObservations(userId, scheduleId, date,
-                pageable);
-        ProceedingSliceResponseDto proceedings = proceedingService.readDailyProceedings(userId, scheduleId, date,
-                pageable);
-        TodoSliceResponseDto todos = todoService.readDailyTodos(userId, scheduleId, date, pageable);
+    public ArchiveResponseDto readDailyLogs(Long userId, Long scheduleId, LocalDate date) {
+        List<ClassLogResponseDto> classLogs = classLogService.readDailyClassLog(userId, scheduleId, date);
+        List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, scheduleId, date);
+        List<ObservationResponseDto> observations = observationService.readDailyObservations(userId, scheduleId, date);
+        List<ProceedingResponseDto> proceedings = proceedingService.readDailyProceedings(userId, scheduleId, date);
+        List<TodoResponseDto> todos = todoService.readDailyTodos(userId, scheduleId, date);
 
         return ArchiveResponseDto.builder()
                 .classLogs(classLogs)

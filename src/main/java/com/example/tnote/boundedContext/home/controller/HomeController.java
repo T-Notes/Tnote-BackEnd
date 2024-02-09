@@ -5,6 +5,7 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
+import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.home.service.HomeService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
@@ -78,7 +79,7 @@ public class HomeController {
                                                @RequestParam(value = "logType", required = false, defaultValue = "CLASS_LOG") LogType logType) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        ArchiveResponseDto response = homeService.readLogsByDate(principalDetails.getId(), scheduleId, startDate,
+        ArchiveSliceResponseDto response = homeService.readLogsByDate(principalDetails.getId(), scheduleId, startDate,
                 endDate, logType, pageRequest);
         return ResponseEntity.ok(Result.of(response));
     }
@@ -86,15 +87,11 @@ public class HomeController {
     @GetMapping("/{scheduleId}/dailyLogs")
     public ResponseEntity<Result> readDailyLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                 @PathVariable Long scheduleId,
-                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-                                                @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                @RequestParam(value = "size", required = false, defaultValue = "2") int size) {
+                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         if (date == null) {
             date = LocalDate.now();
         }
-        PageRequest pageRequest = PageRequest.of(page, size);
-        ArchiveResponseDto response = homeService.readDailyLogs(principalDetails.getId(), scheduleId, date,
-                pageRequest);
+        ArchiveResponseDto response = homeService.readDailyLogs(principalDetails.getId(), scheduleId, date);
         return ResponseEntity.ok(Result.of(response));
     }
 }
