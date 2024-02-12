@@ -6,12 +6,15 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto
 import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
+import com.example.tnote.boundedContext.home.dto.RecentLogResponseDto;
 import com.example.tnote.boundedContext.home.service.HomeService;
+import com.example.tnote.boundedContext.home.service.RecentLogService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
 import com.example.tnote.boundedContext.schedule.service.ScheduleService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
+import java.security.UnrecoverableEntryException;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -19,6 +22,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +39,7 @@ public class HomeController {
 
     private final HomeService homeService;
     private final ScheduleService scheduleService;
+    private final RecentLogService recentLogService;
 
     // 학생 이름 검색 했을때 나올 내용
     @GetMapping("/searching")
@@ -93,5 +98,16 @@ public class HomeController {
         }
         ArchiveResponseDto response = homeService.readDailyLogs(principalDetails.getId(), scheduleId, date);
         return ResponseEntity.ok(Result.of(response));
+    }
+
+    @GetMapping("/recentLogs")
+    public ResponseEntity<?> getRecentClassLogs(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+        if (principalDetails == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+        }
+
+        List<RecentLogResponseDto> recentClassLogs = recentLogService.getRecentLogs(principalDetails.getId());
+
+        return ResponseEntity.ok(recentClassLogs);
     }
 }
