@@ -13,6 +13,7 @@ import com.example.tnote.base.utils.FileUploadUtils;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
+import com.example.tnote.boundedContext.home.service.RecentLogService;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
@@ -49,6 +50,7 @@ public class ObservationService {
     private final ObservationImageRepository observationImageRepository;
     private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
+    private final RecentLogService recentLogService;
 
     public ObservationResponseDto save(Long userId, Long scheduleId, ObservationRequestDto requestDto,
                                        List<MultipartFile> observationImages) {
@@ -62,6 +64,7 @@ public class ObservationService {
             List<ObservationImage> uploadedImages = uploadObservationImages(observation, observationImages);
             observation.getObservationImage().addAll(uploadedImages);
         }
+        recentLogService.saveRecentLog(userId, observation.getId(), "OBSERVATION");
         return ObservationResponseDto.of(observationRepository.save(observation));
     }
 
@@ -87,6 +90,7 @@ public class ObservationService {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
                 .orElseThrow(() -> new ObservationException(ObservationErrorResult.OBSERVATION_NOT_FOUNT));
         List<ObservationImage> observationImages = observationImageRepository.findObservationImageById(observationId);
+        recentLogService.saveRecentLog(userId, observation.getId(), "OBSERVATION");
         return new ObservationDetailResponseDto(observation, observationImages);
     }
 
@@ -104,6 +108,7 @@ public class ObservationService {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
                 .orElseThrow(() -> new ObservationException(ObservationErrorResult.OBSERVATION_NOT_FOUNT));
         updateObservationItem(requestDto, observation, observationImages);
+        recentLogService.saveRecentLog(userId, observation.getId(), "OBSERVATION");
         return ObservationResponseDto.of(observation);
     }
 

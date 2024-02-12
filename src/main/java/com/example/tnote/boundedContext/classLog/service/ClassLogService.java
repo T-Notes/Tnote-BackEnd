@@ -18,6 +18,7 @@ import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogImageRepository;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
+import com.example.tnote.boundedContext.home.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -43,6 +44,7 @@ public class ClassLogService {
     private final ClassLogImageRepository classLogImageRepository;
     private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
+    private final RecentLogService recentLogService;
 
     public ClassLogResponseDto save(Long userId, Long scheduleId, ClassLogRequestDto request,
                                     List<MultipartFile> classLogImages) {
@@ -57,6 +59,7 @@ public class ClassLogService {
             List<ClassLogImage> uploadedImages = uploadClassLogImages(classLog, classLogImages);
             classLog.getClassLogImage().addAll(uploadedImages);
         }
+        recentLogService.saveRecentLog(userId, classLog.getId(), "CLASS_LOG");
         return ClassLogResponseDto.of(classLogRepository.save(classLog));
     }
 
@@ -94,6 +97,7 @@ public class ClassLogService {
         ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
                 .orElseThrow(() -> new ClassLogException(ClassLogErrorResult.CLASS_LOG_NOT_FOUNT));
         List<ClassLogImage> classLogImages = classLogImageRepository.findClassLogImagesByClassLogId(classLogId);
+        recentLogService.saveRecentLog(userId, classLog.getId(), "CLASS_LOG");
         return new ClassLogDetailResponseDto(classLog, classLogImages);
     }
 
@@ -103,7 +107,7 @@ public class ClassLogService {
         ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
                 .orElseThrow(() -> new ClassLogException(ClassLogErrorResult.CLASS_LOG_NOT_FOUNT));
         updateEachClassLogItem(classLogUpdateRequestDto, classLog, classLogImages);
-
+        recentLogService.saveRecentLog(userId, classLog.getId(), "CLASS_LOG");
         return ClassLogResponseDto.of(classLog);
     }
 

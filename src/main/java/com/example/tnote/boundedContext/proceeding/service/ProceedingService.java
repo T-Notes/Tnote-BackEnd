@@ -11,6 +11,7 @@ import com.example.tnote.base.utils.FileUploadUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
+import com.example.tnote.boundedContext.home.service.RecentLogService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
@@ -46,6 +47,7 @@ public class ProceedingService {
     private final ScheduleRepository scheduleRepository;
     private final ProceedingRepository proceedingRepository;
     private final ProceedingImageRepository proceedingImageRepository;
+    private final RecentLogService recentLogService;
 
     public ProceedingResponseDto save(Long userId, Long scheduleId, ProceedingRequestDto requestDto,
                                       List<MultipartFile> proceedingImages) {
@@ -59,6 +61,7 @@ public class ProceedingService {
             List<ProceedingImage> uploadedImages = uploadProceedingImages(proceeding, proceedingImages);
             proceeding.getProceedingImage().addAll(uploadedImages);
         }
+        recentLogService.saveRecentLog(userId, proceeding.getId(), "PROCEEDING");
         return ProceedingResponseDto.of(proceedingRepository.save(proceeding));
     }
 
@@ -94,6 +97,7 @@ public class ProceedingService {
                 .orElseThrow(() -> new ProceedingException(
                         ProceedingErrorResult.PROCEEDING_NOT_FOUNT));
         List<ProceedingImage> proceedingImages = proceedingImageRepository.findProceedingImageById(proceedingId);
+        recentLogService.saveRecentLog(userId, proceeding.getId(), "PROCEEDING");
 
         return new ProceedingDetailResponseDto(proceeding, proceedingImages);
     }
@@ -105,6 +109,7 @@ public class ProceedingService {
                 .orElseThrow(() -> new ProceedingException(
                         ProceedingErrorResult.PROCEEDING_NOT_FOUNT));
         updateEachProceedingItem(updateRequestDto, proceeding, proceedingImages);
+        recentLogService.saveRecentLog(userId, proceeding.getId(), "PROCEEDING");
 
         return ProceedingResponseDto.of(proceeding);
     }
@@ -161,7 +166,7 @@ public class ProceedingService {
     }
 
     public ProceedingSliceResponseDto readProceedingsByDate(Long userId, Long scheduleId, LocalDate startDate,
-                                                           LocalDate endDate, Pageable pageable) {
+                                                            LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
@@ -183,6 +188,7 @@ public class ProceedingService {
                 .isLast(allProceedingSlice.isLast())
                 .build();
     }
+
     public List<ProceedingResponseDto> readDailyProceedings(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
@@ -194,6 +200,7 @@ public class ProceedingService {
         return proceedings.stream()
                 .map(ProceedingResponseDto::of).toList();
     }
+
     private List<ProceedingImage> deleteExistedImagesAndUploadNewImages(Proceeding proceeding,
                                                                         List<MultipartFile> proceedingImages) {
         deleteExistedImages(proceeding);

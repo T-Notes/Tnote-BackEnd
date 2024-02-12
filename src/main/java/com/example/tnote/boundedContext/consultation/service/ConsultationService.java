@@ -20,6 +20,7 @@ import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationImageRepository;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
+import com.example.tnote.boundedContext.home.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -45,6 +46,7 @@ public class ConsultationService {
     private final ConsultationImageRepository consultationImageRepository;
     private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
+    private final RecentLogService recentLogService;
 
     public ConsultationResponseDto save(Long userId, Long scheduleId, ConsultationRequestDto requestDto,
                                         List<MultipartFile> consultationImages) {
@@ -59,6 +61,7 @@ public class ConsultationService {
             List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
             consultation.getConsultationImage().addAll(uploadedImages);
         }
+        recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
         return ConsultationResponseDto.of(consultationRepository.save(consultation));
     }
 
@@ -97,6 +100,7 @@ public class ConsultationService {
                         ConsultationErrorResult.CONSULTATION_NOT_FOUNT));
         List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultationId(
                 consultationId);
+        recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
         return new ConsultationDetailResponseDto(consultation, consultationImages);
     }
 
@@ -108,6 +112,7 @@ public class ConsultationService {
                         ConsultationErrorResult.CONSULTATION_NOT_FOUNT));
 
         updateConsultationItem(requestDto, consultation, consultationImages);
+        recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
         return ConsultationResponseDto.of(consultation);
     }
 
