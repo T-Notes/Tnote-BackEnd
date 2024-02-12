@@ -1,0 +1,26 @@
+spring:
+  config:
+    activate:
+      on-profile: prod
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://tnote.cnqgskwe8j3c.ap-northeast-2.rds.amazonaws.com:3306/tnote
+    username: ENC(5qO9sW0rZ4+Wqe2mJjtcRA==)
+    password: ENC(46T+VImnIksazmRTWFA2bhzpLUYE+ga5)
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            redirect-uri: "https://xn--9w3b15cw7a.xn--3e0b707e/login/oauth2/code/kakao"
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+
