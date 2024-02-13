@@ -27,7 +27,11 @@ public class RecentLogService {
         String value = createLogEntry(logId, logType, score);
 
         redisTemplate.opsForZSet().add(key, value, score);
-        redisTemplate.opsForZSet().removeRange(key, 0, -MAX_RECENT_LOGS);
+
+        long currentCount = redisTemplate.opsForZSet().size(key);
+        if (currentCount > MAX_RECENT_LOGS) {
+            redisTemplate.opsForZSet().removeRange(key, 0, currentCount - MAX_RECENT_LOGS - 1);
+        }
     }
 
     public List<RecentLogResponseDto> getRecentLogs(Long userId) {
