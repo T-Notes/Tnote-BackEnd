@@ -8,10 +8,7 @@ import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
-import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
-import com.example.tnote.boundedContext.home.service.RecentLogService;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
@@ -56,7 +53,7 @@ public class ProceedingService {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleException(
                 ScheduleErrorResult.SCHEDULE_NOT_FOUND));
 
-        Proceeding proceeding = requestDto.toEntity(user, schedule);
+        Proceeding proceeding = proceedingRepository.save(requestDto.toEntity(user, schedule));
         if (proceedingImages != null && !proceedingImages.isEmpty()) {
             List<ProceedingImage> uploadedImages = uploadProceedingImages(proceeding, proceedingImages);
             proceeding.getProceedingImage().addAll(uploadedImages);

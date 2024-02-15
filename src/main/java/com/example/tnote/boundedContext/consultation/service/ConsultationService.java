@@ -1,7 +1,5 @@
 package com.example.tnote.boundedContext.consultation.service;
 
-import com.example.tnote.base.exception.classLog.ClassLogErrorResult;
-import com.example.tnote.base.exception.classLog.ClassLogException;
 import com.example.tnote.base.exception.consultation.ConsultationErrorResult;
 import com.example.tnote.base.exception.consultation.ConsultationException;
 import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
@@ -20,7 +18,7 @@ import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationImageRepository;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
-import com.example.tnote.boundedContext.home.service.RecentLogService;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -56,13 +54,14 @@ public class ConsultationService {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleException(
                 ScheduleErrorResult.SCHEDULE_NOT_FOUND));
 
-        Consultation consultation = requestDto.toEntity(user, schedule);
+        Consultation consultation = consultationRepository.save(requestDto.toEntity(user, schedule));
+
         if (consultationImages != null && !consultationImages.isEmpty()) {
             List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
             consultation.getConsultationImage().addAll(uploadedImages);
         }
         recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
-        return ConsultationResponseDto.of(consultationRepository.save(consultation));
+        return ConsultationResponseDto.of(consultation);
     }
 
     @Transactional(readOnly = true)

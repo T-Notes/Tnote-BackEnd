@@ -1,4 +1,4 @@
-package com.example.tnote.boundedContext.home.dto;
+package com.example.tnote.boundedContext.recentLog.dto;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonProperty;

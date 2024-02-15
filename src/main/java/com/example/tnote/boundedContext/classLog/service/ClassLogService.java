@@ -18,7 +18,7 @@ import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogImageRepository;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
-import com.example.tnote.boundedContext.home.service.RecentLogService;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -53,14 +53,14 @@ public class ClassLogService {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleException(
                 ScheduleErrorResult.SCHEDULE_NOT_FOUND));
 
-        ClassLog classLog = request.toEntity(user, schedule);
+        ClassLog classLog = classLogRepository.save(request.toEntity(user, schedule));
 
         if (classLogImages != null && !classLogImages.isEmpty()) {
             List<ClassLogImage> uploadedImages = uploadClassLogImages(classLog, classLogImages);
             classLog.getClassLogImage().addAll(uploadedImages);
         }
         recentLogService.saveRecentLog(userId, classLog.getId(), "CLASS_LOG");
-        return ClassLogResponseDto.of(classLogRepository.save(classLog));
+        return ClassLogResponseDto.of(classLog);
     }
 
     public ClassLogDeleteResponseDto deleteClassLog(Long userId, Long classLogId) {
