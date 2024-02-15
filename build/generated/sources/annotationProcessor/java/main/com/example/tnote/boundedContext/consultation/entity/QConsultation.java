@@ -26,6 +26,8 @@ public class QConsultation extends EntityPathBase<Consultation> {
 
     public final StringPath consultationContents = createString("consultationContents");
 
+    public final ListPath<ConsultationImage, QConsultationImage> consultationImage = this.<ConsultationImage, QConsultationImage>createList("consultationImage", ConsultationImage.class, QConsultationImage.class, PathInits.DIRECT2);
+
     public final StringPath consultationResult = createString("consultationResult");
 
     public final EnumPath<CounselingField> counselingField = createEnum("counselingField", CounselingField.class);
@@ -38,6 +40,8 @@ public class QConsultation extends EntityPathBase<Consultation> {
     public final DateTimePath<java.time.LocalDateTime> endDate = createDateTime("endDate", java.time.LocalDateTime.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
+
+    public final com.example.tnote.boundedContext.schedule.entity.QSchedule schedule;
 
     public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
 
@@ -66,6 +70,7 @@ public class QConsultation extends EntityPathBase<Consultation> {
 
     public QConsultation(Class<? extends Consultation> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.schedule = inits.isInitialized("schedule") ? new com.example.tnote.boundedContext.schedule.entity.QSchedule(forProperty("schedule"), inits.get("schedule")) : null;
         this.user = inits.isInitialized("user") ? new com.example.tnote.boundedContext.user.entity.QUser(forProperty("user")) : null;
     }
 

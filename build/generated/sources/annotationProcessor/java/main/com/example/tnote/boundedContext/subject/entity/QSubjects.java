@@ -30,8 +30,12 @@ public class QSubjects extends EntityPathBase<Subjects> {
 
     public final StringPath classTime = createString("classTime");
 
+    public final StringPath color = createString("color");
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
+
+    public final DatePath<java.time.LocalDate> date = createDate("date", java.time.LocalDate.class);
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 

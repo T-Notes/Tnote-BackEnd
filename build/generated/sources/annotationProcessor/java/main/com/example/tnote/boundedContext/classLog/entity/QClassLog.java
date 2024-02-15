@@ -26,6 +26,8 @@ public class QClassLog extends EntityPathBase<ClassLog> {
 
     public final StringPath classContents = createString("classContents");
 
+    public final ListPath<ClassLogImage, QClassLogImage> classLogImage = this.<ClassLogImage, QClassLogImage>createList("classLogImage", ClassLogImage.class, QClassLogImage.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> createdAt = _super.createdAt;
 
@@ -36,6 +38,8 @@ public class QClassLog extends EntityPathBase<ClassLog> {
     public final StringPath magnitude = createString("magnitude");
 
     public final StringPath plan = createString("plan");
+
+    public final com.example.tnote.boundedContext.schedule.entity.QSchedule schedule;
 
     public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
 
@@ -66,6 +70,7 @@ public class QClassLog extends EntityPathBase<ClassLog> {
 
     public QClassLog(Class<? extends ClassLog> type, PathMetadata metadata, PathInits inits) {
         super(type, metadata, inits);
+        this.schedule = inits.isInitialized("schedule") ? new com.example.tnote.boundedContext.schedule.entity.QSchedule(forProperty("schedule"), inits.get("schedule")) : null;
         this.user = inits.isInitialized("user") ? new com.example.tnote.boundedContext.user.entity.QUser(forProperty("user")) : null;
     }
 

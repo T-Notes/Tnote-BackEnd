@@ -47,6 +47,8 @@ public class QUser extends EntityPathBase<User> {
 
     public final StringPath subject = createString("subject");
 
+    public final ListPath<com.example.tnote.boundedContext.todo.entity.Todo, com.example.tnote.boundedContext.todo.entity.QTodo> todos = this.<com.example.tnote.boundedContext.todo.entity.Todo, com.example.tnote.boundedContext.todo.entity.QTodo>createList("todos", com.example.tnote.boundedContext.todo.entity.Todo.class, com.example.tnote.boundedContext.todo.entity.QTodo.class, PathInits.DIRECT2);
+
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;
 
