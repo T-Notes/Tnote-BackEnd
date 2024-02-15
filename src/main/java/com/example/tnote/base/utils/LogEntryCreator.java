@@ -1,7 +1,6 @@
 package com.example.tnote.base.utils;
 
-import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
-import com.example.tnote.boundedContext.home.dto.RecentLogResponseDto;
+import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.Instant;
