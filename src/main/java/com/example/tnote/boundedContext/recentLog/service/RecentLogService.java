@@ -53,6 +53,7 @@ public class RecentLogService {
                 });
                 redisTemplate.delete(key);
             }
+            log.info("recentLog save complete");
         });
     }
 
