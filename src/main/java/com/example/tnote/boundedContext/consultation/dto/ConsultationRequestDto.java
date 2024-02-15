@@ -6,6 +6,7 @@ import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -48,7 +49,7 @@ public class ConsultationRequestDto {
         }
     }
 
-    public Consultation toEntity(User user) {
+    public Consultation toEntity(User user, Schedule schedule) {
         return Consultation.builder()
                 .user(user)
                 .studentName(this.studentName)
@@ -58,6 +59,7 @@ public class ConsultationRequestDto {
                 .counselingType(this.counselingType)
                 .consultationContents(this.consultationContents)
                 .consultationResult(this.consultationResult)
+                .schedule(schedule)
                 .build();
     }
 

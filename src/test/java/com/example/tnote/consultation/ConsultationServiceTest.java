@@ -25,6 +25,8 @@ import com.example.tnote.boundedContext.consultation.entity.CounselingType;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationImageRepository;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
 import com.example.tnote.boundedContext.consultation.service.ConsultationService;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDateTime;
@@ -49,7 +51,8 @@ import org.springframework.web.multipart.MultipartFile;
 public class ConsultationServiceTest {
     @Mock
     private UserRepository userRepository;
-
+    @Mock
+    private ScheduleRepository scheduleRepository;
     @Mock
     private ConsultationRepository consultationRepository;
     @Mock
@@ -62,7 +65,9 @@ public class ConsultationServiceTest {
     @Test
     void save() {
         Long userId = 1L;
+        Long scheduleId = 2L;
         User mockUser = mock(User.class);
+        Schedule mockSchedule = mock(Schedule.class);
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -78,10 +83,12 @@ public class ConsultationServiceTest {
                 .build();
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
-        Consultation consultation = requestDto.toEntity(mockUser);
+        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(mockSchedule));
+        Consultation consultation = requestDto.toEntity(mockUser, mockSchedule);
         when(consultationRepository.save(any(Consultation.class))).thenReturn(consultation);
 
-        ConsultationResponseDto result = consultationService.save(userId, requestDto, Collections.emptyList());
+        ConsultationResponseDto result = consultationService.save(userId, scheduleId, requestDto,
+                Collections.emptyList());
 
         assertThat(result).isNotNull();
         assertThat(result.getStudentName()).isEqualTo(requestDto.getStudentName());
@@ -92,7 +99,7 @@ public class ConsultationServiceTest {
     @Test
     void saveWithInvalidEnums() {
         Long userId = 1L;
-
+        Long scheduleId = 2L;
         LocalDateTime now = LocalDateTime.now();
 
         ConsultationRequestDto requestDto = ConsultationRequestDto.builder()
@@ -106,7 +113,7 @@ public class ConsultationServiceTest {
                 .isAllDay(false)
                 .build();
 
-        assertThatThrownBy(() -> consultationService.save(userId, requestDto, Collections.emptyList()))
+        assertThatThrownBy(() -> consultationService.save(userId, scheduleId, requestDto, Collections.emptyList()))
                 .isInstanceOf(ConsultationException.class);
     }
 
@@ -114,13 +121,14 @@ public class ConsultationServiceTest {
     @Test
     void noUserSave() {
         Long userId = 1L;
+        Long scheduleId = 2L;
         ConsultationRequestDto requestDto = mock(ConsultationRequestDto.class);
         List<MultipartFile> consultationImages = Collections.emptyList();
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         assertThatExceptionOfType(UserException.class)
-                .isThrownBy(() -> consultationService.save(userId, requestDto, consultationImages));
+                .isThrownBy(() -> consultationService.save(userId, scheduleId, requestDto, consultationImages));
 
         verify(userRepository).findById(userId);
         verify(consultationRepository, never()).save(any(Consultation.class));
@@ -130,6 +138,7 @@ public class ConsultationServiceTest {
     @Test
     void getConsultations() {
         Long userId = 1L;
+        Long scheduleId = 2L;
         Pageable pageable = PageRequest.of(0, 10);
 
         Consultation mockConsultation1 = mock(Consultation.class);
@@ -138,14 +147,14 @@ public class ConsultationServiceTest {
         Slice<Consultation> mockConsultations = new PageImpl<>(mockConsultationList, pageable,
                 mockConsultationList.size());
 
-        when(consultationRepository.findAllBy(pageable)).thenReturn(mockConsultations);
-        ConsultationSliceResponseDto result = consultationService.readAllConsultation(userId, pageable);
+        when(consultationRepository.findAllByScheduleId(scheduleId, pageable)).thenReturn(mockConsultations);
+        ConsultationSliceResponseDto result = consultationService.readAllConsultation(userId, scheduleId, pageable);
 
         assertThat(result.getConsultations())
                 .isNotNull()
                 .hasSize(2);
 
-        verify(consultationRepository).findAllBy(pageable);
+        verify(consultationRepository).findAllByScheduleId(scheduleId, pageable);
     }
 
     @DisplayName("상담일지 상세 조회: 상담일지 상세 정보 조회 확인")

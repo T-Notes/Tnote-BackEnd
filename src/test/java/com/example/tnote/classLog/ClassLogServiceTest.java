@@ -22,6 +22,8 @@ import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogImageRepository;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDateTime;
@@ -50,6 +52,8 @@ public class ClassLogServiceTest {
     private ClassLogRepository classLogRepository;
     @Mock
     private ClassLogImageRepository classLogImageRepository;
+    @Mock
+    ScheduleRepository scheduleRepository;
 
     @InjectMocks
     private ClassLogService classLogService;
@@ -58,7 +62,9 @@ public class ClassLogServiceTest {
     @Test
     void save() {
         Long userId = 1L;
+        Long scheduleId = 2L;
         User mockUser = mock(User.class);
+        Schedule mockSchedule = mock(Schedule.class);
 
         LocalDateTime now = LocalDateTime.now();
 
@@ -70,32 +76,33 @@ public class ClassLogServiceTest {
                 .classContents("테스트 수업 내용")
                 .submission("테스트 제출 과제")
                 .magnitude("테스트 진도")
-                .isAllDay(false)
                 .build();
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
-        ClassLog classLog = requestDto.toEntity(mockUser);
+        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(mockSchedule));
+        ClassLog classLog = requestDto.toEntity(mockUser, mockSchedule);
         when(classLogRepository.save(any(ClassLog.class))).thenReturn(classLog);
 
-        // 테스트 실행
-        ClassLogResponseDto result = classLogService.save(userId, requestDto, Collections.emptyList());
+        ClassLogResponseDto result = classLogService.save(userId, scheduleId, requestDto, Collections.emptyList());
 
         assertThat(result).isNotNull();
         assertThat(result.getTitle()).isEqualTo(requestDto.getTitle());
         verify(classLogRepository).save(any(ClassLog.class));
     }
 
+
     @DisplayName("학급일지 저장: 존재하지 않는 사용자로 인한 예외 발생 확인")
     @Test
     void noUserSave() {
         Long userId = 1L;
+        Long scheduleId = 2L; // 스케줄 ID 추가
         ClassLogRequestDto requestDto = mock(ClassLogRequestDto.class);
         List<MultipartFile> classLogImages = Collections.emptyList();
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
         assertThatExceptionOfType(UserException.class)
-                .isThrownBy(() -> classLogService.save(userId, requestDto, classLogImages));
+                .isThrownBy(() -> classLogService.save(userId, scheduleId, requestDto, classLogImages));
 
         verify(userRepository).findById(userId);
         verify(classLogRepository, never()).save(any(ClassLog.class));
@@ -105,6 +112,7 @@ public class ClassLogServiceTest {
     @Test
     void getClassLogs() {
         Long userId = 1L;
+        Long scheduleId = 2L;
         Pageable pageable = PageRequest.of(0, 10);
 
         ClassLog mockClassLog1 = mock(ClassLog.class);
@@ -112,15 +120,15 @@ public class ClassLogServiceTest {
         List<ClassLog> mockClassLogsList = Arrays.asList(mockClassLog1, mockClassLog2);
         Slice<ClassLog> mockClassLogs = new PageImpl<>(mockClassLogsList, pageable, mockClassLogsList.size());
 
-        when(classLogRepository.findAllBy(pageable)).thenReturn(mockClassLogs);
+        when(classLogRepository.findAllByScheduleId(scheduleId, pageable)).thenReturn(mockClassLogs);
 
-        ClassLogSliceResponseDto result = classLogService.readAllClassLog(userId, pageable);
+        ClassLogSliceResponseDto result = classLogService.readAllClassLog(userId, scheduleId, pageable);
 
         assertThat(result.getClassLogs())
                 .isNotNull()
                 .hasSize(2);
 
-        verify(classLogRepository).findAllBy(pageable);
+        verify(classLogRepository).findAllByScheduleId(scheduleId, pageable);
     }
 
     @DisplayName("학급일지 상세 조회: 학급일지 상세 정보 조회 확인")

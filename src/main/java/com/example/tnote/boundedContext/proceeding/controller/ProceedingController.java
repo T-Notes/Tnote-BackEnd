@@ -30,30 +30,34 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/proceeding")
+@RequestMapping("/tnote/proceeding")
 @RequiredArgsConstructor
 public class ProceedingController {
     private final ProceedingService proceedingService;
 
-    @PostMapping(value = "/proceedings", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/{scheduleId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                   @RequestPart ProceedingRequestDto requestDto,
+                                                   @PathVariable Long scheduleId,
+                                                   @RequestPart ProceedingRequestDto proceedingRequestDto,
                                                    @RequestPart(name = "proceedingImages", required = false) List<MultipartFile> proceedingImages) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
         }
-        ProceedingResponseDto proceedingResponseDto = proceedingService.save(principalDetails.getId(), requestDto,
+        ProceedingResponseDto proceedingResponseDto = proceedingService.save(principalDetails.getId(), scheduleId,
+                proceedingRequestDto,
                 proceedingImages);
         return ResponseEntity.ok(Result.of(proceedingResponseDto));
     }
 
-    @GetMapping("/proceedings")
+    @GetMapping("/{scheduleId}/proceedings")
     public ResponseEntity<Result> getAllProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                   @PathVariable Long scheduleId,
                                                    @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                    @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         ProceedingSliceResponseDto responseDto = proceedingService.readAllProceeding(principalDetails.getId(),
+                scheduleId,
                 pageRequest);
 
         return ResponseEntity.ok(Result.of(responseDto));
@@ -78,7 +82,8 @@ public class ProceedingController {
         return ResponseEntity.ok(Result.of(proceedingDetailResponseDto));
     }
 
-    @PatchMapping("/{proceedingId}")
+    @PatchMapping(value = "/{proceedingId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> updateProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                    @PathVariable Long proceedingId,
                                                    @RequestPart ProceedingUpdateRequestDto updateRequestDto,

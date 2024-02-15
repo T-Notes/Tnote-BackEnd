@@ -2,6 +2,7 @@ package com.example.tnote.boundedContext.proceeding.dto;
 
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class ProceedingRequestDto {
     private String workContents;
     private boolean isAllDay;
 
-    public Proceeding toEntity(User user) {
+    public Proceeding toEntity(User user, Schedule schedule) {
         return Proceeding.builder()
                 .user(user)
                 .title(this.title)
@@ -27,6 +28,7 @@ public class ProceedingRequestDto {
                 .location(this.location)
                 .workContents(this.workContents)
                 .proceedingImage(new ArrayList<>())
+                .schedule(schedule)
                 .build();
     }
 }

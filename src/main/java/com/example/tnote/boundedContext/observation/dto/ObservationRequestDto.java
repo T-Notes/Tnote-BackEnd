@@ -2,6 +2,7 @@ package com.example.tnote.boundedContext.observation.dto;
 
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.observation.entity.Observation;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ public class ObservationRequestDto {
     private String guidance; // 해석 및 지도 방안
     private boolean isAllDay;
 
-    public Observation toEntity(User user) {
+    public Observation toEntity(User user, Schedule schedule) {
         return Observation.builder()
                 .user(user)
                 .studentName(this.studentName)
@@ -27,6 +28,7 @@ public class ObservationRequestDto {
                 .observationContents(this.observationContents)
                 .guidance(this.guidance)
                 .observationImage(new ArrayList<>())
+                .schedule(schedule)
                 .build();
     }
 }

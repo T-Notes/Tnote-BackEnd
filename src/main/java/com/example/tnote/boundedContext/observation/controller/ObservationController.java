@@ -29,28 +29,31 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/observation")
+@RequestMapping("/tnote/observation")
 @RequiredArgsConstructor
 public class ObservationController {
     private final ObservationService observationService;
 
-    @PostMapping(value = "/observations", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/{scheduleId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                    @PathVariable Long scheduleId,
                                                     @RequestPart ObservationRequestDto observationRequestDto,
                                                     @RequestPart(name = "observationImages", required = false) List<MultipartFile> observationImages) {
-        ObservationResponseDto observationResponseDto = observationService.save(principalDetails.getId(),
+        ObservationResponseDto observationResponseDto = observationService.save(principalDetails.getId(), scheduleId,
                 observationRequestDto,
                 observationImages);
         return ResponseEntity.ok(Result.of(observationResponseDto));
     }
 
-    @GetMapping("/observations")
+    @GetMapping("/{scheduleId}/observations")
     public ResponseEntity<Result> getAllObservations(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                     @PathVariable Long scheduleId,
                                                      @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                      @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         ObservationSliceResponseDto responseDto = observationService.readAllObservation(principalDetails.getId(),
+                scheduleId,
                 pageRequest);
 
         return ResponseEntity.ok(Result.of(responseDto));
@@ -72,7 +75,8 @@ public class ObservationController {
         return ResponseEntity.ok(Result.of(responseDto));
     }
 
-    @PatchMapping("/{observationId}")
+    @PatchMapping(value = "/{observationId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
+            MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> updateObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @PathVariable Long observationId,
                                                     @RequestPart ObservationUpdateRequestDto observationUpdateRequestDto,

@@ -4,13 +4,12 @@ import com.example.tnote.base.exception.classLog.ClassLogErrorResult;
 import com.example.tnote.base.exception.classLog.ClassLogException;
 import com.example.tnote.base.exception.consultation.ConsultationErrorResult;
 import com.example.tnote.base.exception.consultation.ConsultationException;
+import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
+import com.example.tnote.base.exception.schedule.ScheduleException;
 import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
-import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
@@ -21,6 +20,9 @@ import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationImageRepository;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
+import com.example.tnote.boundedContext.home.service.RecentLogService;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.io.IOException;
@@ -43,25 +45,30 @@ public class ConsultationService {
     private final ConsultationRepository consultationRepository;
     private final ConsultationImageRepository consultationImageRepository;
     private final UserRepository userRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final RecentLogService recentLogService;
 
-    public ConsultationResponseDto save(Long userId, ConsultationRequestDto requestDto,
+    public ConsultationResponseDto save(Long userId, Long scheduleId, ConsultationRequestDto requestDto,
                                         List<MultipartFile> consultationImages) {
         requestDto.validateEnums();
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleException(
+                ScheduleErrorResult.SCHEDULE_NOT_FOUND));
 
-        Consultation consultation = requestDto.toEntity(user);
+        Consultation consultation = requestDto.toEntity(user, schedule);
         if (consultationImages != null && !consultationImages.isEmpty()) {
             List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
             consultation.getConsultationImage().addAll(uploadedImages);
         }
+        recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
         return ConsultationResponseDto.of(consultationRepository.save(consultation));
     }
 
     @Transactional(readOnly = true)
-    public ConsultationSliceResponseDto readAllConsultation(Long userId, Pageable pageable) {
-        List<Consultation> consultations = consultationRepository.findAllByUserId(userId);
-        Slice<Consultation> allConsultations = consultationRepository.findAllBy(pageable);
+    public ConsultationSliceResponseDto readAllConsultation(Long userId, Long scheduleId, Pageable pageable) {
+        List<Consultation> consultations = consultationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
+        Slice<Consultation> allConsultations = consultationRepository.findAllByScheduleId(scheduleId, pageable);
         int numberOfConsultation = consultations.size();
         List<ConsultationResponseDto> responseDtos = allConsultations.getContent().stream()
                 .map(ConsultationResponseDto::of).toList();
@@ -93,6 +100,7 @@ public class ConsultationService {
                         ConsultationErrorResult.CONSULTATION_NOT_FOUNT));
         List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultationId(
                 consultationId);
+        recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
         return new ConsultationDetailResponseDto(consultation, consultationImages);
     }
 
@@ -104,6 +112,7 @@ public class ConsultationService {
                         ConsultationErrorResult.CONSULTATION_NOT_FOUNT));
 
         updateConsultationItem(requestDto, consultation, consultationImages);
+        recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
         return ConsultationResponseDto.of(consultation);
     }
 
@@ -168,15 +177,40 @@ public class ConsultationService {
                 .build());
     }
 
-    public List<ConsultationResponseDto> readDailyConsultations(Long userId, LocalDate date) {
+    public ConsultationSliceResponseDto readConsultationsByDate(Long userId, Long scheduleId, LocalDate startDate,
+                                                                LocalDate endDate, Pageable pageable) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+
+        List<Consultation> consultations = consultationRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId,
+                scheduleId, startOfDay,
+                endOfDay);
+        Slice<Consultation> allConsultations = consultationRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
+                userId, scheduleId, startOfDay,
+                endOfDay, pageable);
+
+        int numberOfConsultation = consultations.size();
+        List<ConsultationResponseDto> responseDtos = allConsultations.getContent().stream()
+                .map(ConsultationResponseDto::of).toList();
+
+        return ConsultationSliceResponseDto.builder()
+                .consultations(responseDtos)
+                .numberOfConsultation(numberOfConsultation)
+                .page(allConsultations.getPageable().getPageNumber())
+                .isLast(allConsultations.isLast())
+                .build();
+    }
+
+    public List<ConsultationResponseDto> readDailyConsultations(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
-        List<Consultation> consultations = consultationRepository.findByUserIdAndStartDateBetween(userId, startOfDay,
+        List<Consultation> consultations = consultationRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId,
+                scheduleId, startOfDay,
                 endOfDay);
+
         return consultations.stream()
-                .map(ConsultationResponseDto::of)
-                .toList();
+                .map(ConsultationResponseDto::of).toList();
     }
 
     private List<ConsultationImage> deleteExistedImagesAndUploadNewImages(Consultation consultation,
