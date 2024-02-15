@@ -1,7 +1,5 @@
 package com.example.tnote.boundedContext.observation.service;
 
-import com.example.tnote.base.exception.consultation.ConsultationErrorResult;
-import com.example.tnote.base.exception.consultation.ConsultationException;
 import com.example.tnote.base.exception.observation.ObservationErrorResult;
 import com.example.tnote.base.exception.observation.ObservationException;
 import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
@@ -10,10 +8,7 @@ import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
-import com.example.tnote.boundedContext.consultation.entity.Consultation;
-import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
-import com.example.tnote.boundedContext.home.service.RecentLogService;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
@@ -34,7 +29,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;

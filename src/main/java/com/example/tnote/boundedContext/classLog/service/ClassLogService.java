@@ -18,7 +18,7 @@ import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogImageRepository;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
-import com.example.tnote.boundedContext.home.service.RecentLogService;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;

@@ -1,10 +1,12 @@
-package com.example.tnote.boundedContext.home.service;
+package com.example.tnote.boundedContext.recentLog.service;
 
 import static com.example.tnote.base.utils.LogEntryCreator.createLogEntry;
 
 import com.example.tnote.base.utils.LogEntryCreator;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.dto.RecentLogResponseDto;
+import com.example.tnote.boundedContext.recentLog.repository.RecentLogRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
@@ -17,9 +19,11 @@ import org.springframework.stereotype.Service;
 @Service
 @RequiredArgsConstructor
 public class RecentLogService {
-    private final RedisTemplate<String, String> redisTemplate;
     private static final String RECENT_LOGS_KEY_PREFIX = "recentLogs:";
     private static final int MAX_RECENT_LOGS = 4;
+    private final RedisTemplate<String, String> redisTemplate;
+    private final RecentLogRepository recentLogRepository;
+    private final ObjectMapper objectMapper;
 
     public void saveRecentLog(Long userId, Long logId, String logType) {
         String key = RECENT_LOGS_KEY_PREFIX + userId;
