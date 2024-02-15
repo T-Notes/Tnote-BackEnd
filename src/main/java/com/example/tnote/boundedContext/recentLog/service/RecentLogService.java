@@ -70,13 +70,20 @@ public class RecentLogService {
         }
     }
 
-    public List<RecentLogResponseDto> getRecentLogs(Long userId) {
+    public List<RecentLogResponseDto> getRecentLogsFromRedis(Long userId) {
         String key = RECENT_LOGS_KEY_PREFIX + userId;
         Set<String> logEntries = redisTemplate.opsForZSet().reverseRange(key, 0, -1);
 
         return logEntries.stream()
                 .map(LogEntryCreator::convertToDto)
                 .filter(Objects::nonNull) // 변환 실패한 항목은 제외
+                .toList();
+    }
+    public List<RecentLogResponseDto> getRecentLogsFromDatabase(Long userId) {
+        List<RecentLog> recentLogs = recentLogRepository.findTop4ByUserIdOrderByTimestampDesc(userId);
+
+        return recentLogs.stream()
+                .map(log -> new RecentLogResponseDto(log.getLogId(), log.getLogType(), log.getTimestamp()))
                 .toList();
     }
 }
