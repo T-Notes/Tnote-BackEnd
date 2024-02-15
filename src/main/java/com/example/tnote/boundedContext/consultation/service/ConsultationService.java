@@ -54,13 +54,14 @@ public class ConsultationService {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleException(
                 ScheduleErrorResult.SCHEDULE_NOT_FOUND));
 
-        Consultation consultation = requestDto.toEntity(user, schedule);
+        Consultation consultation = consultationRepository.save(requestDto.toEntity(user, schedule));
+
         if (consultationImages != null && !consultationImages.isEmpty()) {
             List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
             consultation.getConsultationImage().addAll(uploadedImages);
         }
         recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
-        return ConsultationResponseDto.of(consultationRepository.save(consultation));
+        return ConsultationResponseDto.of(consultation);
     }
 
     @Transactional(readOnly = true)

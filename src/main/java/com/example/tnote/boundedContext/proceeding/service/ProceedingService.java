@@ -53,7 +53,7 @@ public class ProceedingService {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleException(
                 ScheduleErrorResult.SCHEDULE_NOT_FOUND));
 
-        Proceeding proceeding = requestDto.toEntity(user, schedule);
+        Proceeding proceeding = proceedingRepository.save(requestDto.toEntity(user, schedule));
         if (proceedingImages != null && !proceedingImages.isEmpty()) {
             List<ProceedingImage> uploadedImages = uploadProceedingImages(proceeding, proceedingImages);
             proceeding.getProceedingImage().addAll(uploadedImages);

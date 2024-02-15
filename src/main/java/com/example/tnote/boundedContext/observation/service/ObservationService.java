@@ -53,13 +53,13 @@ public class ObservationService {
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleException(
                 ScheduleErrorResult.SCHEDULE_NOT_FOUND));
 
-        Observation observation = requestDto.toEntity(user, schedule);
+        Observation observation = observationRepository.save(requestDto.toEntity(user, schedule));
         if (observationImages != null && !observationImages.isEmpty()) {
             List<ObservationImage> uploadedImages = uploadObservationImages(observation, observationImages);
             observation.getObservationImage().addAll(uploadedImages);
         }
         recentLogService.saveRecentLog(userId, observation.getId(), "OBSERVATION");
-        return ObservationResponseDto.of(observationRepository.save(observation));
+        return ObservationResponseDto.of(observation);
     }
 
     @Transactional(readOnly = true)
