@@ -6,7 +6,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto
 import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
-import com.example.tnote.boundedContext.home.dto.RecentLogResponseDto;
+import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponseDto;
 import com.example.tnote.boundedContext.home.service.HomeService;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
@@ -100,13 +100,13 @@ public class HomeController {
     }
 
     @GetMapping("/recentLogs")
-    public ResponseEntity<?> getRecentClassLogs(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    public ResponseEntity<Result> getRecentClassLogs(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (principalDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Unauthorized");
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
         }
 
-        List<RecentLogResponseDto> recentClassLogs = recentLogService.getRecentLogs(principalDetails.getId());
+        List<RecentLogResponseDto> response = recentLogService.getRecentLogs(principalDetails.getId());
 
-        return ResponseEntity.ok(recentClassLogs);
+        return ResponseEntity.ok(Result.of(response));
     }
 }
