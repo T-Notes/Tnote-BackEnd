@@ -13,5 +13,4 @@ public class TNoteApplication {
     public static void main(String[] args) {
         SpringApplication.run(TNoteApplication.class, args);
     }
-    // test
 }
