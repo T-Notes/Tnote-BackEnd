@@ -6,8 +6,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://tnote.cnqgskwe8j3c.ap-northeast-2.rds.amazonaws.com:3306/tnote
-    username: ENC(5qO9sW0rZ4+Wqe2mJjtcRA==)
-    password: ENC(46T+VImnIksazmRTWFA2bhzpLUYE+ga5)
+    username: ENC(JzyjcuzEelC2sOIaQtTYVg==)
+    password: ENC(c9Xw639YRtZOIa/GHt6GmPVOUAt4vQ4N)
 
   security:
     oauth2:
@@ -28,4 +28,8 @@ spring:
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
+
+custom:
+  jwt:
+    secret-key: ENC(bMRicSH/i3TIp8KYjWARwpMTOh4Uu0V/M2Q0mAm0jJI39RXGlBnHPYSdQENSakWU/nJ4S0db2ROcZLJrkBxXltK0OfM8dAk2bn6JYwa5/Uk=)
 

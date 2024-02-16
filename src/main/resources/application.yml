@@ -1,0 +1,77 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  profiles:
+    active:
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tnote
+    username: ENC(zlRjsKwIKSp1ZntBP/Ed9A==)
+    password: ENC(3viRfAcA2aXU/gUMA4s/7Q==)
+
+  devtools:
+    livereload:
+      enabled: false
+    restart:
+      enabled: false
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        validator:
+          apply_to_ddl: false
+        format_sql: true
+        use_sql_comments: true
+        default_batch_fetch_size: 1000 # 배치 사이즈 조절을 통해서 N+1이 나더라도 최소화 시킨다
+    database: mysql
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ENC(pzbK9sp4LAd2GbDqgPqQknEWa0/F6qGZn0riLdvTIAXpOygXyKie1JRyHjBSFtQK)
+            redirect-uri: "http://localhost:8080/login/oauth2/code/kakao"
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, profile_image, account_email
+            client-name: Kakao
+        provider:
+          kakao:
+            authorization_uri: https://kauth.kakao.com/oauth/authorize
+            token_uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user_name_attribute: id
+
+  data:
+    redis:
+      host: localhost
+      port: 6379 # redis port
+
+custom:
+  jwt:
+    secret-key: ENC(bMRicSH/i3TIp8KYjWARwpMTOh4Uu0V/M2Q0mAm0jJI39RXGlBnHPYSdQENSakWU/nJ4S0db2ROcZLJrkBxXltK0OfM8dAk2bn6JYwa5/Uk=)
+
+api:
+  career-key: ENC(TQgS/nckM/NpG066WT9yt+tW6JgjcYS0GVKEXc8TfO1n++fTOSnBP9xBWQ782Db9)
+  call-back-url: "http://www.career.go.kr/cnet/openapi/getOpenApi?"
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+
+# hibernate logging
+logging:
+  level:
+    p6spy: info
+    org:
+      springframework:
+        security: DEBUG
