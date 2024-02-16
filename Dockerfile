@@ -2,5 +2,5 @@
 FROM openjdk:17
 ARG JAR_FILE=build/libs/app.jar
 COPY ${JAR_FILE} app.jar
-EXPOSE 1234
+EXPOSE 8080
 ENTRYPOINT ["sh", "-c", "java ${JAVA_OPTS} -Dspring.profiles.active=prod -jar /app.jar"]
