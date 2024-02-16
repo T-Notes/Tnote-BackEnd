@@ -22,7 +22,7 @@ spring:
 
   data:
     redis:
-      host: 3.37.195.242
+      host: ENC(B+y0ZPd0Vhrf3rU7J8AnIuH3kJT9gxAY)
       port: 6379
 
 jasypt:
