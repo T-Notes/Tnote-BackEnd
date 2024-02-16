@@ -6,8 +6,8 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://tnote.cnqgskwe8j3c.ap-northeast-2.rds.amazonaws.com:3306/tnote
-    username: ENC(5qO9sW0rZ4+Wqe2mJjtcRA==)
-    password: ENC(/BvQTGK6mFrUp+nwojzrYg==)
+    username: ENC(JzyjcuzEelC2sOIaQtTYVg==)
+    password: ENC(c9Xw639YRtZOIa/GHt6GmPVOUAt4vQ4N)
 
   security:
     oauth2:
