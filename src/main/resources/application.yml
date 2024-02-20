@@ -5,22 +5,14 @@ server:
     include-binding-errors: always
 
 spring:
-<<<<<<< HEAD
   profiles:
     active:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/tnote
-    username: ENC(zlRjsKwIKSp1ZntBP/Ed9A==)
-    password: ENC(3viRfAcA2aXU/gUMA4s/7Q==)
-=======
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/tnote
     username: ENC(F5+adB/0vrUkdE45AyRanQ==)
     password: ENC(J5EtuJM8shYUEbme5ZucnA==)
->>>>>>> main
 
   devtools:
     livereload:
