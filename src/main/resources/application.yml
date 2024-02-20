@@ -39,7 +39,7 @@ spring:
         registration:
           kakao:
             client-id: ENC(pzbK9sp4LAd2GbDqgPqQknEWa0/F6qGZn0riLdvTIAXpOygXyKie1JRyHjBSFtQK)
-            redirect-uri: "http://54.180.14.127/:8080/login/oauth2/code/kakao"
+            redirect-uri: "http://54.180.14.127:8080/login/oauth2/code/kakao"
             client-authentication-method: POST
             authorization-grant-type: authorization_code
             scope: profile_nickname, profile_image, account_email
