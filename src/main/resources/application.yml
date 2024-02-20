@@ -1,0 +1,77 @@
+server:
+  port: 8080
+  error:
+    include-message: always
+    include-binding-errors: always
+
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tnote
+    username: ENC(F5+adB/0vrUkdE45AyRanQ==)
+    password: ENC(J5EtuJM8shYUEbme5ZucnA==)
+
+  devtools:
+    livereload:
+      enabled: false
+    restart:
+      enabled: false
+
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        validator:
+          apply_to_ddl: false
+        format_sql: true
+        use_sql_comments: true
+        default_batch_fetch_size: 1000 # 배치 사이즈 조절을 통해서 N+1이 나더라도 최소화 시킨다
+    database: mysql
+
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ENC(1BNjtHfHF+833OzD/Bdb4cqHkLxZsBHV6oRrI2u/5+QOzaiSGRAmP8fssOk4mmLn)
+            redirect-uri: "http://54.180.14.127:8080/login/oauth2/code/kakao"
+            client-authentication-method: POST
+            authorization-grant-type: authorization_code
+            scope: profile_nickname, profile_image, account_email
+            client-name: Kakao
+        provider:
+          kakao:
+            authorization_uri: https://kauth.kakao.com/oauth/authorize
+            token_uri: https://kauth.kakao.com/oauth/token
+            user-info-uri: https://kapi.kakao.com/v2/user/me
+            user_name_attribute: id
+data:
+  redis:
+    host: localhost
+    port: 6379
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
+
+custom:
+  jwt:
+    secret-key: ENC(mPmTeeNrRUGIWZYPHgTkNDTj1kM4SfkEnivsBxKvWgKBMhXAqtHxqjkFNjcUw7W8u6gc1nQxIzYL2JvzmBQx4cceAvtYQ0LmFxjIve2nvzU=)
+
+api:
+  career-key: ENC(me8ibcck0Bw3TpcnGLcVP9AFtxf9OFvaIBqUC2aC6j9q0dhD9+Gq0jrAIF1zr/li)
+  call-back-url: "http://www.career.go.kr/cnet/openapi/getOpenApi?"
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor
+
+# hibernate logging
+logging:
+  level:
+    p6spy: info
+    org:
+      springframework:
+        security: DEBUG
