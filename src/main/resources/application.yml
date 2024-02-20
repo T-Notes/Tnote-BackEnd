@@ -5,6 +5,7 @@ server:
     include-binding-errors: always
 
 spring:
+<<<<<<< HEAD
   profiles:
     active:
 
@@ -13,6 +14,13 @@ spring:
     url: jdbc:mysql://localhost:3306/tnote
     username: ENC(zlRjsKwIKSp1ZntBP/Ed9A==)
     password: ENC(3viRfAcA2aXU/gUMA4s/7Q==)
+=======
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/tnote
+    username: ENC(F5+adB/0vrUkdE45AyRanQ==)
+    password: ENC(J5EtuJM8shYUEbme5ZucnA==)
+>>>>>>> main
 
   devtools:
     livereload:
@@ -23,7 +31,7 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         validator:
@@ -38,8 +46,8 @@ spring:
       client:
         registration:
           kakao:
-            client-id: ENC(pzbK9sp4LAd2GbDqgPqQknEWa0/F6qGZn0riLdvTIAXpOygXyKie1JRyHjBSFtQK)
-            redirect-uri: "http://localhost:8080/login/oauth2/code/kakao"
+            client-id: ENC(1BNjtHfHF+833OzD/Bdb4cqHkLxZsBHV6oRrI2u/5+QOzaiSGRAmP8fssOk4mmLn)
+            redirect-uri: "http://54.180.14.127:8080/login/oauth2/code/kakao"
             client-authentication-method: POST
             authorization-grant-type: authorization_code
             scope: profile_nickname, profile_image, account_email
@@ -51,17 +59,21 @@ spring:
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user_name_attribute: id
 
-  data:
-    redis:
-      host: localhost
-      port: 6379 # redis port
+data:
+  redis:
+    host: localhost
+    port: 6379
+
+  jackson:
+    serialization:
+      write-dates-as-timestamps: false
 
 custom:
   jwt:
-    secret-key: ENC(bMRicSH/i3TIp8KYjWARwpMTOh4Uu0V/M2Q0mAm0jJI39RXGlBnHPYSdQENSakWU/nJ4S0db2ROcZLJrkBxXltK0OfM8dAk2bn6JYwa5/Uk=)
+    secret-key: ENC(mPmTeeNrRUGIWZYPHgTkNDTj1kM4SfkEnivsBxKvWgKBMhXAqtHxqjkFNjcUw7W8u6gc1nQxIzYL2JvzmBQx4cceAvtYQ0LmFxjIve2nvzU=)
 
 api:
-  career-key: ENC(TQgS/nckM/NpG066WT9yt+tW6JgjcYS0GVKEXc8TfO1n++fTOSnBP9xBWQ782Db9)
+  career-key: ENC(me8ibcck0Bw3TpcnGLcVP9AFtxf9OFvaIBqUC2aC6j9q0dhD9+Gq0jrAIF1zr/li)
   call-back-url: "http://www.career.go.kr/cnet/openapi/getOpenApi?"
 
 jasypt:
