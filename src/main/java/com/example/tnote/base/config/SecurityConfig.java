@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -30,7 +31,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http.cors();
+        //http.cors();
 
         http
                 .csrf(
@@ -51,9 +52,9 @@ public class SecurityConfig {
                                 .requestMatchers("/**", "/classLog/**", "/user/**").permitAll()
                                 .anyRequest().authenticated()
                 )
-//                .cors(
-//                        Customizer.withDefaults()
-//                )
+                .cors(
+                        Customizer.withDefaults()
+                )
                 //세션 정책 설정
                 .sessionManagement(configurer ->
                         configurer.sessionCreationPolicy(
