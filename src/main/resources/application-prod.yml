@@ -14,7 +14,7 @@ spring:
       client:
         registration:
           kakao:
-            redirect-uri: "http://j9972.kr:8080/login/oauth2/code/kakao"
+            redirect-uri: "http://j9972.kr/login/oauth2/code/kakao"
 
   jpa:
     hibernate:
