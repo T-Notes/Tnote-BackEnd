@@ -29,6 +29,7 @@ public class AuthService {
 
     @Transactional
     public SignInResponse redirect(TokenRequest tokenRequest) {
+
         return kakaoRequestService.redirect(tokenRequest);
     }
 

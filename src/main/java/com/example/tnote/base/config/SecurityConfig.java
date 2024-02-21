@@ -9,8 +9,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
-import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -32,6 +30,8 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http.cors();
+
         http
                 .csrf(
                         AbstractHttpConfigurer::disable
@@ -48,12 +48,12 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/**","/classLog/**","/user/**").permitAll()
+                                .requestMatchers("/**", "/classLog/**", "/user/**").permitAll()
                                 .anyRequest().authenticated()
                 )
-                .cors(
-                        Customizer.withDefaults()
-                )
+//                .cors(
+//                        Customizer.withDefaults()
+//                )
                 //세션 정책 설정
                 .sessionManagement(configurer ->
                         configurer.sessionCreationPolicy(
@@ -63,7 +63,7 @@ public class SecurityConfig {
                 )
                 .addFilterBefore(
                         new JwtAuthenticationFilter(jwtTokenProvider)
-                            , UsernamePasswordAuthenticationFilter.class
+                        , UsernamePasswordAuthenticationFilter.class
                 )
                 .addFilterBefore(
                         jwtExceptionFilter, JwtAuthenticationFilter.class
@@ -72,14 +72,13 @@ public class SecurityConfig {
                         logout.logoutSuccessUrl("/")
                 )
                 .oauth2Login(oauth2 ->
-                        oauth2.redirectionEndpoint( info ->
+                        oauth2.redirectionEndpoint(info ->
                                 info.baseUri("/oauth2/code/*")
 
                         )
                 )
 
         ;
-
 
         return http.build();
     }

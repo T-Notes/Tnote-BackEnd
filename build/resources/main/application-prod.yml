@@ -25,6 +25,10 @@ spring:
       host: ENC(2iWE7eOjnkSr0xq3W5TgoPs+BoKEqcd2)
       port: 6379
 
+api:
+  career-key: ENC(me8ibcck0Bw3TpcnGLcVP9AFtxf9OFvaIBqUC2aC6j9q0dhD9+Gq0jrAIF1zr/li)
+  call-back-url: "http://www.career.go.kr/cnet/openapi/getOpenApi?"
+
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
