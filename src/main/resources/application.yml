@@ -5,6 +5,9 @@ server:
     include-binding-errors: always
 
 spring:
+  profiles:
+    active:
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/tnote
@@ -28,7 +31,6 @@ spring:
         format_sql: true
         use_sql_comments: true
         default_batch_fetch_size: 1000 # 배치 사이즈 조절을 통해서 N+1이 나더라도 최소화 시킨다
-    database: mysql
 
   security:
     oauth2:
@@ -36,7 +38,7 @@ spring:
         registration:
           kakao:
             client-id: ENC(1BNjtHfHF+833OzD/Bdb4cqHkLxZsBHV6oRrI2u/5+QOzaiSGRAmP8fssOk4mmLn)
-            redirect-uri: "http://54.180.14.127:8080/login/oauth2/code/kakao"
+            redirect-uri: "http://localhost:3000/login/oauth2/code/kakao"
             client-authentication-method: POST
             authorization-grant-type: authorization_code
             scope: profile_nickname, profile_image, account_email
@@ -47,6 +49,7 @@ spring:
             token_uri: https://kauth.kakao.com/oauth/token
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user_name_attribute: id
+
 data:
   redis:
     host: localhost

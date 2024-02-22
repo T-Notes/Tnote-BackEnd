@@ -6,15 +6,15 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://tnote.cnqgskwe8j3c.ap-northeast-2.rds.amazonaws.com:3306/tnote
-    username: ENC(5qO9sW0rZ4+Wqe2mJjtcRA==)
-    password: ENC(46T+VImnIksazmRTWFA2bhzpLUYE+ga5)
+    username: ENC(JzyjcuzEelC2sOIaQtTYVg==)
+    password: ENC(c9Xw639YRtZOIa/GHt6GmPVOUAt4vQ4N)
 
   security:
     oauth2:
       client:
         registration:
           kakao:
-            redirect-uri: "https://xn--9w3b15cw7a.xn--3e0b707e/login/oauth2/code/kakao"
+            redirect-uri: "http://j9972.kr/login/oauth2/code/kakao"
 
   jpa:
     hibernate:
@@ -22,10 +22,18 @@ spring:
 
   data:
     redis:
-      host: 3.37.195.242
+      host: ENC(2iWE7eOjnkSr0xq3W5TgoPs+BoKEqcd2)
       port: 6379
+
+api:
+  career-key: ENC(me8ibcck0Bw3TpcnGLcVP9AFtxf9OFvaIBqUC2aC6j9q0dhD9+Gq0jrAIF1zr/li)
+  call-back-url: "http://www.career.go.kr/cnet/openapi/getOpenApi?"
 
 jasypt:
   encryptor:
     bean: jasyptStringEncryptor
+
+custom:
+  jwt:
+    secret-key: ENC(bMRicSH/i3TIp8KYjWARwpMTOh4Uu0V/M2Q0mAm0jJI39RXGlBnHPYSdQENSakWU/nJ4S0db2ROcZLJrkBxXltK0OfM8dAk2bn6JYwa5/Uk=)
 

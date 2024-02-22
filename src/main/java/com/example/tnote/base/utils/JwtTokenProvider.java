@@ -31,7 +31,6 @@ public class JwtTokenProvider {
     @Value("${custom.jwt.secret-key}")
     private String SECRET_KEY;
 
-
     private final PrincipalDetailService principalDetailService;
 
     public Token createToken(String email) {
