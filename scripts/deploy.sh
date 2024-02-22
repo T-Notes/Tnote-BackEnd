@@ -27,7 +27,7 @@ docker run \
   --restart unless-stopped \
   -e JAVA_OPTS=-Djasypt.encryptor.password=$(cat "$ENCRYPTED_PASSWORD_FILE") \
   -e TZ=Asia/Seoul \
-  -p 8080:8080 \
+  -p 80:8080 \
   -d \
   --net mybridge \
   j9972/tnote
