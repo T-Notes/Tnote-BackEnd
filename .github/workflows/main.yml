@@ -66,4 +66,3 @@ jobs:
           username: ubuntu
           key: ${{ secrets.EC2_KEY }}
           port: ${{ secrets.EC2_SSH_PORT }}
-          timeout: 60s

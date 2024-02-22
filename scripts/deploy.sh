@@ -21,14 +21,13 @@ else
 fi
 
 export ENCRYPTED_PASSWORD_FILE="/home/ubuntu/cicd/jasypt.txt"
-# TODO : 위의 부분은 ec2 안에 비밀번호를 작성한 파일을 만들어야 함.
 
 docker run \
   --name=tnote_1 \
   --restart unless-stopped \
   -e JAVA_OPTS=-Djasypt.encryptor.password=$(cat "$ENCRYPTED_PASSWORD_FILE") \
   -e TZ=Asia/Seoul \
-  -p 8080:8080 \
+  -p 80:8080 \
   -d \
   --net mybridge \
   j9972/tnote

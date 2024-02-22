@@ -50,6 +50,7 @@ public class UserController {
     @Value("${api.call-back-url}")
     private String callBackUrl;
 
+    // TODO : body가 아니라 query parameter로 변경
     @GetMapping("/school")
     public ResponseEntity<Result> findSchool(@RequestBody UserRequest dto) throws IOException, ParseException {
 
