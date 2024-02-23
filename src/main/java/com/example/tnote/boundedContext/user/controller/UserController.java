@@ -61,7 +61,6 @@ public class UserController {
         InputStream stream = null;
         String result = null;
 
-        // encoding , api param에 맞게 custom
         String gubun = userService.changeGubun(schoolType);
         int encodeRegion = userService.findCityCode(region);
         String encodeSchoolName = URLEncoder.encode(schoolName, "UTF-8");
