@@ -3,7 +3,6 @@ package com.example.tnote.boundedContext.user.controller;
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
-import com.example.tnote.boundedContext.user.dto.UserRequest;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
 import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
@@ -34,6 +33,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
@@ -50,18 +50,21 @@ public class UserController {
     @Value("${api.call-back-url}")
     private String callBackUrl;
 
-    // TODO : body가 아니라 query parameter로 변경
+
     @GetMapping("/school")
-    public ResponseEntity<Result> findSchool(@RequestBody UserRequest dto) throws IOException, ParseException {
+    public ResponseEntity<Result> findSchool(@RequestParam("region") String region,
+                                             @RequestParam("schooType") String schoolType,
+                                             @RequestParam("schoolName") String schoolName)
+            throws IOException, ParseException {
 
         HttpURLConnection urlConnection = null;
         InputStream stream = null;
         String result = null;
 
         // encoding , api param에 맞게 custom
-        String gubun = userService.changeGubun(dto.getGubun());
-        int encodeRegion = userService.findCityCode(dto.getRegion());
-        String encodeSchoolName = URLEncoder.encode(dto.getSchoolName(), "UTF-8");
+        String gubun = userService.changeGubun(schoolType);
+        int encodeRegion = userService.findCityCode(region);
+        String encodeSchoolName = URLEncoder.encode(schoolName, "UTF-8");
 
         StringBuilder urlStr = new StringBuilder(
                 callBackUrl + "apiKey=" + KEY
