@@ -53,7 +53,7 @@ public class UserController {
 
     @GetMapping("/school")
     public ResponseEntity<Result> findSchool(@RequestParam("region") String region,
-                                             @RequestParam("schooType") String schoolType,
+                                             @RequestParam("schoolType") String schoolType,
                                              @RequestParam("schoolName") String schoolName)
             throws IOException, ParseException {
 
