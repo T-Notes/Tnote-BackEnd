@@ -3,7 +3,6 @@ package com.example.tnote.base.utils;
 import com.example.tnote.base.constant.Constants;
 import com.example.tnote.base.exception.jwt.JwtErrorResult;
 import com.example.tnote.base.exception.jwt.JwtException;
-import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.user.dto.Token;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.service.auth.PrincipalDetailService;
@@ -15,7 +14,13 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
+import io.jsonwebtoken.security.Keys;
+import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
+import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,20 +40,21 @@ public class JwtTokenProvider {
 
     public Token createToken(String email) {
         Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
+        SecretKey secretKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
         Date now = new Date();
 
         String accessToken = Jwts.builder()
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + Constants.ACCESS_TOKEN_EXPIRE_COUNT)) // 토큰 만료 시간
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY) // 사용할 암호화 알고리즘과 signature 에 들어갈 secret값 세팅
+                .signWith(secretKey, SignatureAlgorithm.HS256) // 사용할 암호화 알고리즘과 signature 에 들어갈 secret값 세팅
                 .compact();
 
         String refreshToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + Constants.REFRESH_TOKEN_EXPIRE_COUNT))
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
+                .signWith(secretKey, SignatureAlgorithm.HS256)
                 .compact();
 
         return Token.builder()
@@ -56,6 +62,10 @@ public class JwtTokenProvider {
                 .refreshToken(refreshToken)
                 .key(email)
                 .build();
+    }
+
+    public boolean isExpired(String token) {
+        return new Date(Long.parseLong(decodeToken(token).get("exp")) * 1000).before(new Date());
     }
 
     public Authentication getAuthentication(String token) {
@@ -86,40 +96,6 @@ public class JwtTokenProvider {
         }
     }
 
-    public boolean validateRefreshToken(RefreshToken refreshTokenObj) {
-        // refresh 객체에서 refreshToken 추출
-        String refreshToken = refreshTokenObj.getRefreshToken();
-
-        try {
-            // 검증
-            Jws<Claims> claims = Jwts.parserBuilder()
-                    .setSigningKey(SECRET_KEY)
-                    .build()
-                    .parseClaimsJws(refreshToken);
-
-            if (!claims.getBody().getExpiration().before(new Date())) {
-                return true;
-            }
-        } catch (Exception e) {
-            //refresh 토큰이 만료되었을 경우, 로그인이 필요합니다.
-            return false;
-        }
-
-        return false;
-    }
-
-    public String recreationAccessToken(String email) {
-        Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위
-        Date now = new Date();
-
-        return Jwts.builder()
-                .setClaims(claims) // 정보 저장
-                .setIssuedAt(now) // 토큰 발행 시간 정보
-                .setExpiration(new Date(now.getTime() + Constants.ACCESS_TOKEN_EXPIRE_COUNT)) // 만료 시간
-                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
-                .compact();
-    }
-
     public String getPayload(String token) {
         try {
             return Jwts.parserBuilder()
@@ -130,6 +106,25 @@ public class JwtTokenProvider {
         } catch (ExpiredJwtException e) {
             return e.getClaims().getSubject();
         }
+    }
+
+    private Map<String, String> decodeToken(String token) {
+        String[] split = token.split("\\.");
+
+        Base64.Decoder decoder = Base64.getUrlDecoder();
+
+        String payload = new String(decoder.decode(split[1]));
+        payload = payload.replaceAll("[{}\"]", "");
+
+        Map<String, String> map = new HashMap<>();
+
+        String[] contents = payload.split(",");
+        for (String content : contents) {
+            String[] c = content.split(":");
+            map.put(c[0], c[1]);
+        }
+
+        return map;
     }
 
 }
