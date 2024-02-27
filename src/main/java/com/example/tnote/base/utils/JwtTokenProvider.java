@@ -47,14 +47,16 @@ public class JwtTokenProvider {
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + Constants.ACCESS_TOKEN_EXPIRE_COUNT)) // 토큰 만료 시간
-                .signWith(secretKey, SignatureAlgorithm.HS256) // 사용할 암호화 알고리즘과 signature 에 들어갈 secret값 세팅
+                //.signWith(secretKey, SignatureAlgorithm.HS256) // 사용할 암호화 알고리즘과 signature 에 들어갈 secret값 세팅
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
 
         String refreshToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + Constants.REFRESH_TOKEN_EXPIRE_COUNT))
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                // .signWith(secretKey, SignatureAlgorithm.HS256)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
 
         return Token.builder()
