@@ -1,11 +1,13 @@
 package com.example.tnote.boundedContext.user.service;
 
-import com.example.tnote.base.exception.user.UserErrorResult;
+import static com.example.tnote.base.exception.user.UserErrorResult.USER_NOT_FOUND;
+
+import com.example.tnote.base.exception.jwt.JwtErrorResult;
+import com.example.tnote.base.exception.jwt.JwtException;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.JwtTokenProvider;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.RefreshToken.service.RefreshTokenService;
-import com.example.tnote.boundedContext.user.dto.RefreshTokenDto;
 import com.example.tnote.boundedContext.user.dto.SignInResponse;
 import com.example.tnote.boundedContext.user.dto.Token;
 import com.example.tnote.boundedContext.user.dto.TokenRequest;
@@ -34,35 +36,38 @@ public class AuthService {
     }
 
     @Transactional
-    public SignInResponse refreshToken(RefreshTokenDto dto) {
-        String refreshToken = dto.getRefreshToken();
+    public SignInResponse refreshToken(String accessToken, String refreshToken) {
+        if (!jwtTokenProvider.isExpired(accessToken)) {
+            throw new JwtException(JwtErrorResult.NOT_EXPIRED_TOKEN);
+        }
 
         RefreshToken refreshTokenObj = refreshTokenService.findByRefreshToken(refreshToken);
 
-        User user = userRepository.findByEmail(refreshTokenObj.getKeyEmail())
-                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+        User user = getUserFromRefreshToken(refreshTokenObj);
 
-        // 유효한 리프레시 토큰이면, 새로운 액세스 토큰 생성 및 반환
-        if (jwtTokenProvider.validateRefreshToken(refreshTokenObj)) {
-            log.info("유효한 Refresh Token 입니다.");
-            return SignInResponse.builder()
-                    .accessToken(jwtTokenProvider.recreationAccessToken(user.getEmail()))
-                    .refreshToken(refreshTokenObj.getRefreshToken())
-                    .userId(user.getId())
-                    .build();
-        }
-        // 유효하지 않은 리프레시 토큰이면, 새로운 토큰 생성 및 반환
-        else {
-            log.info("유효하지 않은 Refresh Token 입니다.");
-            Token newToken = jwtTokenProvider.createToken(user.getEmail());
+        Token newToken = jwtTokenProvider.createToken(user.getEmail());
 
+        // 24 * 60 * 60 * 1000L
+        if (!jwtTokenProvider.isExpired(refreshToken)) {
+            return buildSignInResponse(newToken.getAccessToken(), refreshToken, user.getId());
+
+        } else {
             refreshTokenService.save(newToken.getRefreshToken(), user.getEmail());
 
-            return SignInResponse.builder()
-                    .accessToken(newToken.getAccessToken())
-                    .refreshToken(newToken.getRefreshToken())
-                    .userId(user.getId())
-                    .build();
+            return buildSignInResponse(newToken.getAccessToken(), newToken.getRefreshToken(), user.getId());
         }
+    }
+
+    private User getUserFromRefreshToken(RefreshToken refreshToken) {
+        return userRepository.findByEmail(refreshToken.getKeyEmail())
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+    }
+
+    private SignInResponse buildSignInResponse(String accessToken, String refreshToken, Long userId) {
+        return SignInResponse.builder()
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
+                .userId(userId)
+                .build();
     }
 }
