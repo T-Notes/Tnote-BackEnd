@@ -47,7 +47,6 @@ public class AuthService {
 
         Token newToken = jwtTokenProvider.createToken(user.getEmail());
 
-        // 24 * 60 * 60 * 1000L
         if (!jwtTokenProvider.isExpired(refreshToken)) {
             return buildSignInResponse(newToken.getAccessToken(), refreshToken, user.getId());
 
