@@ -59,7 +59,6 @@ public class SubjectService {
         return SubjectResponseDto.of(subjects);
     }
 
-    @Transactional
     private void updateEachSubjectsItem(SubjectsUpdateRequestDto dto, Subjects subjects) {
         if (dto.hasMemo()) {
             subjects.updateMemo(dto.getMemo());

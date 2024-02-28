@@ -78,7 +78,6 @@ public class TodoService {
         return TodoResponseDto.of(todos);
     }
 
-    @Transactional
     private void updateEachTodosItem(TodoUpdateRequestDto dto, Todo todos) {
         if (dto.hasDate()) {
             todos.updateDate(dto.getDate());
