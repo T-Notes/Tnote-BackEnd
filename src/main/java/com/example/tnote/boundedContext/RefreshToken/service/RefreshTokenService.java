@@ -37,6 +37,7 @@ public class RefreshTokenService {
         return refreshTokenRepository.save(rt);
     }
 
+    @Transactional(readOnly = true)
     public RefreshToken findByRefreshToken(String refreshToken) {
         return refreshTokenRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new JwtException(JwtErrorResult.NOT_FOUND_TOKEN));
