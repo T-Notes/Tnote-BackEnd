@@ -132,6 +132,7 @@ public class TodoService {
 
     }
 
+    @Transactional
     public TodoSliceResponseDto readTodosByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                 LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
@@ -153,6 +154,7 @@ public class TodoService {
 
     }
 
+    @Transactional(readOnly = true)
     public List<TodoResponseDto> readDailyTodos(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);

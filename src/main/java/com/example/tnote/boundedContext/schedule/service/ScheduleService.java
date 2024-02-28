@@ -44,6 +44,7 @@ public class ScheduleService {
         return ScheduleResponseDto.of(scheduleRepository.save(schedule));
     }
 
+    @Transactional
     public ScheduleResponseDto updateSchedule(ScheduleUpdateRequestDto dto, Long scheduleId, Long userId) {
 
         User currentUser = checkCurrentUser(userId);
@@ -69,6 +70,7 @@ public class ScheduleService {
         }
     }
 
+    @Transactional
     public ScheduleDeleteResponseDto deleteSchedule(Long scheduleId, Long userId) {
 
         User currentUser = checkCurrentUser(userId);
