@@ -51,9 +51,8 @@ public class AuthService {
             return buildSignInResponse(newToken.getAccessToken(), refreshToken, user.getId());
 
         } else {
-            refreshTokenService.save(newToken.getRefreshToken(), user.getEmail());
-
-            return buildSignInResponse(newToken.getAccessToken(), newToken.getRefreshToken(), user.getId());
+            // refresh token 만료시 재로그인 필요
+            throw new JwtException(JwtErrorResult.EXPIRED_REFRESH_TOKEN);
         }
     }
 
