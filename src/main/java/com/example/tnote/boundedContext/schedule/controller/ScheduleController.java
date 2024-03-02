@@ -39,7 +39,7 @@ public class ScheduleController {
     @PostMapping
     public ResponseEntity<Result> saveSchedule(@RequestBody ScheduleRequestDto dto,
                                                @AuthenticationPrincipal PrincipalDetails user) {
-
+        // token 처리
         if (user == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of(UNAUTHORIZED.getMessage()));
         }
