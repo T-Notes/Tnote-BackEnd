@@ -1,5 +1,7 @@
 package com.example.tnote.boundedContext.subject.controller;
 
+import static com.example.tnote.base.exception.common.CommonErrorResult.UNAUTHORIZED;
+
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.subject.dto.SubjectDetailResponseDto;
@@ -13,6 +15,7 @@ import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,6 +38,10 @@ public class SubjectController {
     @PostMapping
     public ResponseEntity<Result> saveSubjects(@RequestBody SubjectRequestDto dto,
                                                @AuthenticationPrincipal PrincipalDetails user) {
+
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of(UNAUTHORIZED.getMessage()));
+        }
 
         SubjectResponseDto response = subjectService.addSubjects(dto, user.getId());
 
