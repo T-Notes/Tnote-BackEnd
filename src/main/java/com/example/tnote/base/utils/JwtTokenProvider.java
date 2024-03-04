@@ -14,13 +14,10 @@ import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
 import io.jsonwebtoken.UnsupportedJwtException;
-import io.jsonwebtoken.security.Keys;
-import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import javax.crypto.SecretKey;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -38,27 +35,36 @@ public class JwtTokenProvider {
 
     private final PrincipalDetailService principalDetailService;
 
-    public Token createToken(String email) {
+    public Token createAccessToken(String email) {
         Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
-        SecretKey secretKey = Keys.hmacShaKeyFor(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
         Date now = new Date();
 
         String accessToken = Jwts.builder()
                 .setClaims(claims) // 정보 저장
                 .setIssuedAt(now) // 토큰 발행 시간 정보
                 .setExpiration(new Date(now.getTime() + Constants.ACCESS_TOKEN_EXPIRE_COUNT)) // 토큰 만료 시간
-                .signWith(secretKey, SignatureAlgorithm.HS256) // 사용할 암호화 알고리즘과 signature 에 들어갈 secret값 세팅
+                // 사용할 암호화 알고리즘과 signature 에 들어갈 secret값 세팅
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
+
+        return Token.builder()
+                .accessToken(accessToken)
+                .key(email)
+                .build();
+    }
+
+    public Token createRefreshToken(String email) {
+        Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
+        Date now = new Date();
 
         String refreshToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
                 .setExpiration(new Date(now.getTime() + Constants.REFRESH_TOKEN_EXPIRE_COUNT))
-                .signWith(secretKey, SignatureAlgorithm.HS256)
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
 
         return Token.builder()
-                .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .key(email)
                 .build();
@@ -86,7 +92,7 @@ public class JwtTokenProvider {
             log.info("expired?={}", claimsJws.getBody().getExpiration().before(new Date()));
             return !claimsJws.getBody().getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
-            return false;
+            throw new JwtException(JwtErrorResult.EXPIRED_TOKEN);
         } catch (UnsupportedJwtException e) {
             throw new JwtException(JwtErrorResult.UNSUPPORTED);
         } catch (MalformedJwtException | IllegalArgumentException e) {

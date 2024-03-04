@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.user.controller;
 
 import com.example.tnote.base.response.Result;
+import com.example.tnote.base.utils.TokenUtils;
 import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
@@ -23,7 +24,6 @@ import net.minidev.json.JSONObject;
 import net.minidev.json.parser.JSONParser;
 import net.minidev.json.parser.ParseException;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -132,12 +132,9 @@ public class UserController {
                                          HttpServletResponse response,
                                          @AuthenticationPrincipal PrincipalDetails user) {
 
-        if (user == null) {
-            log.warn("PrincipalDetails is null");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
-        }
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        userService.logout(request, response, user.getId());
+        userService.logout(request, response, currentUser.getId());
 
         return ResponseEntity.ok(Result.of("로그아웃 되었습니다."));
     }
@@ -146,12 +143,9 @@ public class UserController {
     public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal PrincipalDetails user,
                                              @RequestBody String email) {
 
-        if (user == null) {
-            log.warn("PrincipalDetails is null");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
-        }
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        UserDeleteResponseDto response = userService.deleteUser(user.getId(), email);
+        UserDeleteResponseDto response = userService.deleteUser(currentUser.getId(), email);
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -160,12 +154,9 @@ public class UserController {
     @GetMapping("/mail")
     public ResponseEntity<Result> getMail(@AuthenticationPrincipal PrincipalDetails user) {
 
-        if (user == null) {
-            log.warn("PrincipalDetails is null");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
-        }
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        UserMailResponse response = userService.getMail(user.getId());
+        UserMailResponse response = userService.getMail(currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }

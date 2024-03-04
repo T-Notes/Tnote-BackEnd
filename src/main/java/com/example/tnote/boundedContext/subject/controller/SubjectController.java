@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.subject.controller;
 
 import com.example.tnote.base.response.Result;
+import com.example.tnote.base.utils.TokenUtils;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.subject.dto.SubjectDetailResponseDto;
 import com.example.tnote.boundedContext.subject.dto.SubjectRequestDto;
@@ -36,7 +37,9 @@ public class SubjectController {
     public ResponseEntity<Result> saveSubjects(@RequestBody SubjectRequestDto dto,
                                                @AuthenticationPrincipal PrincipalDetails user) {
 
-        SubjectResponseDto response = subjectService.addSubjects(dto, user.getId());
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+
+        SubjectResponseDto response = subjectService.addSubjects(dto, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -46,7 +49,9 @@ public class SubjectController {
                                                  @PathVariable("subjectsId") Long subjectsId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        SubjectResponseDto response = subjectService.updateSubjects(dto, subjectsId, user.getId());
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+
+        SubjectResponseDto response = subjectService.updateSubjects(dto, subjectsId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -56,7 +61,9 @@ public class SubjectController {
                                                  @PathVariable Long subjectsId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        SubjectsDeleteResponseDto response = subjectService.deleteSubjects(scheduleId, subjectsId, user.getId());
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+
+        SubjectsDeleteResponseDto response = subjectService.deleteSubjects(scheduleId, subjectsId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -67,7 +74,9 @@ public class SubjectController {
                                           @PathVariable ClassDay day,
                                           @AuthenticationPrincipal PrincipalDetails user) {
 
-        List<SubjectResponseDto> response = subjectService.getMyClass(scheduleId, day, user.getId());
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+
+        List<SubjectResponseDto> response = subjectService.getMyClass(scheduleId, day, currentUser.getId());
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -76,7 +85,10 @@ public class SubjectController {
     public ResponseEntity<Result> findToday(@PathVariable Long scheduleId,
                                             @AuthenticationPrincipal PrincipalDetails user) {
 
-        List<SubjectResponseDto> response = subjectService.getTodayClass(scheduleId, user.getId(), LocalDate.now());
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+
+        List<SubjectResponseDto> response = subjectService.getTodayClass(scheduleId, currentUser.getId(),
+                LocalDate.now());
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -84,7 +96,9 @@ public class SubjectController {
     @GetMapping("/details/{scheduleId}/{subjectId}")
     public ResponseEntity<Result> findSubject(@PathVariable Long scheduleId, @PathVariable Long subjectId,
                                               @AuthenticationPrincipal PrincipalDetails user) {
-        SubjectDetailResponseDto response = subjectService.getSubject(scheduleId, subjectId, user.getId());
+
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+        SubjectDetailResponseDto response = subjectService.getSubject(scheduleId, subjectId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
