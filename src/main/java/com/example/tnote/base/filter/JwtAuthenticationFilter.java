@@ -1,5 +1,6 @@
 package com.example.tnote.base.filter;
 
+import com.example.tnote.base.exception.jwt.JwtErrorResult;
 import com.example.tnote.base.exception.jwt.JwtException;
 import com.example.tnote.base.utils.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
@@ -29,7 +30,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         String token = resolveToken(request);
         try {
-            if (token != null && jwtTokenProvider.isValidToken(token)) {
+            if (token != null) {
+                if(!jwtTokenProvider.isValidToken(token)) {
+                    throw new JwtException(JwtErrorResult.NOT_FOUND_TOKEN);
+                }
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
 

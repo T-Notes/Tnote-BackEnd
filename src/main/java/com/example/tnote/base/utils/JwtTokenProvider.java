@@ -92,7 +92,7 @@ public class JwtTokenProvider {
             log.info("expired?={}", claimsJws.getBody().getExpiration().before(new Date()));
             return !claimsJws.getBody().getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
-            throw new JwtException(JwtErrorResult.EXPIRED_TOKEN);
+            throw new JwtException(JwtErrorResult.NOT_FOUND_TOKEN);
         } catch (UnsupportedJwtException e) {
             throw new JwtException(JwtErrorResult.UNSUPPORTED);
         } catch (MalformedJwtException | IllegalArgumentException e) {
