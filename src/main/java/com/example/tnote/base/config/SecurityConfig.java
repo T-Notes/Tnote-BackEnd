@@ -61,11 +61,12 @@ public class SecurityConfig {
 
                 )
                 .addFilterBefore(
-                        new JwtAuthenticationFilter(jwtTokenProvider)
-                        , UsernamePasswordAuthenticationFilter.class
+                        new JwtAuthenticationFilter(jwtTokenProvider),
+                        UsernamePasswordAuthenticationFilter.class
                 )
-                .addFilterBefore(
-                        jwtExceptionFilter, JwtAuthenticationFilter.class
+                .addFilterAfter(
+                        jwtExceptionFilter,
+                        JwtAuthenticationFilter.class
                 )
                 .logout(logout ->
                         logout.logoutSuccessUrl("/")
