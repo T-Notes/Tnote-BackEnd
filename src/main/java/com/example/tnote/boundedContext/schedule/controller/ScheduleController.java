@@ -1,8 +1,7 @@
 package com.example.tnote.boundedContext.schedule.controller;
 
-import static com.example.tnote.base.exception.common.CommonErrorResult.UNAUTHORIZED;
-
 import com.example.tnote.base.response.Result;
+import com.example.tnote.base.utils.TokenUtils;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleDeleteResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
@@ -15,7 +14,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -39,11 +37,9 @@ public class ScheduleController {
     @PostMapping
     public ResponseEntity<Result> saveSchedule(@RequestBody ScheduleRequestDto dto,
                                                @AuthenticationPrincipal PrincipalDetails user) {
-        // token 처리
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of(UNAUTHORIZED.getMessage()));
-        }
-        ScheduleResponseDto response = scheduleService.addSchedule(dto, user.getId());
+
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+        ScheduleResponseDto response = scheduleService.addSchedule(dto, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -53,7 +49,8 @@ public class ScheduleController {
     public ResponseEntity<Result> findSchedule(@PathVariable Long scheduleId,
                                                @AuthenticationPrincipal PrincipalDetails user) {
 
-        List<ScheduleResponseDto> response = scheduleService.findSchedule(scheduleId, user.getId());
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+        List<ScheduleResponseDto> response = scheduleService.findSchedule(scheduleId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -62,7 +59,8 @@ public class ScheduleController {
     @GetMapping("/list")
     public ResponseEntity<Result> findScheduleList(@AuthenticationPrincipal PrincipalDetails user) {
 
-        List<SemesterNameResponseDto> response = scheduleService.findScheduleList(user.getId());
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+        List<SemesterNameResponseDto> response = scheduleService.findScheduleList(currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -72,7 +70,8 @@ public class ScheduleController {
                                                  @PathVariable("scheduleId") Long scheduleId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        ScheduleResponseDto response = scheduleService.updateSchedule(dto, scheduleId, user.getId());
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+        ScheduleResponseDto response = scheduleService.updateSchedule(dto, scheduleId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -81,7 +80,8 @@ public class ScheduleController {
     public ResponseEntity<Result> deleteSchedule(@PathVariable("scheduleId") Long scheduleId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        ScheduleDeleteResponseDto response = scheduleService.deleteSchedule(scheduleId, user.getId());
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+        ScheduleDeleteResponseDto response = scheduleService.deleteSchedule(scheduleId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -124,7 +124,9 @@ public class ScheduleController {
     public ResponseEntity<Result> findWeek(@PathVariable("scheduleId") Long scheduleId,
                                            @AuthenticationPrincipal PrincipalDetails user) {
 
-        List<ScheduleResponseDto> response = scheduleService.getAllSubjectsInfoBySchedule(scheduleId, user.getId());
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+        List<ScheduleResponseDto> response = scheduleService.getAllSubjectsInfoBySchedule(scheduleId,
+                currentUser.getId());
         return ResponseEntity.ok(Result.of(response));
     }
 

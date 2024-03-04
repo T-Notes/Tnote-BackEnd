@@ -1,8 +1,7 @@
 package com.example.tnote.boundedContext.todo.controller;
 
-import static com.example.tnote.base.exception.common.CommonErrorResult.UNAUTHORIZED;
-
 import com.example.tnote.base.response.Result;
+import com.example.tnote.base.utils.TokenUtils;
 import com.example.tnote.boundedContext.todo.dto.TodoDeleteResponseDto;
 import com.example.tnote.boundedContext.todo.dto.TodoRequestDto;
 import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
@@ -14,7 +13,6 @@ import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -40,11 +38,9 @@ public class TodoController {
                                            @PathVariable Long scheduleId,
                                            @AuthenticationPrincipal PrincipalDetails user) {
 
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of(UNAUTHORIZED.getMessage()));
-        }
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        TodoResponseDto response = todoService.saveTodo(dto, scheduleId, user.getId());
+        TodoResponseDto response = todoService.saveTodo(dto, scheduleId, currentUser.getId());
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -54,7 +50,9 @@ public class TodoController {
                                                  @PathVariable("todoId") Long todoId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
-        TodoResponseDto response = todoService.updateTodos(dto, scheduleId, todoId, user.getId());
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+
+        TodoResponseDto response = todoService.updateTodos(dto, scheduleId, todoId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -64,7 +62,9 @@ public class TodoController {
                                              @PathVariable Long scheduleId,
                                              @AuthenticationPrincipal PrincipalDetails user) {
 
-        TodoDeleteResponseDto response = todoService.deleteTodo(todoId, scheduleId, user.getId());
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+
+        TodoDeleteResponseDto response = todoService.deleteTodo(todoId, scheduleId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -76,11 +76,13 @@ public class TodoController {
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @AuthenticationPrincipal PrincipalDetails user) {
 
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+
         if (date == null) {
             date = LocalDate.now();
         }
 
-        List<TodoResponseDto> response = todoService.findAllTodos(date, scheduleId, user.getId());
+        List<TodoResponseDto> response = todoService.findAllTodos(date, scheduleId, currentUser.getId());
         return ResponseEntity.ok(Result.of(response));
     }
 }

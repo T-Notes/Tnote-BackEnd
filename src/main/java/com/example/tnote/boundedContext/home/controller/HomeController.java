@@ -1,16 +1,17 @@
 package com.example.tnote.boundedContext.home.controller;
 
 import com.example.tnote.base.response.Result;
+import com.example.tnote.base.utils.TokenUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
-import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponseDto;
 import com.example.tnote.boundedContext.home.service.HomeService;
-import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
+import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponseDto;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
 import com.example.tnote.boundedContext.schedule.service.ScheduleService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
@@ -47,10 +48,13 @@ public class HomeController {
             @RequestParam(name = "title", required = false, defaultValue = "") String title,
             @AuthenticationPrincipal PrincipalDetails user) {
 
-        List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(studentName, user.getId());
-        List<ObservationResponseDto> observation = homeService.findAllOfObservation(studentName, user.getId());
-        List<ClassLogResponseDto> classLog = homeService.findAllOfClassLog(title, user.getId());
-        List<ProceedingResponseDto> proceeding = homeService.findAllOfProceeding(title, user.getId());
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+
+        List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(studentName,
+                currentUser.getId());
+        List<ObservationResponseDto> observation = homeService.findAllOfObservation(studentName, currentUser.getId());
+        List<ClassLogResponseDto> classLog = homeService.findAllOfClassLog(title, currentUser.getId());
+        List<ProceedingResponseDto> proceeding = homeService.findAllOfProceeding(title, currentUser.getId());
 
         List<Object> response = new ArrayList<>();
         response.addAll(consultation);
@@ -68,7 +72,8 @@ public class HomeController {
             @RequestParam(name = "semesterName", required = false, defaultValue = "") String semesterName,
             @AuthenticationPrincipal PrincipalDetails user) {
 
-        List<SemesterNameResponseDto> response = scheduleService.searchSemester(semesterName, user.getId());
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+        List<SemesterNameResponseDto> response = scheduleService.searchSemester(semesterName, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
