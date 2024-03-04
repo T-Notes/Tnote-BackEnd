@@ -35,7 +35,7 @@ public class JwtTokenProvider {
 
     private final PrincipalDetailService principalDetailService;
 
-    public Token createToken(String email) {
+    public Token createAccessToken(String email) {
         Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
         Date now = new Date();
 
@@ -47,6 +47,16 @@ public class JwtTokenProvider {
                 .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
 
+        return Token.builder()
+                .accessToken(accessToken)
+                .key(email)
+                .build();
+    }
+
+    public Token createRefreshToken(String email) {
+        Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
+        Date now = new Date();
+
         String refreshToken = Jwts.builder()
                 .setClaims(claims)
                 .setIssuedAt(now)
@@ -55,7 +65,6 @@ public class JwtTokenProvider {
                 .compact();
 
         return Token.builder()
-                .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .key(email)
                 .build();

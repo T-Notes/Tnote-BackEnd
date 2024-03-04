@@ -38,8 +38,8 @@ spring:
         registration:
           kakao:
             client-id: ENC(1BNjtHfHF+833OzD/Bdb4cqHkLxZsBHV6oRrI2u/5+QOzaiSGRAmP8fssOk4mmLn)
-            redirect-uri: "http://localhost:3000/login/oauth2/code/kakao"
-            #            redirect-uri: "http://localhost:8080/login/oauth2/code/kakao"
+            #redirect-uri: "http://localhost:3000/login/oauth2/code/kakao"
+            redirect-uri: "http://localhost:8080/login/oauth2/code/kakao"
             client-authentication-method: POST
             authorization-grant-type: authorization_code
             scope: profile_nickname, profile_image, account_email
