@@ -60,15 +60,15 @@ class ScheduleServiceTest {
         // 스케쥴 내에서 과목 조회를 위한 더미 데이터 추가
         List<Subjects> subjectsList = new ArrayList<>();
         subjects1 = testSyUtils.createSubjects("물리", "1교시", ClassDay.MONDAY, "3반교실", "memo", "green",
-                LocalDate.parse("2024-03-01"), schedule1);
+                schedule1);
         subjects2 = testSyUtils.createSubjects("물리", "1교시", ClassDay.TUESDAY, "3반교실", "memo", "green",
-                LocalDate.parse("2024-03-01"), schedule1);
+                schedule1);
         subjects3 = testSyUtils.createSubjects("물리", "1교시", ClassDay.WEDNESDAY, "3반교실", "memo", "green",
-                LocalDate.parse("2024-03-01"), schedule1);
+                schedule1);
         subjects4 = testSyUtils.createSubjects("물리", "1교시", ClassDay.THURSDAY, "3반교실", "memo", "green",
-                LocalDate.parse("2024-03-01"), schedule1);
+                schedule1);
         subjects5 = testSyUtils.createSubjects("물리", "1교시", ClassDay.FRIDAY, "3반교실", "memo", "green",
-                LocalDate.parse("2024-03-01"), schedule1);
+                schedule1);
 
         subjectsList.add(subjects1);
         subjectsList.add(subjects2);
@@ -282,7 +282,7 @@ class ScheduleServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        long diffDays = scheduleService.countLeftDays(schedule1.getStartDate(), schedule1.getId());
+        long diffDays = scheduleService.countLeftDays(schedule1.getStartDate(), user1.getId(), schedule1.getId());
 
         // then
         assertThat(diffDays).isEqualTo(92);
@@ -444,7 +444,7 @@ class ScheduleServiceTest {
         LocalDate endDate = LocalDate.parse("2024-06-01");
 
         // when
-        long countClasses = scheduleService.countLeftClasses(startDate, endDate, schedule2.getId());
+        long countClasses = scheduleService.countLeftClasses(startDate, endDate, user1.getId(), schedule2.getId());
 
         // then
         assertThat(countClasses).isEqualTo(14);

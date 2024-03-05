@@ -90,13 +90,16 @@ public class ScheduleController {
     @GetMapping("/leftClassDays/{scheduleId}")
     public ResponseEntity<Result> countLeftDays(
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
+            @AuthenticationPrincipal PrincipalDetails user,
             @PathVariable Long scheduleId) {
+
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
         if (date == null) {
             date = LocalDate.now();
         }
 
-        long response = scheduleService.countLeftDays(date, scheduleId);
+        long response = scheduleService.countLeftDays(date, scheduleId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -106,15 +109,17 @@ public class ScheduleController {
     public ResponseEntity<Result> countLeftClasses(
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
+            @AuthenticationPrincipal PrincipalDetails user,
             @PathVariable("scheduleId") Long scheduleId) {
 
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
         if (startDate == null) {
             startDate = LocalDate.now();
         } else if (endDate == null) {
             endDate = LocalDate.now();
         }
 
-        long response = scheduleService.countLeftClasses(startDate, endDate, scheduleId);
+        long response = scheduleService.countLeftClasses(startDate, endDate, currentUser.getId(), scheduleId);
 
         return ResponseEntity.ok(Result.of(response));
     }

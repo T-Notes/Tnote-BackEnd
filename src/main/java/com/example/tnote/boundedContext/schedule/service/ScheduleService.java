@@ -95,9 +95,11 @@ public class ScheduleService {
 
     // 학기당 남은 일수
     @Transactional(readOnly = true)
-    public long countLeftDays(LocalDate date, Long scheduleId) {
+    public long countLeftDays(LocalDate date, Long scheduleId, Long userId) {
 
         Schedule schedule = getSchedule(scheduleId);
+
+        compareScheduleWithUser(userId, schedule);
 
         log.info(" 날짜 차이 : {} 일", date.until(schedule.getEndDate(), ChronoUnit.DAYS));
 
@@ -139,7 +141,7 @@ public class ScheduleService {
     }
 
     @Transactional
-    public long countLeftClasses(LocalDate startDate, LocalDate endDate, Long scheduleId) {
+    public long countLeftClasses(LocalDate startDate, LocalDate endDate, Long userId, Long scheduleId) {
 
         int totalCnt = 0;
         HashMap<String, Integer> map = new HashMap<>();
@@ -158,6 +160,8 @@ public class ScheduleService {
         }
 
         Schedule schedule = getSchedule(scheduleId);
+
+        compareScheduleWithUser(userId, schedule);
 
         for (Subjects s : schedule.getSubjectsList()) {
 
@@ -196,5 +200,10 @@ public class ScheduleService {
         }
     }
 
+    private void compareScheduleWithUser(Long userId, Schedule schedule) {
+        if (!schedule.getUser().getId().equals(userId)) {
+            throw new UserException(UserErrorResult.WRONG_USRE);
+        }
+    }
 
 }

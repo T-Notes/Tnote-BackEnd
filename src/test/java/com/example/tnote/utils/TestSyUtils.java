@@ -102,7 +102,7 @@ public class TestSyUtils {
         for (Subjects data : subjects) {
 
             Subjects subjectsList = createSubjects(data.getSubjectName(), data.getClassTime(), data.getClassDay()
-                    , data.getClassLocation(), data.getMemo(), data.getColor(), data.getDate(), data.getSchedule());
+                    , data.getClassLocation(), data.getMemo(), data.getColor(), data.getSchedule());
 
             Schedule schedule = Schedule.builder()
                     .subjectsList(Collections.singletonList(subjectsList))
@@ -120,8 +120,7 @@ public class TestSyUtils {
     }
 
     public Subjects createSubjects(String subjectName, String classTime, ClassDay classDay,
-                                   String classLocation, String memo, String color, LocalDate date,
-                                   Schedule schedule) {
+                                   String classLocation, String memo, String color, Schedule schedule) {
         Subjects subjects = Subjects.builder()
                 .subjectName(subjectName)
                 .classTime(classTime)
@@ -129,7 +128,6 @@ public class TestSyUtils {
                 .classLocation(classLocation)
                 .memo(memo)
                 .color(color)
-                .date(date)
                 .schedule(schedule)
                 .build();
 

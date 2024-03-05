@@ -46,6 +46,7 @@ public class AuthController {
                 .refreshToken(result.getRefreshToken())
                 .build();
 
+        log.info("------------------accessToken : {}", result.getAccessToken());
         return ResponseEntity.ok(Result.of(jwt));
     }
 
