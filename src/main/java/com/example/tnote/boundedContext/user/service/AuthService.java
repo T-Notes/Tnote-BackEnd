@@ -36,9 +36,11 @@ public class AuthService {
     }
 
     @Transactional
-    public SignInResponse refreshToken(String accessToken, String refreshToken) {
-        if (!jwtTokenProvider.isExpired(accessToken)) {
-            throw new JwtException(JwtErrorResult.NOT_EXPIRED_TOKEN);
+    public SignInResponse refreshToken(String refreshToken) {
+
+        if (jwtTokenProvider.isExpired(refreshToken)) {
+            // refresh token 만료시 재로그인 필요
+            throw new JwtException(JwtErrorResult.EXPIRED_REFRESH_TOKEN);
         }
 
         RefreshToken refreshTokenObj = refreshTokenService.findByRefreshToken(refreshToken);
@@ -47,13 +49,7 @@ public class AuthService {
 
         Token newToken = jwtTokenProvider.createAccessToken(user.getEmail());
 
-        if (!jwtTokenProvider.isExpired(refreshToken)) {
-            return buildSignInResponse(newToken.getAccessToken(), refreshToken, user.getId());
-
-        } else {
-            // refresh token 만료시 재로그인 필요
-            throw new JwtException(JwtErrorResult.EXPIRED_REFRESH_TOKEN);
-        }
+        return buildSignInResponse(newToken.getAccessToken(), refreshToken, user.getId());
     }
 
     private User getUserFromRefreshToken(RefreshToken refreshToken) {

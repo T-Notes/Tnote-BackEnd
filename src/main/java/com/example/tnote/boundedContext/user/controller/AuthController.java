@@ -51,8 +51,7 @@ public class AuthController {
 
     @PostMapping("/tnote/refresh")
     public ResponseEntity<Result> refreshToken(HttpServletRequest request) {
-        SignInResponse response = authService.refreshToken(request.getHeader("AccessToken"),
-                request.getHeader("RefreshToken"));
+        SignInResponse response = authService.refreshToken(request.getHeader("RefreshToken"));
 
         return ResponseEntity.ok(Result.of(response));
     }
