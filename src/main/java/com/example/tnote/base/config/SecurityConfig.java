@@ -1,7 +1,6 @@
 package com.example.tnote.base.config;
 
 import com.example.tnote.base.filter.JwtAuthenticationFilter;
-import com.example.tnote.base.filter.JwtExceptionFilter;
 import com.example.tnote.base.handler.JwtAccessDeniedHandler;
 import com.example.tnote.base.handler.JwtAuthenticationEntryPoint;
 import com.example.tnote.base.utils.JwtTokenProvider;
@@ -13,7 +12,7 @@ import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer;
+import org.springframework.security.config.annotation.web.configurers.HeadersConfigurer.FrameOptionsConfig;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -27,7 +26,7 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final JwtExceptionFilter jwtExceptionFilter;
+    private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -37,7 +36,7 @@ public class SecurityConfig {
                 )
                 .headers(headerConfig ->
                         headerConfig.frameOptions(
-                                HeadersConfigurer.FrameOptionsConfig::disable
+                                FrameOptionsConfig::disable
                         )
                 )
                 .exceptionHandling(exceptionConfig ->
@@ -65,7 +64,7 @@ public class SecurityConfig {
                         , UsernamePasswordAuthenticationFilter.class
                 )
                 .addFilterBefore(
-                        jwtExceptionFilter, JwtAuthenticationFilter.class
+                        jwtAuthenticationFilter, JwtAuthenticationFilter.class
                 )
                 .logout(logout ->
                         logout.logoutSuccessUrl("/")
