@@ -53,7 +53,7 @@ class SubjectServiceTest {
         schedule1 = testSyUtils.createSchedule("test1", "9교시", user1, LocalDate.parse("2024-03-01"),
                 LocalDate.parse("2024-06-01"));
         subjects = testSyUtils.createSubjects("3학년 1학기", "4교시", ClassDay.WEDNESDAY, "3반 교실", "memo", "green",
-                LocalDate.now(), schedule1);
+                schedule1);
     }
 
     @Test
@@ -70,7 +70,6 @@ class SubjectServiceTest {
                 .classDay(ClassDay.WEDNESDAY)
                 .subjectName("물리")
                 .color("green")
-                .date(LocalDate.parse("2024-01-27"))
                 .scheduleId(schedule1.getId())
                 .build();
 
@@ -79,7 +78,6 @@ class SubjectServiceTest {
 
         // then
         assertThat(sub.getSubjectName()).isEqualTo("물리");
-        assertThat(sub.getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
         assertThat(sub.getColor()).isEqualTo("green");
         assertThat(sub.getMemo()).isEqualTo("test1");
         assertThat(sub.getClassTime()).isEqualTo("9교시");
@@ -101,14 +99,13 @@ class SubjectServiceTest {
                 .classDay(ClassDay.WEDNESDAY)
                 .subjectName("물리")
                 .color("green")
-                .date(LocalDate.parse("2024-01-27"))
                 .scheduleId(schedule1.getId())
                 .build();
 
         // when
 
         // then
-        assertThatThrownBy(() -> subjectService.addSubjects(dto, null))
+        assertThatThrownBy(() -> subjectService.addSubjects(dto, schedule1.getId(), null))
                 .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 

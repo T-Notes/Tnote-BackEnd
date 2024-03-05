@@ -39,11 +39,11 @@ public class SubjectService {
     private final SubjectQueryRepository subjectQueryRepository;
 
     @Transactional
-    public SubjectResponseDto addSubjects(SubjectRequestDto dto, Long userId) {
+    public SubjectResponseDto addSubjects(SubjectRequestDto dto, Long scheduleId, Long userId) {
 
-        matchUserWithSchedule(dto.getScheduleId(), userId);
+        matchUserWithSchedule(scheduleId, userId);
 
-        Subjects subjects = dto.toEntity(checkCurrentSchedule(dto.getScheduleId()));
+        Subjects subjects = dto.toEntity(checkCurrentSchedule(scheduleId));
 
         return SubjectResponseDto.of(subjectRepository.save(subjects));
     }

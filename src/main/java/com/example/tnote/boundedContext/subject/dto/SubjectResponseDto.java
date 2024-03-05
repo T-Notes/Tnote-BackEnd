@@ -1,7 +1,6 @@
 package com.example.tnote.boundedContext.subject.dto;
 
 import com.example.tnote.boundedContext.subject.entity.Subjects;
-import java.time.LocalDate;
 import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,7 +16,6 @@ public class SubjectResponseDto {
     private String classLocation;
     private String memo;
     private String color;
-    private LocalDate date;
     private String semesterName;  // 연관관계를 위함.
 
     public static SubjectResponseDto of(Subjects subject) {
@@ -30,7 +28,6 @@ public class SubjectResponseDto {
                 .classLocation(subject.getClassLocation())
                 .memo(subject.getMemo())
                 .color(subject.getColor())
-                .date(subject.getDate())
                 .semesterName(subject.getSchedule().getSemesterName())
                 .build();
     }

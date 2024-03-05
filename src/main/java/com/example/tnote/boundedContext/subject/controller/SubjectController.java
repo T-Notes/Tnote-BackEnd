@@ -33,13 +33,14 @@ public class SubjectController {
 
     private final SubjectService subjectService;
 
-    @PostMapping
+    @PostMapping("/{scheduleId}")
     public ResponseEntity<Result> saveSubjects(@RequestBody SubjectRequestDto dto,
+                                               @PathVariable("scheduleId") Long scheduleId,
                                                @AuthenticationPrincipal PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        SubjectResponseDto response = subjectService.addSubjects(dto, currentUser.getId());
+        SubjectResponseDto response = subjectService.addSubjects(dto, scheduleId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
