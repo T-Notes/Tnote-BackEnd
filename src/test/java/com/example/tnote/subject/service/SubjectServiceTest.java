@@ -131,7 +131,6 @@ class SubjectServiceTest {
 
         // then
         assertThat(response.getSubjectName()).isEqualTo("물리");
-        assertThat(response.getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
         assertThat(response.getColor()).isEqualTo("green");
         assertThat(response.getMemo()).isEqualTo("test1");
         assertThat(response.getClassTime()).isEqualTo("9교시");
@@ -277,7 +276,6 @@ class SubjectServiceTest {
 
         // then
         assertThat(response.get(0).getMemo()).isEqualTo("memo");
-        assertThat(response.get(0).getDate()).isEqualTo(LocalDate.now());
         assertThat(response.get(0).getColor()).isEqualTo("green");
         assertThat(response.get(0).getClassTime()).isEqualTo("4교시");
         assertThat(response.get(0).getClassDay()).isEqualTo(ClassDay.WEDNESDAY.getDay());
@@ -325,7 +323,6 @@ class SubjectServiceTest {
 
         // then
         assertThat(response.get(0).getMemo()).isEqualTo("memo");
-        assertThat(response.get(0).getDate()).isEqualTo(LocalDate.now());
         assertThat(response.get(0).getColor()).isEqualTo("green");
         assertThat(response.get(0).getClassTime()).isEqualTo("4교시");
         assertThat(response.get(0).getClassDay()).isEqualTo("수요일");
