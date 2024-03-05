@@ -59,7 +59,7 @@ public class JwtTokenProvider {
     }
 
     public Token createRefreshToken(String email) {
-        Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
+        Claims claims = Jwts.claims().setSubject(email);
         Date now = new Date();
 
         String refreshToken = Jwts.builder()
