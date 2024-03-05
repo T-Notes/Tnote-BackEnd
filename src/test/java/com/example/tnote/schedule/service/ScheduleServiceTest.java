@@ -282,7 +282,7 @@ class ScheduleServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        long diffDays = scheduleService.countLeftDays(schedule1.getStartDate(), schedule1.getId());
+        long diffDays = scheduleService.countLeftDays(schedule1.getStartDate(), user1.getId(), schedule1.getId());
 
         // then
         assertThat(diffDays).isEqualTo(92);
@@ -444,7 +444,7 @@ class ScheduleServiceTest {
         LocalDate endDate = LocalDate.parse("2024-06-01");
 
         // when
-        long countClasses = scheduleService.countLeftClasses(startDate, endDate, schedule2.getId());
+        long countClasses = scheduleService.countLeftClasses(startDate, endDate, user1.getId(), schedule2.getId());
 
         // then
         assertThat(countClasses).isEqualTo(14);
