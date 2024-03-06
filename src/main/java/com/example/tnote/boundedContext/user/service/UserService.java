@@ -97,6 +97,7 @@ public class UserService {
                 .build();
     }
 
+    @Transactional
     public void logout(HttpServletRequest request, HttpServletResponse response, Long userId) {
 
         userRepository.findById(userId)

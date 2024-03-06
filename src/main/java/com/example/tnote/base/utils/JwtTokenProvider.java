@@ -3,7 +3,6 @@ package com.example.tnote.base.utils;
 import com.example.tnote.base.constant.Constants;
 import com.example.tnote.base.exception.jwt.JwtErrorResult;
 import com.example.tnote.base.exception.jwt.JwtException;
-import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
 import com.example.tnote.boundedContext.user.dto.Token;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
@@ -20,7 +19,6 @@ import java.util.Base64;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -82,19 +80,9 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
         log.info("token~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~:{}", token);
 
-        if (!findRefreshToken(token)) {
-            throw new JwtException(JwtErrorResult.NOT_FOUND_TOKEN);
-        }
-
         PrincipalDetails principalDetails = principalDetailService.loadUserByUsername(getPayload(token));
         log.info("getAuthentication, email={}", principalDetails.getUsername());
         return new UsernamePasswordAuthenticationToken(principalDetails, "", principalDetails.getAuthorities());
-    }
-
-    private boolean findRefreshToken(String token) {
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByRefreshToken(token);
-
-        return refreshToken.isEmpty();
     }
 
     public boolean isValidToken(String token) {
