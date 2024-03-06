@@ -9,6 +9,7 @@ import org.springframework.http.HttpStatus;
 public enum JwtErrorResult {
 
     WRONG_TOKEN(HttpStatus.UNAUTHORIZED, "wrong token"),
+    WRONG_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "wrong refresh token"),
     WRONG_SIGNATURE(HttpStatus.UNAUTHORIZED, "wrong signature"),
     UNSUPPORTED(HttpStatus.UNAUTHORIZED, "unsupported token"),
     EXPIRED_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "expired access token"),
