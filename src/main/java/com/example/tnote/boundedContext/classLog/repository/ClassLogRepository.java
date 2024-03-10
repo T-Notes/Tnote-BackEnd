@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.classLog.repository;
 
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -38,4 +39,14 @@ public interface ClassLogRepository extends JpaRepository<ClassLog, Long> {
             LocalDateTime startOfDay,
             LocalDateTime endOfDay,
             Pageable pageable);
+
+    @Query("SELECT c FROM ClassLog c " +
+            "WHERE c.user.id = :userId " +
+            "AND c.schedule.id = :scheduleId " +
+            "AND FUNCTION('YEAR', c.createdAt) = FUNCTION('YEAR', :date) " +
+            "AND FUNCTION('MONTH', c.createdAt) = FUNCTION('MONTH', :date)")
+    List<ClassLog> findByUserIdAndScheduleIdAndYearMonth(
+            Long userId,
+            Long scheduleId,
+            LocalDate date);
 }

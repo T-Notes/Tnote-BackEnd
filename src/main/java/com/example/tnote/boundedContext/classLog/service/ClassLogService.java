@@ -203,6 +203,14 @@ public class ClassLogService {
                 .map(ClassLogResponseDto::of).toList();
     }
 
+    public List<ClassLogResponseDto> readMonthlyClassLog(Long userId, Long scheduleId, LocalDate date) {
+
+        List<ClassLog> classLogs = classLogRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);
+
+        return classLogs.stream()
+                .map(ClassLogResponseDto::of).toList();
+    }
+
     private List<ClassLogImage> deleteExistedImagesAndUploadNewImages(ClassLog classLog,
                                                                       List<MultipartFile> classLogImages) {
         deleteExistedImages(classLog);
