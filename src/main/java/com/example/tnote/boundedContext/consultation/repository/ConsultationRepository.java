@@ -2,6 +2,7 @@ package com.example.tnote.boundedContext.consultation.repository;
 
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -39,4 +40,14 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
             LocalDateTime startOfDay,
             LocalDateTime endOfDay,
             Pageable pageable);
+
+    @Query("SELECT c FROM Consultation c " +
+            "WHERE c.user.id = :userId " +
+            "AND c.schedule.id = :scheduleId " +
+            "AND FUNCTION('YEAR', c.createdAt) = FUNCTION('YEAR', :date) " +
+            "AND FUNCTION('MONTH', c.createdAt) = FUNCTION('MONTH', :date)")
+    List<Consultation> findByUserIdAndScheduleIdAndYearMonth(
+            Long userId,
+            Long scheduleId,
+            LocalDate date);
 }

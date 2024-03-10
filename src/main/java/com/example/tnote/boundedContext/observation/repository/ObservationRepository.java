@@ -3,6 +3,7 @@ package com.example.tnote.boundedContext.observation.repository;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.observation.entity.Observation;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -39,4 +40,14 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             LocalDateTime startOfDay,
             LocalDateTime endOfDay,
             Pageable pageable);
+
+    @Query("SELECT o FROM Observation o " +
+            "WHERE o.user.id = :userId " +
+            "AND o.schedule.id = :scheduleId " +
+            "AND FUNCTION('YEAR', o.createdAt) = FUNCTION('YEAR', :date) " +
+            "AND FUNCTION('MONTH', o.createdAt) = FUNCTION('MONTH', :date)")
+    List<Observation> findByUserIdAndScheduleIdAndYearMonth(
+            Long userId,
+            Long scheduleId,
+            LocalDate date);
 }

@@ -212,6 +212,14 @@ public class ConsultationService {
                 .map(ConsultationResponseDto::of).toList();
     }
 
+    public List<ConsultationResponseDto> readMonthlyConsultations(Long userId, Long scheduleId, LocalDate date) {
+        List<Consultation> consultations = consultationRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
+                scheduleId, date);
+
+        return consultations.stream()
+                .map(ConsultationResponseDto::of).toList();
+    }
+
     private List<ConsultationImage> deleteExistedImagesAndUploadNewImages(Consultation consultation,
                                                                           List<MultipartFile> consultationImages) {
         deleteExistedImages(consultation);
