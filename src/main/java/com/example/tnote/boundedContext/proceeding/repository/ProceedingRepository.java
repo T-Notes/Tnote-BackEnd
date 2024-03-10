@@ -3,6 +3,7 @@ package com.example.tnote.boundedContext.proceeding.repository;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -40,4 +41,14 @@ public interface ProceedingRepository extends JpaRepository<Proceeding, Long> {
             LocalDateTime startOfDay,
             LocalDateTime endOfDay,
             Pageable pageable);
+
+    @Query("SELECT p FROM Proceeding p " +
+            "WHERE p.user.id = :userId " +
+            "AND p.schedule.id = :scheduleId " +
+            "AND FUNCTION('YEAR', p.createdAt) = FUNCTION('YEAR', :date) " +
+            "AND FUNCTION('MONTH', p.createdAt) = FUNCTION('MONTH', :date)")
+    List<Proceeding> findByUserIdAndScheduleIdAndYearMonth(
+            Long userId,
+            Long scheduleId,
+            LocalDate date);
 }
