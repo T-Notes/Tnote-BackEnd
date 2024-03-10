@@ -191,6 +191,14 @@ public class ObservationService {
                 .map(ObservationResponseDto::of).toList();
     }
 
+    public List<ObservationResponseDto> readMonthlyObservations(Long userId, Long scheduleId, LocalDate date) {
+        List<Observation> observations = observationRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
+                scheduleId, date);
+
+        return observations.stream()
+                .map(ObservationResponseDto::of).toList();
+    }
+
     private List<ObservationImage> deleteExistedImagesAndUploadNewImages(Observation observation,
                                                                          List<MultipartFile> observationImages) {
         deleteExistedImages(observation);
