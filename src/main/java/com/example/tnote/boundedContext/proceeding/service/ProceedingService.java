@@ -198,6 +198,14 @@ public class ProceedingService {
                 .map(ProceedingResponseDto::of).toList();
     }
 
+    public List<ProceedingResponseDto> readMonthlyProceedings(Long userId, Long scheduleId, LocalDate date) {
+        List<Proceeding> proceedings = proceedingRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
+                scheduleId, date);
+
+        return proceedings.stream()
+                .map(ProceedingResponseDto::of).toList();
+    }
+
     private List<ProceedingImage> deleteExistedImagesAndUploadNewImages(Proceeding proceeding,
                                                                         List<MultipartFile> proceedingImages) {
         deleteExistedImages(proceeding);

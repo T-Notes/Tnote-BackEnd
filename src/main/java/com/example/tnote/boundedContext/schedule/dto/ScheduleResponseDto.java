@@ -26,6 +26,7 @@ public class ScheduleResponseDto {
                         .id(subject.getId())
                         .subjectName(subject.getSubjectName())
                         .memo(subject.getMemo())
+                        .color(subject.getColor())
                         .classTime(subject.getClassTime())
                         .classDay(subject.getClassDay().getDay())
                         .classLocation(subject.getClassLocation())

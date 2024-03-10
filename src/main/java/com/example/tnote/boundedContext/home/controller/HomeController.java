@@ -103,7 +103,16 @@ public class HomeController {
         ArchiveResponseDto response = homeService.readDailyLogs(principalDetails.getId(), scheduleId, date);
         return ResponseEntity.ok(Result.of(response));
     }
-
+    @GetMapping("/{scheduleId}/monthlyLogs")
+    public ResponseEntity<Result> readMonthlyLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                @PathVariable Long scheduleId,
+                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        ArchiveResponseDto response = homeService.readMonthlyLogs(principalDetails.getId(), scheduleId, date);
+        return ResponseEntity.ok(Result.of(response));
+    }
     @GetMapping("/recentLogs")
     public ResponseEntity<Result> getRecentClassLogs(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (principalDetails == null) {

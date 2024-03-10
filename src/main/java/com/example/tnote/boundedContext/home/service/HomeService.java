@@ -154,5 +154,19 @@ public class HomeService {
                 .todos(todos)
                 .build();
     }
+    public ArchiveResponseDto readMonthlyLogs(Long userId, Long scheduleId, LocalDate date) {
+        List<ClassLogResponseDto> classLogs = classLogService.readMonthlyClassLog(userId, scheduleId, date);
+        List<ConsultationResponseDto> consultations = consultationService.readMonthlyConsultations(userId, scheduleId, date);
+        List<ObservationResponseDto> observations = observationService.readMonthlyObservations(userId, scheduleId, date);
+        List<ProceedingResponseDto> proceedings = proceedingService.readMonthlyProceedings(userId, scheduleId, date);
+        List<TodoResponseDto> todos = todoService.readMonthlyTodos(userId, scheduleId, date);
 
+        return ArchiveResponseDto.builder()
+                .classLogs(classLogs)
+                .consultations(consultations)
+                .observations(observations)
+                .proceedings(proceedings)
+                .todos(todos)
+                .build();
+    }
 }

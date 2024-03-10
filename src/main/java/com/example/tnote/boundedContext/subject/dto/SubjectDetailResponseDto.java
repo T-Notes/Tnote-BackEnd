@@ -13,6 +13,7 @@ public class SubjectDetailResponseDto {
     private String classDay;
     private String classLocation;
     private String memo;
+    private String color;
 
     public static SubjectDetailResponseDto of(Subjects subject) {
 
@@ -23,6 +24,7 @@ public class SubjectDetailResponseDto {
                 .classDay(subject.getClassDay().getDay())
                 .classLocation(subject.getClassLocation())
                 .memo(subject.getMemo())
+                .color(subject.getColor())
                 .build();
     }
 }
