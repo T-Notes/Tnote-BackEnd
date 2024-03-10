@@ -163,4 +163,11 @@ public class TodoService {
 
         return todos.stream().map(TodoResponseDto::of).toList();
     }
+
+    @Transactional(readOnly = true)
+    public List<TodoResponseDto> readMonthlyTodos(Long userId, Long scheduleId, LocalDate date) {
+        List<Todo> todos = todoRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);
+
+        return todos.stream().map(TodoResponseDto::of).toList();
+    }
 }
