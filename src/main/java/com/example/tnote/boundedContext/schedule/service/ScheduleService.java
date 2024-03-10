@@ -111,7 +111,7 @@ public class ScheduleService {
 
         matchUserWithSchedule(scheduleId, userId);
 
-        return ScheduleResponseDto.of(scheduleRepository.findAllById(scheduleId));
+        return ScheduleResponseDto.of(scheduleQueryRepository.findAllById(scheduleId));
     }
 
     @Transactional(readOnly = true)

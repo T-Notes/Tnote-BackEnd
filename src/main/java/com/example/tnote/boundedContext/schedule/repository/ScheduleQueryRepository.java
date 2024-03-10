@@ -33,4 +33,12 @@ public class ScheduleQueryRepository {
                 .fetch();
     }
 
+    public List<Schedule> findAllById(Long scheduleId) {
+        return query
+                .selectFrom(schedule)
+                .where(schedule.id.eq(scheduleId))
+                .orderBy(schedule.id.desc())
+                .fetch();
+    }
+
 }
