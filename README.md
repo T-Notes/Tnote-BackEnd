@@ -6,7 +6,8 @@
 ### 목차
 1. [설명](#설명)
 2. [기술 스택](#기술-스택)
-3. [구현 기능](#구현-기능)
+3. [Postman API 문서화](#Postman-문서화)
+4. [구현 기능](#구현-기능)
 
 ### 규칙
 1. 매주 수요일 화상 회의
@@ -38,6 +39,8 @@
 |                                                 Spring                                                 |                                                              JPA                                                               | JavaScript | TypeScript |  React   |
 |:------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------:| :------: | :------: | :------: |
 | <img src="https://cdn.freebiesupply.com/logos/large/2x/spring-3-logo-png-transparent.png" width="100"> | <img src="https://user-images.githubusercontent.com/107420002/226260149-7a74fd61-4da7-42f1-9e3e-cb1a95cd2fc4.png" width="100"> | ![image](https://user-images.githubusercontent.com/107420002/226259666-d69e1b6a-bdd9-4bf9-9308-0783b91d4bf8.png) | ![image](https://user-images.githubusercontent.com/107420002/226259679-041ff46f-c1cf-4e86-b3b9-104fcdf50449.png) | ![image](https://user-images.githubusercontent.com/107420002/226259751-e9bf147c-35ad-491a-8998-0d09da13f6ba.png) |
+
+## Postman 문서화
 
 ## 구현 기능
 ### 조회 기능
