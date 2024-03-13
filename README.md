@@ -46,6 +46,7 @@
 
 
 ## Postman 문서화
+[Postman API - 문서화](https://documenter.getpostman.com/view/14933639/2sA2r9W3Vp)
 
 
 ## 구현 기능
