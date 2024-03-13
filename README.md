@@ -9,7 +9,7 @@
 3. [프로젝트 아키텍쳐](#프로젝트-아키텍쳐)
 4. [Postman API 문서화](#Postman-문서화)
 5. [구현 기능](#구현-기능)
-6. [트러블 및 이슈 정리](#트러블,이슈-정리)
+6. [트러블 및 이슈 정리](#이슈-정리)
 
 ### 규칙
 1. 매주 수요일 화상 회의
@@ -56,3 +56,25 @@
 ### 추가 예정 기능
 
 ## 이슈 및 트러블 정리
+
+### Error
+[ Java error - Name for argument of type ](https://techj9972.tistory.com/257) <br>
+[ Build error - 빌드 오류 ](https://techj9972.tistory.com/266) <br>
+[ Error - variable userRepository not initialized in the default constructor ](https://techj9972.tistory.com/267) <br>
+[ Code Deploy - access denied ](https://techj9972.tistory.com/268) <br>
+[ JWT token error - Error creating bean with name 'jwtTokenProvider' ](https://techj9972.tistory.com/269) <br>
+[ Gradle 충돌 - permittedSubclasses requires ASM9 ](https://techj9972.tistory.com/272) <br>
+[ Mysql Dialect - org.hibernate.dialect.MySQL57Dialect ](https://techj9972.tistory.com/273) <br>
+[ portnumber - 포트넘버 트러블 이슈 ](https://techj9972.tistory.com/274) <br>
+[ Error - 수정한 코드 적용 안되는 이슈 ](https://techj9972.tistory.com/279) <br>
+[ swap - swap 메모리 설정 ](https://techj9972.tistory.com/283) <br>
+[ 80 port allocate - bind for 0.0.0.0:80 failed: port is already allocate ](https://techj9972.tistory.com/283) <br>
+
+### 인프라 구축
+[ Ec2 & Route53 - ec2와 route53 도메인 연결하기 ](https://techj9972.tistory.com/271) <br>
+[ https 적용 - npm을 통한 https 적용 ](https://techj9972.tistory.com/285) <br>
+
+### 최적화
+[ security - @AuthenticationPrincipal 정보 받기 ](https://techj9972.tistory.com/255) <br>
+
+
