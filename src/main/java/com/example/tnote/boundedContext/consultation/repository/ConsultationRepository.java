@@ -50,4 +50,6 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
             Long userId,
             Long scheduleId,
             LocalDate date);
+
+    void deleteAllByUserId(Long userId);
 }
