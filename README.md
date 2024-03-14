@@ -58,6 +58,8 @@
 
 ## 이슈 및 트러블 정리
 
+<br>
+
 ### Error
 [ Java error - Name for argument of type ](https://techj9972.tistory.com/257) <br>
 [ Build error - 빌드 오류 ](https://techj9972.tistory.com/266) <br>
@@ -70,6 +72,7 @@
 [ Error - 수정한 코드 적용 안되는 이슈 ](https://techj9972.tistory.com/279) <br>
 [ swap - swap 메모리 설정 ](https://techj9972.tistory.com/283) <br>
 [ 80 port allocate - bind for 0.0.0.0:80 failed: port is already allocate ](https://techj9972.tistory.com/283) <br>
+[ error : 502 bad error](https://techj9972.tistory.com/291)<br>
 
 ### 인프라 구축
 [ Ec2 & Route53 - ec2와 route53 도메인 연결하기 ](https://techj9972.tistory.com/271) <br>
