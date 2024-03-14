@@ -79,14 +79,10 @@ public class UserService {
     }
 
     @Transactional
-    public UserDeleteResponseDto deleteUser(Long userId, String email) {
+    public UserDeleteResponseDto deleteUser(Long userId) {
 
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
-
-        if (!email.equals(currentUser.getEmail())) {
-            throw new UserException(UserErrorResult.WRONG_EMAIL);
-        }
 
         log.info("refresh token, user entity 삭제");
         refreshTokenRepository.deleteByKeyEmail(currentUser.getEmail());

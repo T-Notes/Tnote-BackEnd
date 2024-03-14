@@ -76,6 +76,7 @@ public class ScheduleController {
         return ResponseEntity.ok(Result.of(response));
     }
 
+    // 실패 - token이 유효하지 않은 경우
     @DeleteMapping("/{scheduleId}")
     public ResponseEntity<Result> deleteSchedule(@PathVariable("scheduleId") Long scheduleId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
@@ -100,6 +101,10 @@ public class ScheduleController {
         }
 
         long response = scheduleService.countLeftDays(date, scheduleId, currentUser.getId());
+
+        if (response <= 0) {
+            response = 0;
+        }
 
         return ResponseEntity.ok(Result.of(response));
     }

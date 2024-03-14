@@ -116,6 +116,7 @@ public class ScheduleService {
 
     @Transactional(readOnly = true)
     public List<SemesterNameResponseDto> searchSemester(String semesterName, Long userId) {
+
         checkUser(userId);
 
         List<Schedule> schedules = scheduleQueryRepository.findAllBySemesterName(semesterName);

@@ -186,10 +186,10 @@ public class UserServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        userService.deleteUser(user1.getId(), user1.getEmail());
+        userService.deleteUser(user1.getId());
 
         // then
-        assertThatThrownBy(() -> userService.deleteUser(user1.getId(), user1.getEmail()))
+        assertThatThrownBy(() -> userService.deleteUser(user1.getId()))
                 .isInstanceOf(UserException.class);
     }
 
@@ -203,7 +203,7 @@ public class UserServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> userService.deleteUser(222L, "test222@test.com"))
+        assertThatThrownBy(() -> userService.deleteUser(222L))
                 .isInstanceOf(UserException.class);
     }
 
@@ -216,7 +216,7 @@ public class UserServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> userService.deleteUser(null, "test222@test.com"))
+        assertThatThrownBy(() -> userService.deleteUser(null))
                 .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 

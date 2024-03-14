@@ -119,10 +119,12 @@ public class UserController {
     }
 
 
-    @PatchMapping("/{userId}")
-    public ResponseEntity<Result> updateExtraInfo(@PathVariable Long userId, @RequestBody UserUpdateRequest dto) {
+    @PatchMapping
+    public ResponseEntity<Result> updateExtraInfo(@AuthenticationPrincipal PrincipalDetails user,
+                                                  @RequestBody UserUpdateRequest dto) {
 
-        UserResponse response = userService.updateExtraInfo(userId, dto);
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+        UserResponse response = userService.updateExtraInfo(currentUser.getId(), dto);
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -140,17 +142,16 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal PrincipalDetails user,
-                                             @RequestBody String email) {
+    public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        UserDeleteResponseDto response = userService.deleteUser(currentUser.getId(), email);
+        UserDeleteResponseDto response = userService.deleteUser(currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
 
-    // 탈퇴할때 작성할 회원의 메일 조회
+    // 탈퇴할때 작성할 회원의 메일 조회 - depreciated
     @GetMapping("/mail")
     public ResponseEntity<Result> getMail(@AuthenticationPrincipal PrincipalDetails user) {
 

@@ -81,7 +81,7 @@ public class SubjectController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    // 홈페이지에서 오늘 사건표 데이터 조회
+    // 홈페이지에서 오늘 데이터 조회 - depreciated
     @GetMapping("/{scheduleId}")
     public ResponseEntity<Result> findToday(@PathVariable Long scheduleId,
                                             @AuthenticationPrincipal PrincipalDetails user) {
