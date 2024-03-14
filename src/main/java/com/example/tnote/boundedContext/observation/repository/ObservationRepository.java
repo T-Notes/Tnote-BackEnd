@@ -50,4 +50,6 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             Long userId,
             Long scheduleId,
             LocalDate date);
+
+    void deleteAllByUserId(Long userId);
 }
