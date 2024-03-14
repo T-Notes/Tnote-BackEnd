@@ -49,8 +49,7 @@ public class HomeController {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(keyword,
-                currentUser.getId());
+        List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(keyword, currentUser.getId());
         List<ObservationResponseDto> observation = homeService.findAllOfObservation(keyword, currentUser.getId());
         List<ClassLogResponseDto> classLog = homeService.findAllOfClassLog(keyword, currentUser.getId());
         List<ProceedingResponseDto> proceeding = homeService.findAllOfProceeding(keyword, currentUser.getId());
@@ -62,7 +61,6 @@ public class HomeController {
         response.addAll(proceeding);
 
         return ResponseEntity.ok(Result.of(response));
-
     }
 
     // 아카이브 명 검색 ( = 학기명 검색 )
