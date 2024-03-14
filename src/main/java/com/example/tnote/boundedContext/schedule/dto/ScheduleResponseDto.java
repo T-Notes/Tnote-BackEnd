@@ -54,6 +54,18 @@ public class ScheduleResponseDto {
 
     public static ScheduleResponseDto excludeLastDayOf(Schedule schedule) {
 
+        List<SubjectResponseDto> subjects = schedule.getSubjectsList().stream()
+                .map(subject -> SubjectResponseDto.builder()
+                        .id(subject.getId())
+                        .subjectName(subject.getSubjectName())
+                        .memo(subject.getMemo())
+                        .color(subject.getColor())
+                        .classTime(subject.getClassTime())
+                        .classDay(subject.getClassDay().getDay())
+                        .classLocation(subject.getClassLocation())
+                        .build())
+                .toList();
+
         return ScheduleResponseDto.builder()
                 .id(schedule.getId())
                 .email(schedule.getUser().getEmail())
@@ -61,6 +73,7 @@ public class ScheduleResponseDto {
                 .lastClass(schedule.getLastClass())
                 .startDate(schedule.getStartDate())
                 .endDate(schedule.getEndDate())
+                .subjects(subjects)
                 .build();
     }
 

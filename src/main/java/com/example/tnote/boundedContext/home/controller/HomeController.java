@@ -44,17 +44,16 @@ public class HomeController {
     // 학생 이름 검색 했을때 나올 내용
     @GetMapping("/searching")
     public ResponseEntity<Result> findAll(
-            @RequestParam(name = "studentName", required = false, defaultValue = "") String studentName,
-            @RequestParam(name = "title", required = false, defaultValue = "") String title,
+            @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
             @AuthenticationPrincipal PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(studentName,
+        List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(keyword,
                 currentUser.getId());
-        List<ObservationResponseDto> observation = homeService.findAllOfObservation(studentName, currentUser.getId());
-        List<ClassLogResponseDto> classLog = homeService.findAllOfClassLog(title, currentUser.getId());
-        List<ProceedingResponseDto> proceeding = homeService.findAllOfProceeding(title, currentUser.getId());
+        List<ObservationResponseDto> observation = homeService.findAllOfObservation(keyword, currentUser.getId());
+        List<ClassLogResponseDto> classLog = homeService.findAllOfClassLog(keyword, currentUser.getId());
+        List<ProceedingResponseDto> proceeding = homeService.findAllOfProceeding(keyword, currentUser.getId());
 
         List<Object> response = new ArrayList<>();
         response.addAll(consultation);
@@ -103,16 +102,18 @@ public class HomeController {
         ArchiveResponseDto response = homeService.readDailyLogs(principalDetails.getId(), scheduleId, date);
         return ResponseEntity.ok(Result.of(response));
     }
+
     @GetMapping("/{scheduleId}/monthlyLogs")
     public ResponseEntity<Result> readMonthlyLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                @PathVariable Long scheduleId,
-                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+                                                  @PathVariable Long scheduleId,
+                                                  @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         if (date == null) {
             date = LocalDate.now();
         }
         ArchiveResponseDto response = homeService.readMonthlyLogs(principalDetails.getId(), scheduleId, date);
         return ResponseEntity.ok(Result.of(response));
     }
+
     @GetMapping("/recentLogs")
     public ResponseEntity<Result> getRecentClassLogs(@AuthenticationPrincipal PrincipalDetails principalDetails) {
         if (principalDetails == null) {
