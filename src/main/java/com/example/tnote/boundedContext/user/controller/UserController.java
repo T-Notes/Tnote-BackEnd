@@ -151,7 +151,7 @@ public class UserController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    // 탈퇴할때 작성할 회원의 메일 조회
+    // 탈퇴할때 작성할 회원의 메일 조회 - depreciated
     @GetMapping("/mail")
     public ResponseEntity<Result> getMail(@AuthenticationPrincipal PrincipalDetails user) {
 
