@@ -92,6 +92,7 @@ public class UserService {
         }
     }
 
+    // TODO : 리팩토링 대상
     @Transactional
     public UserDeleteResponseDto deleteUser(Long userId) {
 
