@@ -110,7 +110,7 @@ public class ScheduleController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    // 남은 수업 횟수 체크
+    // 남은 수업 횟수 체크 -> TODO : 리팩토링 하기
     @GetMapping("/leftClasses/{scheduleId}")
     public ResponseEntity<Result> countLeftClasses(
             @RequestParam(required = false) LocalDateTime endDate,
