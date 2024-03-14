@@ -8,6 +8,8 @@ import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
 import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
+import com.example.tnote.boundedContext.subject.repository.SubjectRepository;
 import com.example.tnote.boundedContext.todo.repository.TodoRepository;
 import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
@@ -41,6 +43,8 @@ public class UserService {
     private final ObservationRepository observationRepository;
     protected final ConsultationRepository consultationRepository;
     private final RefreshTokenRepository refreshTokenRepository;
+    private final ScheduleRepository scheduleRepository;
+    private final SubjectRepository subjectRepository;
 
     @Transactional
     public UserResponse signUp(String email, String name) {
@@ -99,6 +103,8 @@ public class UserService {
         consultationRepository.deleteAllByUserId(userId);
         observationRepository.deleteAllByUserId(userId);
         todoRepository.deleteAllByUserId(userId);
+        scheduleRepository.deleteAllByUserId(userId);
+        subjectRepository.deleteAllByUserId(userId);
 
         log.info("refresh token, user entity 삭제");
         refreshTokenRepository.deleteByKeyEmail(currentUser.getEmail());
