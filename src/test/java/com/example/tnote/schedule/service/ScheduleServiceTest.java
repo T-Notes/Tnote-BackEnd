@@ -440,11 +440,10 @@ class ScheduleServiceTest {
         // given
         testSyUtils.login(principalDetails);
 
-        LocalDate startDate = LocalDate.parse("2024-03-01");
         LocalDate endDate = LocalDate.parse("2024-06-01");
 
         // when
-        long countClasses = scheduleService.countLeftClasses(startDate, endDate, user1.getId(), schedule2.getId());
+        long countClasses = scheduleService.countLeftClasses(endDate, user1.getId(), schedule2.getId());
 
         // then
         assertThat(countClasses).isEqualTo(14);

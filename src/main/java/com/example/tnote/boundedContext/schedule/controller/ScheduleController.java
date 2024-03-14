@@ -109,22 +109,15 @@ public class ScheduleController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    // 남은 수업 횟수 체크 -> TODO : 리팩토링 하기
+    // 남은 수업 횟수 체크
     @GetMapping("/leftClasses/{scheduleId}")
     public ResponseEntity<Result> countLeftClasses(
-            @RequestParam(required = false) LocalDate endDate,
-            @RequestParam(required = false) LocalDate startDate,
             @AuthenticationPrincipal PrincipalDetails user,
             @PathVariable("scheduleId") Long scheduleId) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
-        if (startDate == null) {
-            startDate = LocalDate.now();
-        } else if (endDate == null) {
-            endDate = LocalDate.now();
-        }
 
-        long response = scheduleService.countLeftClasses(startDate, endDate, currentUser.getId(), scheduleId);
+        long response = scheduleService.countLeftClasses(LocalDate.now(), currentUser.getId(), scheduleId);
 
         return ResponseEntity.ok(Result.of(response));
     }
