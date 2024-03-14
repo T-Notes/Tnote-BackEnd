@@ -51,4 +51,6 @@ public interface ProceedingRepository extends JpaRepository<Proceeding, Long> {
             Long userId,
             Long scheduleId,
             LocalDate date);
+
+    void deleteAllByUserId(Long userId);
 }

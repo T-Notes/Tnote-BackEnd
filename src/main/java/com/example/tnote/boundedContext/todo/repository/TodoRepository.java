@@ -39,4 +39,6 @@ public interface TodoRepository extends JpaRepository<Todo, Long> {
             Long userId,
             Long scheduleId,
             LocalDate date);
+
+    void deleteAllByUserId(Long userId);
 }

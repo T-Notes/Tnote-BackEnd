@@ -4,6 +4,11 @@ import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.CookieUtils;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
+import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
+import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
+import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
+import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
+import com.example.tnote.boundedContext.todo.repository.TodoRepository;
 import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
@@ -30,6 +35,11 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final ClassLogRepository classLogRepository;
+    private final ProceedingRepository proceedingRepository;
+    private final TodoRepository todoRepository;
+    private final ObservationRepository observationRepository;
+    protected final ConsultationRepository consultationRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
@@ -84,6 +94,12 @@ public class UserService {
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
 
+        classLogRepository.deleteAllByUserId(userId);
+        proceedingRepository.deleteAllByUserId(userId);
+        consultationRepository.deleteAllByUserId(userId);
+        observationRepository.deleteAllByUserId(userId);
+        todoRepository.deleteAllByUserId(userId);
+
         log.info("refresh token, user entity 삭제");
         refreshTokenRepository.deleteByKeyEmail(currentUser.getEmail());
         userRepository.delete(currentUser);
@@ -112,7 +128,6 @@ public class UserService {
         if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
             throw new IOException("HTTP error code : " + urlConnection.getResponseCode());
         }
-
         return urlConnection.getInputStream();
     }
 

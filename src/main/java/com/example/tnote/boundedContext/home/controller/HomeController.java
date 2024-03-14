@@ -41,7 +41,7 @@ public class HomeController {
     private final ScheduleService scheduleService;
     private final RecentLogService recentLogService;
 
-    // 학생 이름 검색 했을때 나올 내용
+    // 학생 이름 검색 했을때 나올 내용 - keyword로 통합
     @GetMapping("/searching")
     public ResponseEntity<Result> findAll(
             @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,

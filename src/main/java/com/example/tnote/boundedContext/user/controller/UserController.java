@@ -2,6 +2,11 @@ package com.example.tnote.boundedContext.user.controller;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.base.utils.TokenUtils;
+import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
+import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
+import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
+import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
+import com.example.tnote.boundedContext.todo.repository.TodoRepository;
 import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
