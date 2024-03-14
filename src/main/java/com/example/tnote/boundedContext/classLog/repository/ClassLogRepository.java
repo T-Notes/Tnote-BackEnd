@@ -49,4 +49,6 @@ public interface ClassLogRepository extends JpaRepository<ClassLog, Long> {
             Long userId,
             Long scheduleId,
             LocalDate date);
+
+    void deleteAllByUserId(Long userId);
 }
