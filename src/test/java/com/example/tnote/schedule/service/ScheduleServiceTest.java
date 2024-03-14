@@ -18,6 +18,7 @@ import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.service.auth.PrincipalDetailService;
 import com.example.tnote.utils.TestSyUtils;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.jupiter.api.BeforeEach;
@@ -440,8 +441,8 @@ class ScheduleServiceTest {
         // given
         testSyUtils.login(principalDetails);
 
-        LocalDate startDate = LocalDate.parse("2024-03-01");
-        LocalDate endDate = LocalDate.parse("2024-06-01");
+        LocalDateTime startDate = LocalDateTime.parse("2024-03-01");
+        LocalDateTime endDate = LocalDateTime.parse("2024-06-01");
 
         // when
         long countClasses = scheduleService.countLeftClasses(startDate, endDate, user1.getId(), schedule2.getId());
