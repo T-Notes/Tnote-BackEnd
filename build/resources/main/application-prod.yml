@@ -14,7 +14,9 @@ spring:
       client:
         registration:
           kakao:
-            redirect-uri: "http://localhost:3000/login/oauth2/code/kakao"
+            #redirect-uri: "http://localhost:3000/login/oauth2/code/kakao"
+            redirect-uri: http://tnote.s3-website.ap-northeast-2.amazonaws.com/login/oauth2/code/kakao
+
 
   jpa:
     hibernate:
