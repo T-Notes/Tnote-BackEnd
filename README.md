@@ -61,16 +61,7 @@
   
 [Postman API - 문서화](https://documenter.getpostman.com/view/14933639/2sA2r9W3Vp)
 
-
-## 📜 구현 기능
-<p align="center">
-  
-### 조회 기능
-
-### 예약 기능
-
-### 추가 예정 기능
-
+<br>
 
 ## ✅ 이슈 및 트러블 정리
 <p align="center">
