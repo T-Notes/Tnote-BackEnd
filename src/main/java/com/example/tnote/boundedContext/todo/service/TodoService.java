@@ -135,12 +135,15 @@ public class TodoService {
     @Transactional
     public TodoSliceResponseDto readTodosByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                 LocalDate endDate, Pageable pageable) {
+
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
-        List<Todo> todos = todoRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId, startOfDay,
+
+        List<Todo> todos = todoQueryRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId,
+                startOfDay,
                 endOfDay);
-        Slice<Todo> allTodos = todoRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(userId, scheduleId,
-                startOfDay, endOfDay, pageable);
+        Slice<Todo> allTodos = todoQueryRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
+                userId, scheduleId, startOfDay, endOfDay, pageable);
 
         int numberOfTodo = todos.size();
         List<TodoResponseDto> responseDto = allTodos.getContent().stream().map(TodoResponseDto::of).toList();
@@ -158,7 +161,9 @@ public class TodoService {
     public List<TodoResponseDto> readDailyTodos(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
-        List<Todo> todos = todoRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId, startOfDay,
+
+        List<Todo> todos = todoQueryRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId,
+                startOfDay,
                 endOfDay);
 
         return todos.stream().map(TodoResponseDto::of).toList();
@@ -166,7 +171,7 @@ public class TodoService {
 
     @Transactional(readOnly = true)
     public List<TodoResponseDto> readMonthlyTodos(Long userId, Long scheduleId, LocalDate date) {
-        List<Todo> todos = todoRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);
+        List<Todo> todos = todoQueryRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);
 
         return todos.stream().map(TodoResponseDto::of).toList();
     }
