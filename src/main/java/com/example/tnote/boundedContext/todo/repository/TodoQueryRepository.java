@@ -42,6 +42,7 @@ public class TodoQueryRepository {
                 .fetch();
     }
 
+    // 추가
     public List<Todo> findByUserIdAndScheduleIdAndYearMonth(Long userId, Long scheduleId, LocalDate date) {
         return query
                 .selectFrom(todo)
