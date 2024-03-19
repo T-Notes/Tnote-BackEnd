@@ -16,7 +16,6 @@ import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.util.List;
@@ -143,7 +142,7 @@ public class ScheduleService {
     }
 
     @Transactional
-    public long countLeftClasses(LocalDateTime startDate, LocalDateTime endDate, Long userId, Long scheduleId) {
+    public long countLeftClasses(LocalDate date, Long userId, Long scheduleId) {
 
         int totalCnt = 0;
         HashMap<String, Integer> map = new HashMap<>();
@@ -155,14 +154,14 @@ public class ScheduleService {
         map.put("SATURDAY", 0);
         map.put("SUNDAY", 0);
 
-        for (LocalDateTime currentDate = startDate; !currentDate.isAfter(endDate);
+        Schedule schedule = getSchedule(scheduleId);
+
+        for (LocalDate currentDate = date; !currentDate.isAfter(schedule.getEndDate());
              currentDate = currentDate.plusDays(1)) {
             String dayOfWeek = String.valueOf(currentDate.getDayOfWeek());
 
             map.put(dayOfWeek, map.get(dayOfWeek) + 1);
         }
-
-        Schedule schedule = getSchedule(scheduleId);
 
         compareScheduleWithUser(userId, schedule);
 

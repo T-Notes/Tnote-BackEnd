@@ -10,7 +10,6 @@ import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
 import com.example.tnote.boundedContext.schedule.service.ScheduleService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -113,19 +112,12 @@ public class ScheduleController {
     // 남은 수업 횟수 체크
     @GetMapping("/leftClasses/{scheduleId}")
     public ResponseEntity<Result> countLeftClasses(
-            @RequestParam(required = false) LocalDateTime endDate,
-            @RequestParam(required = false) LocalDateTime startDate,
             @AuthenticationPrincipal PrincipalDetails user,
             @PathVariable("scheduleId") Long scheduleId) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
-        if (startDate == null) {
-            startDate = LocalDateTime.now();
-        } else if (endDate == null) {
-            endDate = LocalDateTime.now();
-        }
 
-        long response = scheduleService.countLeftClasses(startDate, endDate, currentUser.getId(), scheduleId);
+        long response = scheduleService.countLeftClasses(LocalDate.now(), currentUser.getId(), scheduleId);
 
         return ResponseEntity.ok(Result.of(response));
     }
