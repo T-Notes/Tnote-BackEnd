@@ -27,6 +27,7 @@
 
 ## 🧑‍💻 Team members
 <p align="center">
+
   
 ### Backend
 | [김태환](https://github.com/hwan2-99) | [정수영](https://github.com/j9972) |
@@ -42,6 +43,7 @@
 
 ## 기술 스택
 <p align="center">
+  
 |                                                 Spring                                                 |                                                              JPA                                                               | JavaScript | TypeScript |  React   |
 |:------------------------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------------------------------:| :------: | :------: | :------: |
 | <img src="https://cdn.freebiesupply.com/logos/large/2x/spring-3-logo-png-transparent.png" width="100"> | <img src="https://user-images.githubusercontent.com/107420002/226260149-7a74fd61-4da7-42f1-9e3e-cb1a95cd2fc4.png" width="100"> | ![image](https://user-images.githubusercontent.com/107420002/226259666-d69e1b6a-bdd9-4bf9-9308-0783b91d4bf8.png) | ![image](https://user-images.githubusercontent.com/107420002/226259679-041ff46f-c1cf-4e86-b3b9-104fcdf50449.png) | ![image](https://user-images.githubusercontent.com/107420002/226259751-e9bf147c-35ad-491a-8998-0d09da13f6ba.png) |
@@ -66,10 +68,9 @@
 
 ### 추가 예정 기능
 
+
 ## 이슈 및 트러블 정리
 <p align="center">
-
-<br>
 
 ### 시행착오
 [ Java error - Name for argument of type ](https://techj9972.tistory.com/257) <br>
