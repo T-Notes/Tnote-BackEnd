@@ -52,6 +52,8 @@
 
 ## 📃 프로젝트 아키텍쳐
 <p align="center">
+  
+![아키텍쳐](https://github.com/T-Notes/Tnote-BackEnd/assets/50689754/9d4bfec4-f38e-4d87-9a24-da06a1ce5858)
 
 
 ## 📚 Postman 문서화
