@@ -141,7 +141,8 @@ public class HomeService {
 
     public ArchiveResponseDto readDailyLogs(Long userId, Long scheduleId, LocalDate date) {
         List<ClassLogResponseDto> classLogs = classLogService.readDailyClassLog(userId, scheduleId, date);
-        List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, scheduleId, date);
+        List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, scheduleId,
+                date);
         List<ObservationResponseDto> observations = observationService.readDailyObservations(userId, scheduleId, date);
         List<ProceedingResponseDto> proceedings = proceedingService.readDailyProceedings(userId, scheduleId, date);
         List<TodoResponseDto> todos = todoService.readDailyTodos(userId, scheduleId, date);
@@ -154,10 +155,13 @@ public class HomeService {
                 .todos(todos)
                 .build();
     }
+
     public ArchiveResponseDto readMonthlyLogs(Long userId, Long scheduleId, LocalDate date) {
         List<ClassLogResponseDto> classLogs = classLogService.readMonthlyClassLog(userId, scheduleId, date);
-        List<ConsultationResponseDto> consultations = consultationService.readMonthlyConsultations(userId, scheduleId, date);
-        List<ObservationResponseDto> observations = observationService.readMonthlyObservations(userId, scheduleId, date);
+        List<ConsultationResponseDto> consultations = consultationService.readMonthlyConsultations(userId, scheduleId,
+                date);
+        List<ObservationResponseDto> observations = observationService.readMonthlyObservations(userId, scheduleId,
+                date);
         List<ProceedingResponseDto> proceedings = proceedingService.readMonthlyProceedings(userId, scheduleId, date);
         List<TodoResponseDto> todos = todoService.readMonthlyTodos(userId, scheduleId, date);
 
