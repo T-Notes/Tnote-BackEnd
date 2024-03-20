@@ -45,8 +45,9 @@ public interface ProceedingRepository extends JpaRepository<Proceeding, Long> {
     @Query("SELECT p FROM Proceeding p " +
             "WHERE p.user.id = :userId " +
             "AND p.schedule.id = :scheduleId " +
-            "AND FUNCTION('YEAR', p.createdAt) = FUNCTION('YEAR', :date) " +
-            "AND FUNCTION('MONTH', p.createdAt) = FUNCTION('MONTH', :date)")
+            "AND (FUNCTION('YEAR', p.startDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', p.startDate) = FUNCTION('MONTH', :date)) "
+            +
+            "OR (FUNCTION('YEAR', p.endDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', p.endDate) = FUNCTION('MONTH', :date))")
     List<Proceeding> findByUserIdAndScheduleIdAndYearMonth(
             Long userId,
             Long scheduleId,
