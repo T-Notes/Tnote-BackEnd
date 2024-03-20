@@ -43,12 +43,14 @@ public interface ClassLogRepository extends JpaRepository<ClassLog, Long> {
     @Query("SELECT c FROM ClassLog c " +
             "WHERE c.user.id = :userId " +
             "AND c.schedule.id = :scheduleId " +
-            "AND FUNCTION('YEAR', c.createdAt) = FUNCTION('YEAR', :date) " +
-            "AND FUNCTION('MONTH', c.createdAt) = FUNCTION('MONTH', :date)")
+            "AND (FUNCTION('YEAR', c.startDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', c.startDate) = FUNCTION('MONTH', :date)) "
+            +
+            "OR (FUNCTION('YEAR', c.endDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', c.endDate) = FUNCTION('MONTH', :date))")
     List<ClassLog> findByUserIdAndScheduleIdAndYearMonth(
             Long userId,
             Long scheduleId,
             LocalDate date);
+
 
     void deleteAllByUserId(Long userId);
 }
