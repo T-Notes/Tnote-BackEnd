@@ -1,12 +1,8 @@
 package com.example.tnote.boundedContext.user.controller;
 
 import com.example.tnote.base.response.Result;
+import com.example.tnote.base.utils.FindCityUtils;
 import com.example.tnote.base.utils.TokenUtils;
-import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
-import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
-import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
-import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
-import com.example.tnote.boundedContext.todo.repository.TodoRepository;
 import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
@@ -48,6 +44,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final FindCityUtils findCityUtils;
 
     @Value("${api.career-key}")
     private String KEY;
@@ -66,8 +63,8 @@ public class UserController {
         InputStream stream = null;
         String result = null;
 
-        String gubun = userService.changeGubun(schoolType);
-        int encodeRegion = userService.findCityCode(region);
+        String gubun = findCityUtils.changeGubun(schoolType);
+        int encodeRegion = findCityUtils.findCityCode(region);
         String encodeSchoolName = URLEncoder.encode(schoolName, "UTF-8");
 
         StringBuilder urlStr = new StringBuilder(
@@ -80,8 +77,8 @@ public class UserController {
             URL url = new URL(urlStr.toString());
 
             urlConnection = (HttpURLConnection) url.openConnection();
-            stream = userService.getNetworkConnection(urlConnection);
-            result = userService.readStreamToString(stream);
+            stream = findCityUtils.getNetworkConnection(urlConnection);
+            result = findCityUtils.readStreamToString(stream);
 
             if (stream != null) {
                 stream.close();
