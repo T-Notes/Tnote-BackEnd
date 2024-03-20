@@ -44,9 +44,11 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
     @Query("SELECT o FROM Observation o " +
             "WHERE o.user.id = :userId " +
             "AND o.schedule.id = :scheduleId " +
-            "AND (FUNCTION('YEAR', o.startDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', o.startDate) = FUNCTION('MONTH', :date)) "
-            +
-            "OR (FUNCTION('YEAR', o.endDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', o.endDate) = FUNCTION('MONTH', :date))")
+            "AND ((" +
+            "FUNCTION('YEAR', o.startDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', o.startDate) = FUNCTION('MONTH', :date)" +
+            ") OR (" +
+            "FUNCTION('YEAR', o.endDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', o.endDate) = FUNCTION('MONTH', :date)" +
+            "))")
     List<Observation> findByUserIdAndScheduleIdAndYearMonth(
             Long userId,
             Long scheduleId,
