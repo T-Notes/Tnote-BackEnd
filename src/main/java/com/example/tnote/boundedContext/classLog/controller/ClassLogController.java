@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.classLog.controller;
 
-import static com.example.tnote.base.exception.common.CommonErrorResult.UNAUTHORIZED;
+
+import static com.example.tnote.base.exception.common.CommonException.UNAUTHORIZED;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;

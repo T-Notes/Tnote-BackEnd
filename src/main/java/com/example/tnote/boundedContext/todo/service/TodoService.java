@@ -1,10 +1,8 @@
 package com.example.tnote.boundedContext.todo.service;
 
-import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
+
 import com.example.tnote.base.exception.schedule.ScheduleException;
-import com.example.tnote.base.exception.todo.TodoErrorResult;
 import com.example.tnote.base.exception.todo.TodoException;
-import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
@@ -104,29 +102,29 @@ public class TodoService {
 
         if (!schedule.getUser().equals(currentUser)) {
             log.warn("학기를 작성한 user와 현 user가 다릅니다");
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
+            throw UserException.USER_NOT_FOUND;
         }
     }
 
     private User checkCurrentUser(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+                .orElseThrow(() -> UserException.USER_NOT_FOUND);
     }
 
     private Schedule checkSchedule(Long id) {
         return scheduleRepository.findById(id)
-                .orElseThrow(() -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
+                .orElseThrow(() -> ScheduleException.SCHEDULE_NOT_FOUND);
     }
 
 
     private Todo authorization(Long id, User member) {
 
         Todo todos = todoRepository.findById(id).orElseThrow(
-                () -> new TodoException(TodoErrorResult.TODO_NOT_FOUND));
+                () -> TodoException.TODO_NOT_FOUND);
 
         if (!todos.getUser().getId().equals(member.getId())) {
             log.warn("member doesn't have authentication , user {}", todos.getUser());
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
+            throw UserException.USER_NOT_FOUND;
         }
         return todos;
 

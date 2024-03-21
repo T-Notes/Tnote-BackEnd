@@ -2,13 +2,10 @@ package com.example.tnote.boundedContext.proceeding.service;
 
 import com.example.tnote.base.exception.proceeding.ProceedingErrorResult;
 import com.example.tnote.base.exception.proceeding.ProceedingException;
-import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
 import com.example.tnote.base.exception.schedule.ScheduleException;
-import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
-import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
@@ -19,6 +16,7 @@ import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingImageRepository;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -49,9 +47,9 @@ public class ProceedingService {
     public ProceedingResponseDto save(Long userId, Long scheduleId, ProceedingRequestDto requestDto,
                                       List<MultipartFile> proceedingImages) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleException(
-                ScheduleErrorResult.SCHEDULE_NOT_FOUND));
+                .orElseThrow(() -> UserException.USER_NOT_FOUND);
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> ScheduleException.SCHEDULE_NOT_FOUND);
 
         Proceeding proceeding = proceedingRepository.save(requestDto.toEntity(user, schedule));
         if (proceedingImages != null && !proceedingImages.isEmpty()) {

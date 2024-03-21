@@ -1,8 +1,5 @@
 package com.example.tnote.boundedContext.user.service;
 
-import static com.example.tnote.base.exception.user.UserErrorResult.USER_NOT_FOUND;
-
-import com.example.tnote.base.exception.jwt.JwtErrorResult;
 import com.example.tnote.base.exception.jwt.JwtException;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.JwtTokenProvider;
@@ -40,7 +37,7 @@ public class AuthService {
 
         if (jwtTokenProvider.isExpired(refreshToken)) {
             // refresh token 만료시 재로그인 필요
-            throw new JwtException(JwtErrorResult.EXPIRED_REFRESH_TOKEN);
+            throw JwtException.EXPIRED_REFRESH_TOKEN;
         }
 
         RefreshToken refreshTokenObj = refreshTokenService.findByRefreshToken(refreshToken);
@@ -54,7 +51,7 @@ public class AuthService {
 
     private User getUserFromRefreshToken(RefreshToken refreshToken) {
         return userRepository.findByEmail(refreshToken.getKeyEmail())
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+                .orElseThrow(() -> UserException.USER_NOT_FOUND);
     }
 
     private SignInResponse buildSignInResponse(String accessToken, String refreshToken, Long userId) {

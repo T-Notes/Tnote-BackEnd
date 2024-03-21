@@ -1,12 +1,9 @@
 package com.example.tnote.boundedContext.subject.service;
 
-import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
+
 import com.example.tnote.base.exception.schedule.ScheduleException;
-import com.example.tnote.base.exception.subject.SubjectsErrorResult;
 import com.example.tnote.base.exception.subject.SubjectsException;
-import com.example.tnote.base.exception.todo.TodoErrorResult;
 import com.example.tnote.base.exception.todo.TodoException;
-import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
@@ -89,11 +86,11 @@ public class SubjectService {
         User currentUser = checkCurrentUser(userId);
         Subjects subject = authorization(subjectsId, currentUser.getId());
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
+                () -> ScheduleException.SCHEDULE_NOT_FOUND);
 
         if (!subject.getSchedule().equals(schedule)) {
             log.warn("해당하는 학기가 존재하지 않습니다");
-            throw new TodoException(TodoErrorResult.SCHEDULE_NOT_FOUND);
+            throw TodoException.SCHEDULE_NOT_FOUND;
         }
 
         subjectRepository.deleteById(subject.getId());
@@ -119,14 +116,14 @@ public class SubjectService {
 
         if (!schedule.getUser().equals(user)) {
             log.warn("스케쥴 user와 현 user가 다릅니다");
-            throw new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND);
+            throw ScheduleException.SCHEDULE_NOT_FOUND;
         }
 
         if (date.equals(LocalDate.now())) {
             return SubjectResponseDto.of(
                     subjectQueryRepository.findAllByScheduleIdAndUserIdAndDate(scheduleId, userId, date));
         }
-        throw new SubjectsException(SubjectsErrorResult.TODAY_IS_WRONG_WITH_DATE);
+        throw SubjectsException.TODAY_IS_WRONG_WITH_DATE;
 
     }
 
@@ -141,12 +138,12 @@ public class SubjectService {
 
     private User checkCurrentUser(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
+                () -> UserException.USER_NOT_FOUND);
     }
 
     private Schedule checkCurrentSchedule(Long scheduleId) {
         return scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND));
+                () -> ScheduleException.SCHEDULE_NOT_FOUND);
     }
 
     private void matchUserWithSchedule(Long scheduleId, Long userId) {
@@ -155,18 +152,18 @@ public class SubjectService {
 
         if (!schedule.getUser().equals(user)) {
             log.warn("스케쥴 user와 현 user가 다릅니다");
-            throw new ScheduleException(ScheduleErrorResult.SCHEDULE_NOT_FOUND);
+            throw ScheduleException.SCHEDULE_NOT_FOUND;
         }
     }
 
     private Subjects authorization(Long id, Long userId) {
 
         Subjects subjects = subjectRepository.findById(id).orElseThrow(
-                () -> new SubjectsException(SubjectsErrorResult.SUBJECT_NOT_FOUND));
+                () -> SubjectsException.SUBJECT_NOT_FOUND);
 
         if (!subjects.getSchedule().getUser().getId().equals(userId)) {
             log.warn("member doesn't have authentication , user {}", subjects.getSchedule().getUser());
-            throw new UserException(UserErrorResult.USER_NOT_FOUND);
+            throw UserException.USER_NOT_FOUND;
         }
         return subjects;
 
