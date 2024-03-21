@@ -1,6 +1,5 @@
 package com.example.tnote.base.filter;
 
-import com.example.tnote.base.exception.jwt.JwtErrorResult;
 import com.example.tnote.base.exception.jwt.JwtException;
 import com.example.tnote.base.utils.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
@@ -31,8 +30,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         String token = resolveToken(request);
         try {
             if (token != null) {
-                if(!jwtTokenProvider.isValidToken(token)) {
-                    throw new JwtException(JwtErrorResult.NOT_FOUND_TOKEN);
+                if (!jwtTokenProvider.isValidToken(token)) {
+                    throw JwtException.NOT_FOUND_TOKEN;
                 }
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(authentication);
@@ -42,8 +41,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 log.info("Principal Details: {}", authentication.getPrincipal());
             }
         } catch (JwtException e) {
-            log.warn("JWT Error: {}", e.getJwtErrorResult().getMessage());
-            request.setAttribute("JwtException", e.getJwtErrorResult().getMessage());
+            log.warn("JWT Error: {}", e.getMessage());
+            request.setAttribute("JwtException", e.getMessage());
         }
         filterChain.doFilter(request, response);
     }

@@ -1,6 +1,5 @@
 package com.example.tnote.base.utils;
 
-import com.example.tnote.base.exception.jwt.JwtErrorResult;
 import com.example.tnote.base.exception.jwt.JwtException;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -14,7 +13,7 @@ public class TokenUtils {
     public static PrincipalDetails checkValidToken(PrincipalDetails user) {
         if (user == null) {
             log.warn("PrincipalDetails is null");
-            throw new JwtException(JwtErrorResult.NOT_FOUND_TOKEN);
+            throw JwtException.NOT_FOUND_TOKEN;
         }
         return user;
     }

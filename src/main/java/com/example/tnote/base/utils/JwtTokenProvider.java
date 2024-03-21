@@ -1,7 +1,6 @@
 package com.example.tnote.base.utils;
 
 import com.example.tnote.base.constant.Constants;
-import com.example.tnote.base.exception.jwt.JwtErrorResult;
 import com.example.tnote.base.exception.jwt.JwtException;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
 import com.example.tnote.boundedContext.user.dto.Token;
@@ -97,13 +96,13 @@ public class JwtTokenProvider {
             return !claimsJws.getBody().getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
             // 만료시 not found token 보내기
-            throw new JwtException(JwtErrorResult.NOT_FOUND_TOKEN);
+            throw JwtException.NOT_FOUND_TOKEN;
         } catch (UnsupportedJwtException e) {
-            throw new JwtException(JwtErrorResult.UNSUPPORTED);
+            throw JwtException.UNSUPPORTED;
         } catch (MalformedJwtException | IllegalArgumentException e) {
-            throw new JwtException(JwtErrorResult.WRONG_TOKEN);
+            throw JwtException.WRONG_TOKEN;
         } catch (SignatureException e) {
-            throw new JwtException(JwtErrorResult.WRONG_SIGNATURE);
+            throw JwtException.WRONG_SIGNATURE;
         }
     }
 
