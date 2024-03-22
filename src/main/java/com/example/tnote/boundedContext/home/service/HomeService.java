@@ -1,6 +1,6 @@
 package com.example.tnote.boundedContext.home.service;
 
-import com.example.tnote.base.exception.user.UserErrorResult;
+
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
@@ -103,7 +103,7 @@ public class HomeService {
 
     private void findUser(Long userId) {
         userRepository.findById(userId).orElseThrow(
-                () -> new UserException(UserErrorResult.USER_NOT_FOUND));
+                () -> UserException.USER_NOT_FOUND);
     }
 
     public ArchiveSliceResponseDto readLogsByDate(Long userId, Long scheduleId, LocalDate startDate, LocalDate endDate,

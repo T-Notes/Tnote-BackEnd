@@ -2,13 +2,10 @@ package com.example.tnote.boundedContext.observation.service;
 
 import com.example.tnote.base.exception.observation.ObservationErrorResult;
 import com.example.tnote.base.exception.observation.ObservationException;
-import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
 import com.example.tnote.base.exception.schedule.ScheduleException;
-import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
-import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
@@ -19,6 +16,7 @@ import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.entity.ObservationImage;
 import com.example.tnote.boundedContext.observation.repository.ObservationImageRepository;
 import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -49,9 +47,9 @@ public class ObservationService {
     public ObservationResponseDto save(Long userId, Long scheduleId, ObservationRequestDto requestDto,
                                        List<MultipartFile> observationImages) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleException(
-                ScheduleErrorResult.SCHEDULE_NOT_FOUND));
+                .orElseThrow(() -> UserException.USER_NOT_FOUND);
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> ScheduleException.SCHEDULE_NOT_FOUND);
 
         Observation observation = observationRepository.save(requestDto.toEntity(user, schedule));
         if (observationImages != null && !observationImages.isEmpty()) {

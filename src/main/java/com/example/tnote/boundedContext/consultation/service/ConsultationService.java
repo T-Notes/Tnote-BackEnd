@@ -2,9 +2,7 @@ package com.example.tnote.boundedContext.consultation.service;
 
 import com.example.tnote.base.exception.consultation.ConsultationErrorResult;
 import com.example.tnote.base.exception.consultation.ConsultationException;
-import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
 import com.example.tnote.base.exception.schedule.ScheduleException;
-import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
@@ -50,9 +48,9 @@ public class ConsultationService {
                                         List<MultipartFile> consultationImages) {
         requestDto.validateEnums();
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleException(
-                ScheduleErrorResult.SCHEDULE_NOT_FOUND));
+                .orElseThrow(() -> UserException.USER_NOT_FOUND);
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> ScheduleException.SCHEDULE_NOT_FOUND);
 
         Consultation consultation = consultationRepository.save(requestDto.toEntity(user, schedule));
 
