@@ -76,11 +76,6 @@ public class KakaoRequestService implements RequestService {
         RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
                 .orElseThrow(() -> JwtException.WRONG_REFRESH_TOKEN);
 
-//        // 서버에 해당 이메일로 저장된 리프레시 토큰이 없으면 저장(== 첫 회원가입 시 -> 이후에는 리프레시 토큰 검증을 통해 재발급 및 저장함)
-//        if (!refreshTokenRepository.existsByKeyEmail(user.getEmail())) {
-//
-//        }
-
         return SignInResponse.builder()
                 .accessToken(newToken_AccessToken.getAccessToken())
                 .refreshToken(refreshToken.getRefreshToken())
