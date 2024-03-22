@@ -2,9 +2,7 @@ package com.example.tnote.boundedContext.classLog.service;
 
 import com.example.tnote.base.exception.classLog.ClassLogErrorResult;
 import com.example.tnote.base.exception.classLog.ClassLogException;
-import com.example.tnote.base.exception.schedule.ScheduleErrorResult;
 import com.example.tnote.base.exception.schedule.ScheduleException;
-import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
@@ -49,9 +47,9 @@ public class ClassLogService {
     public ClassLogResponseDto save(Long userId, Long scheduleId, ClassLogRequestDto request,
                                     List<MultipartFile> classLogImages) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> new ScheduleException(
-                ScheduleErrorResult.SCHEDULE_NOT_FOUND));
+                .orElseThrow(() -> UserException.USER_NOT_FOUND);
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> ScheduleException.SCHEDULE_NOT_FOUND);
 
         ClassLog classLog = classLogRepository.save(request.toEntity(user, schedule));
 

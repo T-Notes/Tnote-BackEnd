@@ -1,6 +1,5 @@
 package com.example.tnote.boundedContext.user.service;
 
-import com.example.tnote.base.exception.user.UserErrorResult;
 import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.CookieUtils;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
@@ -52,7 +51,7 @@ public class UserService {
     public UserResponse getUserInfo(Long userId) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+                .orElseThrow(() -> UserException.USER_NOT_FOUND);
 
         return UserResponse.of(user);
     }
@@ -61,7 +60,7 @@ public class UserService {
     public UserResponse updateExtraInfo(Long userId, UserUpdateRequest dto) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+                .orElseThrow(() -> UserException.USER_NOT_FOUND);
 
         updateUserItem(dto, user);
 
@@ -87,7 +86,7 @@ public class UserService {
     public UserDeleteResponseDto deleteUser(Long userId) {
 
         User currentUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+                .orElseThrow(() -> UserException.USER_NOT_FOUND);
 
         deleteAll(userId, currentUser);
 
@@ -112,7 +111,7 @@ public class UserService {
     public void logout(HttpServletRequest request, HttpServletResponse response, Long userId) {
 
         userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+                .orElseThrow(() -> UserException.USER_NOT_FOUND);
 
         CookieUtils.deleteCookie(request, response, "AccessToken");
     }
@@ -120,7 +119,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserMailResponse getMail(Long userId) {
         User currentUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorResult.USER_NOT_FOUND));
+                .orElseThrow(() -> UserException.USER_NOT_FOUND);
         return UserMailResponse.of(currentUser);
     }
 
