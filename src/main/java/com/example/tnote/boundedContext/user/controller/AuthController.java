@@ -26,10 +26,6 @@ public class AuthController {
             @RequestParam("code") String code,
             @RequestParam("state") String state
     ) {
-        log.info("----- AuthController.redirect -----");
-        log.info("registrationId={}", registrationId);
-        log.info("code={}", code);
-        log.info("state={}", state);
 
         SignInResponse result = authService.redirect(
                 TokenRequest.builder()

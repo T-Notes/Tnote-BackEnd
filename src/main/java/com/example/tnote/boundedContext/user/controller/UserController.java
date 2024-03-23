@@ -112,6 +112,12 @@ public class UserController {
         return ResponseEntity.ok(Result.of(schoolList));
     }
 
+    @GetMapping
+    public ResponseEntity<Result> getUserInfo(@AuthenticationPrincipal PrincipalDetails user) {
+        UserResponse response = UserResponse.of(userService.findById(user.getId()));
+        return ResponseEntity.ok(Result.of(response));
+    }
+
     @GetMapping("/{userId}")
     public ResponseEntity<Result> getUserInfo(@PathVariable Long userId) {
 
