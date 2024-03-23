@@ -1,5 +1,6 @@
 package com.example.tnote.boundedContext.user.service;
 
+import com.example.tnote.base.exception.jwt.JwtException;
 import com.example.tnote.base.utils.JwtTokenProvider;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
@@ -51,28 +52,33 @@ public class KakaoRequestService implements RequestService {
 
         User user = userRepository.findByEmail(kakaoUserInfo.getEmail()).orElse(null);
 
-        // 회원 가입이 안되어있는 경우(최초 로그인 시)
-        if (user == null) {
-            user = UserResponse.toEntity(userService.signUp(kakaoUserInfo.getEmail(), kakaoUserInfo.getName()));
-        }
-
         // 회원 가입이 되어있는 경우
         Token newToken_AccessToken = jwtTokenProvider.createAccessToken(kakaoUserInfo.getEmail());
         Token newToken_RefreshToken = jwtTokenProvider.createRefreshToken(kakaoUserInfo.getEmail());
 
-        // 서버에 해당 이메일로 저장된 리프레시 토큰이 없으면 저장(== 첫 회원가입 시 -> 이후에는 리프레시 토큰 검증을 통해 재발급 및 저장함)
-        if (!refreshTokenRepository.existsByKeyEmail(user.getEmail())) {
+        // 회원 가입이 안되어있는 경우(최초 로그인 시)
+        if (user == null) {
+            user = UserResponse.toEntity(userService.signUp(kakaoUserInfo.getEmail(), kakaoUserInfo.getName()));
+
             RefreshToken newRefreshToken = RefreshToken.builder()
                     .keyEmail(user.getEmail())
                     .refreshToken(newToken_RefreshToken.getRefreshToken())
                     .build();
 
             refreshTokenRepository.save(newRefreshToken);
+
+            return SignInResponse.builder()
+                    .accessToken(newToken_AccessToken.getAccessToken())
+                    .refreshToken(newToken_RefreshToken.getRefreshToken())
+                    .userId(user.getId())
+                    .build();
         }
+        RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
+                .orElseThrow(() -> JwtException.WRONG_REFRESH_TOKEN);
 
         return SignInResponse.builder()
                 .accessToken(newToken_AccessToken.getAccessToken())
-                .refreshToken(newToken_RefreshToken.getRefreshToken())
+                .refreshToken(refreshToken.getRefreshToken())
                 .userId(user.getId())
                 .build();
     }

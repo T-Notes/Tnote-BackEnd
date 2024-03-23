@@ -22,7 +22,7 @@ public interface ProceedingRepository extends JpaRepository<Proceeding, Long> {
 
     @Query("SELECT p FROM Proceeding p "
             + "WHERE p.user.id = :userId AND p.schedule.id = :scheduleId "
-            + "AND p.createdAt >= :startOfDay AND p.createdAt <= :endOfDay")
+            + "AND p.startDate >= :startOfDay AND p.endDate <= :endOfDay")
     List<Proceeding> findByUserIdAndScheduleIdAndStartDateBetween(
             Long userId,
             Long scheduleId,
@@ -45,8 +45,11 @@ public interface ProceedingRepository extends JpaRepository<Proceeding, Long> {
     @Query("SELECT p FROM Proceeding p " +
             "WHERE p.user.id = :userId " +
             "AND p.schedule.id = :scheduleId " +
-            "AND FUNCTION('YEAR', p.createdAt) = FUNCTION('YEAR', :date) " +
-            "AND FUNCTION('MONTH', p.createdAt) = FUNCTION('MONTH', :date)")
+            "AND ((" +
+            "FUNCTION('YEAR', p.startDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', p.startDate) = FUNCTION('MONTH', :date)" +
+            ") OR (" +
+            "FUNCTION('YEAR', p.endDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', p.endDate) = FUNCTION('MONTH', :date)" +
+            "))")
     List<Proceeding> findByUserIdAndScheduleIdAndYearMonth(
             Long userId,
             Long scheduleId,

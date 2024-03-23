@@ -157,12 +157,8 @@ public class TodoService {
 
     @Transactional(readOnly = true)
     public List<TodoResponseDto> readDailyTodos(Long userId, Long scheduleId, LocalDate date) {
-        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
-        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
-        List<Todo> todos = todoQueryRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId,
-                startOfDay,
-                endOfDay);
+        List<Todo> todos = todoQueryRepository.findByUserIdAndScheduleIdAndDate(userId, scheduleId, date);
 
         return todos.stream().map(TodoResponseDto::of).toList();
     }

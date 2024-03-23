@@ -30,6 +30,17 @@ public class TodoQueryRepository {
                 .fetch();
     }
 
+    public List<Todo> findByUserIdAndScheduleIdAndDate(Long userId, Long scheduleId, LocalDate date) {
+        return query
+                .selectFrom(todo)
+                .where(todo.user.id.eq(userId)
+                        .and(todo.date.eq(date))
+                        .and(todo.schedule.id.eq(scheduleId))
+                )
+                .orderBy(todo.createdAt.desc())
+                .fetch();
+    }
+
     public List<Todo> findByUserIdAndScheduleIdAndStartDateBetween(Long userId, Long scheduleId,
                                                                    LocalDateTime startOfDay, LocalDateTime endOfDay) {
         return query
@@ -38,10 +49,11 @@ public class TodoQueryRepository {
                         .and(todo.createdAt.between(startOfDay, endOfDay))
                         .and(todo.schedule.id.eq(scheduleId))
                 )
-                .orderBy(todo.id.asc())
+                .orderBy(todo.createdAt.desc())
                 .fetch();
     }
 
+    // 추가
     public List<Todo> findByUserIdAndScheduleIdAndYearMonth(Long userId, Long scheduleId, LocalDate date) {
         return query
                 .selectFrom(todo)
