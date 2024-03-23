@@ -73,6 +73,7 @@ public class KakaoRequestService implements RequestService {
                     .userId(user.getId())
                     .build();
         }
+
         RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
                 .orElseThrow(() -> JwtException.WRONG_REFRESH_TOKEN);
 

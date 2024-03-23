@@ -123,4 +123,8 @@ public class UserService {
         return UserMailResponse.of(currentUser);
     }
 
+    @Transactional(readOnly = true)
+    public User findById(Long userId) {
+        return userRepository.findById(userId).orElseThrow(() -> UserException.USER_NOT_FOUND);
+    }
 }
