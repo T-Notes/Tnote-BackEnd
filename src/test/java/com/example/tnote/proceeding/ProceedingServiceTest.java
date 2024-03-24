@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import com.example.tnote.base.exception.proceeding.ProceedingException;
 import com.example.tnote.base.exception.user.UserException;
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
@@ -126,7 +125,7 @@ public class ProceedingServiceTest {
                 .isNotNull()
                 .hasSize(2);
 
-        verify(proceedingRepository).findAllByScheduleId(scheduleId,pageable);
+        verify(proceedingRepository).findAllByScheduleId(scheduleId, pageable);
     }
 
     @DisplayName("업무일지 상세 조회: 업무일지 상세 정보 조회 확인")

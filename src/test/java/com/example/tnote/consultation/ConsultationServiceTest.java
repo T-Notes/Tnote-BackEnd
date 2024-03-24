@@ -11,7 +11,6 @@ import static org.mockito.Mockito.when;
 
 import com.example.tnote.base.exception.consultation.ConsultationException;
 import com.example.tnote.base.exception.user.UserException;
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;

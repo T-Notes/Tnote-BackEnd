@@ -67,6 +67,7 @@ public class Observation extends BaseTimeEntity {
     public void updateEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
+
     public void updateObservationContents(String observationContents) {
         this.observationContents = observationContents;
     }

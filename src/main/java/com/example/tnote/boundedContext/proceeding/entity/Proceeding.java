@@ -54,6 +54,7 @@ public class Proceeding extends BaseTimeEntity {
     public void clearProceedingImages() {
         this.proceedingImage.clear();
     }
+
     public void updateTitle(String title) {
         this.title = title;
     }
@@ -65,6 +66,7 @@ public class Proceeding extends BaseTimeEntity {
     public void updateEndDate(LocalDateTime endDate) {
         this.endDate = endDate;
     }
+
     public void updateLocation(String location) {
         this.location = location;
     }
