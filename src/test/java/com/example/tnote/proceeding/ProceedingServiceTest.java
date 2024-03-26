@@ -9,8 +9,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.proceeding.ProceedingException;
-import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
@@ -99,7 +99,7 @@ public class ProceedingServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThatExceptionOfType(UserException.class)
+        assertThatExceptionOfType(CustomException.class)
                 .isThrownBy(() -> proceedingService.save(userId, scheduleId, requestDto, proceedingImages));
 
         verify(userRepository).findById(userId);

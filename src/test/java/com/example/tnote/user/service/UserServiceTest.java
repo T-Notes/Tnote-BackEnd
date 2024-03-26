@@ -3,7 +3,7 @@ package com.example.tnote.user.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.tnote.base.exception.user.UserException;
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserRequest;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
@@ -109,7 +109,7 @@ public class UserServiceTest {
 
         // then
         assertThatThrownBy(() -> userService.updateExtraInfo(222L, userInfo))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -161,7 +161,7 @@ public class UserServiceTest {
 
         // then
         assertThatThrownBy(() -> userService.getUserInfo(222L))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -175,7 +175,7 @@ public class UserServiceTest {
 
         // then
         assertThatThrownBy(() -> userService.getUserInfo(222L))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -190,7 +190,7 @@ public class UserServiceTest {
 
         // then
         assertThatThrownBy(() -> userService.deleteUser(user1.getId()))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -204,7 +204,7 @@ public class UserServiceTest {
 
         // then
         assertThatThrownBy(() -> userService.deleteUser(222L))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -253,7 +253,7 @@ public class UserServiceTest {
 
         // then
         assertThatThrownBy(() -> userService.logout(request, response, 222L))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -282,7 +282,7 @@ public class UserServiceTest {
 
         // then
         assertThatThrownBy(() -> userService.getMail(222L))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test

@@ -9,8 +9,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.consultation.ConsultationException;
-import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
@@ -126,7 +126,7 @@ public class ConsultationServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThatExceptionOfType(UserException.class)
+        assertThatExceptionOfType(CustomException.class)
                 .isThrownBy(() -> consultationService.save(userId, scheduleId, requestDto, consultationImages));
 
         verify(userRepository).findById(userId);

@@ -1,9 +1,8 @@
 package com.example.tnote.boundedContext.observation.service;
 
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.observation.ObservationErrorResult;
 import com.example.tnote.base.exception.observation.ObservationException;
-import com.example.tnote.base.exception.schedule.ScheduleException;
-import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
@@ -47,9 +46,9 @@ public class ObservationService {
     public ObservationResponseDto save(Long userId, Long scheduleId, ObservationRequestDto requestDto,
                                        List<MultipartFile> observationImages) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> UserException.USER_NOT_FOUND);
+                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
         Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> ScheduleException.SCHEDULE_NOT_FOUND);
+                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
 
         Observation observation = observationRepository.save(requestDto.toEntity(user, schedule));
         if (observationImages != null && !observationImages.isEmpty()) {

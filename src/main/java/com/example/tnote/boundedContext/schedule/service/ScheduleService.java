@@ -1,7 +1,6 @@
 package com.example.tnote.boundedContext.schedule.service;
 
-import com.example.tnote.base.exception.schedule.ScheduleException;
-import com.example.tnote.base.exception.user.UserException;
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleDeleteResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
@@ -35,7 +34,7 @@ public class ScheduleService {
     public ScheduleResponseDto addSchedule(ScheduleRequestDto dto, Long userId) {
 
         User currentUser = userRepository.findById(userId).orElseThrow(
-                () -> UserException.USER_NOT_FOUND);
+                () -> CustomException.USER_NOT_FOUND);
 
         Schedule schedule = dto.toEntity(currentUser);
 
@@ -175,12 +174,12 @@ public class ScheduleService {
 
     private Schedule getSchedule(Long scheduleId) {
         return scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> ScheduleException.SCHEDULE_NOT_FOUND);
+                () -> CustomException.SCHEDULE_NOT_FOUND);
     }
 
     private User checkCurrentUser(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> UserException.USER_NOT_FOUND);
+                () -> CustomException.USER_NOT_FOUND);
     }
 
     private void matchUserWithSchedule(Long scheduleId, Long userId) {
@@ -189,20 +188,20 @@ public class ScheduleService {
 
         if (!schedule.getUser().equals(currentUser)) {
             log.warn("스케쥴 작성자와 현재 유저가 다른 유저입니다.");
-            throw UserException.WRONG_USRE;
+            throw CustomException.USER_NOT_FOUND;
         }
     }
 
     private void checkUser(Long userId) {
         if (userId == null) {
             log.warn("없는 user 입니다");
-            throw UserException.USER_NOT_FOUND;
+            throw CustomException.USER_NOT_FOUND;
         }
     }
 
     private void compareScheduleWithUser(Long userId, Schedule schedule) {
         if (!schedule.getUser().getId().equals(userId)) {
-            throw UserException.WRONG_USRE;
+            throw CustomException.USER_NOT_FOUND;
         }
     }
 
