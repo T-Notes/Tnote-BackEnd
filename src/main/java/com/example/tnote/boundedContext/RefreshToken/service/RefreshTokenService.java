@@ -1,7 +1,6 @@
 package com.example.tnote.boundedContext.RefreshToken.service;
 
-import com.example.tnote.base.exception.common.CommonException;
-import com.example.tnote.base.exception.jwt.JwtException;
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
@@ -20,7 +19,7 @@ public class RefreshTokenService {
     @Transactional
     public RefreshToken save(String refreshToken, String email) {
         userRepository.findByEmail(email)
-                .orElseThrow(() -> CommonException.BAD_REQUEST);
+                .orElseThrow(() -> CustomException.BAD_REQUEST);
 
         // 기존의 만료된 리프레시 토큰 삭제
         if (refreshTokenRepository.existsByKeyEmail(email)) {
@@ -38,6 +37,6 @@ public class RefreshTokenService {
     @Transactional(readOnly = true)
     public RefreshToken findByRefreshToken(String refreshToken) {
         return refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> JwtException.WRONG_REFRESH_TOKEN);
+                .orElseThrow(() -> CustomException.WRONG_REFRESH_TOKEN);
     }
 }
