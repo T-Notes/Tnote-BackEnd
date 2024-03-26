@@ -9,8 +9,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.observation.ObservationException;
-import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
@@ -100,7 +100,7 @@ public class ObservationServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThatExceptionOfType(UserException.class)
+        assertThatExceptionOfType(CustomException.class)
                 .isThrownBy(() -> observationService.save(userId, scheduleId, requestDto, observationImages));
 
         verify(userRepository).findById(userId);

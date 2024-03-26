@@ -9,8 +9,8 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.classLog.ClassLogException;
-import com.example.tnote.base.exception.user.UserException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
@@ -101,7 +101,7 @@ public class ClassLogServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThatExceptionOfType(UserException.class)
+        assertThatExceptionOfType(CustomException.class)
                 .isThrownBy(() -> classLogService.save(userId, scheduleId, requestDto, classLogImages));
 
         verify(userRepository).findById(userId);

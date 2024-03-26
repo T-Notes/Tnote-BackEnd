@@ -3,8 +3,7 @@ package com.example.tnote.schedule.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.tnote.base.exception.schedule.ScheduleException;
-import com.example.tnote.base.exception.user.UserException;
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleUpdateRequestDto;
@@ -173,7 +172,7 @@ class ScheduleServiceTest {
 
         // then
         assertThatThrownBy(() -> scheduleService.updateSchedule(dto, schedule1.getId(), 222L))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -195,7 +194,7 @@ class ScheduleServiceTest {
 
         // then
         assertThatThrownBy(() -> scheduleService.updateSchedule(dto, 222L, user1.getId()))
-                .isInstanceOf(ScheduleException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -243,7 +242,7 @@ class ScheduleServiceTest {
 
         // then
         assertThatThrownBy(() -> scheduleService.deleteSchedule(222L, user1.getId()))
-                .isInstanceOf(ScheduleException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -257,7 +256,7 @@ class ScheduleServiceTest {
 
         // then
         assertThatThrownBy(() -> scheduleService.deleteSchedule(schedule1.getId(), 222L))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -317,7 +316,7 @@ class ScheduleServiceTest {
 
         // then
         assertThatThrownBy(() -> scheduleService.getAllSubjectsInfoBySchedule(222L, user1.getId()))
-                .isInstanceOf(ScheduleException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -331,7 +330,7 @@ class ScheduleServiceTest {
 
         // then
         assertThatThrownBy(() -> scheduleService.getAllSubjectsInfoBySchedule(schedule1.getId(), 222L))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -416,7 +415,7 @@ class ScheduleServiceTest {
 
         // then
         assertThatThrownBy(() -> scheduleService.findSchedule(schedule1.getId(), 222L))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test

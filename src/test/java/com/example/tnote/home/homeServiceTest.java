@@ -3,7 +3,7 @@ package com.example.tnote.home;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.tnote.base.exception.user.UserException;
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
@@ -127,7 +127,7 @@ public class homeServiceTest {
 
         // then
         assertThatThrownBy(() -> homeService.findAllOfConsultation(consultation.getStudentName(), 222L))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -177,7 +177,7 @@ public class homeServiceTest {
 
         // then
         assertThatThrownBy(() -> homeService.findAllOfObservation(observation.getStudentName(), 222L))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
 
@@ -230,7 +230,7 @@ public class homeServiceTest {
 
         // then
         assertThatThrownBy(() -> homeService.findAllOfClassLog(classLog.getTitle(), 222L))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -280,7 +280,7 @@ public class homeServiceTest {
 
         // then
         assertThatThrownBy(() -> homeService.findAllOfProceeding(proceeding.getTitle(), 222L))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @Test
@@ -306,7 +306,7 @@ public class homeServiceTest {
 
         // then
         assertThatThrownBy(() -> scheduleService.searchSemester("2024년 3학년 1학기", null))
-                .isInstanceOf(UserException.class);
+                .isInstanceOf(CustomException.class);
     }
 
 }
