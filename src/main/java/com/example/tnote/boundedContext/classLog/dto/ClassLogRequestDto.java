@@ -38,6 +38,7 @@ public class ClassLogRequestDto {
                 .schedule(schedule)
                 .build();
     }
+
     private void validate() {
         if (title == null || title.trim().isEmpty()) {
             throw new ClassLogException(ClassLogErrorResult.INVALID_CLASS_LOG_DATA);

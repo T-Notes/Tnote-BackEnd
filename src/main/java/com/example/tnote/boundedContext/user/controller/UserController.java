@@ -113,7 +113,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<Result> getUserInfo(@AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> getInfo(@AuthenticationPrincipal PrincipalDetails user) {
         UserResponse response = UserResponse.of(userService.findById(user.getId()));
         return ResponseEntity.ok(Result.of(response));
     }
