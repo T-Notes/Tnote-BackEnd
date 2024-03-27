@@ -92,7 +92,7 @@ public class ClassLogService {
     @Transactional(readOnly = true)
     public ClassLogDetailResponseDto getClassLogDetail(Long userId, Long classLogId) {
         ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
-                .orElseThrow(() -> new ClassLogException(ClassLogErrorResult.CLASS_LOG_NOT_FOUNT));
+                .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
         List<ClassLogImage> classLogImages = classLogImageRepository.findClassLogImagesByClassLogId(classLogId);
         recentLogService.saveRecentLog(userId, classLog.getId(), "CLASS_LOG");
         return new ClassLogDetailResponseDto(classLog, classLogImages);
