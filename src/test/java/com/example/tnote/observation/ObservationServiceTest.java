@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.base.exception.observation.ObservationException;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
@@ -22,6 +21,7 @@ import com.example.tnote.boundedContext.observation.entity.ObservationImage;
 import com.example.tnote.boundedContext.observation.repository.ObservationImageRepository;
 import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -54,6 +54,8 @@ public class ObservationServiceTest {
     private ObservationImageRepository observationImageRepository;
     @Mock
     private ScheduleRepository scheduleRepository;
+    @Mock
+    private RecentLogService recentLogService;
 
     @InjectMocks
     private ObservationService observationService;
@@ -173,7 +175,7 @@ public class ObservationServiceTest {
         when(observationRepository.findByIdAndUserId(observationId, userId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> observationService.readObservationDetail(userId, observationId))
-                .isInstanceOf(ObservationException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @DisplayName("관찰일지 삭제: 관찰일지 삭제 작업 확인")
