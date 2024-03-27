@@ -55,7 +55,7 @@ public class ProceedingService {
             proceeding.getProceedingImage().addAll(uploadedImages);
         }
         recentLogService.saveRecentLog(userId, proceeding.getId(), "PROCEEDING");
-        return ProceedingResponseDto.of(proceedingRepository.save(proceeding));
+        return ProceedingResponseDto.of(proceeding);
     }
 
     @Transactional(readOnly = true)
