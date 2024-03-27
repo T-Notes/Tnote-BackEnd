@@ -1,10 +1,11 @@
 package com.example.tnote.boundedContext.proceeding.service;
 
 import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.base.exception.proceeding.ProceedingErrorResult;
-import com.example.tnote.base.exception.proceeding.ProceedingException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.entity.Observation;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
@@ -15,7 +16,6 @@ import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingImageRepository;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
-import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -47,8 +47,7 @@ public class ProceedingService {
                                       List<MultipartFile> proceedingImages) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> CustomException.USER_NOT_FOUND);
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
+        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
 
         Proceeding proceeding = proceedingRepository.save(requestDto.toEntity(user, schedule));
         if (proceedingImages != null && !proceedingImages.isEmpty()) {
@@ -56,7 +55,7 @@ public class ProceedingService {
             proceeding.getProceedingImage().addAll(uploadedImages);
         }
         recentLogService.saveRecentLog(userId, proceeding.getId(), "PROCEEDING");
-        return ProceedingResponseDto.of(proceedingRepository.save(proceeding));
+        return ProceedingResponseDto.of(proceeding);
     }
 
     @Transactional(readOnly = true)

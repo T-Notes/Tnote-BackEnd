@@ -1,8 +1,6 @@
 package com.example.tnote.boundedContext.classLog.service;
 
 import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.base.exception.classLog.ClassLogErrorResult;
-import com.example.tnote.base.exception.classLog.ClassLogException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;

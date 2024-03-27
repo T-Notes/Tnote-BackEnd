@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.base.exception.classLog.ClassLogException;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
@@ -22,6 +21,7 @@ import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogImageRepository;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -57,6 +57,9 @@ public class ClassLogServiceTest {
 
     @InjectMocks
     private ClassLogService classLogService;
+
+    @Mock
+    private RecentLogService recentLogService;
 
     @DisplayName("학급일지 저장: 정상적인 경우 성공적으로 저장 확인")
     @Test
@@ -172,7 +175,7 @@ public class ClassLogServiceTest {
         when(classLogRepository.findByIdAndUserId(classLogId, userId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> classLogService.getClassLogDetail(userId, classLogId))
-                .isInstanceOf(ClassLogException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @DisplayName("학급일지 삭제: 학급일지 삭제 작업 확인")

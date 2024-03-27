@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.base.exception.proceeding.ProceedingException;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
@@ -22,6 +21,7 @@ import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingImageRepository;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -54,6 +54,8 @@ public class ProceedingServiceTest {
     private ProceedingImageRepository proceedingImageRepository;
     @Mock
     private ScheduleRepository scheduleRepository;
+    @Mock
+    private RecentLogService recentLogService;
     @InjectMocks
     private ProceedingService proceedingService;
 
@@ -168,7 +170,7 @@ public class ProceedingServiceTest {
         when(proceedingRepository.findByIdAndUserId(proceedingId, userId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> proceedingService.getProceedingDetails(userId, proceedingId))
-                .isInstanceOf(ProceedingException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @DisplayName("업무일지 삭제: 업무일지 삭제 작업 확인")
