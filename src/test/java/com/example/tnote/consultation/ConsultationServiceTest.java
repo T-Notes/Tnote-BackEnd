@@ -10,7 +10,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.base.exception.consultation.ConsultationException;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
@@ -24,6 +23,7 @@ import com.example.tnote.boundedContext.consultation.entity.CounselingType;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationImageRepository;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
 import com.example.tnote.boundedContext.consultation.service.ConsultationService;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -56,6 +56,8 @@ public class ConsultationServiceTest {
     private ConsultationRepository consultationRepository;
     @Mock
     private ConsultationImageRepository consultationImageRepository;
+    @Mock
+    private RecentLogService recentLogService;
 
     @InjectMocks
     private ConsultationService consultationService;
@@ -113,7 +115,7 @@ public class ConsultationServiceTest {
                 .build();
 
         assertThatThrownBy(() -> consultationService.save(userId, scheduleId, requestDto, Collections.emptyList()))
-                .isInstanceOf(ConsultationException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @DisplayName("상담일지 저장: 존재하지 않는 사용자로 인한 예외 발생 확인")
@@ -196,7 +198,7 @@ public class ConsultationServiceTest {
         when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> consultationService.getConsultationDetail(userId, consultationId))
-                .isInstanceOf(ConsultationException.class);
+                .isInstanceOf(CustomException.class);
     }
 
     @DisplayName("상담일지 삭제: 상담일지 삭제 작업 확인")
