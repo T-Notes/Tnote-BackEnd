@@ -62,7 +62,7 @@ public class ClassLogService {
 
     public ClassLogDeleteResponseDto deleteClassLog(Long userId, Long classLogId) {
         ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
-                .orElseThrow(() -> new ClassLogException(ClassLogErrorResult.CLASS_LOG_NOT_FOUNT));
+                .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
 
         deleteExistedImages(classLog);
         classLogRepository.delete(classLog);
@@ -102,7 +102,7 @@ public class ClassLogService {
                                               ClassLogUpdateRequestDto classLogUpdateRequestDto,
                                               List<MultipartFile> classLogImages) {
         ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
-                .orElseThrow(() -> new ClassLogException(ClassLogErrorResult.CLASS_LOG_NOT_FOUNT));
+                .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
         updateEachClassLogItem(classLogUpdateRequestDto, classLog, classLogImages);
         recentLogService.saveRecentLog(userId, classLog.getId(), "CLASS_LOG");
         return ClassLogResponseDto.of(classLog);
