@@ -116,7 +116,7 @@ public class ScheduleService {
 
         checkUser(userId);
 
-        List<Schedule> schedules = scheduleQueryRepository.findAllBySemesterName(semesterName);
+        List<Schedule> schedules = scheduleQueryRepository.findAllBySemesterNameAndUserId(semesterName, userId);
 
         return schedules.stream()
                 .map(SemesterNameResponseDto::of)
