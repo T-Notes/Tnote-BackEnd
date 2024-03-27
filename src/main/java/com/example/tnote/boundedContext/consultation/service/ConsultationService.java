@@ -79,9 +79,7 @@ public class ConsultationService {
 
     public ConsultationDeleteResponseDto deleteClassLog(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
-                .orElseThrow(() -> new ConsultationException(
-                        ConsultationErrorResult.CONSULTATION_NOT_FOUNT));
-        ;
+                .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
         consultationRepository.delete(consultation);
 
         return ConsultationDeleteResponseDto.builder()
@@ -92,8 +90,7 @@ public class ConsultationService {
     @Transactional(readOnly = true)
     public ConsultationDetailResponseDto getConsultationDetail(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
-                .orElseThrow(() -> new ConsultationException(
-                        ConsultationErrorResult.CONSULTATION_NOT_FOUNT));
+                .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
         List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultationId(
                 consultationId);
         recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
@@ -104,8 +101,7 @@ public class ConsultationService {
                                                       ConsultationUpdateRequestDto requestDto,
                                                       List<MultipartFile> consultationImages) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
-                .orElseThrow(() -> new ConsultationException(
-                        ConsultationErrorResult.CONSULTATION_NOT_FOUNT));
+                .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
 
         updateConsultationItem(requestDto, consultation, consultationImages);
         recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");

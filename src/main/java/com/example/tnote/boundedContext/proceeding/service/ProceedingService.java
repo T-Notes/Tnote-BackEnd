@@ -77,8 +77,7 @@ public class ProceedingService {
 
     public ProceedingDeleteResponseDto deleteProceeding(Long userId, Long proceedingId) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
-                .orElseThrow(() -> new ProceedingException(
-                        ProceedingErrorResult.PROCEEDING_NOT_FOUNT));
+                .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);
         proceedingRepository.delete(proceeding);
 
         return ProceedingDeleteResponseDto.builder()
@@ -88,8 +87,7 @@ public class ProceedingService {
 
     public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
-                .orElseThrow(() -> new ProceedingException(
-                        ProceedingErrorResult.PROCEEDING_NOT_FOUNT));
+                .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);
         List<ProceedingImage> proceedingImages = proceedingImageRepository.findProceedingImageById(proceedingId);
         recentLogService.saveRecentLog(userId, proceeding.getId(), "PROCEEDING");
 
@@ -100,8 +98,7 @@ public class ProceedingService {
                                                   ProceedingUpdateRequestDto updateRequestDto,
                                                   List<MultipartFile> proceedingImages) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
-                .orElseThrow(() -> new ProceedingException(
-                        ProceedingErrorResult.PROCEEDING_NOT_FOUNT));
+                .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);
         updateEachProceedingItem(updateRequestDto, proceeding, proceedingImages);
         recentLogService.saveRecentLog(userId, proceeding.getId(), "PROCEEDING");
 
