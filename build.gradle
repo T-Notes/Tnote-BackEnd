@@ -45,6 +45,9 @@ dependencies {
     // jasypt
     implementation "com.github.ulisesbocchio:jasypt-spring-boot-starter:3.0.3"
 
+    // s3
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
     // Querydsl
     implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
     annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"

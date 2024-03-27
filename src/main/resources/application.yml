@@ -78,3 +78,15 @@ logging:
     org:
       springframework:
         security: DEBUG
+
+cloud:
+  aws:
+    credentials:
+      access-key: ENC(AgFeonGTOhHp7zHyZ5SuXgX82QsAuOGROUbdVSMkHL4=)
+      secret-key: ENC(tI+KXIxeJT8QW9CgtbWZHDHD92WLpmg/1FHMWC2oeSX0xx7QK/4csy9JCLbIMvg0sVu6mZGOKsQ=)
+    s3:
+      bucket: tnote-bucket-cicd
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
