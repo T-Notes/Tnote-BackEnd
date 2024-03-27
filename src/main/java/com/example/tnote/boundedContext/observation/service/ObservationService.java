@@ -79,7 +79,7 @@ public class ObservationService {
     @Transactional(readOnly = true)
     public ObservationDetailResponseDto readObservationDetail(Long userId, Long observationId) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
-                .orElseThrow(() -> new ObservationException(ObservationErrorResult.OBSERVATION_NOT_FOUNT));
+                .orElseThrow(() -> CustomException.OBSERVATION_NOT_FOUNT);
         List<ObservationImage> observationImages = observationImageRepository.findObservationImageById(observationId);
         recentLogService.saveRecentLog(userId, observation.getId(), "OBSERVATION");
         return new ObservationDetailResponseDto(observation, observationImages);
@@ -87,7 +87,7 @@ public class ObservationService {
 
     public ObservationDeleteResponseDto deleteObservation(Long userId, Long observationId) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
-                .orElseThrow(() -> new ObservationException(ObservationErrorResult.OBSERVATION_NOT_FOUNT));
+                .orElseThrow(() -> CustomException.OBSERVATION_NOT_FOUNT);
         observationRepository.delete(observation);
 
         return ObservationDeleteResponseDto.builder().id(observation.getId()).build();
@@ -97,7 +97,7 @@ public class ObservationService {
                                                     ObservationUpdateRequestDto requestDto,
                                                     List<MultipartFile> observationImages) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
-                .orElseThrow(() -> new ObservationException(ObservationErrorResult.OBSERVATION_NOT_FOUNT));
+                .orElseThrow(() -> CustomException.OBSERVATION_NOT_FOUNT);
         updateObservationItem(requestDto, observation, observationImages);
         recentLogService.saveRecentLog(userId, observation.getId(), "OBSERVATION");
         return ObservationResponseDto.of(observation);
