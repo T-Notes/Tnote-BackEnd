@@ -1,8 +1,6 @@
 package com.example.tnote.boundedContext.consultation.service;
 
 import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.base.exception.consultation.ConsultationErrorResult;
-import com.example.tnote.base.exception.consultation.ConsultationException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
