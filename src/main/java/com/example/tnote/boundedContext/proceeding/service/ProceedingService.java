@@ -3,6 +3,8 @@ package com.example.tnote.boundedContext.proceeding.service;
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
@@ -184,6 +186,14 @@ public class ProceedingService {
         List<Proceeding> proceedings = proceedingRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId,
                 scheduleId, startOfDay,
                 endOfDay);
+
+        return proceedings.stream()
+                .map(ProceedingResponseDto::of).toList();
+    }
+
+    public List<ProceedingResponseDto> readMonthlyProceedings(Long userId, Long scheduleId, LocalDate date) {
+        List<Proceeding> proceedings = proceedingRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
+                scheduleId, date);
 
         return proceedings.stream()
                 .map(ProceedingResponseDto::of).toList();
