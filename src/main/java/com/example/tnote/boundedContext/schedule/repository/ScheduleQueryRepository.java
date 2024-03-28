@@ -17,10 +17,12 @@ public class ScheduleQueryRepository {
 
     private final JPAQueryFactory query;
 
-    public List<Schedule> findAllBySemesterName(String semesterName) {
+    public List<Schedule> findAllBySemesterNameAndUserId(String semesterName, Long userId) {
         return query
-                .selectFrom(schedule)
-                .where(schedule.semesterName.like("%" + semesterName + "%"))
+                .select(schedule)
+                .from(schedule)
+                .where(schedule.semesterName.like("%" + semesterName + "%")
+                        .and(schedule.user.id.eq(userId)))
                 .orderBy(schedule.id.desc())
                 .fetch();
     }
