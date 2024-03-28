@@ -51,7 +51,11 @@ public enum ErrorCode {
     DUPLICATED_NICKNAME(HttpStatus.BAD_REQUEST, "duplicated nickname"),
     NOT_VALID_FIELD(HttpStatus.BAD_REQUEST, "field is not valid"),
     WRONG_EMAIL(HttpStatus.BAD_REQUEST, "wrong mail"),
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "user is not found");
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "user is not found"),
+
+    // image
+    POST_IMAGE_INVALID_EXTENSION(HttpStatus.BAD_REQUEST, "This is not a valid file extension."),
+    POST_IMAGE_CONVERT_ERROR(HttpStatus.BAD_REQUEST,"No photo available or it has not been converted.");
 
 
     private final HttpStatus status;
