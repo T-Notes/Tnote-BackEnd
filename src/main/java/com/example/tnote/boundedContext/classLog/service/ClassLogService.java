@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.classLog.service;
 
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
@@ -40,6 +41,7 @@ public class ClassLogService {
     private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
     private final RecentLogService recentLogService;
+    private final AwsS3Uploader awsS3Uploader;
 
     public ClassLogResponseDto save(Long userId, Long scheduleId, ClassLogRequestDto request,
                                     List<MultipartFile> classLogImages) {
@@ -141,19 +143,12 @@ public class ClassLogService {
 
     private List<ClassLogImage> uploadClassLogImages(ClassLog classLog, List<MultipartFile> classLogImages) {
         return classLogImages.stream()
-                .map(file -> createClassLogImage(classLog, file))
+                .map(file -> awsS3Uploader.upload(file, "classLog")) // 수정된 부분
+                .map(url -> createClassLogImage(classLog, url))
                 .toList();
     }
 
-    private ClassLogImage createClassLogImage(ClassLog classLog, MultipartFile file) {
-        String url;
-        try {
-            url = FileUploadUtils.saveFileAndGetUrl(file);
-        } catch (IOException e) {
-            log.error("File upload fail", e);
-            throw new IllegalArgumentException();
-        }
-
+    private ClassLogImage createClassLogImage(ClassLog classLog, String url) {
         log.info("url = {}", url);
         classLog.clearClassLogImages();
 
