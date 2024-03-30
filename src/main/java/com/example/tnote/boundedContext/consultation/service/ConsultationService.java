@@ -4,6 +4,8 @@ import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
@@ -214,5 +216,14 @@ public class ConsultationService {
 
     private void deleteExistedImages(Consultation consultation) {
         consultationImageRepository.deleteByConsultationId(consultation.getId());
+        deleteS3Images(consultation);
+    }
+
+    private void deleteS3Images(Consultation consultation){
+        List<ConsultationImage> consultationImages = consultation.getConsultationImage();
+        for (ConsultationImage consultationImage: consultationImages){
+            String imageKey = consultationImage.getConsultationImageUrl().substring(49);
+            awsS3Uploader.deleteImage(imageKey);
+        }
     }
 }
