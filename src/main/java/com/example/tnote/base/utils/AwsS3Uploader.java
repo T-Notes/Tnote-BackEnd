@@ -37,8 +37,7 @@ public class AwsS3Uploader {
 
                 String ext = originFileName.substring(originFileName.lastIndexOf(".") + 1);
                 log.info("ext={}", ext);
-
-                if(!ext.matches("JPEG|JPG|HEIC|PNG|" )){
+                if(!ext.matches("JPEG|JPG|HEIC|PNG" )){
                     throw new CustomException(POST_IMAGE_INVALID_EXTENSION);
                 }
             }
@@ -70,15 +69,20 @@ public class AwsS3Uploader {
 
     // 로컬서버에 파일 변환 하기
     private Optional<File> convert(MultipartFile file) throws IOException {
-        File convertFile = new File(System.getProperty("user.dir") + "/" + file.getOriginalFilename());
-        if (convertFile.createNewFile()) { // 바로 위에서 지정한 경로에 File이 생성됨 (경로가 잘못되었다면 생성 불가능)
-            try (FileOutputStream fos = new FileOutputStream(convertFile)) { // FileOutputStream 데이터를 파일에 바이트 스트림으로 저장하기 위함
-                fos.write(file.getBytes());
-            }
-            return Optional.of(convertFile);
-        }
+        // 임시 파일 생성
+        File tempFile = File.createTempFile("upload_", ".tmp");
+        tempFile.deleteOnExit(); // JVM 종료 시 파일 삭제
 
-        return Optional.empty();
+        try (FileOutputStream fos = new FileOutputStream(tempFile)) {
+            fos.write(file.getBytes());
+            return Optional.of(tempFile);
+        } catch (IOException e) {
+            // 오류 발생 시 임시 파일 삭제
+            if (tempFile.exists()) {
+                tempFile.delete();
+            }
+            throw e;
+        }
     }
 
     public void deleteImage(String imageUrl) {
