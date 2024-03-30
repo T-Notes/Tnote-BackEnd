@@ -4,6 +4,8 @@ import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
@@ -202,5 +204,14 @@ public class ProceedingService {
 
     private void deleteExistedImages(Proceeding proceeding) {
         proceedingImageRepository.deleteByProceedingId(proceeding.getId());
+        deleteS3Images(proceeding);
+    }
+
+    private void deleteS3Images(Proceeding proceeding){
+        List<ProceedingImage> proceedingImages = proceeding.getProceedingImage();
+        for (ProceedingImage proceedingImage: proceedingImages){
+            String imageKey = proceedingImage.getProceedingImageUrl().substring(49);
+            awsS3Uploader.deleteImage(imageKey);
+        }
     }
 }
