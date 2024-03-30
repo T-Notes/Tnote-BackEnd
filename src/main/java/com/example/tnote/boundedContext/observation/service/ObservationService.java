@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.observation.service;
 
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
@@ -40,6 +41,7 @@ public class ObservationService {
     private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
     private final RecentLogService recentLogService;
+    private final AwsS3Uploader awsS3Uploader;
 
     public ObservationResponseDto save(Long userId, Long scheduleId, ObservationRequestDto requestDto,
                                        List<MultipartFile> observationImages) {
@@ -131,23 +133,20 @@ public class ObservationService {
 
     private List<ObservationImage> uploadObservationImages(Observation observation,
                                                            List<MultipartFile> observationImages) {
-        return observationImages.stream().map(file -> createObservationImage(observation, file)).toList();
+        return observationImages.stream()
+                .map(file -> awsS3Uploader.upload(file, "classLog"))
+                .map(url -> createObservationImage(observation, url))
+                .toList();
     }
 
-    private ObservationImage createObservationImage(Observation observation, MultipartFile file) {
-        String url;
-        try {
-            url = FileUploadUtils.saveFileAndGetUrl(file);
-        } catch (IOException e) {
-            log.error("File upload fail", e);
-            throw new IllegalArgumentException();
-        }
-
+    private ObservationImage createObservationImage(Observation observation, String url) {
         log.info("url = {}", url);
         observation.clearObservationImages();
 
-        return observationImageRepository.save(
-                ObservationImage.builder().observationImageUrl(url).observation(observation).build());
+        return observationImageRepository.save(ObservationImage.builder()
+                .observationImageUrl(url)
+                .observation(observation)
+                .build());
     }
 
     public ObservationSliceResponseDto readObservationsByDate(Long userId, Long scheduleId, LocalDate startDate,
