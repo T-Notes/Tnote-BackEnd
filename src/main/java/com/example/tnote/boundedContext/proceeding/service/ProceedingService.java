@@ -1,10 +1,9 @@
 package com.example.tnote.boundedContext.proceeding.service;
 
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
-import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
-import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
@@ -42,12 +41,14 @@ public class ProceedingService {
     private final ProceedingRepository proceedingRepository;
     private final ProceedingImageRepository proceedingImageRepository;
     private final RecentLogService recentLogService;
+    private final AwsS3Uploader awsS3Uploader;
 
     public ProceedingResponseDto save(Long userId, Long scheduleId, ProceedingRequestDto requestDto,
                                       List<MultipartFile> proceedingImages) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> CustomException.USER_NOT_FOUND);
-        Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
 
         Proceeding proceeding = proceedingRepository.save(requestDto.toEntity(user, schedule));
         if (proceedingImages != null && !proceedingImages.isEmpty()) {
@@ -133,19 +134,13 @@ public class ProceedingService {
 
     private List<ProceedingImage> uploadProceedingImages(Proceeding proceeding, List<MultipartFile> proceedingImages) {
         return proceedingImages.stream()
-                .map(file -> createProceedingImage(proceeding, file))
+                .map(file -> awsS3Uploader.upload(file, "classLog"))
+                .map(url -> createProceedingImage(proceeding, url))
                 .toList();
     }
 
-    private ProceedingImage createProceedingImage(Proceeding proceeding, MultipartFile file) {
-        String url;
-        try {
-            url = FileUploadUtils.saveFileAndGetUrl(file);
-        } catch (IOException e) {
-            log.error("File upload fail", e);
-            throw new IllegalArgumentException();
-        }
 
+    private ProceedingImage createProceedingImage(Proceeding proceeding, String url) {
         log.info("url = {}", url);
         proceeding.clearProceedingImages();
 
