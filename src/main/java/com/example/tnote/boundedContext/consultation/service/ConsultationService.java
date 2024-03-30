@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.consultation.service;
 
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.base.utils.FileUploadUtils;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
@@ -40,6 +41,7 @@ public class ConsultationService {
     private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
     private final RecentLogService recentLogService;
+    private final AwsS3Uploader awsS3Uploader;
 
     public ConsultationResponseDto save(Long userId, Long scheduleId, ConsultationRequestDto requestDto,
                                         List<MultipartFile> consultationImages) {
@@ -145,19 +147,12 @@ public class ConsultationService {
     private List<ConsultationImage> uploadConsultationImages(Consultation consultation,
                                                              List<MultipartFile> consultationImages) {
         return consultationImages.stream()
-                .map(file -> createConsultationImage(consultation, file))
+                .map(file -> awsS3Uploader.upload(file, "classLog"))
+                .map(url -> createConsultationImage(consultation, url))
                 .toList();
     }
 
-    private ConsultationImage createConsultationImage(Consultation consultation, MultipartFile file) {
-        String url;
-        try {
-            url = FileUploadUtils.saveFileAndGetUrl(file);
-        } catch (IOException e) {
-            log.error("File upload fail", e);
-            throw new IllegalArgumentException();
-        }
-
+    private ConsultationImage createConsultationImage(Consultation consultation, String url) {
         log.info("url = {}", url);
         consultation.clearConsultationImages();
 
