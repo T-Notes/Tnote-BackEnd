@@ -143,7 +143,7 @@ public class ClassLogService {
 
     private List<ClassLogImage> uploadClassLogImages(ClassLog classLog, List<MultipartFile> classLogImages) {
         return classLogImages.stream()
-                .map(file -> awsS3Uploader.upload(file, "classLog")) // 수정된 부분
+                .map(file -> awsS3Uploader.upload(file, "classLog"))
                 .map(url -> createClassLogImage(classLog, url))
                 .toList();
     }
