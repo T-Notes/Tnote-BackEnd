@@ -81,7 +81,7 @@ public class AwsS3Uploader {
         return Optional.empty();
     }
 
-    public void deleteReviewImage(String imageUrl) {
+    public void deleteImage(String imageUrl) {
         log.info("deleteImage = {}", imageUrl);
         amazonS3.deleteObject(new DeleteObjectRequest(bucketName, imageUrl));
     }
