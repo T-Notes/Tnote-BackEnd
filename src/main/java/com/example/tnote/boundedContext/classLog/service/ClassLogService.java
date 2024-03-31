@@ -1,8 +1,8 @@
 package com.example.tnote.boundedContext.classLog.service;
 
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
-import com.example.tnote.base.utils.FileUploadUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
@@ -18,7 +18,6 @@ import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,6 +39,7 @@ public class ClassLogService {
     private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
     private final RecentLogService recentLogService;
+    private final AwsS3Uploader awsS3Uploader;
 
     public ClassLogResponseDto save(Long userId, Long scheduleId, ClassLogRequestDto request,
                                     List<MultipartFile> classLogImages) {
@@ -141,19 +141,12 @@ public class ClassLogService {
 
     private List<ClassLogImage> uploadClassLogImages(ClassLog classLog, List<MultipartFile> classLogImages) {
         return classLogImages.stream()
-                .map(file -> createClassLogImage(classLog, file))
+                .map(file -> awsS3Uploader.upload(file, "classLog"))
+                .map(url -> createClassLogImage(classLog, url))
                 .toList();
     }
 
-    private ClassLogImage createClassLogImage(ClassLog classLog, MultipartFile file) {
-        String url;
-        try {
-            url = FileUploadUtils.saveFileAndGetUrl(file);
-        } catch (IOException e) {
-            log.error("File upload fail", e);
-            throw new IllegalArgumentException();
-        }
-
+    private ClassLogImage createClassLogImage(ClassLog classLog, String url) {
         log.info("url = {}", url);
         classLog.clearClassLogImages();
 
@@ -214,6 +207,14 @@ public class ClassLogService {
 
     private void deleteExistedImages(ClassLog classLog) {
         classLogImageRepository.deleteByClassLogId(classLog.getId());
+        deleteS3Images(classLog);
     }
 
+    private void deleteS3Images(ClassLog classLog){
+        List<ClassLogImage> classLogImages = classLog.getClassLogImage();
+        for (ClassLogImage classLogImage: classLogImages){
+            String imageKey = classLogImage.getClassLogImageUrl().substring(49);
+            awsS3Uploader.deleteImage(imageKey);
+        }
+    }
 }

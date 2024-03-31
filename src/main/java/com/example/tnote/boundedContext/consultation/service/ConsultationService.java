@@ -1,8 +1,8 @@
 package com.example.tnote.boundedContext.consultation.service;
 
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
-import com.example.tnote.base.utils.FileUploadUtils;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
@@ -18,7 +18,6 @@ import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
-import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -40,6 +39,7 @@ public class ConsultationService {
     private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
     private final RecentLogService recentLogService;
+    private final AwsS3Uploader awsS3Uploader;
 
     public ConsultationResponseDto save(Long userId, Long scheduleId, ConsultationRequestDto requestDto,
                                         List<MultipartFile> consultationImages) {
@@ -145,19 +145,12 @@ public class ConsultationService {
     private List<ConsultationImage> uploadConsultationImages(Consultation consultation,
                                                              List<MultipartFile> consultationImages) {
         return consultationImages.stream()
-                .map(file -> createConsultationImage(consultation, file))
+                .map(file -> awsS3Uploader.upload(file, "classLog"))
+                .map(url -> createConsultationImage(consultation, url))
                 .toList();
     }
 
-    private ConsultationImage createConsultationImage(Consultation consultation, MultipartFile file) {
-        String url;
-        try {
-            url = FileUploadUtils.saveFileAndGetUrl(file);
-        } catch (IOException e) {
-            log.error("File upload fail", e);
-            throw new IllegalArgumentException();
-        }
-
+    private ConsultationImage createConsultationImage(Consultation consultation, String url) {
         log.info("url = {}", url);
         consultation.clearConsultationImages();
 
@@ -219,5 +212,14 @@ public class ConsultationService {
 
     private void deleteExistedImages(Consultation consultation) {
         consultationImageRepository.deleteByConsultationId(consultation.getId());
+        deleteS3Images(consultation);
+    }
+
+    private void deleteS3Images(Consultation consultation){
+        List<ConsultationImage> consultationImages = consultation.getConsultationImage();
+        for (ConsultationImage consultationImage: consultationImages){
+            String imageKey = consultationImage.getConsultationImageUrl().substring(49);
+            awsS3Uploader.deleteImage(imageKey);
+        }
     }
 }
