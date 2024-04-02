@@ -39,3 +39,9 @@ custom:
   jwt:
     secret-key: ENC(bMRicSH/i3TIp8KYjWARwpMTOh4Uu0V/M2Q0mAm0jJI39RXGlBnHPYSdQENSakWU/nJ4S0db2ROcZLJrkBxXltK0OfM8dAk2bn6JYwa5/Uk=)
 
+logging:
+  level:
+    p6spy: error
+    org:
+      springframework:
+        security: warn
