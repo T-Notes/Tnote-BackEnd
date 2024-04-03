@@ -126,7 +126,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findById(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> CustomException.USER_NOT_FOUND);
-        if (user.getSchool().isEmpty()) {
+        if (user.getSchool() == null || user.getSchool().isEmpty()) {
             throw CustomException.USER_NOT_FOUND;
         }
         return user;
