@@ -14,8 +14,9 @@ spring:
       client:
         registration:
           kakao:
-            redirect-uri: "http://localhost:3000/login/oauth2/code/kakao" # local - fe
-            # redirect-uri: "https://businessyoon.store/login/oauth2/code/kakao"
+            redirect-uri: "http://localhost:3000/login/oauth2/code/kakao"
+            #redirect-uri: "https://businessyoon.store/login/oauth2/code/kakao"
+            # redirect-uri:"https://j9972.kr/login/oauth2/code/google"
 
 
   jpa:
@@ -39,3 +40,9 @@ custom:
   jwt:
     secret-key: ENC(bMRicSH/i3TIp8KYjWARwpMTOh4Uu0V/M2Q0mAm0jJI39RXGlBnHPYSdQENSakWU/nJ4S0db2ROcZLJrkBxXltK0OfM8dAk2bn6JYwa5/Uk=)
 
+logging:
+  level:
+    p6spy: error
+    org:
+      springframework:
+        security: warn
