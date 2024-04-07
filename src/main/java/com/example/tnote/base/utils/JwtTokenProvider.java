@@ -2,7 +2,6 @@ package com.example.tnote.base.utils;
 
 import com.example.tnote.base.constant.Constants;
 import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
 import com.example.tnote.boundedContext.user.dto.Token;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.service.auth.PrincipalDetailService;
@@ -34,8 +33,6 @@ public class JwtTokenProvider {
     private String SECRET_KEY;
 
     private final PrincipalDetailService principalDetailService;
-
-    private final RefreshTokenRepository refreshTokenRepository;
 
     public Token createAccessToken(String email) {
         Claims claims = Jwts.claims().setSubject(email); // JWT payload 에 저장되는 정보단위, 보통 여기서 user를 식별하는 값을 넣는다.
