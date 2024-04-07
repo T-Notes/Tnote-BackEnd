@@ -97,12 +97,6 @@ public class UserService {
 
     // 연관키로 묶여 있음
     private void deleteAll(Long userId, User currentUser) {
-        classLogRepository.deleteAllByUserId(userId);
-        proceedingRepository.deleteAllByUserId(userId);
-        consultationRepository.deleteAllByUserId(userId);
-        observationRepository.deleteAllByUserId(userId);
-        todoRepository.deleteAllByUserId(userId);
-        scheduleRepository.deleteAllByUserId(userId);
         refreshTokenRepository.deleteByKeyEmail(currentUser.getEmail());
         userRepository.delete(currentUser);
     }
@@ -113,6 +107,7 @@ public class UserService {
         userRepository.findById(userId)
                 .orElseThrow(() -> CustomException.USER_NOT_FOUND);
 
+        // TODO : 로그아웃 진행시 리프래쉬 삭제 ( refresh 토큰 블랙 리스팅 )
         CookieUtils.deleteCookie(request, response, "AccessToken");
     }
 
