@@ -15,6 +15,7 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
 
     Optional<RefreshToken> findByKeyEmail(String email);
 
+    // 스케줄러를 위함
     @Transactional
     void deleteAllByExpirationBefore(LocalDateTime now);
 }
