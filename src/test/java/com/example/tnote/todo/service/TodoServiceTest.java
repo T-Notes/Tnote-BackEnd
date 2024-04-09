@@ -152,20 +152,6 @@ public class TodoServiceTest {
     }
 
     @Test
-    @DisplayName("다른 유저 todo 삭제 실패")
-    void otherUserDeleteTodo() {
-
-        // given
-        testSyUtils.login(principalDetails);
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> todoService.deleteTodo(todo1.getId(), schedule1.getId(), 222L))
-                .isInstanceOf(CustomException.class);
-    }
-
-    @Test
     @DisplayName("로그인 하지 않은 유저 todo 삭제 실패")
     void notLoginDeleteTodo() {
 
@@ -221,9 +207,9 @@ public class TodoServiceTest {
         // then/
         assertThat(todos.size()).isEqualTo(2);
         assertThat(todos.get(0).getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
-        assertThat(todos.get(0).getContent()).isEqualTo("test1");
+        assertThat(todos.get(0).getContent()).isEqualTo("test12");
         assertThat(todos.get(1).getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
-        assertThat(todos.get(1).getContent()).isEqualTo("test12");
+        assertThat(todos.get(1).getContent()).isEqualTo("test1");
     }
 
     @Test

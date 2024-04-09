@@ -96,10 +96,6 @@ public class ScheduleController {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        if (date == null) {
-            date = LocalDate.now();
-        }
-
         long response = scheduleService.countLeftDays(date, scheduleId, currentUser.getId());
 
         if (response <= 0) {

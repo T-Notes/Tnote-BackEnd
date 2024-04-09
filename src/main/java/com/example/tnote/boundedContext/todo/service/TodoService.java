@@ -78,7 +78,7 @@ public class TodoService {
     private void updateEachTodosItem(TodoUpdateRequestDto dto, Todo todos, LocalDate date) {
 
         if (date == null) {
-            date = LocalDate.now();
+            todos.updateDate(LocalDate.now());
         }
         if (dto.hasDate()) {
             todos.updateDate(dto.getDate());
@@ -86,7 +86,7 @@ public class TodoService {
         if (dto.hasContent()) {
             todos.updateContent(dto.getContent());
         }
-        if (dto.hasStatus()) {
+        if (dto.hasStatus() && dto.getStatus() != todos.getStatus()) {
             todos.updateStatus(dto.getStatus());
         }
     }

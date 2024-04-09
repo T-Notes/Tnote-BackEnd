@@ -1,5 +1,6 @@
 package com.example.tnote.boundedContext.schedule.service;
 
+
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleDeleteResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
@@ -98,9 +99,9 @@ public class ScheduleService {
 
         compareScheduleWithUser(userId, schedule);
 
-        log.info(" 날짜 차이 : {} 일", date.until(schedule.getEndDate(), ChronoUnit.DAYS));
+        log.info(" 날짜 차이 : {} 일", getLocalDate(date).until(schedule.getEndDate(), ChronoUnit.DAYS));
 
-        return date.until(schedule.getEndDate(), ChronoUnit.DAYS);
+        return getLocalDate(date).until(schedule.getEndDate(), ChronoUnit.DAYS);
     }
 
     @Transactional(readOnly = true)
@@ -203,6 +204,13 @@ public class ScheduleService {
         if (!schedule.getUser().getId().equals(userId)) {
             throw CustomException.USER_NOT_FOUND;
         }
+    }
+
+    private LocalDate getLocalDate(LocalDate date) {
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        return date;
     }
 
 }

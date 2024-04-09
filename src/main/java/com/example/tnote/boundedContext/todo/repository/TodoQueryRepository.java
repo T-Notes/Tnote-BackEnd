@@ -30,7 +30,6 @@ public class TodoQueryRepository {
                 .fetch();
     }
 
-    // 1차 QA todo 조회 정렬 기준 변경
     public List<Todo> findByUserIdAndScheduleIdAndDate(Long userId, Long scheduleId, LocalDate date) {
         return query
                 .selectFrom(todo)
@@ -38,7 +37,7 @@ public class TodoQueryRepository {
                         .and(todo.date.eq(date))
                         .and(todo.schedule.id.eq(scheduleId))
                 )
-                .orderBy(todo.createdAt.asc())
+                .orderBy(todo.createdAt.desc())
                 .fetch();
     }
 
