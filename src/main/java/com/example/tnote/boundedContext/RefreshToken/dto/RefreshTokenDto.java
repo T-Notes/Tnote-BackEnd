@@ -1,4 +1,4 @@
-package com.example.tnote.boundedContext.user.dto;
+package com.example.tnote.boundedContext.RefreshToken.dto;
 
 import lombok.Builder;
 import lombok.Getter;

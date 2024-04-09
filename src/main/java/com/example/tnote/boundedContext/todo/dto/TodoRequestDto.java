@@ -10,13 +10,12 @@ import lombok.Getter;
 @Getter
 @Builder
 public class TodoRequestDto {
-    private LocalDate date;
     private String content;
     private Boolean status;
 
-    public Todo toEntity(User user, Schedule schedule) {
+    public Todo toEntity(User user, Schedule schedule, LocalDate date) {
         return Todo.builder()
-                .date(this.date)
+                .date(date)
                 .content(this.content)
                 .user(user)
                 .schedule(schedule)

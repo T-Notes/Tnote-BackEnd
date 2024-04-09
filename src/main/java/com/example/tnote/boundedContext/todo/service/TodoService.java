@@ -36,10 +36,10 @@ public class TodoService {
     private final TodoQueryRepository todoQueryRepository;
 
     @Transactional
-    public TodoResponseDto saveTodo(TodoRequestDto dto, Long scheduleId, Long userId) {
+    public TodoResponseDto saveTodo(TodoRequestDto dto, Long scheduleId, Long userId, LocalDate date) {
 
         matchUserWithSchedule(scheduleId, userId);
-        Todo todo = dto.toEntity(checkCurrentUser(userId), checkSchedule(scheduleId));
+        Todo todo = dto.toEntity(checkCurrentUser(userId), checkSchedule(scheduleId), getLocalDate(date));
 
         return TodoResponseDto.of(todoRepository.save(todo));
     }
@@ -61,20 +61,25 @@ public class TodoService {
         checkSchedule(scheduleId);
 
         return TodoResponseDto.of(
-                todoQueryRepository.findAllByUserIdAndDate(userId, scheduleId, date));
+                todoQueryRepository.findAllByUserIdAndDate(userId, scheduleId, getLocalDate(date)));
     }
 
     @Transactional
-    public TodoResponseDto updateTodos(TodoUpdateRequestDto dto, Long scheduleId, Long todoId, Long userId) {
+    public TodoResponseDto updateTodos(TodoUpdateRequestDto dto, Long scheduleId, Long todoId, Long userId,
+                                       LocalDate date) {
 
         Todo todos = getTodo(scheduleId, todoId, userId);
 
-        updateEachTodosItem(dto, todos);
+        updateEachTodosItem(dto, todos, date);
 
         return TodoResponseDto.of(todos);
     }
 
-    private void updateEachTodosItem(TodoUpdateRequestDto dto, Todo todos) {
+    private void updateEachTodosItem(TodoUpdateRequestDto dto, Todo todos, LocalDate date) {
+
+        if (date == null) {
+            date = LocalDate.now();
+        }
         if (dto.hasDate()) {
             todos.updateDate(dto.getDate());
         }
@@ -166,5 +171,12 @@ public class TodoService {
         List<Todo> todos = todoQueryRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);
 
         return todos.stream().map(TodoResponseDto::of).toList();
+    }
+
+    private LocalDate getLocalDate(LocalDate date) {
+        if (date == null) {
+            date = LocalDate.now();
+        }
+        return date;
     }
 }
