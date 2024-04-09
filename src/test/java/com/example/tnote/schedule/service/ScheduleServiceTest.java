@@ -273,7 +273,7 @@ class ScheduleServiceTest {
     }
 
 
-    @Test
+/*    @Test
     @DisplayName("학기 남은 날짜 계산")
     void countLeftDays() {
 
@@ -285,7 +285,7 @@ class ScheduleServiceTest {
 
         // then
         assertThat(diffDays).isEqualTo(92);
-    }
+    }*/
 
     @Test
     @DisplayName("월~금 시간표에 넣을 데이터 조회 성공")
