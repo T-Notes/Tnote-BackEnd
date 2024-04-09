@@ -78,9 +78,10 @@ compileJava { options.compilerArgs << '-parameters' }
 
 tasks.named('test') {
     useJUnitPlatform()
-    jvmArgs '-Xshare:off' // JVM 아규먼트 설정
-    systemProperty 'jasypt.encryptor.password', findProperty("jasypt.encryptor.password")
+    jvmArgs('-Xshare:off') // JVM 옵션 추가
+    systemProperty 'jasypt.encryptor.password', project.hasProperty('jasypt.encryptor.password') ? project.property('jasypt.encryptor.password') : ""
 }
+
 
 bootJar {
     archiveFileName = 'app.jar'
