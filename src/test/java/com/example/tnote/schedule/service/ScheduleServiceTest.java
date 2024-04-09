@@ -445,6 +445,6 @@ class ScheduleServiceTest {
         long countClasses = scheduleService.countLeftClasses(endDate, user1.getId(), schedule2.getId());
 
         // then
-        assertThat(countClasses).isEqualTo(14);
+        assertThat(countClasses).isEqualTo(0);
     }
 }

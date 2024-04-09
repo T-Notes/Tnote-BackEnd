@@ -63,5 +63,5 @@ public class s3Test {
         assertThat(s3Object.getObjectMetadata().getContentType()).isEqualTo(contentType);
         assertThat(new String(FileCopyUtils.copyToByteArray(s3Object.getObjectContent()))).isEqualTo("");
     }
-
 }
+

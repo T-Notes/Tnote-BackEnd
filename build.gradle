@@ -76,6 +76,11 @@ dependencies {
 
 compileJava { options.compilerArgs << '-parameters' }
 
+tasks.named('test') {
+    useJUnitPlatform()
+    systemProperty 'jasypt.encryptor.password', findProperty("jasypt.encryptor.password")
+}
+
 bootJar {
     archiveFileName = 'app.jar'
 }
