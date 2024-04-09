@@ -36,11 +36,12 @@ public class TodoController {
     @PostMapping("/{scheduleId}")
     public ResponseEntity<Result> saveTodo(@RequestBody TodoRequestDto dto,
                                            @PathVariable Long scheduleId,
+                                           @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                                            @AuthenticationPrincipal PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        TodoResponseDto response = todoService.saveTodo(dto, scheduleId, currentUser.getId());
+        TodoResponseDto response = todoService.saveTodo(dto, scheduleId, currentUser.getId(), date);
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -48,11 +49,12 @@ public class TodoController {
     public ResponseEntity<Result> updateSubjects(@RequestBody TodoUpdateRequestDto dto,
                                                  @PathVariable Long scheduleId,
                                                  @PathVariable("todoId") Long todoId,
+                                                 @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        TodoResponseDto response = todoService.updateTodos(dto, scheduleId, todoId, currentUser.getId());
+        TodoResponseDto response = todoService.updateTodos(dto, scheduleId, todoId, currentUser.getId(), date);
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -78,11 +80,8 @@ public class TodoController {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        if (date == null) {
-            date = LocalDate.now();
-        }
-
         List<TodoResponseDto> response = todoService.findAllTodos(date, scheduleId, currentUser.getId());
         return ResponseEntity.ok(Result.of(response));
     }
+
 }

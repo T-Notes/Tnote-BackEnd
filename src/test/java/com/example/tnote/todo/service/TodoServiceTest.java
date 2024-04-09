@@ -61,15 +61,15 @@ public class TodoServiceTest {
 
         // given
         testSyUtils.login(principalDetails);
+        LocalDate date = LocalDate.parse("2024-01-27");
 
         TodoRequestDto dto = TodoRequestDto.builder()
-                .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
                 .status(false)
                 .build();
 
         // when
-        Todo todo = dto.toEntity(user1, schedule1);
+        Todo todo = dto.toEntity(user1, schedule1, date);
 
         // then
         assertThat(todo.getDate()).isEqualTo(LocalDate.parse("2024-01-27"));
@@ -82,9 +82,8 @@ public class TodoServiceTest {
     void notLoginSaveTodo() {
 
         // given
-
+        LocalDate date = LocalDate.parse("2024-01-27");
         TodoRequestDto dto = TodoRequestDto.builder()
-                .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
                 .status(false)
                 .build();
@@ -92,7 +91,7 @@ public class TodoServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> todoService.saveTodo(dto, schedule1.getId(), null))
+        assertThatThrownBy(() -> todoService.saveTodo(dto, schedule1.getId(), null, date))
                 .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
@@ -102,9 +101,9 @@ public class TodoServiceTest {
 
         // given
         testSyUtils.login(principalDetails);
+        LocalDate date = LocalDate.parse("2024-01-27");
 
         TodoRequestDto dto = TodoRequestDto.builder()
-                .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
                 .status(false)
                 .build();
@@ -112,7 +111,7 @@ public class TodoServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> todoService.saveTodo(dto, 222L, user1.getId()))
+        assertThatThrownBy(() -> todoService.saveTodo(dto, 222L, user1.getId(), date))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -122,9 +121,9 @@ public class TodoServiceTest {
 
         // given
         testSyUtils.login(principalDetails);
+        LocalDate date = LocalDate.parse("2024-01-27");
 
         TodoRequestDto dto = TodoRequestDto.builder()
-                .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
                 .status(false)
                 .build();
@@ -132,7 +131,7 @@ public class TodoServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> todoService.saveTodo(dto, schedule1.getId(), 222L))
+        assertThatThrownBy(() -> todoService.saveTodo(dto, schedule1.getId(), 222L, date))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -260,6 +259,7 @@ public class TodoServiceTest {
 
         // given
         testSyUtils.login(principalDetails);
+        LocalDate date = LocalDate.parse("2024-01-27");
 
         // when
 
@@ -269,7 +269,7 @@ public class TodoServiceTest {
                 .status(true)
                 .build();
 
-        TodoResponseDto response = todoService.updateTodos(dto, schedule1.getId(), todo1.getId(), user1.getId());
+        TodoResponseDto response = todoService.updateTodos(dto, schedule1.getId(), todo1.getId(), user1.getId(), date);
 
         // then
         assertThat(response.getContent()).isEqualTo(dto.getContent());
@@ -283,6 +283,7 @@ public class TodoServiceTest {
 
         // given
         testSyUtils.login(principalDetails);
+        LocalDate date = LocalDate.parse("2024-01-27");
 
         // when
 
@@ -293,7 +294,7 @@ public class TodoServiceTest {
                 .build();
 
         // then
-        assertThatThrownBy(() -> todoService.updateTodos(dto, schedule1.getId(), 222L, user1.getId()))
+        assertThatThrownBy(() -> todoService.updateTodos(dto, schedule1.getId(), 222L, user1.getId(), date))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -302,6 +303,7 @@ public class TodoServiceTest {
     void notLoginUpdateTodos() {
 
         // given
+        LocalDate date = LocalDate.parse("2024-01-27");
 
         // when
 
@@ -312,7 +314,7 @@ public class TodoServiceTest {
                 .build();
 
         // then
-        assertThatThrownBy(() -> todoService.updateTodos(dto, schedule1.getId(), todo1.getId(), null))
+        assertThatThrownBy(() -> todoService.updateTodos(dto, schedule1.getId(), todo1.getId(), null, date))
                 .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
@@ -322,6 +324,7 @@ public class TodoServiceTest {
 
         // given
         testSyUtils.login(principalDetails);
+        LocalDate date = LocalDate.parse("2024-01-27");
 
         // when
 
@@ -332,7 +335,7 @@ public class TodoServiceTest {
                 .build();
 
         // then
-        assertThatThrownBy(() -> todoService.updateTodos(dto, schedule1.getId(), todo1.getId(), 222L))
+        assertThatThrownBy(() -> todoService.updateTodos(dto, schedule1.getId(), todo1.getId(), 222L, date))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -342,6 +345,7 @@ public class TodoServiceTest {
 
         // given
         testSyUtils.login(principalDetails);
+        LocalDate date = LocalDate.parse("2024-01-27");
 
         // when
 
@@ -352,7 +356,7 @@ public class TodoServiceTest {
                 .build();
 
         // then
-        assertThatThrownBy(() -> todoService.updateTodos(dto, 222L, todo1.getId(), 222L))
+        assertThatThrownBy(() -> todoService.updateTodos(dto, 222L, todo1.getId(), 222L, date))
                 .isInstanceOf(CustomException.class);
     }
 }

@@ -26,7 +26,7 @@ public class TodoQueryRepository {
                         .and(todo.date.eq(date))
                         .and(todo.schedule.id.eq(scheduleId))
                 )
-                .orderBy(todo.id.asc())
+                .orderBy(todo.id.desc())
                 .fetch();
     }
 

@@ -9,11 +9,14 @@ import com.example.tnote.boundedContext.user.dto.SignInResponse;
 import com.example.tnote.boundedContext.user.dto.Token;
 import com.example.tnote.boundedContext.user.dto.TokenRequest;
 import com.example.tnote.boundedContext.user.dto.TokenResponse;
+import com.example.tnote.boundedContext.user.dto.UnlinkRequest;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -42,6 +45,9 @@ public class KakaoRequestService implements RequestService {
 
     @Value("${spring.security.oauth2.client.provider.kakao.token_uri}")
     private String TOKEN_URI;
+
+//    @Value("${spring.security.oauth2.client.provider.kakao.unlink_uri}")
+//    private String UNLINK_URI;
 
     @Override
     public SignInResponse redirect(TokenRequest tokenRequest) {
@@ -115,5 +121,13 @@ public class KakaoRequestService implements RequestService {
                 .retrieve()
                 .bodyToMono(KakaoUserInfo.class)
                 .block();
+    }
+
+    @Override
+    public void unLink(UnlinkRequest request) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setBearerAuth(request.getAccessToken());
+        HttpEntity<Object> entity = new HttpEntity<>("", headers);
+        //restTemplate.exchange(URL, HttpMethod.POST, entity, String.class);
     }
 }
