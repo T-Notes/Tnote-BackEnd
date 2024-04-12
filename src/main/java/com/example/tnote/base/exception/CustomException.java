@@ -9,9 +9,11 @@ public class CustomException extends RuntimeException {
 
     public static final CustomException CLASS_LOG_NOT_FOUNT = new CustomException(ErrorCode.CLASS_LOG_NOT_FOUNT);
     public static final CustomException INVALID_CLASS_LOG_DATA = new CustomException(ErrorCode.INVALID_CLASS_LOG_DATA);
+    public static final CustomException INVALID_CLASS_LOG_DATE = new CustomException(ErrorCode.INVALID_CLASS_LOG_DATE);
     public static final CustomException CONSULTATION_NOT_FOUNT = new CustomException(ErrorCode.CONSULTATION_NOT_FOUNT);
     public static final CustomException INVALID_CONSULTATION_DATA = new CustomException(
             ErrorCode.INVALID_CONSULTATION_DATA);
+    public static final CustomException INVALID_CONSULTATION_DATE = new CustomException(ErrorCode.INVALID_CONSULTATION_DATE);
     public static final CustomException INVALID_COUNSELING_TYPE = new CustomException(
             ErrorCode.INVALID_COUNSELING_TYPE);
     public static final CustomException INVALID_COUNSELING_FIELD = new CustomException(
@@ -19,9 +21,11 @@ public class CustomException extends RuntimeException {
     public static final CustomException OBSERVATION_NOT_FOUNT = new CustomException(ErrorCode.OBSERVATION_NOT_FOUNT);
     public static final CustomException INVALID_OBSERVATION_DATA = new CustomException(
             ErrorCode.INVALID_OBSERVATION_DATA);
+    public static final CustomException INVALID_OBSERVATION_DATE = new CustomException(ErrorCode.INVALID_OBSERVATION_DATE);
     public static final CustomException PROCEEDING_NOT_FOUNT = new CustomException(ErrorCode.PROCEEDING_NOT_FOUNT);
     public static final CustomException INVALID_PROCEEDING_DATA = new CustomException(
             ErrorCode.INVALID_PROCEEDING_DATA);
+    public static final CustomException INVALID_PROCEEDING_DATE = new CustomException(ErrorCode.INVALID_PROCEEDING_DATE);
     public static final CustomException BAD_REQUEST = new CustomException(ErrorCode.BAD_REQUEST);
     public static final CustomException UNAUTHORIZED = new CustomException(ErrorCode.UNAUTHORIZED);
     public static final CustomException WRONG_TOKEN = new CustomException(ErrorCode.WRONG_TOKEN);
