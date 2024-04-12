@@ -150,11 +150,12 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal PrincipalDetails user
+            , @RequestParam String code) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        UserDeleteResponseDto response = userService.deleteUser(currentUser.getId());
+        UserDeleteResponseDto response = userService.deleteUser(currentUser.getId(), code);
 
         return ResponseEntity.ok(Result.of(response));
     }

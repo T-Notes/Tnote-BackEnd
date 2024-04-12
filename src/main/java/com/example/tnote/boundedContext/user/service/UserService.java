@@ -3,12 +3,8 @@ package com.example.tnote.boundedContext.user.service;
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.CookieUtils;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
-import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
-import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
-import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
-import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
-import com.example.tnote.boundedContext.todo.repository.TodoRepository;
+import com.example.tnote.boundedContext.user.dto.KakaoUnlinkResponse;
 import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
@@ -28,13 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final ClassLogRepository classLogRepository;
-    private final ProceedingRepository proceedingRepository;
-    private final TodoRepository todoRepository;
-    private final ObservationRepository observationRepository;
     protected final ConsultationRepository consultationRepository;
     private final RefreshTokenRepository refreshTokenRepository;
-    private final ScheduleRepository scheduleRepository;
+    private final KakaoRequestService kakaoRequestService;
 
     @Transactional
     public UserResponse signUp(String email, String name) {
@@ -83,15 +75,19 @@ public class UserService {
     }
 
     @Transactional
-    public UserDeleteResponseDto deleteUser(Long userId) {
+    public UserDeleteResponseDto deleteUser(Long userId, String code) {
 
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> CustomException.USER_NOT_FOUND);
 
         deleteAll(userId, currentUser);
 
+        String accessToken = kakaoRequestService.getToken(code).getAccessToken();
+
+        KakaoUnlinkResponse unlink = kakaoRequestService.unLink(accessToken);
+
         return UserDeleteResponseDto.builder()
-                .id(currentUser.getId())
+                .id(unlink.getId())
                 .build();
     }
 

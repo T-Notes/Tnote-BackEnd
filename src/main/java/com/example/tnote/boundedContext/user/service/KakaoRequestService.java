@@ -4,19 +4,16 @@ import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.JwtTokenProvider;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
+import com.example.tnote.boundedContext.user.dto.JwtResponse;
+import com.example.tnote.boundedContext.user.dto.KakaoUnlinkResponse;
 import com.example.tnote.boundedContext.user.dto.KakaoUserInfo;
-import com.example.tnote.boundedContext.user.dto.SignInResponse;
 import com.example.tnote.boundedContext.user.dto.Token;
-import com.example.tnote.boundedContext.user.dto.TokenRequest;
 import com.example.tnote.boundedContext.user.dto.TokenResponse;
-import com.example.tnote.boundedContext.user.dto.UnlinkRequest;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.util.LinkedMultiValueMap;
@@ -46,13 +43,11 @@ public class KakaoRequestService implements RequestService {
     @Value("${spring.security.oauth2.client.provider.kakao.token_uri}")
     private String TOKEN_URI;
 
-//    @Value("${spring.security.oauth2.client.provider.kakao.unlink_uri}")
-//    private String UNLINK_URI;
-
     @Override
-    public SignInResponse redirect(TokenRequest tokenRequest) {
+    public JwtResponse redirect(String provider, String code, String state) {
         // 카카오에서 넘겨준 엑세스 토큰
-        TokenResponse tokenResponse = getToken(tokenRequest);
+        TokenResponse tokenResponse = getToken(code);
+        
         // 카카오에서 넘겨준 유저 정보
         KakaoUserInfo kakaoUserInfo = getUserInfo(tokenResponse.getAccessToken());
 
@@ -66,37 +61,35 @@ public class KakaoRequestService implements RequestService {
         if (user == null) {
             user = UserResponse.toEntity(userService.signUp(kakaoUserInfo.getEmail(), kakaoUserInfo.getName()));
 
-            RefreshToken newRefreshToken = RefreshToken.builder()
-                    .keyEmail(user.getEmail())
-                    .refreshToken(newToken_RefreshToken.getRefreshToken())
-                    .build();
+            RefreshToken newRefreshToken = RefreshToken.toEntity(user.getEmail(),
+                    newToken_RefreshToken.getRefreshToken());
 
             refreshTokenRepository.save(newRefreshToken);
 
-            return SignInResponse.builder()
-                    .accessToken(newToken_AccessToken.getAccessToken())
-                    .refreshToken(newToken_RefreshToken.getRefreshToken())
-                    .userId(user.getId())
-                    .build();
+            return getBuild(newToken_AccessToken, newRefreshToken, user);
         }
 
         RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
                 .orElseThrow(() -> CustomException.WRONG_REFRESH_TOKEN);
 
-        return SignInResponse.builder()
-                .accessToken(newToken_AccessToken.getAccessToken())
+        return getBuild(newToken_AccessToken, refreshToken, user);
+    }
+
+    private JwtResponse getBuild(Token accessToken, RefreshToken refreshToken, User user) {
+        return JwtResponse.builder()
+                .accessToken(accessToken.getAccessToken())
                 .refreshToken(refreshToken.getRefreshToken())
                 .userId(user.getId())
                 .build();
     }
 
     @Override
-    public TokenResponse getToken(TokenRequest tokenRequest) {
+    public TokenResponse getToken(String code) {
         MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
         formData.add("grant_type", GRANT_TYPE);
         formData.add("redirect_uri", REDIRECT_URI);
         formData.add("client_id", CLIENT_ID);
-        formData.add("code", tokenRequest.getCode());
+        formData.add("code", code);
 
         return webClient.mutate()
                 .baseUrl(TOKEN_URI)
@@ -105,7 +98,6 @@ public class KakaoRequestService implements RequestService {
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData(formData))
                 .retrieve()
-//                .onStatus(HttpStatus::is4xxClientError, response -> Mono.just(new BadRequestException()))
                 .bodyToMono(TokenResponse.class)
                 .block();
     }
@@ -124,10 +116,15 @@ public class KakaoRequestService implements RequestService {
     }
 
     @Override
-    public void unLink(UnlinkRequest request) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setBearerAuth(request.getAccessToken());
-        HttpEntity<Object> entity = new HttpEntity<>("", headers);
-        //restTemplate.exchange(URL, HttpMethod.POST, entity, String.class);
+    public KakaoUnlinkResponse unLink(String accessToken) {
+        return webClient.mutate()
+                .baseUrl("https://kapi.kakao.com")
+                .build()
+                .get()
+                .uri("/v1/user/unlink")
+                .headers(h -> h.setBearerAuth(accessToken))
+                .retrieve()
+                .bodyToMono(KakaoUnlinkResponse.class)
+                .block();
     }
 }

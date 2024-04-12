@@ -97,11 +97,15 @@ public class ScheduleService {
 
         Schedule schedule = getSchedule(scheduleId);
 
+        LocalDate CurrentDate = getLocalDate(date);
+
         compareScheduleWithUser(userId, schedule);
 
-        log.info(" 날짜 차이 : {} 일", getLocalDate(date).until(schedule.getEndDate(), ChronoUnit.DAYS));
+        log.info(" 날짜 차이 : {} 일", CurrentDate.until(schedule.getEndDate(), ChronoUnit.DAYS));
 
-        return getLocalDate(date).until(schedule.getEndDate(), ChronoUnit.DAYS);
+        return ChronoUnit.DAYS.between(CurrentDate, schedule.getEndDate()) <= 0 ? 0
+                : ChronoUnit.DAYS.between(CurrentDate, schedule.getEndDate());
+
     }
 
     @Transactional(readOnly = true)

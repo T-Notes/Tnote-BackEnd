@@ -98,10 +98,6 @@ public class ScheduleController {
 
         long response = scheduleService.countLeftDays(date, scheduleId, currentUser.getId());
 
-        if (response <= 0) {
-            response = 0;
-        }
-
         return ResponseEntity.ok(Result.of(response));
     }
 

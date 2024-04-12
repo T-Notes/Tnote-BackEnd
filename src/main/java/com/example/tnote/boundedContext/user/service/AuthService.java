@@ -4,9 +4,8 @@ import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.JwtTokenProvider;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.RefreshToken.service.RefreshTokenService;
-import com.example.tnote.boundedContext.user.dto.SignInResponse;
+import com.example.tnote.boundedContext.user.dto.JwtResponse;
 import com.example.tnote.boundedContext.user.dto.Token;
-import com.example.tnote.boundedContext.user.dto.TokenRequest;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -26,13 +25,12 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public SignInResponse redirect(TokenRequest tokenRequest) {
-
-        return kakaoRequestService.redirect(tokenRequest);
+    public JwtResponse redirect(String provider, String code, String state) {
+        return kakaoRequestService.redirect(provider, code, state);
     }
 
     @Transactional
-    public SignInResponse refreshToken(String refreshToken) {
+    public JwtResponse refreshToken(String refreshToken) {
 
         if (jwtTokenProvider.isExpired(refreshToken)) {
             // refresh token 만료시 재로그인 필요
@@ -53,8 +51,8 @@ public class AuthService {
                 .orElseThrow(() -> CustomException.USER_NOT_FOUND);
     }
 
-    private SignInResponse buildSignInResponse(String accessToken, String refreshToken, Long userId) {
-        return SignInResponse.builder()
+    private JwtResponse buildSignInResponse(String accessToken, String refreshToken, Long userId) {
+        return JwtResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .userId(userId)
