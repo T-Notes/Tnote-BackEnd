@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.observation.service;
 
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.ErrorCode;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
@@ -47,8 +48,12 @@ public class ObservationService {
                 .orElseThrow(() -> CustomException.USER_NOT_FOUND);
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
-
         Observation observation = observationRepository.save(requestDto.toEntity(user, schedule));
+
+        if (observation.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || observation.getEndDate()
+                .toLocalDate().isAfter(schedule.getStartDate())) {
+            throw new CustomException(ErrorCode.INVALID_OBSERVATION_DATE);
+        }
         if (observationImages != null && !observationImages.isEmpty()) {
             List<ObservationImage> uploadedImages = uploadObservationImages(observation, observationImages);
             observation.getObservationImage().addAll(uploadedImages);
@@ -202,9 +207,9 @@ public class ObservationService {
         deleteS3Images(observation);
     }
 
-    private void deleteS3Images(Observation observation){
+    private void deleteS3Images(Observation observation) {
         List<ObservationImage> observationImages = observation.getObservationImage();
-        for (ObservationImage observationImage: observationImages){
+        for (ObservationImage observationImage : observationImages) {
             String imageKey = observationImage.getObservationImageUrl().substring(49);
             awsS3Uploader.deleteImage(imageKey);
         }
