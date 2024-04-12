@@ -70,19 +70,19 @@ public class KakaoRequestService implements RequestService {
 
             refreshTokenRepository.save(newRefreshToken);
 
-            return getBuild(newToken_AccessToken, newRefreshToken, user);
+            return getBuild(newToken_AccessToken.getAccessToken(), newRefreshToken.getRefreshToken(), user);
         }
 
         RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
                 .orElseThrow(() -> CustomException.WRONG_REFRESH_TOKEN);
 
-        return getBuild(newToken_AccessToken, refreshToken, user);
+        return getBuild(newToken_AccessToken.getAccessToken(), refreshToken.getRefreshToken(), user);
     }
 
-    private JwtResponse getBuild(Token accessToken, RefreshToken refreshToken, User user) {
+    private JwtResponse getBuild(String accessToken, String refreshToken, User user) {
         return JwtResponse.builder()
-                .accessToken(accessToken.getAccessToken())
-                .refreshToken(refreshToken.getRefreshToken())
+                .accessToken(accessToken)
+                .refreshToken(refreshToken)
                 .userId(user.getId())
                 .build();
     }
