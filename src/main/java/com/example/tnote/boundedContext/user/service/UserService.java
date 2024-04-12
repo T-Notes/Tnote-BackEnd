@@ -80,7 +80,7 @@ public class UserService {
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> CustomException.USER_NOT_FOUND);
 
-        deleteAll(userId, currentUser);
+        deleteAll(currentUser);
 
         String accessToken = kakaoRequestService.getToken(code).getAccessToken();
 
@@ -92,7 +92,7 @@ public class UserService {
     }
 
     // 연관키로 묶여 있음
-    private void deleteAll(Long userId, User currentUser) {
+    private void deleteAll(User currentUser) {
         refreshTokenRepository.deleteByKeyEmail(currentUser.getEmail());
         userRepository.delete(currentUser);
     }
