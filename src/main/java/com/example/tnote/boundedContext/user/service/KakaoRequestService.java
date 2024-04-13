@@ -61,22 +61,28 @@ public class KakaoRequestService implements RequestService {
         if (user == null) {
             user = UserResponse.toEntity(userService.signUp(kakaoUserInfo.getEmail(), kakaoUserInfo.getName()));
 
-//            RefreshToken newRefreshToken = RefreshToken.toEntity(user.getEmail(),
-//                    newToken_RefreshToken.getRefreshToken());
-            RefreshToken newRefreshToken = RefreshToken.builder()
-                    .keyEmail(user.getEmail())
-                    .refreshToken(newToken_RefreshToken.getRefreshToken())
-                    .build();
+            RefreshToken newRefreshToken = RefreshToken.toEntity(user.getEmail(),
+                    newToken_RefreshToken.getRefreshToken());
 
             refreshTokenRepository.save(newRefreshToken);
 
-            return getBuild(newToken_AccessToken.getAccessToken(), newRefreshToken.getRefreshToken(), user);
+            //return getBuild(newToken_AccessToken.getAccessToken(), newRefreshToken.getRefreshToken(), user);
+            return JwtResponse.builder()
+                    .accessToken(newToken_AccessToken.getAccessToken())
+                    .refreshToken(newRefreshToken.getRefreshToken())
+                    .userId(user.getId())
+                    .build();
         }
 
         RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
                 .orElseThrow(() -> CustomException.WRONG_REFRESH_TOKEN);
 
-        return getBuild(newToken_AccessToken.getAccessToken(), refreshToken.getRefreshToken(), user);
+        //return getBuild(newToken_AccessToken.getAccessToken(), refreshToken.getRefreshToken(), user);
+        return JwtResponse.builder()
+                .accessToken(newToken_AccessToken.getAccessToken())
+                .refreshToken(refreshToken.getRefreshToken())
+                .userId(user.getId())
+                .build();
     }
 
     private JwtResponse getBuild(String accessToken, String refreshToken, User user) {
