@@ -2,8 +2,6 @@ package com.example.tnote.boundedContext.user.controller;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.user.dto.JwtResponse;
-import com.example.tnote.boundedContext.user.dto.SignInResponse;
-import com.example.tnote.boundedContext.user.dto.TokenRequest;
 import com.example.tnote.boundedContext.user.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -27,27 +25,16 @@ public class AuthController {
             @RequestParam("state") String state
     ) {
 
-        SignInResponse result = authService.redirect(
-                TokenRequest.builder()
-                        .registrationId(registrationId)
-                        .code(code)
-                        .state(state)
-                        .build()
-        );
-
-        JwtResponse jwt = JwtResponse.builder()
-                .userId(result.getUserId())
-                .accessToken(result.getAccessToken())
-                .refreshToken(result.getRefreshToken())
-                .build();
+        JwtResponse jwt = authService.redirect(registrationId, code, state);
 
         return ResponseEntity.ok(Result.of(jwt));
     }
 
     @GetMapping("/tnote/refresh")
     public ResponseEntity<Result> refreshToken(HttpServletRequest request) {
-        SignInResponse response = authService.refreshToken(request.getHeader("RefreshToken"));
+        JwtResponse response = authService.refreshToken(request.getHeader("RefreshToken"));
 
         return ResponseEntity.ok(Result.of(response));
     }
+
 }

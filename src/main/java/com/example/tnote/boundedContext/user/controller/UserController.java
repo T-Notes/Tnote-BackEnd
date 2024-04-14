@@ -8,6 +8,7 @@ import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
 import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
+import com.example.tnote.boundedContext.user.service.AuthService;
 import com.example.tnote.boundedContext.user.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -44,6 +45,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class UserController {
 
     private final UserService userService;
+    private final AuthService authService;
     private final FindCityUtils findCityUtils;
 
     @Value("${api.career-key}")
@@ -150,11 +152,12 @@ public class UserController {
     }
 
     @DeleteMapping
-    public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal PrincipalDetails user
+            , @RequestParam String code) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        UserDeleteResponseDto response = userService.deleteUser(currentUser.getId());
+        UserDeleteResponseDto response = authService.deleteUser(currentUser.getId(), code);
 
         return ResponseEntity.ok(Result.of(response));
     }

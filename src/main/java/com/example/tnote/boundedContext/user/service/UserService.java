@@ -2,14 +2,7 @@ package com.example.tnote.boundedContext.user.service;
 
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.CookieUtils;
-import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
-import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
-import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
-import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
-import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
-import com.example.tnote.boundedContext.todo.repository.TodoRepository;
-import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
 import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
@@ -28,13 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
-    private final ClassLogRepository classLogRepository;
-    private final ProceedingRepository proceedingRepository;
-    private final TodoRepository todoRepository;
-    private final ObservationRepository observationRepository;
     protected final ConsultationRepository consultationRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final ScheduleRepository scheduleRepository;
 
     @Transactional
     public UserResponse signUp(String email, String name) {
@@ -80,25 +67,6 @@ public class UserService {
         if (dto.hasAlarm()) {
             user.updateAlarm(dto.isAlarm());
         }
-    }
-
-    @Transactional
-    public UserDeleteResponseDto deleteUser(Long userId) {
-
-        User currentUser = userRepository.findById(userId)
-                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
-
-        deleteAll(userId, currentUser);
-
-        return UserDeleteResponseDto.builder()
-                .id(currentUser.getId())
-                .build();
-    }
-
-    // 연관키로 묶여 있음
-    private void deleteAll(Long userId, User currentUser) {
-        refreshTokenRepository.deleteByKeyEmail(currentUser.getEmail());
-        userRepository.delete(currentUser);
     }
 
     @Transactional

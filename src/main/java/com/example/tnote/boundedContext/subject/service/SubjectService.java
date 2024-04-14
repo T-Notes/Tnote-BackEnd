@@ -15,7 +15,6 @@ import com.example.tnote.boundedContext.subject.repository.SubjectQueryRepositor
 import com.example.tnote.boundedContext.subject.repository.SubjectRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
-import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -105,24 +104,6 @@ public class SubjectService {
                 subjectQueryRepository.findAllByScheduleIdAndUserIdAndClassDay(scheduleId, userId, day));
     }
 
-    @Transactional(readOnly = true)
-    public List<SubjectResponseDto> getTodayClass(Long scheduleId, Long userId, LocalDate date) {
-
-        User user = checkCurrentUser(userId);
-        Schedule schedule = checkCurrentSchedule(scheduleId);
-
-        if (!schedule.getUser().equals(user)) {
-            log.warn("스케쥴 user와 현 user가 다릅니다");
-            throw CustomException.SCHEDULE_NOT_FOUND;
-        }
-
-        if (date.equals(LocalDate.now())) {
-            return SubjectResponseDto.of(
-                    subjectQueryRepository.findAllByScheduleIdAndUserIdAndDate(scheduleId, userId, date));
-        }
-        throw CustomException.TODAY_IS_WRONG_WITH_DATE;
-
-    }
 
     @Transactional(readOnly = true)
     public SubjectDetailResponseDto getSubject(Long scheduleId, Long subjectId, Long userId) {

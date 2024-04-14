@@ -179,48 +179,6 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("유저 정보 삭제 성공")
-    void deleteUser() {
-
-        // given
-        testSyUtils.login(principalDetails);
-
-        // when
-        userService.deleteUser(user1.getId());
-
-        // then
-        assertThatThrownBy(() -> userService.deleteUser(user1.getId()))
-                .isInstanceOf(CustomException.class);
-    }
-
-    @Test
-    @DisplayName("다른 유저 정보 삭제 실패")
-    void otherUserDelete() {
-
-        // given
-        testSyUtils.login(principalDetails);
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> userService.deleteUser(222L))
-                .isInstanceOf(CustomException.class);
-    }
-
-    @Test
-    @DisplayName("로그인 하지 않고 유저 정보 삭제 실패")
-    void notLoginUserDelete() {
-
-        // given
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> userService.deleteUser(null))
-                .isInstanceOf(InvalidDataAccessApiUsageException.class);
-    }
-
-    @Test
     @DisplayName("유저 정보 로그 아웃 성공")
     void logout() {
 

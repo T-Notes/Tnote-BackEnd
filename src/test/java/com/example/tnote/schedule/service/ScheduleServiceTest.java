@@ -75,8 +75,10 @@ class ScheduleServiceTest {
         subjectsList.add(subjects4);
         subjectsList.add(subjects5);
 
-        schedule2 = testSyUtils.createSchedule("test1", "9교시", user1, LocalDate.parse("2024-03-01"),
+        schedule1 = testSyUtils.createSchedule("test1", "9교시", user1, LocalDate.parse("2024-03-01"),
                 LocalDate.parse("2024-06-01"), subjectsList);
+        schedule2 = testSyUtils.createSchedule("test1", "9교시", user1, LocalDate.parse("2024-03-01"),
+                LocalDate.parse("2024-06-01"));
     }
 
     @Test
@@ -273,7 +275,7 @@ class ScheduleServiceTest {
     }
 
 
-/*    @Test
+    @Test
     @DisplayName("학기 남은 날짜 계산")
     void countLeftDays() {
 
@@ -281,11 +283,11 @@ class ScheduleServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        long diffDays = scheduleService.countLeftDays(schedule1.getStartDate(), user1.getId(), schedule1.getId());
+        long diffDays = scheduleService.countLeftDays(schedule2.getStartDate(), user1.getId(), schedule2.getId());
 
         // then
         assertThat(diffDays).isEqualTo(92);
-    }*/
+    }
 
     @Test
     @DisplayName("월~금 시간표에 넣을 데이터 조회 성공")
@@ -442,7 +444,7 @@ class ScheduleServiceTest {
         LocalDate endDate = LocalDate.parse("2024-06-01");
 
         // when
-        long countClasses = scheduleService.countLeftClasses(endDate, user1.getId(), schedule2.getId());
+        long countClasses = scheduleService.countLeftClasses(endDate, user1.getId(), schedule1.getId());
 
         // then
         assertThat(countClasses).isEqualTo(0);

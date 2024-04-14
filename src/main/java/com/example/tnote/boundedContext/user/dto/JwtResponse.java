@@ -7,6 +7,7 @@ import lombok.Getter;
 @Builder
 public class JwtResponse {
 
+    private KakaoUserInfo kakaoUserInfo;
     private Long userId;
     private String accessToken;
     private String refreshToken;

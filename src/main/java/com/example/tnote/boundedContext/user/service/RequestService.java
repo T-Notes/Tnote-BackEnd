@@ -1,16 +1,15 @@
 package com.example.tnote.boundedContext.user.service;
 
-import com.example.tnote.boundedContext.user.dto.SignInResponse;
-import com.example.tnote.boundedContext.user.dto.TokenRequest;
+import com.example.tnote.boundedContext.user.dto.JwtResponse;
+import com.example.tnote.boundedContext.user.dto.KakaoUnlinkResponse;
 import com.example.tnote.boundedContext.user.dto.TokenResponse;
-import com.example.tnote.boundedContext.user.dto.UnlinkRequest;
 
 public interface RequestService<T> {
-    SignInResponse redirect(TokenRequest tokenRequest);
+    JwtResponse redirect(String provider, String code, String state);
 
-    TokenResponse getToken(TokenRequest tokenRequest);
+    TokenResponse getToken(String code);
 
     T getUserInfo(String accessToken);
 
-    void unLink(UnlinkRequest request);
+    KakaoUnlinkResponse unLink(String accessToken);
 }

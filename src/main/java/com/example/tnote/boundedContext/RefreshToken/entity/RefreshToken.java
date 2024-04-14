@@ -33,4 +33,11 @@ public class RefreshToken extends BaseTimeEntity {
     private String keyEmail;
 
     private LocalDateTime expiration;
+
+    public static RefreshToken toEntity(String email, String refreshToken) {
+        return RefreshToken.builder()
+                .keyEmail(email)
+                .refreshToken(refreshToken)
+                .build();
+    }
 }
