@@ -2,10 +2,7 @@ package com.example.tnote.boundedContext.user.service;
 
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.CookieUtils;
-import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
-import com.example.tnote.boundedContext.user.dto.KakaoUnlinkResponse;
-import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
 import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
@@ -25,8 +22,6 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     protected final ConsultationRepository consultationRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
-    private final KakaoRequestService kakaoRequestService;
 
     @Transactional
     public UserResponse signUp(String email, String name) {
@@ -72,29 +67,6 @@ public class UserService {
         if (dto.hasAlarm()) {
             user.updateAlarm(dto.isAlarm());
         }
-    }
-
-    @Transactional
-    public UserDeleteResponseDto deleteUser(Long userId, String code) {
-
-        User currentUser = userRepository.findById(userId)
-                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
-
-        deleteAll(currentUser);
-
-        String accessToken = kakaoRequestService.getToken(code).getAccessToken();
-
-        KakaoUnlinkResponse unlink = kakaoRequestService.unLink(accessToken);
-
-        return UserDeleteResponseDto.builder()
-                .id(unlink.getId())
-                .build();
-    }
-
-    // 연관키로 묶여 있음
-    private void deleteAll(User currentUser) {
-        refreshTokenRepository.deleteByKeyEmail(currentUser.getEmail());
-        userRepository.delete(currentUser);
     }
 
     @Transactional

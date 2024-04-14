@@ -63,26 +63,30 @@ public class KakaoRequestService implements RequestService {
 
             RefreshToken newRefreshToken = RefreshToken.toEntity(user.getEmail(),
                     newToken_RefreshToken.getRefreshToken());
+//            RefreshToken newRefreshToken = RefreshToken.builder()
+//                    .keyEmail(user.getEmail())
+//                    .refreshToken(newToken_RefreshToken.getRefreshToken())
+//                    .build();
 
             refreshTokenRepository.save(newRefreshToken);
 
-            //return getBuild(newToken_AccessToken.getAccessToken(), newRefreshToken.getRefreshToken(), user);
-            return JwtResponse.builder()
-                    .accessToken(newToken_AccessToken.getAccessToken())
-                    .refreshToken(newRefreshToken.getRefreshToken())
-                    .userId(user.getId())
-                    .build();
+            return getBuild(newToken_AccessToken.getAccessToken(), newToken_RefreshToken.getRefreshToken(), user);
+//                    JwtResponse.builder()
+//                    .accessToken(newToken_AccessToken.getAccessToken())
+//                    .refreshToken(newToken_RefreshToken.getRefreshToken())
+//                    .userId(user.getId())
+//                    .build();
         }
 
         RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
                 .orElseThrow(() -> CustomException.WRONG_REFRESH_TOKEN);
 
-        //return getBuild(newToken_AccessToken.getAccessToken(), refreshToken.getRefreshToken(), user);
-        return JwtResponse.builder()
-                .accessToken(newToken_AccessToken.getAccessToken())
-                .refreshToken(refreshToken.getRefreshToken())
-                .userId(user.getId())
-                .build();
+        return getBuild(newToken_AccessToken.getAccessToken(), refreshToken.getRefreshToken(), user);
+//                JwtResponse.builder()
+//                .accessToken(newToken_AccessToken.getAccessToken())
+//                .refreshToken(refreshToken.getRefreshToken())
+//                .userId(user.getId())
+//                .build();
     }
 
     private JwtResponse getBuild(String accessToken, String refreshToken, User user) {
