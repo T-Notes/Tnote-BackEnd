@@ -26,11 +26,4 @@ public class UserUpdateRequest {
     public boolean hasCareer() {
         return career != 0;
     }
-<<<<<<< HEAD
-
-    public boolean hasAlarm() {
-        return alarm;
-    }
-=======
->>>>>>> main
 }
