@@ -141,7 +141,7 @@ public class UserController {
     }
 
     @PatchMapping("/alarm")
-    public ResponseEntity<Result> updateExtraInfo(@AuthenticationPrincipal PrincipalDetails user,
+    public ResponseEntity<Result> updateAlarmInfo(@AuthenticationPrincipal PrincipalDetails user,
                                                   @RequestBody UserAlarmUpdate dto) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
