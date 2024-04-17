@@ -1,6 +1,8 @@
 package com.example.tnote.boundedContext.home.service;
 
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.ErrorCode;
+import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
@@ -24,11 +26,14 @@ import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
 import com.example.tnote.boundedContext.todo.dto.TodoSliceResponseDto;
 import com.example.tnote.boundedContext.todo.service.TodoService;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +50,7 @@ public class HomeService {
     private final ObservationQueryRepository observationQueryRepository;
     private final ClassLogQueryRepository classLogQueryRepository;
     private final ProceedingQueryRepository proceedingQueryRepository;
+    private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
     private final ClassLogService classLogService;
     private final ProceedingService proceedingService;
@@ -139,6 +145,13 @@ public class HomeService {
     }
 
     public ArchiveResponseDto readDailyLogs(Long userId, Long scheduleId, LocalDate date) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
+        if (startOfDay.toLocalDate().isBefore(schedule.getStartDate()) || endOfDay.toLocalDate().isAfter(schedule.getStartDate())) {
+            throw new CustomException(ErrorCode.DATES_NOT_INCLUDED_IN_SEMESTER);
+        }
         List<ClassLogResponseDto> classLogs = classLogService.readDailyClassLog(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, scheduleId,
                 date);
