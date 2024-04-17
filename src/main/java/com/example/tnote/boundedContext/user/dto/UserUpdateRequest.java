@@ -25,6 +25,6 @@ public class UserUpdateRequest {
     }
 
     public boolean hasAlarm() {
-        return alarm != false;
+        return alarm;
     }
 }
