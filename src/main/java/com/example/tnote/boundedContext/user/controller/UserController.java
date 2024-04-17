@@ -117,7 +117,7 @@ public class UserController {
 
     @GetMapping
     public ResponseEntity<Result> getInfo(@AuthenticationPrincipal PrincipalDetails user) {
-        UserResponse response = UserResponse.of(userService.findById(user.getId()));
+        UserResponse response = userService.findById(user.getId());
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -141,7 +141,7 @@ public class UserController {
     }
 
     @PatchMapping("/alarm")
-    public ResponseEntity<Result> updateExtraInfo(@AuthenticationPrincipal PrincipalDetails user,
+    public ResponseEntity<Result> updateAlarmInfo(@AuthenticationPrincipal PrincipalDetails user,
                                                   @RequestBody UserAlarmUpdate dto) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);

@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.proceeding.service;
 
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.ErrorCode;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
@@ -49,6 +50,11 @@ public class ProceedingService {
                 .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
 
         Proceeding proceeding = proceedingRepository.save(requestDto.toEntity(user, schedule));
+
+        if (proceeding.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || proceeding.getEndDate()
+                .toLocalDate().isAfter(schedule.getStartDate())) {
+            throw new CustomException(ErrorCode.INVALID_OBSERVATION_DATE);
+        }
         if (proceedingImages != null && !proceedingImages.isEmpty()) {
             List<ProceedingImage> uploadedImages = uploadProceedingImages(proceeding, proceedingImages);
             proceeding.getProceedingImage().addAll(uploadedImages);

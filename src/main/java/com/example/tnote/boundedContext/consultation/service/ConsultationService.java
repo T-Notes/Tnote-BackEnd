@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.consultation.service;
 
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.ErrorCode;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
@@ -50,7 +51,10 @@ public class ConsultationService {
                 .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
 
         Consultation consultation = consultationRepository.save(requestDto.toEntity(user, schedule));
-
+        if (consultation.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || consultation.getEndDate()
+                .toLocalDate().isAfter(schedule.getStartDate())) {
+            throw new CustomException(ErrorCode.INVALID_OBSERVATION_DATE);
+        }
         if (consultationImages != null && !consultationImages.isEmpty()) {
             List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
             consultation.getConsultationImage().addAll(uploadedImages);

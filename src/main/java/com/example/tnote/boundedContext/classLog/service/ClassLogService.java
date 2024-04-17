@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.classLog.service;
 
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.ErrorCode;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
@@ -49,7 +50,10 @@ public class ClassLogService {
                 .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
 
         ClassLog classLog = classLogRepository.save(request.toEntity(user, schedule));
-
+        if (classLog.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || classLog.getEndDate()
+                .toLocalDate().isAfter(schedule.getStartDate())) {
+            throw new CustomException(ErrorCode.INVALID_OBSERVATION_DATE);
+        }
         if (classLogImages != null && !classLogImages.isEmpty()) {
             List<ClassLogImage> uploadedImages = uploadClassLogImages(classLog, classLogImages);
             classLog.getClassLogImage().addAll(uploadedImages);
