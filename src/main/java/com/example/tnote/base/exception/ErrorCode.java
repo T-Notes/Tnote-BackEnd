@@ -47,6 +47,7 @@ public enum ErrorCode {
     SUBJECT_NOT_FOUND(HttpStatus.NOT_FOUND, "subject is not found"),
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "subject is not found"),
     TODAY_IS_WRONG_WITH_DATE(HttpStatus.NOT_FOUND, "different date with today"),
+    DATES_NOT_INCLUDED_IN_SEMESTER(HttpStatus.NOT_FOUND, "incorrect date in subject"),
 
     // todo
     TODO_NOT_FOUND(HttpStatus.NOT_FOUND, "todo is not found"),
