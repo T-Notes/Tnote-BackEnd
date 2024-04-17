@@ -145,11 +145,12 @@ public class HomeService {
     }
 
     public ArchiveResponseDto readDailyLogs(Long userId, Long scheduleId, LocalDate date) {
-        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
-        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
-        if (startOfDay.toLocalDate().isBefore(schedule.getStartDate()) || endOfDay.toLocalDate().isAfter(schedule.getStartDate())) {
+        LocalDate startDate = schedule.getStartDate();
+        LocalDate endDate = schedule.getEndDate();
+
+        if (date.isBefore(startDate) || (endDate != null && date.isAfter(endDate))) {
             throw new CustomException(ErrorCode.DATES_NOT_INCLUDED_IN_SEMESTER);
         }
         List<ClassLogResponseDto> classLogs = classLogService.readDailyClassLog(userId, scheduleId, date);
