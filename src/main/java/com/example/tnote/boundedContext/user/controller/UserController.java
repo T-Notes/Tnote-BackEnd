@@ -3,6 +3,7 @@ package com.example.tnote.boundedContext.user.controller;
 import com.example.tnote.base.response.Result;
 import com.example.tnote.base.utils.FindCityUtils;
 import com.example.tnote.base.utils.TokenUtils;
+import com.example.tnote.boundedContext.user.dto.UserAlarmUpdate;
 import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
@@ -135,6 +136,16 @@ public class UserController {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
         UserResponse response = userService.updateExtraInfo(currentUser.getId(), dto);
+
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    @PatchMapping("/alarm")
+    public ResponseEntity<Result> updateExtraInfo(@AuthenticationPrincipal PrincipalDetails user,
+                                                  @RequestBody UserAlarmUpdate dto) {
+
+        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+        UserResponse response = userService.updateAlarmInfo(currentUser.getId(), dto);
 
         return ResponseEntity.ok(Result.of(response));
     }

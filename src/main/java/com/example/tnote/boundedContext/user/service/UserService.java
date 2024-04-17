@@ -3,6 +3,7 @@ package com.example.tnote.boundedContext.user.service;
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.CookieUtils;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
+import com.example.tnote.boundedContext.user.dto.UserAlarmUpdate;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
 import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
@@ -44,6 +45,16 @@ public class UserService {
     }
 
     @Transactional
+    public UserResponse updateAlarmInfo(Long userId, UserAlarmUpdate dto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
+
+        user.updateAlarm(dto.isAlarm());
+
+        return UserResponse.of(user);
+    }
+
+    @Transactional
     public UserResponse updateExtraInfo(Long userId, UserUpdateRequest dto) {
 
         User user = userRepository.findById(userId)
@@ -63,9 +74,6 @@ public class UserService {
         }
         if (dto.hasCareer()) {
             user.updateCareer(dto.getCareer());
-        }
-        if (dto.hasAlarm()) {
-            user.updateAlarm(dto.isAlarm());
         }
     }
 
@@ -94,4 +102,6 @@ public class UserService {
         }
         return user;
     }
+
+
 }

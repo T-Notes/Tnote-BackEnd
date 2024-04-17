@@ -14,7 +14,6 @@ public class UserUpdateRequest {
     private String schoolName;
     private String subject;
     private int career;
-    private boolean alarm;
 
     public boolean hasSchoolName() {
         return schoolName != null;
@@ -26,9 +25,5 @@ public class UserUpdateRequest {
 
     public boolean hasCareer() {
         return career != 0;
-    }
-
-    public boolean hasAlarm() {
-        return alarm != false;
     }
 }
