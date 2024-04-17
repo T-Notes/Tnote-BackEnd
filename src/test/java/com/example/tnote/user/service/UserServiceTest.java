@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.boundedContext.user.dto.UserAlarmUpdate;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserRequest;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
@@ -80,7 +81,6 @@ public class UserServiceTest {
                 .schoolName("변경된 대학교")
                 .subject("변경된 과목")
                 .career(11)
-                .alarm(false)
                 .build();
 
         UserResponse userResponse = userService.updateExtraInfo(user2.getId(), userInfo);
@@ -89,6 +89,23 @@ public class UserServiceTest {
         assertThat(userResponse.getSubject()).isEqualTo(user2.getSubject());
         assertThat(userResponse.getCareer()).isEqualTo(user2.getCareer());
         assertThat(userResponse.getSchool()).isEqualTo(user2.getSchool());
+    }
+
+    @Test
+    @DisplayName("유저 알람 정보 수정 성공")
+    void update_alarm_info() {
+
+        // given
+        testSyUtils.login(principalDetails2);
+
+        // when
+        UserAlarmUpdate userInfo = UserAlarmUpdate.builder()
+                .alarm(true)
+                .build();
+
+        UserResponse userResponse = userService.updateAlarmInfo(user2.getId(), userInfo);
+
+        // then
         assertThat(userResponse.isAlarm()).isEqualTo(user2.isAlarm());
     }
 
@@ -104,7 +121,6 @@ public class UserServiceTest {
                 .schoolName("변경된 대학교")
                 .subject("변경된 과목")
                 .career(11)
-                .alarm(false)
                 .build();
 
         // then
@@ -123,7 +139,6 @@ public class UserServiceTest {
                 .schoolName("변경된 대학교")
                 .subject("변경된 과목")
                 .career(11)
-                .alarm(false)
                 .build();
 
         // then
