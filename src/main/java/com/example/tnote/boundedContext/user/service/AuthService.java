@@ -64,16 +64,14 @@ public class AuthService {
     }
 
     @Transactional
-    public UserDeleteResponseDto deleteUser(Long userId, String code) {
+    public UserDeleteResponseDto deleteUser(Long userId, String oauthAccessToken) {
 
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> CustomException.USER_NOT_FOUND);
 
         deleteAll(currentUser);
 
-        String accessToken = kakaoRequestService.getToken(code).getAccessToken();
-
-        KakaoUnlinkResponse unlink = kakaoRequestService.unLink(accessToken);
+        KakaoUnlinkResponse unlink = kakaoRequestService.unLink(oauthAccessToken);
 
         return UserDeleteResponseDto.builder()
                 .id(unlink.getId())

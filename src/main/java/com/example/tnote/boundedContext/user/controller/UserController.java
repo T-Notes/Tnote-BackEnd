@@ -164,11 +164,12 @@ public class UserController {
 
     @DeleteMapping
     public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal PrincipalDetails user
-            , @RequestParam String code) {
+            , HttpServletRequest request) {
+        String oauthAccessToken = request.getHeader("oauthAccessToken");
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        UserDeleteResponseDto response = authService.deleteUser(currentUser.getId(), code);
+        UserDeleteResponseDto response = authService.deleteUser(currentUser.getId(), oauthAccessToken);
 
         return ResponseEntity.ok(Result.of(response));
     }
