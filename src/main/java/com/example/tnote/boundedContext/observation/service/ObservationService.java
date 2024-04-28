@@ -51,7 +51,7 @@ public class ObservationService {
         Observation observation = observationRepository.save(requestDto.toEntity(user, schedule));
 
         if (observation.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || observation.getEndDate()
-                .toLocalDate().isAfter(schedule.getStartDate())) {
+                .toLocalDate().isAfter(schedule.getEndDate())) {
             throw new CustomException(ErrorCode.INVALID_OBSERVATION_DATE);
         }
         if (observationImages != null && !observationImages.isEmpty()) {

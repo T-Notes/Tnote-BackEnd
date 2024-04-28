@@ -52,8 +52,8 @@ public class ProceedingService {
         Proceeding proceeding = proceedingRepository.save(requestDto.toEntity(user, schedule));
 
         if (proceeding.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || proceeding.getEndDate()
-                .toLocalDate().isAfter(schedule.getStartDate())) {
-            throw new CustomException(ErrorCode.INVALID_OBSERVATION_DATE);
+                .toLocalDate().isAfter(schedule.getEndDate())) {
+            throw new CustomException(ErrorCode.INVALID_PROCEEDING_DATE);
         }
         if (proceedingImages != null && !proceedingImages.isEmpty()) {
             List<ProceedingImage> uploadedImages = uploadProceedingImages(proceeding, proceedingImages);

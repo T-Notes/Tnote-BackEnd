@@ -51,8 +51,8 @@ public class ClassLogService {
 
         ClassLog classLog = classLogRepository.save(request.toEntity(user, schedule));
         if (classLog.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || classLog.getEndDate()
-                .toLocalDate().isAfter(schedule.getStartDate())) {
-            throw new CustomException(ErrorCode.INVALID_OBSERVATION_DATE);
+                .toLocalDate().isAfter(schedule.getEndDate())) {
+            throw new CustomException(ErrorCode.INVALID_CLASS_LOG_DATE);
         }
         if (classLogImages != null && !classLogImages.isEmpty()) {
             List<ClassLogImage> uploadedImages = uploadClassLogImages(classLog, classLogImages);
