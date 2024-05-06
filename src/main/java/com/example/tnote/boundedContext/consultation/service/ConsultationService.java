@@ -149,7 +149,7 @@ public class ConsultationService {
     private List<ConsultationImage> uploadConsultationImages(Consultation consultation,
                                                              List<MultipartFile> consultationImages) {
         return consultationImages.stream()
-                .map(file -> awsS3Uploader.upload(file, "classLog"))
+                .map(file -> awsS3Uploader.upload(file, "consultation"))
                 .map(url -> createConsultationImage(consultation, url))
                 .toList();
     }

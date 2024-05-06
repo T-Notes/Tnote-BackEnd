@@ -138,7 +138,7 @@ public class ProceedingService {
 
     private List<ProceedingImage> uploadProceedingImages(Proceeding proceeding, List<MultipartFile> proceedingImages) {
         return proceedingImages.stream()
-                .map(file -> awsS3Uploader.upload(file, "classLog"))
+                .map(file -> awsS3Uploader.upload(file, "proceeding"))
                 .map(url -> createProceedingImage(proceeding, url))
                 .toList();
     }

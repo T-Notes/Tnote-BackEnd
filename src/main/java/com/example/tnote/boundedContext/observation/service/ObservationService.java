@@ -137,7 +137,7 @@ public class ObservationService {
     private List<ObservationImage> uploadObservationImages(Observation observation,
                                                            List<MultipartFile> observationImages) {
         return observationImages.stream()
-                .map(file -> awsS3Uploader.upload(file, "classLog"))
+                .map(file -> awsS3Uploader.upload(file, "observation"))
                 .map(url -> createObservationImage(observation, url))
                 .toList();
     }
