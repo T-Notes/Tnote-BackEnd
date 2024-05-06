@@ -8,6 +8,7 @@ import com.example.tnote.boundedContext.consultation.entity.CounselingType;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.user.entity.User;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import lombok.Builder;
 import lombok.Getter;
@@ -58,6 +59,7 @@ public class ConsultationRequestDto {
                 .counselingType(this.counselingType)
                 .consultationContents(this.consultationContents)
                 .consultationResult(this.consultationResult)
+                .consultationImage(new ArrayList<>())
                 .schedule(schedule)
                 .build();
     }
