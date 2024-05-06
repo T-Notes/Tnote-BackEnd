@@ -92,7 +92,7 @@ public class ProceedingService {
     public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
                 .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);
-        List<ProceedingImage> proceedingImages = proceedingImageRepository.findProceedingImageById(proceedingId);
+        List<ProceedingImage> proceedingImages = proceedingImageRepository.findProceedingImageByProceedingId(proceedingId);
         recentLogService.saveRecentLog(userId, proceeding.getId(), "PROCEEDING");
 
         return new ProceedingDetailResponseDto(proceeding, proceedingImages);

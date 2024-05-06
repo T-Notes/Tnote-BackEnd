@@ -148,7 +148,7 @@ public class ProceedingServiceTest {
         List<ProceedingImage> mockProceedingImages = List.of(mockProceedingImage);
 
         when(proceedingRepository.findByIdAndUserId(proceedingId, userId)).thenReturn(Optional.of(mockProceeding));
-        when(proceedingImageRepository.findProceedingImageById(proceedingId)).thenReturn(mockProceedingImages);
+        when(proceedingImageRepository.findProceedingImageByProceedingId(proceedingId)).thenReturn(mockProceedingImages);
 
         ProceedingDetailResponseDto result = proceedingService.getProceedingDetails(userId, proceedingId);
 
@@ -158,7 +158,7 @@ public class ProceedingServiceTest {
         assertThat(result.getProceedingImageUrls()).hasSize(mockProceedingImages.size());
 
         verify(proceedingRepository).findByIdAndUserId(proceedingId, userId);
-        verify(proceedingImageRepository).findProceedingImageById(proceedingId);
+        verify(proceedingImageRepository).findProceedingImageByProceedingId(proceedingId);
     }
 
     @DisplayName("존재하지 않는 업무일지의 상세정보 조회 시 예외 발생")
