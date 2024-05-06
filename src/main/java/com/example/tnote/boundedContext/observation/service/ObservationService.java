@@ -83,7 +83,7 @@ public class ObservationService {
     public ObservationDetailResponseDto readObservationDetail(Long userId, Long observationId) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
                 .orElseThrow(() -> CustomException.OBSERVATION_NOT_FOUNT);
-        List<ObservationImage> observationImages = observationImageRepository.findObservationImageById(observationId);
+        List<ObservationImage> observationImages = observationImageRepository.findObservationImageByObservationId(observationId);
         recentLogService.saveRecentLog(userId, observation.getId(), "OBSERVATION");
         return new ObservationDetailResponseDto(observation, observationImages);
     }

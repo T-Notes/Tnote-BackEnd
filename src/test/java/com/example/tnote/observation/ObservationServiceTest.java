@@ -153,7 +153,7 @@ public class ObservationServiceTest {
         List<ObservationImage> mockObservationImages = List.of(mockObservationImage);
 
         when(observationRepository.findByIdAndUserId(userId, observationId)).thenReturn(Optional.of(mockObservation));
-        when(observationImageRepository.findObservationImageById(observationId)).thenReturn(mockObservationImages);
+        when(observationImageRepository.findObservationImageByObservationId(observationId)).thenReturn(mockObservationImages);
 
         ObservationDetailResponseDto result = observationService.readObservationDetail(userId, observationId);
 
@@ -163,7 +163,7 @@ public class ObservationServiceTest {
         assertThat(result.getObservationImageUrls()).hasSize(mockObservationImages.size());
 
         verify(observationRepository).findByIdAndUserId(userId, observationId);
-        verify(observationImageRepository).findObservationImageById(observationId);
+        verify(observationImageRepository).findObservationImageByObservationId(observationId);
     }
 
     @DisplayName("존재하지 않는 관찰일지의 상세정보 조회 시 예외 발생")
