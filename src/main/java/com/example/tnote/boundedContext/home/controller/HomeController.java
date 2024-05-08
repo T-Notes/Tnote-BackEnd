@@ -7,7 +7,6 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto
 import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
-import com.example.tnote.boundedContext.home.dto.LastScheduleResponseDto;
 import com.example.tnote.boundedContext.home.service.HomeService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
@@ -28,7 +27,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -65,21 +63,21 @@ public class HomeController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @GetMapping("/last/{scheduleId}")
-    public ResponseEntity<Result> getLastSchedule(@AuthenticationPrincipal PrincipalDetails user,
-                                                  @PathVariable Long scheduleId) {
-        LastScheduleResponseDto response = homeService.getLastSchedule(user.getId(), scheduleId);
-
-        return ResponseEntity.ok(Result.of(response));
-    }
-
-    @PostMapping("/last/{scheduleId}")
-    public ResponseEntity<Result> saveLastSchedule(@AuthenticationPrincipal PrincipalDetails user,
-                                                   @PathVariable Long scheduleId) {
-        LastScheduleResponseDto response = homeService.saveLastSchedule(user.getId(), scheduleId);
-
-        return ResponseEntity.ok(Result.of(response));
-    }
+//    @GetMapping("/last/{scheduleId}")
+//    public ResponseEntity<Result> getLastSchedule(@AuthenticationPrincipal PrincipalDetails user,
+//                                                  @PathVariable Long scheduleId) {
+//        LastScheduleResponseDto response = homeService.getLastSchedule(user.getId(), scheduleId);
+//
+//        return ResponseEntity.ok(Result.of(response));
+//    }
+//
+//    @PostMapping("/last/{scheduleId}")
+//    public ResponseEntity<Result> saveLastSchedule(@AuthenticationPrincipal PrincipalDetails user,
+//                                                   @PathVariable Long scheduleId) {
+//        LastScheduleResponseDto response = homeService.saveLastSchedule(user.getId(), scheduleId);
+//
+//        return ResponseEntity.ok(Result.of(response));
+//    }
 
     // 아카이브 명 검색 ( = 학기명 검색 )
     @GetMapping("/semester")
