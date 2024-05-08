@@ -2,7 +2,6 @@ package com.example.tnote.boundedContext.home.service;
 
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.ErrorCode;
-import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
@@ -14,8 +13,11 @@ import com.example.tnote.boundedContext.consultation.service.ConsultationService
 import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
+import com.example.tnote.boundedContext.home.dto.LastScheduleResponseDto;
+import com.example.tnote.boundedContext.home.entity.LastSchedule;
 import com.example.tnote.boundedContext.home.repository.ClassLogQueryRepository;
 import com.example.tnote.boundedContext.home.repository.ConsultationQueryRepository;
+import com.example.tnote.boundedContext.home.repository.LastScheduleRepository;
 import com.example.tnote.boundedContext.home.repository.ObservationQueryRepository;
 import com.example.tnote.boundedContext.home.repository.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
@@ -31,9 +33,9 @@ import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
 import com.example.tnote.boundedContext.todo.dto.TodoSliceResponseDto;
 import com.example.tnote.boundedContext.todo.service.TodoService;
+import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,6 +59,7 @@ public class HomeService {
     private final ConsultationService consultationService;
     private final ObservationService observationService;
     private final TodoService todoService;
+    private final LastScheduleRepository lastScheduleRepository;
 
     @Transactional(readOnly = true)
     public List<ConsultationResponseDto> findAllOfConsultation(String studentName, Long userId) {
@@ -185,5 +188,30 @@ public class HomeService {
                 .proceedings(proceedings)
                 .todos(todos)
                 .build();
+    }
+
+    @Transactional
+    public LastScheduleResponseDto saveLastSchedule(Long userId, Long scheduleId) {
+
+        Schedule schedule = scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
+
+        LastSchedule lastInfo = LastSchedule.builder()
+                .schedule(schedule)
+                .user(user)
+                .build();
+
+        return LastScheduleResponseDto.of(lastScheduleRepository.save(lastInfo));
+    }
+
+    @Transactional(readOnly = true)
+    public LastScheduleResponseDto getLastSchedule(Long userId, Long scheduleId) {
+        LastSchedule lastSchedule = lastScheduleRepository.findByUserIdAndScheduleId(userId, scheduleId)
+                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
+
+        return LastScheduleResponseDto.of(lastSchedule);
     }
 }
