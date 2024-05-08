@@ -51,7 +51,7 @@ public class ObservationService {
         Observation observation = observationRepository.save(requestDto.toEntity(user, schedule));
 
         if (observation.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || observation.getEndDate()
-                .toLocalDate().isAfter(schedule.getStartDate())) {
+                .toLocalDate().isAfter(schedule.getEndDate())) {
             throw new CustomException(ErrorCode.INVALID_OBSERVATION_DATE);
         }
         if (observationImages != null && !observationImages.isEmpty()) {
@@ -83,7 +83,7 @@ public class ObservationService {
     public ObservationDetailResponseDto readObservationDetail(Long userId, Long observationId) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
                 .orElseThrow(() -> CustomException.OBSERVATION_NOT_FOUNT);
-        List<ObservationImage> observationImages = observationImageRepository.findObservationImageById(observationId);
+        List<ObservationImage> observationImages = observationImageRepository.findObservationImageByObservationId(observationId);
         recentLogService.saveRecentLog(userId, observation.getId(), "OBSERVATION");
         return new ObservationDetailResponseDto(observation, observationImages);
     }
@@ -137,7 +137,7 @@ public class ObservationService {
     private List<ObservationImage> uploadObservationImages(Observation observation,
                                                            List<MultipartFile> observationImages) {
         return observationImages.stream()
-                .map(file -> awsS3Uploader.upload(file, "classLog"))
+                .map(file -> awsS3Uploader.upload(file, "observation"))
                 .map(url -> createObservationImage(observation, url))
                 .toList();
     }

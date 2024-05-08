@@ -32,7 +32,7 @@ public class ObservationImage {
 
     @JsonBackReference
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "classLog_id")
+    @JoinColumn(name = "observation_id")
     private Observation observation;
 
     @Builder

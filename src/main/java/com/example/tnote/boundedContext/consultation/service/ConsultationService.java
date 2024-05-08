@@ -52,8 +52,8 @@ public class ConsultationService {
 
         Consultation consultation = consultationRepository.save(requestDto.toEntity(user, schedule));
         if (consultation.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || consultation.getEndDate()
-                .toLocalDate().isAfter(schedule.getStartDate())) {
-            throw new CustomException(ErrorCode.INVALID_OBSERVATION_DATE);
+                .toLocalDate().isAfter(schedule.getEndDate())) {
+            throw new CustomException(ErrorCode.INVALID_CONSULTATION_DATE);
         }
         if (consultationImages != null && !consultationImages.isEmpty()) {
             List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
@@ -149,7 +149,7 @@ public class ConsultationService {
     private List<ConsultationImage> uploadConsultationImages(Consultation consultation,
                                                              List<MultipartFile> consultationImages) {
         return consultationImages.stream()
-                .map(file -> awsS3Uploader.upload(file, "classLog"))
+                .map(file -> awsS3Uploader.upload(file, "consultation"))
                 .map(url -> createConsultationImage(consultation, url))
                 .toList();
     }

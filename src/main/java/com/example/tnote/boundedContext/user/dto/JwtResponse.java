@@ -11,4 +11,5 @@ public class JwtResponse {
     private Long userId;
     private String accessToken;
     private String refreshToken;
+    private String oauthAccessToken;
 }

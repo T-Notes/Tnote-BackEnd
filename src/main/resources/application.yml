@@ -47,7 +47,6 @@ spring:
           kakao:
             authorization_uri: https://kauth.kakao.com/oauth/authorize
             token_uri: https://kauth.kakao.com/oauth/token
-            #unlink_uri: https://kauth.kakao.com/v1/user/unlink
             user-info-uri: https://kapi.kakao.com/v2/user/me
             user_name_attribute: id
 

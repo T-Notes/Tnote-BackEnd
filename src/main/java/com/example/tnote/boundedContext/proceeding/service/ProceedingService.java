@@ -52,8 +52,8 @@ public class ProceedingService {
         Proceeding proceeding = proceedingRepository.save(requestDto.toEntity(user, schedule));
 
         if (proceeding.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || proceeding.getEndDate()
-                .toLocalDate().isAfter(schedule.getStartDate())) {
-            throw new CustomException(ErrorCode.INVALID_OBSERVATION_DATE);
+                .toLocalDate().isAfter(schedule.getEndDate())) {
+            throw new CustomException(ErrorCode.INVALID_PROCEEDING_DATE);
         }
         if (proceedingImages != null && !proceedingImages.isEmpty()) {
             List<ProceedingImage> uploadedImages = uploadProceedingImages(proceeding, proceedingImages);
@@ -92,7 +92,7 @@ public class ProceedingService {
     public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
                 .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);
-        List<ProceedingImage> proceedingImages = proceedingImageRepository.findProceedingImageById(proceedingId);
+        List<ProceedingImage> proceedingImages = proceedingImageRepository.findProceedingImageByProceedingId(proceedingId);
         recentLogService.saveRecentLog(userId, proceeding.getId(), "PROCEEDING");
 
         return new ProceedingDetailResponseDto(proceeding, proceedingImages);
@@ -138,7 +138,7 @@ public class ProceedingService {
 
     private List<ProceedingImage> uploadProceedingImages(Proceeding proceeding, List<MultipartFile> proceedingImages) {
         return proceedingImages.stream()
-                .map(file -> awsS3Uploader.upload(file, "classLog"))
+                .map(file -> awsS3Uploader.upload(file, "proceeding"))
                 .map(url -> createProceedingImage(proceeding, url))
                 .toList();
     }
