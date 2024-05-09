@@ -63,6 +63,22 @@ public class HomeController {
         return ResponseEntity.ok(Result.of(response));
     }
 
+//    @GetMapping("/last/{scheduleId}")
+//    public ResponseEntity<Result> getLastSchedule(@AuthenticationPrincipal PrincipalDetails user,
+//                                                  @PathVariable Long scheduleId) {
+//        LastScheduleResponseDto response = homeService.getLastSchedule(user.getId(), scheduleId);
+//
+//        return ResponseEntity.ok(Result.of(response));
+//    }
+//
+//    @PostMapping("/last/{scheduleId}")
+//    public ResponseEntity<Result> saveLastSchedule(@AuthenticationPrincipal PrincipalDetails user,
+//                                                   @PathVariable Long scheduleId) {
+//        LastScheduleResponseDto response = homeService.saveLastSchedule(user.getId(), scheduleId);
+//
+//        return ResponseEntity.ok(Result.of(response));
+//    }
+
     // 아카이브 명 검색 ( = 학기명 검색 )
     @GetMapping("/semester")
     public ResponseEntity<Result> findSemester(
