@@ -1,5 +1,6 @@
 package com.example.tnote.boundedContext.observation.dto;
 
+import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -16,6 +17,7 @@ public class ObservationResponseDto {
     private String guidance; // 해석 및 지도 방안
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String logType;
 
     public static ObservationResponseDto of(Observation observation) {
         return ObservationResponseDto.builder()
@@ -27,6 +29,7 @@ public class ObservationResponseDto {
                 .guidance(observation.getGuidance())
                 .createdAt(observation.getCreatedAt())
                 .updatedAt(observation.getUpdatedAt())
+                .logType(LogType.OBSERVATION.name())
                 .build();
     }
 }
