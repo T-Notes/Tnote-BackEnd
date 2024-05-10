@@ -42,17 +42,20 @@ public class HomeController {
     private final RecentLogService recentLogService;
 
     // 학생 이름 검색 했을때 나올 내용 - keyword로 통합
-    @GetMapping("/searching")
+    @GetMapping("/searching/{scheduleId}")
     public ResponseEntity<Result> findAll(
             @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
-            @AuthenticationPrincipal PrincipalDetails user) {
+            @AuthenticationPrincipal PrincipalDetails user, @PathVariable Long scheduleId) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(keyword, currentUser.getId());
-        List<ObservationResponseDto> observation = homeService.findAllOfObservation(keyword, currentUser.getId());
-        List<ClassLogResponseDto> classLog = homeService.findAllOfClassLog(keyword, currentUser.getId());
-        List<ProceedingResponseDto> proceeding = homeService.findAllOfProceeding(keyword, currentUser.getId());
+        List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(keyword, currentUser.getId(),
+                scheduleId);
+        List<ObservationResponseDto> observation = homeService.findAllOfObservation(keyword, currentUser.getId(),
+                scheduleId);
+        List<ClassLogResponseDto> classLog = homeService.findAllOfClassLog(keyword, currentUser.getId(), scheduleId);
+        List<ProceedingResponseDto> proceeding = homeService.findAllOfProceeding(keyword, currentUser.getId(),
+                scheduleId);
 
         List<Object> response = new ArrayList<>();
         response.addAll(consultation);
