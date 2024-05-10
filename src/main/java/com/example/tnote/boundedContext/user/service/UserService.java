@@ -75,6 +75,9 @@ public class UserService {
         if (dto.hasCareer()) {
             user.updateCareer(dto.getCareer());
         }
+        if (dto.hasSchedule()) {
+            user.updateCareer(dto.getScheduleId());
+        }
     }
 
     @Transactional
@@ -102,6 +105,4 @@ public class UserService {
         }
         return UserResponse.of(user);
     }
-
-
 }

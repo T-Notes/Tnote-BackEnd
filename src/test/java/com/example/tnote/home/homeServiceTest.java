@@ -31,7 +31,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
@@ -87,7 +86,7 @@ public class homeServiceTest {
 
         // when
         List<ConsultationResponseDto> response = homeService.findAllOfConsultation(consultation.getStudentName(),
-                user1.getId());
+                user1.getId(), schedule1.getId());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         LocalDateTime date = LocalDateTime.parse("2024-03-01 13:47:13.248", formatter);
@@ -104,19 +103,6 @@ public class homeServiceTest {
     }
 
     @Test
-    @DisplayName("로그인 하지 않은 유저 상담 일지 조회 - 실패")
-    void notLoginFindAllOfConsultation() {
-
-        // given
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> homeService.findAllOfConsultation(consultation.getStudentName(), null))
-                .isInstanceOf(InvalidDataAccessApiUsageException.class);
-    }
-
-    @Test
     @DisplayName("다른 유저 상담 일지 조회 - 실패")
     void otherUserFindAllOfConsultation() {
 
@@ -126,7 +112,8 @@ public class homeServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> homeService.findAllOfConsultation(consultation.getStudentName(), 222L))
+        assertThatThrownBy(
+                () -> homeService.findAllOfConsultation(consultation.getStudentName(), 222L, schedule1.getId()))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -139,7 +126,7 @@ public class homeServiceTest {
 
         // when
         List<ObservationResponseDto> response = homeService.findAllOfObservation(observation.getStudentName(),
-                user1.getId());
+                user1.getId(), schedule1.getId());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         LocalDateTime date = LocalDateTime.parse("2024-03-01 13:47:13.248", formatter);
@@ -154,19 +141,6 @@ public class homeServiceTest {
     }
 
     @Test
-    @DisplayName("로그인 하지 않은 유저 관찰 일지 조회 - 실패")
-    void notLoginFindAllOfObservation() {
-
-        // given
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> homeService.findAllOfObservation(observation.getStudentName(), null))
-                .isInstanceOf(InvalidDataAccessApiUsageException.class);
-    }
-
-    @Test
     @DisplayName("다른 유저 학급 관찰 조회 - 실패")
     void otherUserFindAllOfObservation() {
 
@@ -176,7 +150,8 @@ public class homeServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> homeService.findAllOfObservation(observation.getStudentName(), 222L))
+        assertThatThrownBy(
+                () -> homeService.findAllOfObservation(observation.getStudentName(), 222L, schedule1.getId()))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -190,7 +165,7 @@ public class homeServiceTest {
 
         // when
         List<ClassLogResponseDto> response = homeService.findAllOfClassLog(classLog.getTitle(),
-                user1.getId());
+                user1.getId(), schedule1.getId());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         LocalDateTime date = LocalDateTime.parse("2024-03-01 13:47:13.248", formatter);
@@ -206,18 +181,6 @@ public class homeServiceTest {
 
     }
 
-    @Test
-    @DisplayName("로그인 하지 않은 유저 학급 일지 조회 - 실패")
-    void notLoginFindAllOfClassLog() {
-
-        // given
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> homeService.findAllOfClassLog(classLog.getTitle(), null))
-                .isInstanceOf(InvalidDataAccessApiUsageException.class);
-    }
 
     @Test
     @DisplayName("다른  유저 학급 일지 조회 - 실패")
@@ -229,7 +192,7 @@ public class homeServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> homeService.findAllOfClassLog(classLog.getTitle(), 222L))
+        assertThatThrownBy(() -> homeService.findAllOfClassLog(classLog.getTitle(), 222L, schedule1.getId()))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -242,7 +205,7 @@ public class homeServiceTest {
 
         // when
         List<ProceedingResponseDto> response = homeService.findAllOfProceeding(proceeding.getTitle(),
-                user1.getId());
+                user1.getId(), schedule1.getId());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         LocalDateTime date = LocalDateTime.parse("2024-03-01 13:47:13.248", formatter);
@@ -257,19 +220,6 @@ public class homeServiceTest {
     }
 
     @Test
-    @DisplayName("로그인 하지 않은 유저 업무 일지 조회 - 실패")
-    void notLoginFindAllOfProceeding() {
-
-        // given
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> homeService.findAllOfProceeding(proceeding.getTitle(), null))
-                .isInstanceOf(InvalidDataAccessApiUsageException.class);
-    }
-
-    @Test
     @DisplayName("다른 유저 업무 일지 조회 - 실패")
     void otherUserFindAllOfProceeding() {
 
@@ -279,7 +229,7 @@ public class homeServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> homeService.findAllOfProceeding(proceeding.getTitle(), 222L))
+        assertThatThrownBy(() -> homeService.findAllOfProceeding(proceeding.getTitle(), 222L, schedule1.getId()))
                 .isInstanceOf(CustomException.class);
     }
 

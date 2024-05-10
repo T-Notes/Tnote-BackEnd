@@ -40,6 +40,7 @@ public class User extends BaseTimeEntity {
     private String subject;
     private int career;
     private boolean alarm; // 마이페이지 > 설정 > 알림 받기
+    private int lastScheduleId;
 
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
