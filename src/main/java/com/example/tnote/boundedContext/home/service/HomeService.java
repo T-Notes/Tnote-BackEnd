@@ -15,7 +15,6 @@ import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.home.repository.ClassLogQueryRepository;
 import com.example.tnote.boundedContext.home.repository.ConsultationQueryRepository;
-import com.example.tnote.boundedContext.home.repository.LastScheduleRepository;
 import com.example.tnote.boundedContext.home.repository.ObservationQueryRepository;
 import com.example.tnote.boundedContext.home.repository.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
@@ -56,7 +55,6 @@ public class HomeService {
     private final ConsultationService consultationService;
     private final ObservationService observationService;
     private final TodoService todoService;
-    private final LastScheduleRepository lastScheduleRepository;
 
     @Transactional(readOnly = true)
     public List<ConsultationResponseDto> findAllOfConsultation(String studentName, Long userId) {
@@ -186,29 +184,4 @@ public class HomeService {
                 .todos(todos)
                 .build();
     }
-
-//    @Transactional
-//    public LastScheduleResponseDto saveLastSchedule(Long userId, Long scheduleId) {
-//
-//        Schedule schedule = scheduleRepository.findById(scheduleId)
-//                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
-//
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
-//
-//        LastSchedule lastInfo = LastSchedule.builder()
-//                .schedule(schedule)
-//                .user(user)
-//                .build();
-//
-//        return LastScheduleResponseDto.of(lastScheduleRepository.save(lastInfo));
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public LastScheduleResponseDto getLastSchedule(Long userId, Long scheduleId) {
-//        LastSchedule lastSchedule = lastScheduleRepository.findByUserIdAndScheduleId(userId, scheduleId)
-//                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
-//
-//        return LastScheduleResponseDto.of(lastSchedule);
-//    }
 }
