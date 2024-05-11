@@ -1,5 +1,6 @@
 package com.example.tnote.boundedContext.home.repository;
 
+import static com.example.tnote.boundedContext.consultation.entity.QConsultation.consultation;
 import static com.example.tnote.boundedContext.proceeding.entity.QProceeding.proceeding;
 
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
@@ -14,10 +15,12 @@ public class ProceedingQueryRepository {
     private final JPAQueryFactory query;
 
     // 작성 시간을 id의 역순으로 배치
-    public List<Proceeding> findAll(String keyword) {
+    public List<Proceeding> findAll(String keyword, Long scheduleId) {
         return query
                 .selectFrom(proceeding)
-                .where(proceeding.title.like("%" + keyword + "%"))
+                .where(
+                        proceeding.title.like("%" + keyword + "%")
+                                .and(consultation.schedule.id.eq(scheduleId)))
                 .orderBy(proceeding.id.desc())
                 .fetch();
     }

@@ -15,7 +15,6 @@ import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.home.repository.ClassLogQueryRepository;
 import com.example.tnote.boundedContext.home.repository.ConsultationQueryRepository;
-import com.example.tnote.boundedContext.home.repository.LastScheduleRepository;
 import com.example.tnote.boundedContext.home.repository.ObservationQueryRepository;
 import com.example.tnote.boundedContext.home.repository.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
@@ -56,14 +55,13 @@ public class HomeService {
     private final ConsultationService consultationService;
     private final ObservationService observationService;
     private final TodoService todoService;
-    private final LastScheduleRepository lastScheduleRepository;
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findAllOfConsultation(String studentName, Long userId) {
+    public List<ConsultationResponseDto> findAllOfConsultation(String studentName, Long userId, Long scheduleId) {
 
         findUser(userId);
 
-        List<Consultation> consultations = consultationQueryRepository.findAll(studentName);
+        List<Consultation> consultations = consultationQueryRepository.findAll(studentName, scheduleId);
 
         return consultations.stream()
                 .map(ConsultationResponseDto::of)
@@ -71,11 +69,11 @@ public class HomeService {
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> findAllOfObservation(String studentName, Long userId) {
+    public List<ObservationResponseDto> findAllOfObservation(String studentName, Long userId, Long scheduleId) {
 
         findUser(userId);
 
-        List<Observation> observations = observationQueryRepository.findAll(studentName);
+        List<Observation> observations = observationQueryRepository.findAll(studentName, scheduleId);
 
         return observations.stream()
                 .map(ObservationResponseDto::of)
@@ -83,11 +81,11 @@ public class HomeService {
     }
 
     @Transactional(readOnly = true)
-    public List<ClassLogResponseDto> findAllOfClassLog(String title, Long userId) {
+    public List<ClassLogResponseDto> findAllOfClassLog(String title, Long userId, Long scheduleId) {
 
         findUser(userId);
 
-        List<ClassLog> classLogs = classLogQueryRepository.findAll(title);
+        List<ClassLog> classLogs = classLogQueryRepository.findAll(title, scheduleId);
 
         return classLogs.stream()
                 .map(ClassLogResponseDto::of)
@@ -95,11 +93,11 @@ public class HomeService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProceedingResponseDto> findAllOfProceeding(String title, Long userId) {
+    public List<ProceedingResponseDto> findAllOfProceeding(String title, Long userId, Long scheduleId) {
 
         findUser(userId);
 
-        List<Proceeding> proceedings = proceedingQueryRepository.findAll(title);
+        List<Proceeding> proceedings = proceedingQueryRepository.findAll(title, scheduleId);
 
         return proceedings.stream()
                 .map(ProceedingResponseDto::of)
@@ -186,29 +184,4 @@ public class HomeService {
                 .todos(todos)
                 .build();
     }
-
-//    @Transactional
-//    public LastScheduleResponseDto saveLastSchedule(Long userId, Long scheduleId) {
-//
-//        Schedule schedule = scheduleRepository.findById(scheduleId)
-//                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
-//
-//        User user = userRepository.findById(userId)
-//                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
-//
-//        LastSchedule lastInfo = LastSchedule.builder()
-//                .schedule(schedule)
-//                .user(user)
-//                .build();
-//
-//        return LastScheduleResponseDto.of(lastScheduleRepository.save(lastInfo));
-//    }
-//
-//    @Transactional(readOnly = true)
-//    public LastScheduleResponseDto getLastSchedule(Long userId, Long scheduleId) {
-//        LastSchedule lastSchedule = lastScheduleRepository.findByUserIdAndScheduleId(userId, scheduleId)
-//                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
-//
-//        return LastScheduleResponseDto.of(lastSchedule);
-//    }
 }
