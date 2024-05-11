@@ -134,7 +134,7 @@ public class HomeController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
         }
 
-        List<RecentLogResponseDto> response = recentLogService.getRecentLogsFromDatabase(principalDetails.getId());
+        List<RecentLogResponseDto> response = recentLogService.getRecentLogs(principalDetails.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
