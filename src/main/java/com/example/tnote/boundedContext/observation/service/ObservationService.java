@@ -79,7 +79,6 @@ public class ObservationService {
                 .build();
     }
 
-    @Transactional(readOnly = true)
     public ObservationDetailResponseDto readObservationDetail(Long userId, Long observationId) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
                 .orElseThrow(() -> CustomException.OBSERVATION_NOT_FOUNT);
