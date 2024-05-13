@@ -79,7 +79,7 @@ public class UserService {
             user.updateLastScheduleId(dto.getScheduleId());
         }
         if (dto.hasScheduleName()) {
-            user.updateLastScheduleName(dto.getLastScheduleName());
+            user.updateLastScheduleName(dto.getSemesterName());
         }
     }
 
