@@ -15,6 +15,7 @@ public class UserUpdateRequest {
     private String subject;
     private int career;
     private int scheduleId;
+    private String lastScheduleName;
 
     public boolean hasSchoolName() {
         return schoolName != null;
@@ -30,5 +31,9 @@ public class UserUpdateRequest {
 
     public boolean hasSchedule() {
         return scheduleId != 0;
+    }
+
+    public boolean hasScheduleName() {
+        return lastScheduleName != null;
     }
 }

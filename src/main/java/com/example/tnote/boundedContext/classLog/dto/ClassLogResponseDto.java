@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.classLog.dto;
 
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.home.constant.LogType;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +19,7 @@ public class ClassLogResponseDto {
     private String magnitude;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String logType;
 
     public static ClassLogResponseDto of(ClassLog classLog) {
         return ClassLogResponseDto.builder()
@@ -31,6 +33,7 @@ public class ClassLogResponseDto {
                 .magnitude(classLog.getMagnitude())
                 .createdAt(classLog.getCreatedAt())
                 .updatedAt(classLog.getUpdatedAt())
+                .logType(LogType.CLASS_LOG.name())
                 .build();
     }
 

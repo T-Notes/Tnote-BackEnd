@@ -52,7 +52,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/**", "/classLog/**", "/user/**").permitAll()
+                                .requestMatchers("/favicon.ico/**", "/login/**", "/error/**").permitAll()
                                 .anyRequest().authenticated()
                 )
                 .cors(

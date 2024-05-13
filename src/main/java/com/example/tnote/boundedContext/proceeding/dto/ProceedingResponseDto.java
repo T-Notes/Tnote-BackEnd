@@ -1,5 +1,6 @@
 package com.example.tnote.boundedContext.proceeding.dto;
 
+import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -16,6 +17,7 @@ public class ProceedingResponseDto {
     private String workContents;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String logType;
 
     public static ProceedingResponseDto of(Proceeding proceeding) {
         return ProceedingResponseDto.builder()
@@ -27,6 +29,7 @@ public class ProceedingResponseDto {
                 .workContents(proceeding.getWorkContents())
                 .createdAt(proceeding.getCreatedAt())
                 .updatedAt(proceeding.getUpdatedAt())
+                .logType(LogType.PROCEEDING.name())
                 .build();
     }
 }
