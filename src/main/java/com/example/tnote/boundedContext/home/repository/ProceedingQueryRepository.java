@@ -1,6 +1,5 @@
 package com.example.tnote.boundedContext.home.repository;
 
-import static com.example.tnote.boundedContext.consultation.entity.QConsultation.consultation;
 import static com.example.tnote.boundedContext.proceeding.entity.QProceeding.proceeding;
 
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
@@ -19,8 +18,8 @@ public class ProceedingQueryRepository {
         return query
                 .selectFrom(proceeding)
                 .where(
-                        proceeding.title.like("%" + keyword + "%")
-                                .and(consultation.schedule.id.eq(scheduleId)))
+                        proceeding.schedule.id.eq(scheduleId)
+                                .and(proceeding.title.like("%" + keyword + "%")))
                 .orderBy(proceeding.id.desc())
                 .fetch();
     }

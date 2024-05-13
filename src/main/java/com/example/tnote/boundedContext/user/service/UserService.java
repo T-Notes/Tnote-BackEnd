@@ -76,7 +76,10 @@ public class UserService {
             user.updateCareer(dto.getCareer());
         }
         if (dto.hasSchedule()) {
-            user.updateCareer(dto.getScheduleId());
+            user.updateLastScheduleId(dto.getScheduleId());
+        }
+        if (dto.hasScheduleName()) {
+            user.updateLastScheduleName(dto.getLastScheduleName());
         }
     }
 
