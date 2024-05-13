@@ -18,8 +18,8 @@ public class ConsultationQueryRepository {
         return query
                 .selectFrom(consultation)
                 .where(
-                        consultation.studentName.like("%" + keyword + "%")
-                                .and(consultation.schedule.id.eq(scheduleId))
+                        consultation.schedule.id.eq(scheduleId)
+                                .and(consultation.studentName.like("%" + keyword + "%"))
                 )
                 .orderBy(consultation.id.desc())
                 .fetch();

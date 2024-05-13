@@ -1,7 +1,6 @@
 package com.example.tnote.boundedContext.home.repository;
 
 import static com.example.tnote.boundedContext.classLog.entity.QClassLog.classLog;
-import static com.example.tnote.boundedContext.consultation.entity.QConsultation.consultation;
 
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -19,8 +18,8 @@ public class ClassLogQueryRepository {
         return query
                 .selectFrom(classLog)
                 .where(
-                        classLog.title.like("%" + keyword + "%")
-                                .and(consultation.schedule.id.eq(scheduleId))
+                        classLog.schedule.id.eq(scheduleId)
+                                .and(classLog.title.like("%" + keyword + "%"))
                 )
                 .orderBy(classLog.id.desc())
                 .fetch();

@@ -37,6 +37,10 @@ public class QUser extends EntityPathBase<User> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final NumberPath<Integer> lastScheduleId = createNumber("lastScheduleId", Integer.class);
+
+    public final StringPath lastScheduleName = createString("lastScheduleName");
+
     public final ListPath<com.example.tnote.boundedContext.observation.entity.Observation, com.example.tnote.boundedContext.observation.entity.QObservation> observations = this.<com.example.tnote.boundedContext.observation.entity.Observation, com.example.tnote.boundedContext.observation.entity.QObservation>createList("observations", com.example.tnote.boundedContext.observation.entity.Observation.class, com.example.tnote.boundedContext.observation.entity.QObservation.class, PathInits.DIRECT2);
 
     public final ListPath<com.example.tnote.boundedContext.proceeding.entity.Proceeding, com.example.tnote.boundedContext.proceeding.entity.QProceeding> proceedings = this.<com.example.tnote.boundedContext.proceeding.entity.Proceeding, com.example.tnote.boundedContext.proceeding.entity.QProceeding>createList("proceedings", com.example.tnote.boundedContext.proceeding.entity.Proceeding.class, com.example.tnote.boundedContext.proceeding.entity.QProceeding.class, PathInits.DIRECT2);
