@@ -7,6 +7,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto
 import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
+import com.example.tnote.boundedContext.home.dto.UnifiedLogResponseDto;
 import com.example.tnote.boundedContext.home.service.HomeService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
@@ -85,7 +86,7 @@ public class HomeController {
                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                                @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                @RequestParam(value = "size", required = false, defaultValue = "8") int size,
-                                               @RequestParam(value = "logType", required = false, defaultValue = "CLASS_LOG") LogType logType) {
+                                               @RequestParam(value = "logType", required = false, defaultValue = "ALL") LogType logType) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
         ArchiveSliceResponseDto response = homeService.readLogsByDate(principalDetails.getId(), scheduleId, startDate,
@@ -123,6 +124,19 @@ public class HomeController {
 
         List<RecentLogResponseDto> response = recentLogService.getRecentLogs(principalDetails.getId());
 
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    @GetMapping("/{scheduleId}/LogsByFilter")
+    public ResponseEntity<Result> readLogsByFilter(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                   @PathVariable Long scheduleId,
+                                                   @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                   @RequestParam(value = "size", required = false, defaultValue = "8") int size,
+                                                   @RequestParam(value = "logType", required = false, defaultValue = "ALL") LogType logType) {
+
+        PageRequest pageRequest = PageRequest.of(page, size);
+        UnifiedLogResponseDto response = homeService.readLogByFilter(principalDetails.getId(), scheduleId, logType,
+                pageRequest);
         return ResponseEntity.ok(Result.of(response));
     }
 }
