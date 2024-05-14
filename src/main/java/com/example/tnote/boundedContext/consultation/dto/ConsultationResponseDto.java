@@ -4,13 +4,14 @@ import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
 import com.example.tnote.boundedContext.home.constant.LogType;
+import com.example.tnote.boundedContext.home.dto.LogEntry;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class ConsultationResponseDto {
+public class ConsultationResponseDto implements LogEntry {
     private Long id;
     private String studentName;
     private LocalDateTime startDate;
@@ -22,6 +23,10 @@ public class ConsultationResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String logType;
+    @Override
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
     public static ConsultationResponseDto of(Consultation consultation) {
         return ConsultationResponseDto.builder()
                 .id(consultation.getId())
