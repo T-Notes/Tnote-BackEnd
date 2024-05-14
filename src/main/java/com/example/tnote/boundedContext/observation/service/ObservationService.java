@@ -82,7 +82,8 @@ public class ObservationService {
     public ObservationDetailResponseDto readObservationDetail(Long userId, Long observationId) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
                 .orElseThrow(() -> CustomException.OBSERVATION_NOT_FOUNT);
-        List<ObservationImage> observationImages = observationImageRepository.findObservationImageByObservationId(observationId);
+        List<ObservationImage> observationImages = observationImageRepository.findObservationImageByObservationId(
+                observationId);
         recentLogService.saveRecentLog(userId, observation.getId(), "OBSERVATION");
         return new ObservationDetailResponseDto(observation, observationImages);
     }
@@ -103,6 +104,13 @@ public class ObservationService {
         updateObservationItem(requestDto, observation, observationImages);
         recentLogService.saveRecentLog(userId, observation.getId(), "OBSERVATION");
         return ObservationResponseDto.of(observation);
+    }
+
+    public List<ObservationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
+        List<Observation> logs = observationRepository.findAllByUserIdAndScheduleId(userId,scheduleId);
+        return logs.stream()
+                .map(ObservationResponseDto::of)
+                .toList();
     }
 
     private void updateObservationItem(ObservationUpdateRequestDto requestDto, Observation observation,
