@@ -15,5 +15,4 @@ public class ArchiveSliceResponseDto {
     private ObservationSliceResponseDto observations;
     private ConsultationSliceResponseDto consultations;
     private ProceedingSliceResponseDto proceedings;
-    private TodoSliceResponseDto todos;
 }
