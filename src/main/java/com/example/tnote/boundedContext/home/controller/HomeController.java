@@ -7,6 +7,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto
 import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
+import com.example.tnote.boundedContext.home.dto.UnifiedLogResponseDto;
 import com.example.tnote.boundedContext.home.service.HomeService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
@@ -42,17 +43,20 @@ public class HomeController {
     private final RecentLogService recentLogService;
 
     // 학생 이름 검색 했을때 나올 내용 - keyword로 통합
-    @GetMapping("/searching")
+    @GetMapping("/searching/{scheduleId}")
     public ResponseEntity<Result> findAll(
             @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
-            @AuthenticationPrincipal PrincipalDetails user) {
+            @AuthenticationPrincipal PrincipalDetails user, @PathVariable Long scheduleId) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(keyword, currentUser.getId());
-        List<ObservationResponseDto> observation = homeService.findAllOfObservation(keyword, currentUser.getId());
-        List<ClassLogResponseDto> classLog = homeService.findAllOfClassLog(keyword, currentUser.getId());
-        List<ProceedingResponseDto> proceeding = homeService.findAllOfProceeding(keyword, currentUser.getId());
+        List<ConsultationResponseDto> consultation = homeService.findAllOfConsultation(keyword, currentUser.getId(),
+                scheduleId);
+        List<ObservationResponseDto> observation = homeService.findAllOfObservation(keyword, currentUser.getId(),
+                scheduleId);
+        List<ClassLogResponseDto> classLog = homeService.findAllOfClassLog(keyword, currentUser.getId(), scheduleId);
+        List<ProceedingResponseDto> proceeding = homeService.findAllOfProceeding(keyword, currentUser.getId(),
+                scheduleId);
 
         List<Object> response = new ArrayList<>();
         response.addAll(consultation);
@@ -62,22 +66,6 @@ public class HomeController {
 
         return ResponseEntity.ok(Result.of(response));
     }
-
-//    @GetMapping("/last/{scheduleId}")
-//    public ResponseEntity<Result> getLastSchedule(@AuthenticationPrincipal PrincipalDetails user,
-//                                                  @PathVariable Long scheduleId) {
-//        LastScheduleResponseDto response = homeService.getLastSchedule(user.getId(), scheduleId);
-//
-//        return ResponseEntity.ok(Result.of(response));
-//    }
-//
-//    @PostMapping("/last/{scheduleId}")
-//    public ResponseEntity<Result> saveLastSchedule(@AuthenticationPrincipal PrincipalDetails user,
-//                                                   @PathVariable Long scheduleId) {
-//        LastScheduleResponseDto response = homeService.saveLastSchedule(user.getId(), scheduleId);
-//
-//        return ResponseEntity.ok(Result.of(response));
-//    }
 
     // 아카이브 명 검색 ( = 학기명 검색 )
     @GetMapping("/semester")
@@ -98,7 +86,7 @@ public class HomeController {
                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
                                                @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                @RequestParam(value = "size", required = false, defaultValue = "8") int size,
-                                               @RequestParam(value = "logType", required = false, defaultValue = "CLASS_LOG") LogType logType) {
+                                               @RequestParam(value = "logType", required = false, defaultValue = "ALL") LogType logType) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
         ArchiveSliceResponseDto response = homeService.readLogsByDate(principalDetails.getId(), scheduleId, startDate,
@@ -134,8 +122,21 @@ public class HomeController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
         }
 
-        List<RecentLogResponseDto> response = recentLogService.getRecentLogsFromDatabase(principalDetails.getId());
+        List<RecentLogResponseDto> response = recentLogService.getRecentLogs(principalDetails.getId());
 
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    @GetMapping("/{scheduleId}/LogsByFilter")
+    public ResponseEntity<Result> readLogsByFilter(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                   @PathVariable Long scheduleId,
+                                                   @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                   @RequestParam(value = "size", required = false, defaultValue = "8") int size,
+                                                   @RequestParam(value = "logType", required = false, defaultValue = "ALL") LogType logType) {
+
+        PageRequest pageRequest = PageRequest.of(page, size);
+        UnifiedLogResponseDto response = homeService.readLogByFilter(principalDetails.getId(), scheduleId, logType,
+                pageRequest);
         return ResponseEntity.ok(Result.of(response));
     }
 }

@@ -16,6 +16,8 @@ public class UserResponse {
     private String subject;
     private int career;
     private boolean alarm;
+    private int scheduleId;
+    private String semesterName;
 
     public static UserResponse of(User user) {
         return UserResponse.builder()
@@ -26,6 +28,8 @@ public class UserResponse {
                 .subject(user.getSubject())
                 .career(user.getCareer())
                 .alarm(user.isAlarm())
+                .scheduleId(user.getLastScheduleId())
+                .semesterName(user.getLastScheduleName())
                 .build();
     }
 
@@ -44,6 +48,8 @@ public class UserResponse {
                 .subject(response.getSubject())
                 .career(response.getCareer())
                 .alarm(response.isAlarm())
+                .lastScheduleId(response.getScheduleId())
+                .lastScheduleName(response.getSemesterName())
                 .build();
     }
 }

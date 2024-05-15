@@ -2,6 +2,7 @@ package com.example.tnote.boundedContext.classLog.dto;
 
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
+import com.example.tnote.boundedContext.home.constant.LogType;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;
@@ -20,6 +21,7 @@ public class ClassLogDetailResponseDto {
     private List<String> classLogImageUrls;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String logType;
 
     public ClassLogDetailResponseDto(ClassLog classLog, List<ClassLogImage> classLogImages) {
         this.id = classLog.getId();
@@ -36,5 +38,6 @@ public class ClassLogDetailResponseDto {
                 .toList();
         this.createdAt = classLog.getCreatedAt();
         this.updatedAt = classLog.getUpdatedAt();
+        this.logType = LogType.CLASS_LOG.name();
     }
 }

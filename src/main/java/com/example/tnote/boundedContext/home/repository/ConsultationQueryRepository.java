@@ -14,10 +14,13 @@ public class ConsultationQueryRepository {
     private final JPAQueryFactory query;
 
     // 작성 시간을 id의 역순으로 배치
-    public List<Consultation> findAll(String keyword) {
+    public List<Consultation> findAll(String keyword, Long scheduleId) {
         return query
                 .selectFrom(consultation)
-                .where(consultation.studentName.like("%" + keyword + "%"))
+                .where(
+                        consultation.schedule.id.eq(scheduleId)
+                                .and(consultation.studentName.like("%" + keyword + "%"))
+                )
                 .orderBy(consultation.id.desc())
                 .fetch();
     }

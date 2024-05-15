@@ -24,6 +24,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -90,8 +91,13 @@ public class ClassLogService {
                 .isLast(allClassLogsSlice.isLast())
                 .build();
     }
+    public List<ClassLogResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
+        List<ClassLog> logs = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
+        return logs.stream()
+                .map(ClassLogResponseDto::of)
+                .toList();
+    }
 
-    @Transactional(readOnly = true)
     public ClassLogDetailResponseDto getClassLogDetail(Long userId, Long classLogId) {
         ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
                 .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
@@ -183,6 +189,8 @@ public class ClassLogService {
                 .build();
     }
 
+
+
     public List<ClassLogResponseDto> readDailyClassLog(Long userId, Long scheduleId, LocalDate date) {
 
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
@@ -202,6 +210,7 @@ public class ClassLogService {
         return classLogs.stream()
                 .map(ClassLogResponseDto::of).toList();
     }
+
 
     private List<ClassLogImage> deleteExistedImagesAndUploadNewImages(ClassLog classLog,
                                                                       List<MultipartFile> classLogImages) {

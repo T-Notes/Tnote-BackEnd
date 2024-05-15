@@ -40,6 +40,8 @@ public class User extends BaseTimeEntity {
     private String subject;
     private int career;
     private boolean alarm; // 마이페이지 > 설정 > 알림 받기
+    private int lastScheduleId;
+    private String lastScheduleName;
 
     @Builder.Default
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
@@ -82,5 +84,13 @@ public class User extends BaseTimeEntity {
 
     public void updateSchool(String school) {
         this.school = school;
+    }
+
+    public void updateLastScheduleId(int lastScheduleId) {
+        this.lastScheduleId = lastScheduleId;
+    }
+
+    public void updateLastScheduleName(String lastScheduleName) {
+        this.lastScheduleName = lastScheduleName;
     }
 }

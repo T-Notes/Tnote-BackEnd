@@ -75,6 +75,12 @@ public class UserService {
         if (dto.hasCareer()) {
             user.updateCareer(dto.getCareer());
         }
+        if (dto.hasSchedule()) {
+            user.updateLastScheduleId(dto.getScheduleId());
+        }
+        if (dto.hasScheduleName()) {
+            user.updateLastScheduleName(dto.getSemesterName());
+        }
     }
 
     @Transactional
@@ -102,6 +108,4 @@ public class UserService {
         }
         return UserResponse.of(user);
     }
-
-
 }

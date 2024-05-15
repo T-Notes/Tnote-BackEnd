@@ -14,10 +14,13 @@ public class ClassLogQueryRepository {
     private final JPAQueryFactory query;
 
     // 작성 시간을 id의 역순으로 배치
-    public List<ClassLog> findAll(String keyword) {
+    public List<ClassLog> findAll(String keyword, Long scheduleId) {
         return query
                 .selectFrom(classLog)
-                .where(classLog.title.like("%" + keyword + "%"))
+                .where(
+                        classLog.schedule.id.eq(scheduleId)
+                                .and(classLog.title.like("%" + keyword + "%"))
+                )
                 .orderBy(classLog.id.desc())
                 .fetch();
     }

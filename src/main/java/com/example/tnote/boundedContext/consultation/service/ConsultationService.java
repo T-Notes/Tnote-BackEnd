@@ -89,7 +89,6 @@ public class ConsultationService {
                 .build();
     }
 
-    @Transactional(readOnly = true)
     public ConsultationDetailResponseDto getConsultationDetail(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
@@ -108,6 +107,13 @@ public class ConsultationService {
         updateConsultationItem(requestDto, consultation, consultationImages);
         recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
         return ConsultationResponseDto.of(consultation);
+    }
+
+    public List<ConsultationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId){
+        List<Consultation> logs = consultationRepository.findAllByUserIdAndScheduleId(userId,scheduleId);
+        return logs.stream()
+                .map(ConsultationResponseDto::of)
+                .toList();
     }
 
     private void updateConsultationItem(ConsultationUpdateRequestDto requestDto, Consultation consultation,

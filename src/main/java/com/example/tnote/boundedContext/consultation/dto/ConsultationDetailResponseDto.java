@@ -4,6 +4,7 @@ import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
+import com.example.tnote.boundedContext.home.constant.LogType;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Builder;
@@ -23,6 +24,7 @@ public class ConsultationDetailResponseDto {
     private List<String> consultationImageUrls;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String logType;
 
     public ConsultationDetailResponseDto(Consultation consultation, List<ConsultationImage> consultationImages) {
         this.id = consultation.getId();
@@ -38,5 +40,6 @@ public class ConsultationDetailResponseDto {
                 .toList();
         this.createdAt = consultation.getCreatedAt();
         this.updatedAt = consultation.getUpdatedAt();
+        this.logType = LogType.CONSULTATION.name();
     }
 }

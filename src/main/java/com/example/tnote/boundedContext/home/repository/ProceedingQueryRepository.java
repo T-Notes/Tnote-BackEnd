@@ -14,10 +14,12 @@ public class ProceedingQueryRepository {
     private final JPAQueryFactory query;
 
     // 작성 시간을 id의 역순으로 배치
-    public List<Proceeding> findAll(String keyword) {
+    public List<Proceeding> findAll(String keyword, Long scheduleId) {
         return query
                 .selectFrom(proceeding)
-                .where(proceeding.title.like("%" + keyword + "%"))
+                .where(
+                        proceeding.schedule.id.eq(scheduleId)
+                                .and(proceeding.title.like("%" + keyword + "%")))
                 .orderBy(proceeding.id.desc())
                 .fetch();
     }

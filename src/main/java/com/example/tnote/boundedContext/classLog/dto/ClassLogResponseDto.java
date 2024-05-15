@@ -2,13 +2,14 @@ package com.example.tnote.boundedContext.classLog.dto;
 
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.home.constant.LogType;
+import com.example.tnote.boundedContext.home.dto.LogEntry;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class ClassLogResponseDto {
+public class ClassLogResponseDto implements LogEntry {
     private Long id;
     private String title;
     private LocalDateTime startDate;
@@ -20,7 +21,10 @@ public class ClassLogResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String logType;
-
+    @Override
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
     public static ClassLogResponseDto of(ClassLog classLog) {
         return ClassLogResponseDto.builder()
                 .id(classLog.getId())
