@@ -1,5 +1,6 @@
 package com.example.tnote.boundedContext.observation.dto;
 
+import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.entity.ObservationImage;
 import java.time.LocalDateTime;
@@ -18,6 +19,7 @@ public class ObservationDetailResponseDto {
     private List<String> observationImageUrls;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String logType;
 
     public ObservationDetailResponseDto(Observation observation, List<ObservationImage> observationImages) {
         this.id = observation.getId();
@@ -30,5 +32,6 @@ public class ObservationDetailResponseDto {
         this.observationImageUrls = observationImages.stream().map(ObservationImage::getObservationImageUrl).toList();
         this.createdAt = observation.getCreatedAt();
         this.updatedAt = observation.getUpdatedAt();
+        this.logType = LogType.OBSERVATION.name();
     }
 }

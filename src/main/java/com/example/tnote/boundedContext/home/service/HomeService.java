@@ -13,6 +13,8 @@ import com.example.tnote.boundedContext.consultation.service.ConsultationService
 import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
+import com.example.tnote.boundedContext.home.dto.LogEntry;
+import com.example.tnote.boundedContext.home.dto.UnifiedLogResponseDto;
 import com.example.tnote.boundedContext.home.repository.ClassLogQueryRepository;
 import com.example.tnote.boundedContext.home.repository.ConsultationQueryRepository;
 import com.example.tnote.boundedContext.home.repository.ObservationQueryRepository;
@@ -32,9 +34,14 @@ import com.example.tnote.boundedContext.todo.dto.TodoSliceResponseDto;
 import com.example.tnote.boundedContext.todo.service.TodoService;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -134,13 +141,43 @@ public class HomeService {
                     endDate, pageable);
             return ArchiveSliceResponseDto.builder().proceedings(proceedings).build();
         }
-        if (logType == LogType.TODO) {
-            TodoSliceResponseDto todos = todoService.readTodosByDate(userId, scheduleId, startDate,
-                    endDate, pageable);
-            return ArchiveSliceResponseDto.builder().todos(todos).build();
-        }
         return null;
     }
+
+    public UnifiedLogResponseDto readLogByFilter(Long userId, Long scheduleId, LogType logType, Pageable pageable) {
+        List<LogEntry> logs = new ArrayList<>();
+
+        if (logType == LogType.ALL || logType == LogType.CLASS_LOG) {
+            logs.addAll(classLogService.findLogsByScheduleAndUser(scheduleId, userId));
+        }
+        if (logType == LogType.ALL || logType == LogType.CONSULTATION) {
+            logs.addAll(consultationService.findLogsByScheduleAndUser(scheduleId, userId));
+        }
+        if (logType == LogType.ALL || logType == LogType.OBSERVATION) {
+            logs.addAll(observationService.findLogsByScheduleAndUser(scheduleId, userId));
+        }
+        if (logType == LogType.ALL || logType == LogType.PROCEEDING) {
+            logs.addAll(proceedingService.findLogsByScheduleAndUser(scheduleId, userId));
+        }
+
+        System.out.println("Total logs fetched: " + logs.size());
+        logs.sort(Comparator.comparing(LogEntry::getCreatedAt).reversed());
+
+        int start = (int) pageable.getOffset();
+        if (start >= logs.size()) {
+            System.out.println("Start index exceeds the log list size.");
+            return UnifiedLogResponseDto.from(Collections.emptyList());
+        }
+
+        int end = Math.min((start + pageable.getPageSize()), logs.size());
+        System.out.println("Returning logs from index " + start + " to " + end);
+        List<LogEntry> pageContent = logs.subList(start, end);
+
+        return UnifiedLogResponseDto.from(pageContent);
+    }
+
+
+
 
     public ArchiveResponseDto readDailyLogs(Long userId, Long scheduleId, LocalDate date) {
         Schedule schedule = scheduleRepository.findById(scheduleId)

@@ -1,5 +1,6 @@
 package com.example.tnote.boundedContext.proceeding.dto;
 
+import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
 import java.time.LocalDateTime;
@@ -19,6 +20,7 @@ public class ProceedingDetailResponseDto {
     private List<String> proceedingImageUrls;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
+    private String logType;
 
     public ProceedingDetailResponseDto(Proceeding proceeding, List<ProceedingImage> proceedingImages) {
         this.id = proceeding.getId();
@@ -31,5 +33,6 @@ public class ProceedingDetailResponseDto {
         this.proceedingImageUrls = proceedingImages.stream().map(ProceedingImage::getProceedingImageUrl).toList();
         this.createdAt = proceeding.getCreatedAt();
         this.updatedAt = proceeding.getUpdatedAt();
+        this.logType = LogType.PROCEEDING.name();
     }
 }

@@ -92,7 +92,8 @@ public class ProceedingService {
     public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
                 .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);
-        List<ProceedingImage> proceedingImages = proceedingImageRepository.findProceedingImageByProceedingId(proceedingId);
+        List<ProceedingImage> proceedingImages = proceedingImageRepository.findProceedingImageByProceedingId(
+                proceedingId);
         recentLogService.saveRecentLog(userId, proceeding.getId(), "PROCEEDING");
 
         return new ProceedingDetailResponseDto(proceeding, proceedingImages);
@@ -107,6 +108,13 @@ public class ProceedingService {
         recentLogService.saveRecentLog(userId, proceeding.getId(), "PROCEEDING");
 
         return ProceedingResponseDto.of(proceeding);
+    }
+
+    public List<ProceedingResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
+        List<Proceeding> logs = proceedingRepository.findAllByUserIdAndScheduleId(userId,scheduleId);
+        return logs.stream()
+                .map(ProceedingResponseDto::of)
+                .toList();
     }
 
     private void updateEachProceedingItem(ProceedingUpdateRequestDto requestDto, Proceeding proceeding,
@@ -209,9 +217,9 @@ public class ProceedingService {
         deleteS3Images(proceeding);
     }
 
-    private void deleteS3Images(Proceeding proceeding){
+    private void deleteS3Images(Proceeding proceeding) {
         List<ProceedingImage> proceedingImages = proceeding.getProceedingImage();
-        for (ProceedingImage proceedingImage: proceedingImages){
+        for (ProceedingImage proceedingImage : proceedingImages) {
             String imageKey = proceedingImage.getProceedingImageUrl().substring(49);
             awsS3Uploader.deleteImage(imageKey);
         }

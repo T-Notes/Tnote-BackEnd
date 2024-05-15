@@ -109,6 +109,13 @@ public class ConsultationService {
         return ConsultationResponseDto.of(consultation);
     }
 
+    public List<ConsultationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId){
+        List<Consultation> logs = consultationRepository.findAllByUserIdAndScheduleId(userId,scheduleId);
+        return logs.stream()
+                .map(ConsultationResponseDto::of)
+                .toList();
+    }
+
     private void updateConsultationItem(ConsultationUpdateRequestDto requestDto, Consultation consultation,
                                         List<MultipartFile> consultationImages) {
         updateConsultationFields(requestDto, consultation);
