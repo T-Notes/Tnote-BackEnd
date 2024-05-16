@@ -10,10 +10,10 @@ public class UnifiedLogResponseDto {
     private List<LogEntry> logs;
     private int totalLog;
 
-    public static UnifiedLogResponseDto from(List<LogEntry> logs) {
+    public static UnifiedLogResponseDto from(List<LogEntry> logs, int totalLog) {
         return UnifiedLogResponseDto.builder()
                 .logs(logs)
-                .totalLog(logs.size())
+                .totalLog(totalLog)
                 .build();
     }
 }
