@@ -16,12 +16,11 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
     List<Consultation> findAllByUserIdAndScheduleId(Long userId, Long scheduleId);
     @Query("SELECT c FROM Consultation c "
             + "WHERE c.user.id = :userId AND c.schedule.id = :scheduleId "
-            + "AND c.startDate >= :startOfDay AND c.endDate <= :endOfDay")
+            + "AND c.startDate >= :startOfDay")
     List<Consultation> findByUserIdAndScheduleIdAndStartDateBetween(
             Long userId,
             Long scheduleId,
-            LocalDateTime startOfDay,
-            LocalDateTime endOfDay);
+            LocalDateTime startOfDay);
 
     @Query("select c from Consultation c " +
             "where c.id = :consultationId and c.user.id = :userId")

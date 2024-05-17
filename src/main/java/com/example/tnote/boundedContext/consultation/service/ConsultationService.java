@@ -176,8 +176,7 @@ public class ConsultationService {
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
         List<Consultation> consultations = consultationRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId,
-                scheduleId, startOfDay,
-                endOfDay);
+                scheduleId, startOfDay);
         Slice<Consultation> allConsultations = consultationRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
                 userId, scheduleId, startOfDay,
                 endOfDay, pageable);
@@ -196,11 +195,9 @@ public class ConsultationService {
 
     public List<ConsultationResponseDto> readDailyConsultations(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
-        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
         List<Consultation> consultations = consultationRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId,
-                scheduleId, startOfDay,
-                endOfDay);
+                scheduleId, startOfDay);
 
         return consultations.stream()
                 .map(ConsultationResponseDto::of).toList();
