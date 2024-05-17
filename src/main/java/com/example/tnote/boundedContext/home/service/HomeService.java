@@ -160,24 +160,22 @@ public class HomeService {
             logs.addAll(proceedingService.findLogsByScheduleAndUser(scheduleId, userId));
         }
 
-        System.out.println("Total logs fetched: " + logs.size());
+        int totalLogs = logs.size();
+        System.out.println("Total logs fetched: " + totalLogs);
         logs.sort(Comparator.comparing(LogEntry::getCreatedAt).reversed());
 
         int start = (int) pageable.getOffset();
-        if (start >= logs.size()) {
+        if (start >= totalLogs) {
             System.out.println("Start index exceeds the log list size.");
-            return UnifiedLogResponseDto.from(Collections.emptyList());
+            return UnifiedLogResponseDto.from(Collections.emptyList(), totalLogs);
         }
 
-        int end = Math.min((start + pageable.getPageSize()), logs.size());
+        int end = Math.min((start + pageable.getPageSize()), totalLogs);
         System.out.println("Returning logs from index " + start + " to " + end);
         List<LogEntry> pageContent = logs.subList(start, end);
 
-        return UnifiedLogResponseDto.from(pageContent);
+        return UnifiedLogResponseDto.from(pageContent, totalLogs);
     }
-
-
-
 
     public ArchiveResponseDto readDailyLogs(Long userId, Long scheduleId, LocalDate date) {
         Schedule schedule = scheduleRepository.findById(scheduleId)
