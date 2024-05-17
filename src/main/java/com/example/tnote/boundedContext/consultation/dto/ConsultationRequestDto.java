@@ -54,7 +54,7 @@ public class ConsultationRequestDto {
                 .user(user)
                 .studentName(this.studentName)
                 .startDate(DateUtils.adjustStartDateTime(this.startDate, this.isAllDay))
-                .endDate(DateUtils.adjustEndDateTime(this.startDate, this.isAllDay))
+                .endDate(DateUtils.adjustEndDateTime(this.endDate, this.isAllDay))
                 .counselingField(this.counselingField)
                 .counselingType(this.counselingType)
                 .consultationContents(this.consultationContents)
