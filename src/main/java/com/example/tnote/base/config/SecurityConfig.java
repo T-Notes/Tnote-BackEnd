@@ -1,6 +1,7 @@
 package com.example.tnote.base.config;
 
 import com.example.tnote.base.filter.JwtAuthenticationFilter;
+import com.example.tnote.base.filter.JwtExceptionFilter;
 import com.example.tnote.base.handler.JwtAccessDeniedHandler;
 import com.example.tnote.base.handler.JwtAuthenticationEntryPoint;
 import com.example.tnote.base.utils.JwtTokenProvider;
@@ -27,6 +28,7 @@ public class SecurityConfig {
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final JwtExceptionFilter jwtExceptionFilter;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -70,7 +72,7 @@ public class SecurityConfig {
                         , UsernamePasswordAuthenticationFilter.class
                 )
                 .addFilterBefore(
-                        jwtAuthenticationFilter, JwtAuthenticationFilter.class
+                        jwtExceptionFilter, JwtAuthenticationFilter.class
                 )
                 .logout(logout ->
                         logout.logoutSuccessUrl("/")

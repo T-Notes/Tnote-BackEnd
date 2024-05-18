@@ -36,22 +36,19 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String token = resolveToken(request);
-        try {
-            if (token != null) {
-                if (!jwtTokenProvider.isValidToken(token)) {
-                    throw CustomException.WRONG_TOKEN;
-                }
-                Authentication authentication = jwtTokenProvider.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
 
-                // 여기서 인증 객체를 출력해 확인
-                log.info("Authentication Object: {}", authentication);
-                log.info("Principal Details: {}", authentication.getPrincipal());
+        if (token != null) {
+            if (!jwtTokenProvider.isValidToken(token)) {
+                throw CustomException.WRONG_TOKEN;
             }
-        } catch (CustomException e) {
-            log.warn("JWT Error: {}", e.getMessage());
-            request.setAttribute("JwtException", e.getMessage());
+            Authentication authentication = jwtTokenProvider.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+
+            // 여기서 인증 객체를 출력해 확인
+            log.info("Authentication Object: {}", authentication);
+            log.info("Principal Details: {}", authentication.getPrincipal());
         }
+
         filterChain.doFilter(request, response);
     }
 
