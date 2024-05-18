@@ -54,7 +54,8 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/favicon.ico/**", "/login/**", "/error/**").permitAll()
+                                .requestMatchers("/favicon.ico/**", "/login/**", "/error/**", "/tnote/refresh")
+                                .permitAll()
                                 .anyRequest().authenticated()
                 )
                 .cors(
