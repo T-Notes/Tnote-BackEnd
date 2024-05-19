@@ -19,6 +19,7 @@ public class ProceedingResponseDto implements LogEntry {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String logType;
+    private String color;
 
     @Override
     public LocalDateTime getCreatedAt() {
@@ -36,6 +37,7 @@ public class ProceedingResponseDto implements LogEntry {
                 .createdAt(proceeding.getCreatedAt())
                 .updatedAt(proceeding.getUpdatedAt())
                 .logType(LogType.PROCEEDING.name())
+                .color(proceeding.getColor())
                 .build();
     }
 }
