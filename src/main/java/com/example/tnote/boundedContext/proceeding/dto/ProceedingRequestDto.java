@@ -18,6 +18,7 @@ public class ProceedingRequestDto {
     private String location;
     private String workContents;
     private boolean isAllDay;
+    private String color;
 
     public Proceeding toEntity(User user, Schedule schedule) {
         return Proceeding.builder()
@@ -29,6 +30,7 @@ public class ProceedingRequestDto {
                 .workContents(this.workContents)
                 .proceedingImage(new ArrayList<>())
                 .schedule(schedule)
+                .color(this.color)
                 .build();
     }
 }
