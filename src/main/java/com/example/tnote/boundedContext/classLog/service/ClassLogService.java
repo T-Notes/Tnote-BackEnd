@@ -91,13 +91,14 @@ public class ClassLogService {
                 .isLast(allClassLogsSlice.isLast())
                 .build();
     }
+    @Transactional(readOnly = true)
     public List<ClassLogResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
         List<ClassLog> logs = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ClassLogResponseDto::of)
                 .toList();
     }
-
+    @Transactional(readOnly = true)
     public ClassLogDetailResponseDto getClassLogDetail(Long userId, Long classLogId) {
         ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
                 .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
@@ -165,7 +166,7 @@ public class ClassLogService {
                 .classLog(classLog)
                 .build());
     }
-
+    @Transactional(readOnly = true)
     public ClassLogSliceResponseDto readClassLogsByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                         LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
@@ -189,8 +190,7 @@ public class ClassLogService {
                 .build();
     }
 
-
-
+    @Transactional(readOnly = true)
     public List<ClassLogResponseDto> readDailyClassLog(Long userId, Long scheduleId, LocalDate date) {
 
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
@@ -203,6 +203,7 @@ public class ClassLogService {
                 .map(ClassLogResponseDto::of).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ClassLogResponseDto> readMonthlyClassLog(Long userId, Long scheduleId, LocalDate date) {
 
         List<ClassLog> classLogs = classLogRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);

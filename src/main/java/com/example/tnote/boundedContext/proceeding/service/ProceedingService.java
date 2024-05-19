@@ -89,6 +89,7 @@ public class ProceedingService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
                 .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);
@@ -110,6 +111,7 @@ public class ProceedingService {
         return ProceedingResponseDto.of(proceeding);
     }
 
+    @Transactional(readOnly = true)
     public List<ProceedingResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
         List<Proceeding> logs = proceedingRepository.findAllByUserIdAndScheduleId(userId,scheduleId);
         return logs.stream()
@@ -162,6 +164,7 @@ public class ProceedingService {
                 .build());
     }
 
+    @Transactional(readOnly = true)
     public ProceedingSliceResponseDto readProceedingsByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                             LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
@@ -186,6 +189,7 @@ public class ProceedingService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public List<ProceedingResponseDto> readDailyProceedings(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);

@@ -88,7 +88,7 @@ public class ConsultationService {
                 .id(consultation.getId())
                 .build();
     }
-
+    @Transactional(readOnly = true)
     public ConsultationDetailResponseDto getConsultationDetail(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
@@ -108,7 +108,7 @@ public class ConsultationService {
         recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
         return ConsultationResponseDto.of(consultation);
     }
-
+    @Transactional(readOnly = true)
     public List<ConsultationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId){
         List<Consultation> logs = consultationRepository.findAllByUserIdAndScheduleId(userId,scheduleId);
         return logs.stream()
@@ -169,7 +169,7 @@ public class ConsultationService {
                 .consultation(consultation)
                 .build());
     }
-
+    @Transactional(readOnly = true)
     public ConsultationSliceResponseDto readConsultationsByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                                 LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
@@ -193,7 +193,7 @@ public class ConsultationService {
                 .isLast(allConsultations.isLast())
                 .build();
     }
-
+    @Transactional(readOnly = true)
     public List<ConsultationResponseDto> readDailyConsultations(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
@@ -205,7 +205,7 @@ public class ConsultationService {
         return consultations.stream()
                 .map(ConsultationResponseDto::of).toList();
     }
-
+    @Transactional(readOnly = true)
     public List<ConsultationResponseDto> readMonthlyConsultations(Long userId, Long scheduleId, LocalDate date) {
         List<Consultation> consultations = consultationRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
                 scheduleId, date);

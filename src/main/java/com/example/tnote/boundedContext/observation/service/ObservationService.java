@@ -106,6 +106,7 @@ public class ObservationService {
         return ObservationResponseDto.of(observation);
     }
 
+    @Transactional(readOnly = true)
     public List<ObservationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
         List<Observation> logs = observationRepository.findAllByUserIdAndScheduleId(userId,scheduleId);
         return logs.stream()
@@ -159,6 +160,7 @@ public class ObservationService {
                 .build());
     }
 
+    @Transactional(readOnly = true)
     public ObservationSliceResponseDto readObservationsByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                               LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
@@ -183,6 +185,7 @@ public class ObservationService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public List<ObservationResponseDto> readDailyObservations(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
@@ -195,6 +198,7 @@ public class ObservationService {
                 .map(ObservationResponseDto::of).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ObservationResponseDto> readMonthlyObservations(Long userId, Long scheduleId, LocalDate date) {
         List<Observation> observations = observationRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
                 scheduleId, date);
