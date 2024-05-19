@@ -21,6 +21,7 @@ public class ClassLogRequestDto {
     private String submission;
     private String magnitude;
     private boolean isAllDay;
+    private String color;
 
     public ClassLog toEntity(User user, Schedule schedule) {
         validate();
@@ -35,6 +36,7 @@ public class ClassLogRequestDto {
                 .magnitude(this.magnitude)
                 .classLogImage(new ArrayList<>())
                 .schedule(schedule)
+                .color(this.color)
                 .build();
     }
 
