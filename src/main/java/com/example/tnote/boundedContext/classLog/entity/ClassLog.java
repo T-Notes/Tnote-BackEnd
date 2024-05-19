@@ -44,6 +44,7 @@ public class ClassLog extends BaseTimeEntity {
     private String classContents; // 수업내용
     private String submission; // 제출과제
     private String magnitude; // 진도
+    private String color; // 일지 색상
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
