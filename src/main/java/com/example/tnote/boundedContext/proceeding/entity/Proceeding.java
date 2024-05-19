@@ -39,6 +39,8 @@ public class Proceeding extends BaseTimeEntity {
     private LocalDateTime endDate;
     private String location;
     private String workContents;
+    private String color; // 일지 색상
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
