@@ -88,6 +88,7 @@ public class ConsultationService {
                 .id(consultation.getId())
                 .build();
     }
+
     public ConsultationDetailResponseDto getConsultationDetail(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
@@ -107,9 +108,10 @@ public class ConsultationService {
         recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
         return ConsultationResponseDto.of(consultation);
     }
+
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId){
-        List<Consultation> logs = consultationRepository.findAllByUserIdAndScheduleId(userId,scheduleId);
+    public List<ConsultationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
+        List<Consultation> logs = consultationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ConsultationResponseDto::of)
                 .toList();
@@ -155,19 +157,21 @@ public class ConsultationService {
                                                              List<MultipartFile> consultationImages) {
         return consultationImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "consultation"))
-                .map(url -> createConsultationImage(consultation, url))
+                .map(pair -> createConsultationImage(consultation, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
 
-    private ConsultationImage createConsultationImage(Consultation consultation, String url) {
+    private ConsultationImage createConsultationImage(Consultation consultation, String url, String originalFileName) {
         log.info("url = {}", url);
         consultation.clearConsultationImages();
 
         return consultationImageRepository.save(ConsultationImage.builder()
                 .consultationImageUrl(url)
                 .consultation(consultation)
+                .originalFileName(originalFileName)
                 .build());
     }
+
     @Transactional(readOnly = true)
     public ConsultationSliceResponseDto readConsultationsByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                                 LocalDate endDate, Pageable pageable) {
@@ -192,6 +196,7 @@ public class ConsultationService {
                 .isLast(allConsultations.isLast())
                 .build();
     }
+
     @Transactional(readOnly = true)
     public List<ConsultationResponseDto> readDailyConsultations(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
@@ -204,6 +209,7 @@ public class ConsultationService {
         return consultations.stream()
                 .map(ConsultationResponseDto::of).toList();
     }
+
     @Transactional(readOnly = true)
     public List<ConsultationResponseDto> readMonthlyConsultations(Long userId, Long scheduleId, LocalDate date) {
         List<Consultation> consultations = consultationRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
@@ -224,9 +230,9 @@ public class ConsultationService {
         deleteS3Images(consultation);
     }
 
-    private void deleteS3Images(Consultation consultation){
+    private void deleteS3Images(Consultation consultation) {
         List<ConsultationImage> consultationImages = consultation.getConsultationImage();
-        for (ConsultationImage consultationImage: consultationImages){
+        for (ConsultationImage consultationImage : consultationImages) {
             String imageKey = consultationImage.getConsultationImageUrl().substring(49);
             awsS3Uploader.deleteImage(imageKey);
         }
