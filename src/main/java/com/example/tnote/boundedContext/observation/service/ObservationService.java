@@ -108,7 +108,7 @@ public class ObservationService {
 
     @Transactional(readOnly = true)
     public List<ObservationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
-        List<Observation> logs = observationRepository.findAllByUserIdAndScheduleId(userId,scheduleId);
+        List<Observation> logs = observationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ObservationResponseDto::of)
                 .toList();
@@ -146,17 +146,18 @@ public class ObservationService {
                                                            List<MultipartFile> observationImages) {
         return observationImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "observation"))
-                .map(url -> createObservationImage(observation, url))
+                .map(pair -> createObservationImage(observation, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
 
-    private ObservationImage createObservationImage(Observation observation, String url) {
+    private ObservationImage createObservationImage(Observation observation, String url, String originalFileName) {
         log.info("url = {}", url);
         observation.clearObservationImages();
 
         return observationImageRepository.save(ObservationImage.builder()
                 .observationImageUrl(url)
                 .observation(observation)
+                .originalFileName(originalFileName)
                 .build());
     }
 
