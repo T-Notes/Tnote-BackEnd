@@ -24,6 +24,8 @@ public class QConsultation extends EntityPathBase<Consultation> {
 
     public final com.example.tnote.base.entity.QBaseTimeEntity _super = new com.example.tnote.base.entity.QBaseTimeEntity(this);
 
+    public final StringPath color = createString("color");
+
     public final StringPath consultationContents = createString("consultationContents");
 
     public final ListPath<ConsultationImage, QConsultationImage> consultationImage = this.<ConsultationImage, QConsultationImage>createList("consultationImage", ConsultationImage.class, QConsultationImage.class, PathInits.DIRECT2);
