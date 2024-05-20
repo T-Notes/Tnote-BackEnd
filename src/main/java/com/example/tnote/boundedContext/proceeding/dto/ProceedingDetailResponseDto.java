@@ -21,6 +21,7 @@ public class ProceedingDetailResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String logType;
+    private List<ProceedingImageResponseDto> images;
 
     public ProceedingDetailResponseDto(Proceeding proceeding, List<ProceedingImage> proceedingImages) {
         this.id = proceeding.getId();
@@ -34,5 +35,8 @@ public class ProceedingDetailResponseDto {
         this.createdAt = proceeding.getCreatedAt();
         this.updatedAt = proceeding.getUpdatedAt();
         this.logType = LogType.PROCEEDING.name();
+        this.images = proceedingImages.stream()
+                .map(image -> new ProceedingImageResponseDto(image.getProceedingImageUrl(), image.getName()))
+                .toList();
     }
 }
