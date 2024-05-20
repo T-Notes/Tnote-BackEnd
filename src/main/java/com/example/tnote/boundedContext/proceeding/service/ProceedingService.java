@@ -89,7 +89,6 @@ public class ProceedingService {
                 .build();
     }
 
-    @Transactional(readOnly = true)
     public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
                 .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);

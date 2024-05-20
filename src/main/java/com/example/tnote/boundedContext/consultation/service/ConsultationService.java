@@ -88,7 +88,6 @@ public class ConsultationService {
                 .id(consultation.getId())
                 .build();
     }
-    @Transactional(readOnly = true)
     public ConsultationDetailResponseDto getConsultationDetail(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);

@@ -98,7 +98,6 @@ public class ClassLogService {
                 .map(ClassLogResponseDto::of)
                 .toList();
     }
-    @Transactional(readOnly = true)
     public ClassLogDetailResponseDto getClassLogDetail(Long userId, Long classLogId) {
         ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
                 .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
