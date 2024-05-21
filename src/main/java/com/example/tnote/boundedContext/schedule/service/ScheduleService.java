@@ -107,8 +107,6 @@ public class ScheduleService {
 
         compareScheduleWithUser(userId, schedule);
 
-        log.info(" 날짜 차이 : {} 일", CurrentDate.until(schedule.getEndDate(), ChronoUnit.DAYS));
-
         return ChronoUnit.DAYS.between(CurrentDate, schedule.getEndDate()) <= 0 ? 0
                 : ChronoUnit.DAYS.between(CurrentDate, schedule.getEndDate());
 
