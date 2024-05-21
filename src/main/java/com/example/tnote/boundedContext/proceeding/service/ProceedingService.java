@@ -110,8 +110,9 @@ public class ProceedingService {
         return ProceedingResponseDto.of(proceeding);
     }
 
+    @Transactional(readOnly = true)
     public List<ProceedingResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
-        List<Proceeding> logs = proceedingRepository.findAllByUserIdAndScheduleId(userId,scheduleId);
+        List<Proceeding> logs = proceedingRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ProceedingResponseDto::of)
                 .toList();
@@ -147,21 +148,23 @@ public class ProceedingService {
     private List<ProceedingImage> uploadProceedingImages(Proceeding proceeding, List<MultipartFile> proceedingImages) {
         return proceedingImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "proceeding"))
-                .map(url -> createProceedingImage(proceeding, url))
+                .map(pair -> createProceedingImage(proceeding, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
 
 
-    private ProceedingImage createProceedingImage(Proceeding proceeding, String url) {
+    private ProceedingImage createProceedingImage(Proceeding proceeding, String url, String originalFileName) {
         log.info("url = {}", url);
         proceeding.clearProceedingImages();
 
         return proceedingImageRepository.save(ProceedingImage.builder()
                 .proceedingImageUrl(url)
                 .proceeding(proceeding)
+                .originalFileName(originalFileName)
                 .build());
     }
 
+    @Transactional(readOnly = true)
     public ProceedingSliceResponseDto readProceedingsByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                             LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
@@ -186,6 +189,7 @@ public class ProceedingService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public List<ProceedingResponseDto> readDailyProceedings(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);

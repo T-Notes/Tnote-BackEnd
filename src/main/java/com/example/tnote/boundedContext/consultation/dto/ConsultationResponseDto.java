@@ -23,6 +23,7 @@ public class ConsultationResponseDto implements LogEntry {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String logType;
+    private String color;
     @Override
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -40,6 +41,7 @@ public class ConsultationResponseDto implements LogEntry {
                 .createdAt(consultation.getCreatedAt())
                 .updatedAt(consultation.getUpdatedAt())
                 .logType(LogType.CONSULTATION.name())
+                .color(consultation.getColor())
                 .build();
     }
 }

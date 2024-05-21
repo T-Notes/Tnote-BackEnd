@@ -42,6 +42,8 @@ public class Consultation extends BaseTimeEntity {
     private CounselingType counselingType;
     private String consultationContents;
     private String consultationResult;
+    private String color; // 일지 색상
+
     @JsonManagedReference
     @OneToMany(mappedBy = "consultation", cascade = CascadeType.ALL)
     private List<ConsultationImage> consultationImage = new ArrayList<>();

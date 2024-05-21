@@ -24,6 +24,8 @@ public class QObservationImage extends EntityPathBase<ObservationImage> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final StringPath name = createString("name");
+
     public final QObservation observation;
 
     public final StringPath observationImageUrl = createString("observationImageUrl");

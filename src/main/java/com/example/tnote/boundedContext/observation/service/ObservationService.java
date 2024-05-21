@@ -106,8 +106,9 @@ public class ObservationService {
         return ObservationResponseDto.of(observation);
     }
 
+    @Transactional(readOnly = true)
     public List<ObservationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
-        List<Observation> logs = observationRepository.findAllByUserIdAndScheduleId(userId,scheduleId);
+        List<Observation> logs = observationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ObservationResponseDto::of)
                 .toList();
@@ -145,20 +146,22 @@ public class ObservationService {
                                                            List<MultipartFile> observationImages) {
         return observationImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "observation"))
-                .map(url -> createObservationImage(observation, url))
+                .map(pair -> createObservationImage(observation, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
 
-    private ObservationImage createObservationImage(Observation observation, String url) {
+    private ObservationImage createObservationImage(Observation observation, String url, String originalFileName) {
         log.info("url = {}", url);
         observation.clearObservationImages();
 
         return observationImageRepository.save(ObservationImage.builder()
                 .observationImageUrl(url)
                 .observation(observation)
+                .originalFileName(originalFileName)
                 .build());
     }
 
+    @Transactional(readOnly = true)
     public ObservationSliceResponseDto readObservationsByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                               LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
@@ -183,6 +186,7 @@ public class ObservationService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public List<ObservationResponseDto> readDailyObservations(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
@@ -195,6 +199,7 @@ public class ObservationService {
                 .map(ObservationResponseDto::of).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ObservationResponseDto> readMonthlyObservations(Long userId, Long scheduleId, LocalDate date) {
         List<Observation> observations = observationRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
                 scheduleId, date);

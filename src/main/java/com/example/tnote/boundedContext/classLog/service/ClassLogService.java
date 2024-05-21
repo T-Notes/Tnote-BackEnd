@@ -91,6 +91,8 @@ public class ClassLogService {
                 .isLast(allClassLogsSlice.isLast())
                 .build();
     }
+
+    @Transactional(readOnly = true)
     public List<ClassLogResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
         List<ClassLog> logs = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
@@ -152,20 +154,22 @@ public class ClassLogService {
     private List<ClassLogImage> uploadClassLogImages(ClassLog classLog, List<MultipartFile> classLogImages) {
         return classLogImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "classLog"))
-                .map(url -> createClassLogImage(classLog, url))
+                .map(pair -> createClassLogImage(classLog, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
 
-    private ClassLogImage createClassLogImage(ClassLog classLog, String url) {
-        log.info("url = {}", url);
+    private ClassLogImage createClassLogImage(ClassLog classLog, String imageUrl, String originalFileName) {
+        log.info("url = {}", imageUrl);
         classLog.clearClassLogImages();
 
         return classLogImageRepository.save(ClassLogImage.builder()
-                .classLogImageUrl(url)
+                .originalFileName(originalFileName)
+                .classLogImageUrl(imageUrl)
                 .classLog(classLog)
                 .build());
     }
 
+    @Transactional(readOnly = true)
     public ClassLogSliceResponseDto readClassLogsByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                         LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
@@ -189,8 +193,7 @@ public class ClassLogService {
                 .build();
     }
 
-
-
+    @Transactional(readOnly = true)
     public List<ClassLogResponseDto> readDailyClassLog(Long userId, Long scheduleId, LocalDate date) {
 
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
@@ -203,6 +206,7 @@ public class ClassLogService {
                 .map(ClassLogResponseDto::of).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ClassLogResponseDto> readMonthlyClassLog(Long userId, Long scheduleId, LocalDate date) {
 
         List<ClassLog> classLogs = classLogRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);
@@ -223,9 +227,9 @@ public class ClassLogService {
         deleteS3Images(classLog);
     }
 
-    private void deleteS3Images(ClassLog classLog){
+    private void deleteS3Images(ClassLog classLog) {
         List<ClassLogImage> classLogImages = classLog.getClassLogImage();
-        for (ClassLogImage classLogImage: classLogImages){
+        for (ClassLogImage classLogImage : classLogImages) {
             String imageKey = classLogImage.getClassLogImageUrl().substring(49);
             awsS3Uploader.deleteImage(imageKey);
         }

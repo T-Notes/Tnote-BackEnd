@@ -19,6 +19,7 @@ public class ObservationResponseDto implements LogEntry {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String logType;
+    private String color;
     @Override
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -34,6 +35,7 @@ public class ObservationResponseDto implements LogEntry {
                 .createdAt(observation.getCreatedAt())
                 .updatedAt(observation.getUpdatedAt())
                 .logType(LogType.OBSERVATION.name())
+                .color(observation.getColor())
                 .build();
     }
 }

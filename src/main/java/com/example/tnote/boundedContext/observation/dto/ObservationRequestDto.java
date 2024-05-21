@@ -18,6 +18,7 @@ public class ObservationRequestDto {
     private String observationContents; // 관찰 내용
     private String guidance; // 해석 및 지도 방안
     private boolean isAllDay;
+    private String color;
 
     public Observation toEntity(User user, Schedule schedule) {
         return Observation.builder()
@@ -29,6 +30,7 @@ public class ObservationRequestDto {
                 .guidance(this.guidance)
                 .observationImage(new ArrayList<>())
                 .schedule(schedule)
+                .color(this.color)
                 .build();
     }
 }

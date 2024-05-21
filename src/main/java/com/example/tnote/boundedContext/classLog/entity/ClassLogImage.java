@@ -34,13 +34,17 @@ public class ClassLogImage {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "classLog_id")
     private ClassLog classLog;
+    @Column(name = "original_file_name")
+    private String name;
 
     @Builder
-    public ClassLogImage(ClassLog classLog, String classLogImageUrl) {
+    public ClassLogImage(ClassLog classLog, String classLogImageUrl, String originalFileName) {
         this.classLog = classLog;
+        this.classLogImageUrl = classLogImageUrl;
+        this.name = originalFileName;
         if (classLog != null) {
             classLog.getClassLogImage().add(this);
         }
-        this.classLogImageUrl = classLogImageUrl;
     }
+
 }

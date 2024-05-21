@@ -39,6 +39,8 @@ public class Observation extends BaseTimeEntity {
     private LocalDateTime endDate;
     private String observationContents; // 관찰 내용
     private String guidance; // 해석 및 지도 방안
+    private String color; // 일지 색상
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

@@ -21,6 +21,7 @@ public class ClassLogResponseDto implements LogEntry {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String logType;
+    private String color;
     @Override
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -38,6 +39,7 @@ public class ClassLogResponseDto implements LogEntry {
                 .createdAt(classLog.getCreatedAt())
                 .updatedAt(classLog.getUpdatedAt())
                 .logType(LogType.CLASS_LOG.name())
+                .color(classLog.getColor())
                 .build();
     }
 
@@ -51,6 +53,7 @@ public class ClassLogResponseDto implements LogEntry {
                 .classContents(response.getClassContents())
                 .submission(response.getSubmission())
                 .magnitude(response.getMagnitude())
+                .color(response.getColor())
                 .build();
     }
 }

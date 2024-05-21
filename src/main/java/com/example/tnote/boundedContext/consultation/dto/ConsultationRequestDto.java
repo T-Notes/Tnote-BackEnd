@@ -24,6 +24,7 @@ public class ConsultationRequestDto {
     private String consultationContents;
     private String consultationResult;
     private boolean isAllDay;
+    private String color;
 
     public void validateEnums() {
         validateCounselingField();
@@ -54,13 +55,14 @@ public class ConsultationRequestDto {
                 .user(user)
                 .studentName(this.studentName)
                 .startDate(DateUtils.adjustStartDateTime(this.startDate, this.isAllDay))
-                .endDate(DateUtils.adjustEndDateTime(this.startDate, this.isAllDay))
+                .endDate(DateUtils.adjustEndDateTime(this.endDate, this.isAllDay))
                 .counselingField(this.counselingField)
                 .counselingType(this.counselingType)
                 .consultationContents(this.consultationContents)
                 .consultationResult(this.consultationResult)
                 .consultationImage(new ArrayList<>())
                 .schedule(schedule)
+                .color(this.color)
                 .build();
     }
 

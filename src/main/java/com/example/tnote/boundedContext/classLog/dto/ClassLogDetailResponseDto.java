@@ -18,7 +18,7 @@ public class ClassLogDetailResponseDto {
     private String classContents;
     private String submission;
     private String magnitude;
-    private List<String> classLogImageUrls;
+    private List<ClassLogImageResponseDto> images;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String logType;
@@ -33,8 +33,8 @@ public class ClassLogDetailResponseDto {
         this.classContents = classLog.getClassContents();
         this.submission = classLog.getSubmission();
         this.magnitude = classLog.getMagnitude();
-        this.classLogImageUrls = classLogImages.stream()
-                .map(ClassLogImage::getClassLogImageUrl)
+        this.images = classLogImages.stream()
+                .map(image -> new ClassLogImageResponseDto(image.getClassLogImageUrl(), image.getName()))
                 .toList();
         this.createdAt = classLog.getCreatedAt();
         this.updatedAt = classLog.getUpdatedAt();

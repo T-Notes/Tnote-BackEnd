@@ -22,7 +22,7 @@ public interface ProceedingRepository extends JpaRepository<Proceeding, Long> {
 
     @Query("SELECT p FROM Proceeding p "
             + "WHERE p.user.id = :userId AND p.schedule.id = :scheduleId "
-            + "AND p.startDate >= :startOfDay AND p.endDate <= :endOfDay")
+            + "AND p.startDate <= :endOfDay AND p.endDate >= :startOfDay")
     List<Proceeding> findByUserIdAndScheduleIdAndStartDateBetween(
             Long userId,
             Long scheduleId,

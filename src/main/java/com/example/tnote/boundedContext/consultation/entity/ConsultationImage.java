@@ -34,13 +34,15 @@ public class ConsultationImage {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "consultation_id")
     private Consultation consultation;
-
+    @Column(name = "original_file_name")
+    private String name;
     @Builder
-    public ConsultationImage(Consultation consultation, String consultationImageUrl) {
+    public ConsultationImage(Consultation consultation, String consultationImageUrl, String originalFileName) {
         this.consultation = consultation;
         if (consultation != null) {
             consultation.getConsultationImage().add(this);
         }
         this.consultationImageUrl = consultationImageUrl;
+        this.name = originalFileName;
     }
 }

@@ -28,6 +28,8 @@ public class QClassLogImage extends EntityPathBase<ClassLogImage> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
+    public final StringPath name = createString("name");
+
     public QClassLogImage(String variable) {
         this(ClassLogImage.class, forVariable(variable), INITS);
     }

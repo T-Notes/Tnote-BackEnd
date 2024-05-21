@@ -109,8 +109,9 @@ public class ConsultationService {
         return ConsultationResponseDto.of(consultation);
     }
 
-    public List<ConsultationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId){
-        List<Consultation> logs = consultationRepository.findAllByUserIdAndScheduleId(userId,scheduleId);
+    @Transactional(readOnly = true)
+    public List<ConsultationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
+        List<Consultation> logs = consultationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ConsultationResponseDto::of)
                 .toList();
@@ -156,20 +157,22 @@ public class ConsultationService {
                                                              List<MultipartFile> consultationImages) {
         return consultationImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "consultation"))
-                .map(url -> createConsultationImage(consultation, url))
+                .map(pair -> createConsultationImage(consultation, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
 
-    private ConsultationImage createConsultationImage(Consultation consultation, String url) {
+    private ConsultationImage createConsultationImage(Consultation consultation, String url, String originalFileName) {
         log.info("url = {}", url);
         consultation.clearConsultationImages();
 
         return consultationImageRepository.save(ConsultationImage.builder()
                 .consultationImageUrl(url)
                 .consultation(consultation)
+                .originalFileName(originalFileName)
                 .build());
     }
 
+    @Transactional(readOnly = true)
     public ConsultationSliceResponseDto readConsultationsByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                                 LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
@@ -194,6 +197,7 @@ public class ConsultationService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
     public List<ConsultationResponseDto> readDailyConsultations(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
@@ -206,6 +210,7 @@ public class ConsultationService {
                 .map(ConsultationResponseDto::of).toList();
     }
 
+    @Transactional(readOnly = true)
     public List<ConsultationResponseDto> readMonthlyConsultations(Long userId, Long scheduleId, LocalDate date) {
         List<Consultation> consultations = consultationRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
                 scheduleId, date);
@@ -225,9 +230,9 @@ public class ConsultationService {
         deleteS3Images(consultation);
     }
 
-    private void deleteS3Images(Consultation consultation){
+    private void deleteS3Images(Consultation consultation) {
         List<ConsultationImage> consultationImages = consultation.getConsultationImage();
-        for (ConsultationImage consultationImage: consultationImages){
+        for (ConsultationImage consultationImage : consultationImages) {
             String imageKey = consultationImage.getConsultationImageUrl().substring(49);
             awsS3Uploader.deleteImage(imageKey);
         }
