@@ -11,8 +11,10 @@ import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleQueryRepository;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
+import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
+import com.example.tnote.boundedContext.user.service.UserService;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -30,6 +32,7 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
     private final ScheduleQueryRepository scheduleQueryRepository;
+    private final UserService userService;
 
     @Transactional
     public ScheduleResponseDto addSchedule(ScheduleRequestDto dto, Long userId) {
@@ -75,6 +78,16 @@ public class ScheduleService {
         Schedule own = authorizationWriter(scheduleId, currentUser);
 
         scheduleRepository.deleteById(own.getId());
+
+        UserUpdateRequest dto = UserUpdateRequest.builder()
+                .scheduleId(-1)
+                .semesterName("")
+                .build();
+
+        log.info("getScheduleId : {}, getSemesterName : {}", dto.getScheduleId(), dto.getSemesterName());
+
+        userService.updateExtraInfo(userId, dto);
+
         return ScheduleDeleteResponseDto.builder()
                 .id(own.getId())
                 .build();
