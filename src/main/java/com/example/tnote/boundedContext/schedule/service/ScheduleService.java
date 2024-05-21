@@ -78,8 +78,10 @@ public class ScheduleService {
 
         scheduleRepository.deleteById(own.getId());
 
-        currentUser.updateLastScheduleName(null);
-        currentUser.updateLastScheduleId(0);
+        if (currentUser.getLastScheduleId() == scheduleId) {
+            currentUser.updateLastScheduleName(null);
+            currentUser.updateLastScheduleId(0);
+        }
 
         return ScheduleDeleteResponseDto.builder()
                 .id(own.getId())
