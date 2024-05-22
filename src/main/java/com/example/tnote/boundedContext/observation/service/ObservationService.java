@@ -91,7 +91,9 @@ public class ObservationService {
     public ObservationDeleteResponseDto deleteObservation(Long userId, Long observationId) {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
                 .orElseThrow(() -> CustomException.OBSERVATION_NOT_FOUNT);
+
         observationRepository.delete(observation);
+        recentLogService.deleteRecentLog(observation.getId(), "OBSERVATION");
 
         return ObservationDeleteResponseDto.builder().id(observation.getId()).build();
     }
