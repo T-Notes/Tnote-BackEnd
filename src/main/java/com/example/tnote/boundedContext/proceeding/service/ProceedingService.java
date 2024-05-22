@@ -82,7 +82,9 @@ public class ProceedingService {
     public ProceedingDeleteResponseDto deleteProceeding(Long userId, Long proceedingId) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
                 .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);
+
         proceedingRepository.delete(proceeding);
+        recentLogService.deleteRecentLog(proceeding.getId(), "PROCEEDING");
 
         return ProceedingDeleteResponseDto.builder()
                 .id(proceeding.getId())
