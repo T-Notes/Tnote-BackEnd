@@ -69,6 +69,7 @@ public class ClassLogService {
 
         deleteExistedImages(classLog);
         classLogRepository.delete(classLog);
+        recentLogService.deleteRecentLog(classLog.getId(),"CLASS_LOG");
 
         return ClassLogDeleteResponseDto.builder()
                 .id(classLog.getId())
