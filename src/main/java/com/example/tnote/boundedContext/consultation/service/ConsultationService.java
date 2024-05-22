@@ -82,7 +82,9 @@ public class ConsultationService {
     public ConsultationDeleteResponseDto deleteClassLog(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
+
         consultationRepository.delete(consultation);
+        recentLogService.deleteRecentLog(consultation.getId(), "CONSULTATION");
 
         return ConsultationDeleteResponseDto.builder()
                 .id(consultation.getId())
