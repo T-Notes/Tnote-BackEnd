@@ -89,7 +89,6 @@ public class ProceedingService {
                 .build();
     }
 
-    @Transactional(readOnly = true)
     public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
                 .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);
@@ -113,7 +112,7 @@ public class ProceedingService {
 
     @Transactional(readOnly = true)
     public List<ProceedingResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
-        List<Proceeding> logs = proceedingRepository.findAllByUserIdAndScheduleId(userId,scheduleId);
+        List<Proceeding> logs = proceedingRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ProceedingResponseDto::of)
                 .toList();
@@ -149,18 +148,19 @@ public class ProceedingService {
     private List<ProceedingImage> uploadProceedingImages(Proceeding proceeding, List<MultipartFile> proceedingImages) {
         return proceedingImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "proceeding"))
-                .map(url -> createProceedingImage(proceeding, url))
+                .map(pair -> createProceedingImage(proceeding, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
 
 
-    private ProceedingImage createProceedingImage(Proceeding proceeding, String url) {
+    private ProceedingImage createProceedingImage(Proceeding proceeding, String url, String originalFileName) {
         log.info("url = {}", url);
         proceeding.clearProceedingImages();
 
         return proceedingImageRepository.save(ProceedingImage.builder()
                 .proceedingImageUrl(url)
                 .proceeding(proceeding)
+                .originalFileName(originalFileName)
                 .build());
     }
 

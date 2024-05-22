@@ -17,6 +17,7 @@ import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
+import com.example.tnote.boundedContext.user.service.UserService;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -38,6 +39,7 @@ public class ScheduleService {
     private final ProceedingQueryRepository proceedingQueryRepository;
     private final ConsultationQueryRepository consultationQueryRepository;
     private final ObservationQueryRepository observationQueryRepository;
+    private final UserService userService;
 
     @Transactional
     public ScheduleResponseDto addSchedule(ScheduleRequestDto dto, Long userId) {
@@ -84,10 +86,16 @@ public class ScheduleService {
 
         scheduleRepository.deleteById(own.getId());
 
+
         classLogQueryRepository.deleteAllByScheduleIdAndUserId(scheduleId, userId);
         proceedingQueryRepository.deleteAllByScheduleIdAndUserId(scheduleId, userId);
         consultationQueryRepository.deleteAllByScheduleIdAndUserId(scheduleId, userId);
         observationQueryRepository.deleteAllByScheduleIdAndUserId(scheduleId, userId);
+
+        if (currentUser.getLastScheduleId() == scheduleId) {
+            currentUser.updateLastScheduleName(null);
+            currentUser.updateLastScheduleId(0);
+        }
 
         return ScheduleDeleteResponseDto.builder()
                 .id(own.getId())
@@ -114,8 +122,6 @@ public class ScheduleService {
         LocalDate CurrentDate = getLocalDate(date);
 
         compareScheduleWithUser(userId, schedule);
-
-        log.info(" 날짜 차이 : {} 일", CurrentDate.until(schedule.getEndDate(), ChronoUnit.DAYS));
 
         return ChronoUnit.DAYS.between(CurrentDate, schedule.getEndDate()) <= 0 ? 0
                 : ChronoUnit.DAYS.between(CurrentDate, schedule.getEndDate());

@@ -34,13 +34,16 @@ public class ObservationImage {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "observation_id")
     private Observation observation;
+    @Column(name = "original_file_name")
+    private String name;
 
     @Builder
-    public ObservationImage(Observation observation, String observationImageUrl) {
+    public ObservationImage(Observation observation, String observationImageUrl, String originalFileName) {
         this.observation = observation;
         if (observation != null) {
             observation.getObservationImage().add(this);
         }
         this.observationImageUrl = observationImageUrl;
+        this.name = originalFileName;
     }
 }

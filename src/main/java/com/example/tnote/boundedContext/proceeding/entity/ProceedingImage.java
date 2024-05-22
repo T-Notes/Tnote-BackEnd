@@ -34,13 +34,16 @@ public class ProceedingImage {
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "proceeding_id")
     private Proceeding proceeding;
+    @Column(name = "original_file_name")
+    private String name;
 
     @Builder
-    public ProceedingImage(Proceeding proceeding, String proceedingImageUrl) {
+    public ProceedingImage(Proceeding proceeding, String proceedingImageUrl, String originalFileName) {
         this.proceeding = proceeding;
         if (proceeding != null) {
             proceeding.getProceedingImage().add(this);
         }
         this.proceedingImageUrl = proceedingImageUrl;
+        this.name = originalFileName;
     }
 }

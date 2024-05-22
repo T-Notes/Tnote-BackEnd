@@ -1,5 +1,6 @@
 package com.example.tnote.boundedContext.observation.dto;
 
+import com.example.tnote.boundedContext.classLog.dto.ClassLogImageResponseDto;
 import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.entity.ObservationImage;
@@ -20,6 +21,7 @@ public class ObservationDetailResponseDto {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private String logType;
+    private List<ObservationImageResponseDto> images;
 
     public ObservationDetailResponseDto(Observation observation, List<ObservationImage> observationImages) {
         this.id = observation.getId();
@@ -33,5 +35,8 @@ public class ObservationDetailResponseDto {
         this.createdAt = observation.getCreatedAt();
         this.updatedAt = observation.getUpdatedAt();
         this.logType = LogType.OBSERVATION.name();
+        this.images = observationImages.stream()
+                .map(image -> new ObservationImageResponseDto(image.getObservationImageUrl(), image.getName()))
+                .toList();
     }
 }

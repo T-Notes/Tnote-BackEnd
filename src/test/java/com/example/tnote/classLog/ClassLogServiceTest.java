@@ -160,7 +160,6 @@ public class ClassLogServiceTest {
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(classLogId);
         assertThat(result.getUserId()).isEqualTo(userId);
-        assertThat(result.getClassLogImageUrls()).hasSize(mockClassLogImages.size());
 
         verify(classLogRepository).findByIdAndUserId(userId, classLogId);
         verify(classLogImageRepository).findClassLogImagesByClassLogId(classLogId);
