@@ -2,6 +2,10 @@ package com.example.tnote.boundedContext.schedule.service;
 
 
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.boundedContext.home.repository.ClassLogQueryRepository;
+import com.example.tnote.boundedContext.home.repository.ConsultationQueryRepository;
+import com.example.tnote.boundedContext.home.repository.ObservationQueryRepository;
+import com.example.tnote.boundedContext.home.repository.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleDeleteResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
@@ -30,6 +34,10 @@ public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
     private final ScheduleQueryRepository scheduleQueryRepository;
+    private final ClassLogQueryRepository classLogQueryRepository;
+    private final ProceedingQueryRepository proceedingQueryRepository;
+    private final ConsultationQueryRepository consultationQueryRepository;
+    private final ObservationQueryRepository observationQueryRepository;
 
     @Transactional
     public ScheduleResponseDto addSchedule(ScheduleRequestDto dto, Long userId) {
@@ -75,6 +83,12 @@ public class ScheduleService {
         Schedule own = authorizationWriter(scheduleId, currentUser);
 
         scheduleRepository.deleteById(own.getId());
+
+        classLogQueryRepository.deleteAllByScheduleIdAndUserId(scheduleId, userId);
+        proceedingQueryRepository.deleteAllByScheduleIdAndUserId(scheduleId, userId);
+        consultationQueryRepository.deleteAllByScheduleIdAndUserId(scheduleId, userId);
+        observationQueryRepository.deleteAllByScheduleIdAndUserId(scheduleId, userId);
+
         return ScheduleDeleteResponseDto.builder()
                 .id(own.getId())
                 .build();
