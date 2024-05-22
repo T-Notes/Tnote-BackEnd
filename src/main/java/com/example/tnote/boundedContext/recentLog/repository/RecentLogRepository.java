@@ -12,5 +12,7 @@ public interface RecentLogRepository extends JpaRepository<RecentLog, Long> {
             + "WHERE rl.user_id = :userId ORDER BY rl.timestamp DESC LIMIT 4", nativeQuery = true)
     List<RecentLog> findTop4DistinctByUserId(Long userId);
 
+    void deleteByLogIdAndLogType(Long logId, String logType);
+
 
 }
