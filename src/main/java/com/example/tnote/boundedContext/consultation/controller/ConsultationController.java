@@ -76,7 +76,7 @@ public class ConsultationController {
     @DeleteMapping("/{consultationId}")
     public ResponseEntity<Result> deleteConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                      @PathVariable Long consultationId) {
-        ConsultationDeleteResponseDto deleteResponseDto = consultationService.deleteClassLog(principalDetails.getId(),
+        ConsultationDeleteResponseDto deleteResponseDto = consultationService.deleteConsultation(principalDetails.getId(),
                 consultationId);
         return ResponseEntity.ok(Result.of(deleteResponseDto));
     }

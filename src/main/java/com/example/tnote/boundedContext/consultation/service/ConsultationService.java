@@ -79,7 +79,7 @@ public class ConsultationService {
                 .build();
     }
 
-    public ConsultationDeleteResponseDto deleteClassLog(Long userId, Long consultationId) {
+    public ConsultationDeleteResponseDto deleteConsultation(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
 

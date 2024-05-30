@@ -213,7 +213,7 @@ public class ConsultationServiceTest {
         when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(
                 Optional.of(mockConsultation));
 
-        ConsultationDeleteResponseDto result = consultationService.deleteClassLog(userId, consultationId);
+        ConsultationDeleteResponseDto result = consultationService.deleteConsultation(userId, consultationId);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(consultationId);
