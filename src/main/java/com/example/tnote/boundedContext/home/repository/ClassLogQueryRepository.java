@@ -24,5 +24,16 @@ public class ClassLogQueryRepository {
                 .orderBy(classLog.id.desc())
                 .fetch();
     }
+
+    public void deleteAllByScheduleIdAndUserId(Long scheduleId, Long userId) {
+        query
+                .selectFrom(classLog)
+                .where(
+                        classLog.schedule.id.eq(scheduleId)
+                                .and(classLog.user.id.eq(userId))
+                )
+                .orderBy(classLog.id.desc())
+                .fetch();
+    }
 }
 

@@ -23,4 +23,15 @@ public class ProceedingQueryRepository {
                 .orderBy(proceeding.id.desc())
                 .fetch();
     }
+
+    public void deleteAllByScheduleIdAndUserId(Long scheduleId, Long userId) {
+        query
+                .selectFrom(proceeding)
+                .where(
+                        proceeding.schedule.id.eq(scheduleId)
+                                .and(proceeding.user.id.eq(userId))
+                )
+                .orderBy(proceeding.id.desc())
+                .fetch();
+    }
 }

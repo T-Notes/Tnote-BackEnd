@@ -24,4 +24,15 @@ public class ObservationQueryRepository {
                 .orderBy(observation.id.desc())
                 .fetch();
     }
+
+    public void deleteAllByScheduleIdAndUserId(Long scheduleId, Long userId) {
+        query
+                .selectFrom(observation)
+                .where(
+                        observation.schedule.id.eq(scheduleId)
+                                .and(observation.user.id.eq(userId))
+                )
+                .orderBy(observation.id.desc())
+                .fetch();
+    }
 }
