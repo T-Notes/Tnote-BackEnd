@@ -29,4 +29,5 @@ public class RecentLog {
     private String logType; // 로그 타입
 
     private Instant timestamp; // 로그가 기록된 시간
+    private Long scheduleId;
 }
