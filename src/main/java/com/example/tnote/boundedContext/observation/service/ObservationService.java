@@ -58,7 +58,7 @@ public class ObservationService {
             List<ObservationImage> uploadedImages = uploadObservationImages(observation, observationImages);
             observation.getObservationImage().addAll(uploadedImages);
         }
-        recentLogService.saveRecentLog(userId, observation.getId(), "OBSERVATION");
+        recentLogService.saveRecentLog(userId, observation.getId(), scheduleId, "OBSERVATION");
         return ObservationResponseDto.of(observation);
     }
 
@@ -84,7 +84,7 @@ public class ObservationService {
                 .orElseThrow(() -> CustomException.OBSERVATION_NOT_FOUNT);
         List<ObservationImage> observationImages = observationImageRepository.findObservationImageByObservationId(
                 observationId);
-        recentLogService.saveRecentLog(userId, observation.getId(), "OBSERVATION");
+        recentLogService.saveRecentLog(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
         return new ObservationDetailResponseDto(observation, observationImages);
     }
 
@@ -104,7 +104,7 @@ public class ObservationService {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
                 .orElseThrow(() -> CustomException.OBSERVATION_NOT_FOUNT);
         updateObservationItem(requestDto, observation, observationImages);
-        recentLogService.saveRecentLog(userId, observation.getId(), "OBSERVATION");
+        recentLogService.saveRecentLog(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
         return ObservationResponseDto.of(observation);
     }
 

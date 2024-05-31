@@ -59,7 +59,7 @@ public class ConsultationService {
             List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
             consultation.getConsultationImage().addAll(uploadedImages);
         }
-        recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
+        recentLogService.saveRecentLog(userId, consultation.getId(), scheduleId, "CONSULTATION");
         return ConsultationResponseDto.of(consultation);
     }
 
@@ -96,7 +96,8 @@ public class ConsultationService {
                 .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
         List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultationId(
                 consultationId);
-        recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
+        recentLogService.saveRecentLog(userId, consultation.getId(), consultation.getSchedule().getId(),
+                "CONSULTATION");
         return new ConsultationDetailResponseDto(consultation, consultationImages);
     }
 
@@ -107,7 +108,8 @@ public class ConsultationService {
                 .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
 
         updateConsultationItem(requestDto, consultation, consultationImages);
-        recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
+        recentLogService.saveRecentLog(userId, consultation.getId(), consultation.getSchedule().getId(),
+                "CONSULTATION");
         return ConsultationResponseDto.of(consultation);
     }
 
