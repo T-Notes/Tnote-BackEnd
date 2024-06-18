@@ -59,7 +59,7 @@ public class ClassLogService {
             List<ClassLogImage> uploadedImages = uploadClassLogImages(classLog, classLogImages);
             classLog.getClassLogImage().addAll(uploadedImages);
         }
-        recentLogService.saveRecentLog(userId, classLog.getId(), "CLASS_LOG");
+        recentLogService.saveRecentLog(userId, classLog.getId(), scheduleId, "CLASS_LOG");
         return ClassLogResponseDto.of(classLog);
     }
 
@@ -69,6 +69,7 @@ public class ClassLogService {
 
         deleteExistedImages(classLog);
         classLogRepository.delete(classLog);
+        recentLogService.deleteRecentLog(classLog.getId(), "CLASS_LOG");
 
         return ClassLogDeleteResponseDto.builder()
                 .id(classLog.getId())
@@ -104,7 +105,7 @@ public class ClassLogService {
         ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
                 .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
         List<ClassLogImage> classLogImages = classLogImageRepository.findClassLogImagesByClassLogId(classLogId);
-        recentLogService.saveRecentLog(userId, classLog.getId(), "CLASS_LOG");
+        recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
         return new ClassLogDetailResponseDto(classLog, classLogImages);
     }
 
@@ -114,7 +115,7 @@ public class ClassLogService {
         ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
                 .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
         updateEachClassLogItem(classLogUpdateRequestDto, classLog, classLogImages);
-        recentLogService.saveRecentLog(userId, classLog.getId(), "CLASS_LOG");
+        recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
         return ClassLogResponseDto.of(classLog);
     }
 

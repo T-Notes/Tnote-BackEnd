@@ -59,7 +59,7 @@ public class ProceedingService {
             List<ProceedingImage> uploadedImages = uploadProceedingImages(proceeding, proceedingImages);
             proceeding.getProceedingImage().addAll(uploadedImages);
         }
-        recentLogService.saveRecentLog(userId, proceeding.getId(), "PROCEEDING");
+        recentLogService.saveRecentLog(userId, proceeding.getId(), scheduleId, "PROCEEDING");
         return ProceedingResponseDto.of(proceeding);
     }
 
@@ -82,7 +82,9 @@ public class ProceedingService {
     public ProceedingDeleteResponseDto deleteProceeding(Long userId, Long proceedingId) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
                 .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);
+
         proceedingRepository.delete(proceeding);
+        recentLogService.deleteRecentLog(proceeding.getId(), "PROCEEDING");
 
         return ProceedingDeleteResponseDto.builder()
                 .id(proceeding.getId())
@@ -94,7 +96,7 @@ public class ProceedingService {
                 .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);
         List<ProceedingImage> proceedingImages = proceedingImageRepository.findProceedingImageByProceedingId(
                 proceedingId);
-        recentLogService.saveRecentLog(userId, proceeding.getId(), "PROCEEDING");
+        recentLogService.saveRecentLog(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
 
         return new ProceedingDetailResponseDto(proceeding, proceedingImages);
     }
@@ -105,7 +107,7 @@ public class ProceedingService {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
                 .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);
         updateEachProceedingItem(updateRequestDto, proceeding, proceedingImages);
-        recentLogService.saveRecentLog(userId, proceeding.getId(), "PROCEEDING");
+        recentLogService.saveRecentLog(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
 
         return ProceedingResponseDto.of(proceeding);
     }

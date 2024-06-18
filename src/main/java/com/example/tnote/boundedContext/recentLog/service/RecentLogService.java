@@ -66,28 +66,34 @@ public class RecentLogService {
                 .filter(Objects::nonNull) // 변환 실패한 항목은 제외
                 .toList();
     }
-    public List<RecentLogResponseDto> getRecentLogsFromDatabase(Long userId) {
-        List<RecentLog> recentLogs = recentLogRepository.findTop4DistinctByUserId(userId);
 
-        return recentLogs.stream()
-                .map(log -> new RecentLogResponseDto(log.getLogId(), log.getLogType(), log.getTimestamp()))
-                .toList();
-    }
+//    public List<RecentLogResponseDto> getRecentLogsFromDatabase(Long userId) {
+//        List<RecentLog> recentLogs = recentLogRepository.findTop4DistinctByUserId(userId);
+//
+//        return recentLogs.stream()
+//                .map(log -> new RecentLogResponseDto(log.getLogId(), log.getLogType(), log.getTimestamp()))
+//                .toList();
+//    }
 
-    public void saveRecentLog(Long userId, Long logId, String logType) {
+    public void saveRecentLog(Long userId, Long logId, Long scheduleId, String logType) {
         RecentLog recentLog = RecentLog.builder()
                 .userId(userId)
                 .logId(logId)
                 .logType(logType)
                 .timestamp(Instant.now())
+                .scheduleId(scheduleId)
                 .build();
         recentLogRepository.save(recentLog);
     }
 
-    public List<RecentLogResponseDto> getRecentLogs(Long userId) {
-        List<RecentLog> recentLogs = recentLogRepository.findTop4DistinctByUserId(userId);
+    public List<RecentLogResponseDto> getRecentLogs(Long userId, Long scheduleId) {
+        List<RecentLog> recentLogs = recentLogRepository.findTop4DistinctByUserIdAndScheduleId(userId, scheduleId);
         return recentLogs.stream()
                 .map(log -> new RecentLogResponseDto(log.getLogId(), log.getLogType(), log.getTimestamp()))
                 .toList();
+    }
+
+    public void deleteRecentLog(Long logId, String logType) {
+        recentLogRepository.deleteByLogIdAndLogType(logId, logType);
     }
 }

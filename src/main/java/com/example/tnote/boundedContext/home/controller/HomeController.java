@@ -116,13 +116,14 @@ public class HomeController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @GetMapping("/recentLogs")
-    public ResponseEntity<Result> getRecentClassLogs(@AuthenticationPrincipal PrincipalDetails principalDetails) {
+    @GetMapping("/recentLogs/{scheduleId}")
+    public ResponseEntity<Result> getRecentClassLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                     @PathVariable Long scheduleId) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
         }
 
-        List<RecentLogResponseDto> response = recentLogService.getRecentLogs(principalDetails.getId());
+        List<RecentLogResponseDto> response = recentLogService.getRecentLogs(principalDetails.getId(), scheduleId);
 
         return ResponseEntity.ok(Result.of(response));
     }

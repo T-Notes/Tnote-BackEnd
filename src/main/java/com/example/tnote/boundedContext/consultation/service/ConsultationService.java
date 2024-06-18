@@ -59,7 +59,7 @@ public class ConsultationService {
             List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
             consultation.getConsultationImage().addAll(uploadedImages);
         }
-        recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
+        recentLogService.saveRecentLog(userId, consultation.getId(), scheduleId, "CONSULTATION");
         return ConsultationResponseDto.of(consultation);
     }
 
@@ -79,10 +79,12 @@ public class ConsultationService {
                 .build();
     }
 
-    public ConsultationDeleteResponseDto deleteClassLog(Long userId, Long consultationId) {
+    public ConsultationDeleteResponseDto deleteConsultation(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
+
         consultationRepository.delete(consultation);
+        recentLogService.deleteRecentLog(consultation.getId(), "CONSULTATION");
 
         return ConsultationDeleteResponseDto.builder()
                 .id(consultation.getId())
@@ -94,7 +96,8 @@ public class ConsultationService {
                 .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
         List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultationId(
                 consultationId);
-        recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
+        recentLogService.saveRecentLog(userId, consultation.getId(), consultation.getSchedule().getId(),
+                "CONSULTATION");
         return new ConsultationDetailResponseDto(consultation, consultationImages);
     }
 
@@ -105,7 +108,8 @@ public class ConsultationService {
                 .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
 
         updateConsultationItem(requestDto, consultation, consultationImages);
-        recentLogService.saveRecentLog(userId, consultation.getId(), "CONSULTATION");
+        recentLogService.saveRecentLog(userId, consultation.getId(), consultation.getSchedule().getId(),
+                "CONSULTATION");
         return ConsultationResponseDto.of(consultation);
     }
 

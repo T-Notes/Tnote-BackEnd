@@ -24,4 +24,15 @@ public class ConsultationQueryRepository {
                 .orderBy(consultation.id.desc())
                 .fetch();
     }
+
+    public void deleteAllByScheduleIdAndUserId(Long scheduleId, Long userId) {
+        query
+                .selectFrom(consultation)
+                .where(
+                        consultation.schedule.id.eq(scheduleId)
+                                .and(consultation.user.id.eq(userId))
+                )
+                .orderBy(consultation.id.desc())
+                .fetch();
+    }
 }
