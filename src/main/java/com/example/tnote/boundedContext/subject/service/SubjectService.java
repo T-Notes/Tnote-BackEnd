@@ -16,6 +16,8 @@ import com.example.tnote.boundedContext.subject.repository.SubjectRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -36,7 +38,11 @@ public class SubjectService {
 
         matchUserWithSchedule(scheduleId, userId);
 
-        Subjects subjects = dto.toEntity(checkCurrentSchedule(scheduleId));
+        Schedule schedule = checkCurrentSchedule(scheduleId);
+
+        compareLastClass(dto.getClassTime(), schedule.getLastClass());
+
+        Subjects subjects = dto.toEntity(schedule);
 
         return SubjectResponseDto.of(subjectRepository.save(subjects));
     }
@@ -46,6 +52,8 @@ public class SubjectService {
 
         User currentUser = checkCurrentUser(userId);
         Subjects subjects = authorization(subjectsId, currentUser.getId());
+
+        compareLastClass(dto.getClassTime(), subjects.getSchedule().getLastClass());
 
         updateEachSubjectsItem(dto, subjects);
 
@@ -145,5 +153,21 @@ public class SubjectService {
         }
         return subjects;
 
+    }
+
+    private int extractNumber(String text) {
+        Pattern pattern = Pattern.compile("\\d+");
+        Matcher matcher = pattern.matcher(text);
+
+        if (matcher.find()) {
+            return Integer.parseInt(matcher.group());
+        }
+        throw CustomException.WRONG_CLASS_TIME;
+    }
+
+    private void compareLastClass(String subjectLastClass, String scheduleLastClass) {
+        if (extractNumber(subjectLastClass) > extractNumber(scheduleLastClass)) {
+            throw CustomException.WRONG_CLASS_TIME;
+        }
     }
 }
