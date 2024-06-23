@@ -25,6 +25,8 @@ public class QRecentLog extends EntityPathBase<RecentLog> {
 
     public final StringPath logType = createString("logType");
 
+    public final NumberPath<Long> scheduleId = createNumber("scheduleId", Long.class);
+
     public final DateTimePath<java.time.Instant> timestamp = createDateTime("timestamp", java.time.Instant.class);
 
     public final NumberPath<Long> userId = createNumber("userId", Long.class);

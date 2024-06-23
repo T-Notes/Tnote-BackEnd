@@ -23,6 +23,7 @@ spring:
     hibernate:
       ddl-auto: update
 
+
   data:
     redis:
       host: ENC(2iWE7eOjnkSr0xq3W5TgoPs+BoKEqcd2)
