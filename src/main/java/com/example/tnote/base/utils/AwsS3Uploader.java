@@ -12,6 +12,8 @@ import com.mysema.commons.lang.Pair;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
@@ -32,8 +34,17 @@ public class AwsS3Uploader {
         try {
             if (!multipartFile.isEmpty()) {
                 String originalFileName = multipartFile.getOriginalFilename();
-                String fileExtension = originalFileName.substring(originalFileName.lastIndexOf("."));
-                String fileName = dirName + "/" + UUID.randomUUID() + fileExtension;
+                String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
+
+                // 허용된 확장자 리스트 업데이트
+                List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png", "gif", "pdf", "xls", "xlsx", "ppt", "pptx");
+
+                // 파일 확장자 검증
+                if (!allowedExtensions.contains(fileExtension.toLowerCase())) {
+                    throw new IllegalStateException("File type not allowed");
+                }
+
+                String fileName = dirName + "/" + UUID.randomUUID() + "." + fileExtension;
 
                 File uploadFile = convert(multipartFile)
                         .orElseThrow(() -> new RuntimeException("File conversion failed"));
@@ -49,6 +60,7 @@ public class AwsS3Uploader {
             throw new RuntimeException("Failed to upload file to S3", e);
         }
     }
+
 
 
     // 로컬서버에 저장된 이미지 지우기
