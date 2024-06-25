@@ -210,8 +210,8 @@ public class ObservationService {
     }
 
     private void deleteExistedImages(Observation observation) {
-        observationImageRepository.deleteByObservationId(observation.getId());
         deleteS3Images(observation);
+        observationImageRepository.deleteByObservationId(observation.getId());
     }
 
     private void deleteS3Images(Observation observation) {
