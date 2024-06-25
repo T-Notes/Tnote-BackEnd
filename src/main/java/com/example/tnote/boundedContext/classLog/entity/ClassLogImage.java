@@ -31,7 +31,7 @@ public class ClassLogImage {
     private String classLogImageUrl;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "classLog_id")
     private ClassLog classLog;
     @Column(name = "original_file_name")
