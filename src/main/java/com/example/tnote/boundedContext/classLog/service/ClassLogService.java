@@ -213,15 +213,19 @@ public class ClassLogService {
     }
 
     private void deleteExistedImages(ClassLog classLog) {
-        classLogImageRepository.deleteByClassLogId(classLog.getId());
+        System.out.println("Deleting existing images for classLog ID: " + classLog.getId());
         deleteS3Images(classLog);
+        classLogImageRepository.deleteByClassLogId(classLog.getId());
     }
 
     private void deleteS3Images(ClassLog classLog) {
+        System.out.println("Starting to delete images from S3 for classLog ID: " + classLog.getId());
         List<ClassLogImage> classLogImages = classLog.getClassLogImage();
         for (ClassLogImage classLogImage : classLogImages) {
             String imageKey = classLogImage.getClassLogImageUrl().substring(49);
+            System.out.println("Deleting image from S3: " + imageKey);
             awsS3Uploader.deleteImage(imageKey);
         }
     }
+
 }
