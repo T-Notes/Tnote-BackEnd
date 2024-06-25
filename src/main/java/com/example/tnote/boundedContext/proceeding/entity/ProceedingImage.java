@@ -31,7 +31,7 @@ public class ProceedingImage {
     private String proceedingImageUrl;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "proceeding_id")
     private Proceeding proceeding;
     @Column(name = "original_file_name")
