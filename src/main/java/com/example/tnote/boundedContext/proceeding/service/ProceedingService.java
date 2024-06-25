@@ -212,8 +212,8 @@ public class ProceedingService {
     }
 
     private void deleteExistedImages(Proceeding proceeding) {
-        proceedingImageRepository.deleteByProceedingId(proceeding.getId());
         deleteS3Images(proceeding);
+        proceedingImageRepository.deleteByProceedingId(proceeding.getId());
     }
 
     private void deleteS3Images(Proceeding proceeding) {
