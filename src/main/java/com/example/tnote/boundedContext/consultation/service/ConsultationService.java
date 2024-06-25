@@ -219,8 +219,8 @@ public class ConsultationService {
     }
 
     private void deleteExistedImages(Consultation consultation) {
-        consultationImageRepository.deleteByConsultationId(consultation.getId());
         deleteS3Images(consultation);
+        consultationImageRepository.deleteByConsultationId(consultation.getId());
     }
 
     private void deleteS3Images(Consultation consultation) {
