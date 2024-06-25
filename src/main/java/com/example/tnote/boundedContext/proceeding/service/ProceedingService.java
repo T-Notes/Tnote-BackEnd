@@ -123,6 +123,9 @@ public class ProceedingService {
     private void updateEachProceedingItem(ProceedingUpdateRequestDto requestDto, Proceeding proceeding,
                                           List<MultipartFile> proceedingImages) {
         updateProceedingFields(requestDto, proceeding);
+        if (proceedingImages == null || proceedingImages.isEmpty()) {
+            deleteExistedImages(proceeding);
+        }
         if (proceedingImages != null && !proceedingImages.isEmpty()) {
             List<ProceedingImage> updatedImages = deleteExistedImagesAndUploadNewImages(proceeding, proceedingImages);
             proceeding.updateProceedingImage(updatedImages);
@@ -130,21 +133,11 @@ public class ProceedingService {
     }
 
     private void updateProceedingFields(ProceedingUpdateRequestDto requestDto, Proceeding proceeding) {
-        if (requestDto.hasTitle()) {
-            proceeding.updateTitle(requestDto.getTitle());
-        }
-        if (requestDto.hasStartDate()) {
-            proceeding.updateStartDate(requestDto.getStartDate());
-        }
-        if (requestDto.hasEndDate()) {
-            proceeding.updateEndDate(requestDto.getEndDate());
-        }
-        if (requestDto.hasLocation()) {
-            proceeding.updateLocation(requestDto.getLocation());
-        }
-        if (requestDto.hasWorkContents()) {
-            proceeding.updateWorkContents(requestDto.getWorkContents());
-        }
+        proceeding.updateTitle(requestDto.getTitle());
+        proceeding.updateStartDate(requestDto.getStartDate());
+        proceeding.updateEndDate(requestDto.getEndDate());
+        proceeding.updateLocation(requestDto.getLocation());
+        proceeding.updateWorkContents(requestDto.getWorkContents());
     }
 
     private List<ProceedingImage> uploadProceedingImages(Proceeding proceeding, List<MultipartFile> proceedingImages) {
