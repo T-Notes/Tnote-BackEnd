@@ -124,6 +124,9 @@ public class ConsultationService {
     private void updateConsultationItem(ConsultationUpdateRequestDto requestDto, Consultation consultation,
                                         List<MultipartFile> consultationImages) {
         updateConsultationFields(requestDto, consultation);
+        if (consultationImages == null || consultationImages.isEmpty()) {
+            deleteExistedImages(consultation);
+        }
         if (consultationImages != null && !consultationImages.isEmpty()) {
             List<ConsultationImage> updatedImages = deleteExistedImagesAndUploadNewImages(consultation,
                     consultationImages);
@@ -132,29 +135,15 @@ public class ConsultationService {
     }
 
     private void updateConsultationFields(ConsultationUpdateRequestDto requestDto, Consultation consultation) {
-        if (requestDto.hasStudentName()) {
-            consultation.updateStudentName(requestDto.getStudentName());
-        }
-        if (requestDto.hasStartDate()) {
-            consultation.updateStartDate(requestDto.getStartDate());
-        }
-        if (requestDto.hasEndDate()) {
-            consultation.updateEndDate(requestDto.getEndDate());
-        }
-        if (requestDto.hasConsultationContents()) {
-            consultation.updateConsultationContents(requestDto.getConsultationContents());
-        }
-        if (requestDto.hasConsultationResult()) {
-            consultation.updateConsultationResult(requestDto.getConsultationResult());
-        }
-        if (requestDto.hasCounselingField()) {
-            requestDto.validateEnums();
-            consultation.updateCounselingField(requestDto.getCounselingField());
-        }
-        if (requestDto.hasCounselingType()) {
-            requestDto.validateEnums();
-            consultation.updateCounselingType(requestDto.getCounselingType());
-        }
+        consultation.updateStudentName(requestDto.getStudentName());
+        consultation.updateStartDate(requestDto.getStartDate());
+        consultation.updateEndDate(requestDto.getEndDate());
+        consultation.updateConsultationContents(requestDto.getConsultationContents());
+        consultation.updateConsultationResult(requestDto.getConsultationResult());
+        requestDto.validateEnums();
+        consultation.updateCounselingField(requestDto.getCounselingField());
+        requestDto.validateEnums();
+        consultation.updateCounselingType(requestDto.getCounselingType());
     }
 
     private List<ConsultationImage> uploadConsultationImages(Consultation consultation,
