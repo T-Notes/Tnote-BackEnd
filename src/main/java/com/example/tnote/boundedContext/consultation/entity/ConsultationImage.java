@@ -31,7 +31,7 @@ public class ConsultationImage {
     private String consultationImageUrl;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "consultation_id")
     private Consultation consultation;
     @Column(name = "original_file_name")
