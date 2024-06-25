@@ -119,6 +119,9 @@ public class ObservationService {
     private void updateObservationItem(ObservationUpdateRequestDto requestDto, Observation observation,
                                        List<MultipartFile> observationImages) {
         updateObservationFields(requestDto, observation);
+        if (observationImages == null || observationImages.isEmpty()) {
+            deleteExistedImages(observation);
+        }
         if (observationImages != null && !observationImages.isEmpty()) {
             List<ObservationImage> updatedImages = deleteExistedImagesAndUploadNewImages(observation,
                     observationImages);
@@ -127,21 +130,11 @@ public class ObservationService {
     }
 
     private void updateObservationFields(ObservationUpdateRequestDto requestDto, Observation observation) {
-        if (requestDto.hasStudentName()) {
-            observation.updateStudentName(requestDto.getStudentName());
-        }
-        if (requestDto.hasStartDate()) {
-            observation.updateStartDate(requestDto.getStartDate());
-        }
-        if (requestDto.hasEndDate()) {
-            observation.updateEndDate(requestDto.getEndDate());
-        }
-        if (requestDto.hasObservationContents()) {
-            observation.updateObservationContents(requestDto.getObservationContents());
-        }
-        if (requestDto.hasGuidance()) {
-            observation.updateGuidance(requestDto.getGuidance());
-        }
+        observation.updateStudentName(requestDto.getStudentName());
+        observation.updateStartDate(requestDto.getStartDate());
+        observation.updateEndDate(requestDto.getEndDate());
+        observation.updateObservationContents(requestDto.getObservationContents());
+        observation.updateGuidance(requestDto.getGuidance());
     }
 
     private List<ObservationImage> uploadObservationImages(Observation observation,
