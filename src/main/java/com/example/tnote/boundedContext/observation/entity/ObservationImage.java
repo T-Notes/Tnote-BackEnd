@@ -31,7 +31,7 @@ public class ObservationImage {
     private String observationImageUrl;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "observation_id")
     private Observation observation;
     @Column(name = "original_file_name")
