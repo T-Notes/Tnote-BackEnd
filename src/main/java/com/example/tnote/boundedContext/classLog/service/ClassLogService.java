@@ -122,6 +122,9 @@ public class ClassLogService {
     private void updateEachClassLogItem(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog,
                                         List<MultipartFile> classLogImages) {
         updateClassLogFields(classLogUpdateRequestDto, classLog);
+        if (classLogImages == null || classLogImages.isEmpty()) {
+            deleteExistedImages(classLog);
+        }
         if (classLogImages != null && !classLogImages.isEmpty()) {
             List<ClassLogImage> updatedImages = deleteExistedImagesAndUploadNewImages(classLog, classLogImages);
             classLog.updateClassLogImages(updatedImages);
@@ -129,27 +132,13 @@ public class ClassLogService {
     }
 
     private void updateClassLogFields(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog) {
-        if (classLogUpdateRequestDto.hasTitle()) {
-            classLog.updateTitle(classLogUpdateRequestDto.getTitle());
-        }
-        if (classLogUpdateRequestDto.hasStartDate()) {
-            classLog.updateStartDate(classLogUpdateRequestDto.getStartDate());
-        }
-        if (classLogUpdateRequestDto.hasEndDate()) {
-            classLog.updateEndDate(classLogUpdateRequestDto.getEndDate());
-        }
-        if (classLogUpdateRequestDto.hasPlan()) {
-            classLog.updatePlan(classLogUpdateRequestDto.getPlan());
-        }
-        if (classLogUpdateRequestDto.hasSubmission()) {
-            classLog.updateSubmission(classLogUpdateRequestDto.getSubmission());
-        }
-        if (classLogUpdateRequestDto.hasClassContents()) {
-            classLog.updateClassContents(classLogUpdateRequestDto.getClassContents());
-        }
-        if (classLogUpdateRequestDto.hasMagnitude()) {
-            classLog.updateMagnitude(classLogUpdateRequestDto.getMagnitude());
-        }
+        classLog.updateTitle(classLogUpdateRequestDto.getTitle());
+        classLog.updateStartDate(classLogUpdateRequestDto.getStartDate());
+        classLog.updateEndDate(classLogUpdateRequestDto.getEndDate());
+        classLog.updatePlan(classLogUpdateRequestDto.getPlan());
+        classLog.updateSubmission(classLogUpdateRequestDto.getSubmission());
+        classLog.updateClassContents(classLogUpdateRequestDto.getClassContents());
+        classLog.updateMagnitude(classLogUpdateRequestDto.getMagnitude());
     }
 
     private List<ClassLogImage> uploadClassLogImages(ClassLog classLog, List<MultipartFile> classLogImages) {
