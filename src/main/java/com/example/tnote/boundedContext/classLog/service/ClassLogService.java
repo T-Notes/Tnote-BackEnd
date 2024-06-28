@@ -67,7 +67,7 @@ public class ClassLogService {
         ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
                 .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
 
-        deleteExistedImages(classLog);
+        deleteExistedImageByClassLog(classLog);
         classLogRepository.delete(classLog);
         recentLogService.deleteRecentLog(classLog.getId(), "CLASS_LOG");
 
@@ -216,6 +216,11 @@ public class ClassLogService {
         System.out.println("Deleting existing images for classLog ID: " + classLog.getId());
         deleteS3Images(classLog);
         classLogImageRepository.deleteByClassLogId(classLog.getId());
+    }
+
+    private void deleteExistedImageByClassLog(ClassLog classLog) {
+        System.out.println("Deleting existing images for classLog ID: " + classLog.getId());
+        deleteS3Images(classLog);
     }
 
     private void deleteS3Images(ClassLog classLog) {
