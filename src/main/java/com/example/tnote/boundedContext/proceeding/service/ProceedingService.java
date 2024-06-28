@@ -83,6 +83,7 @@ public class ProceedingService {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
                 .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);
 
+        deleteExistedImagesByProceeding(proceeding);
         proceedingRepository.delete(proceeding);
         recentLogService.deleteRecentLog(proceeding.getId(), "PROCEEDING");
 
@@ -214,6 +215,10 @@ public class ProceedingService {
     private void deleteExistedImages(Proceeding proceeding) {
         deleteS3Images(proceeding);
         proceedingImageRepository.deleteByProceedingId(proceeding.getId());
+    }
+
+    private void deleteExistedImagesByProceeding(Proceeding proceeding) {
+        deleteS3Images(proceeding);
     }
 
     private void deleteS3Images(Proceeding proceeding) {
