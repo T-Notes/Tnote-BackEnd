@@ -92,6 +92,7 @@ public class ObservationService {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
                 .orElseThrow(() -> CustomException.OBSERVATION_NOT_FOUNT);
 
+        deleteExistedImagesByObservation(observation);
         observationRepository.delete(observation);
         recentLogService.deleteRecentLog(observation.getId(), "OBSERVATION");
 
@@ -212,6 +213,10 @@ public class ObservationService {
     private void deleteExistedImages(Observation observation) {
         deleteS3Images(observation);
         observationImageRepository.deleteByObservationId(observation.getId());
+    }
+
+    private void deleteExistedImagesByObservation(Observation observation) {
+        deleteS3Images(observation);
     }
 
     private void deleteS3Images(Observation observation) {
