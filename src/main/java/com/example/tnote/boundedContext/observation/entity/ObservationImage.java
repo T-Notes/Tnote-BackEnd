@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -36,7 +37,8 @@ public class ObservationImage {
     private Observation observation;
     @Column(name = "original_file_name")
     private String name;
-
+    @Version
+    private Long version;
     @Builder
     public ObservationImage(Observation observation, String observationImageUrl, String originalFileName) {
         this.observation = observation;
