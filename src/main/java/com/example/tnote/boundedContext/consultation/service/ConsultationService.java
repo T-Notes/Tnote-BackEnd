@@ -83,6 +83,7 @@ public class ConsultationService {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
 
+        deleteExistedImagesByConsultation(consultation);
         consultationRepository.delete(consultation);
         recentLogService.deleteRecentLog(consultation.getId(), "CONSULTATION");
 
@@ -221,6 +222,10 @@ public class ConsultationService {
     private void deleteExistedImages(Consultation consultation) {
         deleteS3Images(consultation);
         consultationImageRepository.deleteByConsultationId(consultation.getId());
+    }
+
+    private void deleteExistedImagesByConsultation(Consultation consultation) {
+        deleteS3Images(consultation);
     }
 
     private void deleteS3Images(Consultation consultation) {
