@@ -92,6 +92,13 @@ public class ProceedingService {
                 .build();
     }
 
+    public int deleteProceedings(Long userId, List<Long> proceedingIds) {
+        proceedingIds.forEach(proceedingId -> {
+            deleteProceeding(userId, proceedingId);
+        });
+        return proceedingIds.size();
+    }
+
     public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
                 .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);
