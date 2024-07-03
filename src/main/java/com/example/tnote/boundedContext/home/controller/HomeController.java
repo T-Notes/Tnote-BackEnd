@@ -7,6 +7,8 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto
 import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
+import com.example.tnote.boundedContext.home.dto.LogsDeleteRequestDto;
+import com.example.tnote.boundedContext.home.dto.LogsDeleteResponseDto;
 import com.example.tnote.boundedContext.home.dto.UnifiedLogResponseDto;
 import com.example.tnote.boundedContext.home.service.HomeService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
@@ -26,8 +28,11 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -138,6 +143,13 @@ public class HomeController {
         PageRequest pageRequest = PageRequest.of(page, size);
         UnifiedLogResponseDto response = homeService.readLogByFilter(principalDetails.getId(), scheduleId, logType,
                 pageRequest);
+        return ResponseEntity.ok(Result.of(response));
+    }
+
+    @PostMapping("/deleteLogs")
+    public ResponseEntity<Result> deleteLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                             @RequestBody LogsDeleteRequestDto deleteRequest) {
+        LogsDeleteResponseDto response = homeService.deleteLogs(principalDetails.getId(), deleteRequest);
         return ResponseEntity.ok(Result.of(response));
     }
 }
