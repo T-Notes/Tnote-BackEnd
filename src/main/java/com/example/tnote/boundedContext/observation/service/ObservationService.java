@@ -99,6 +99,13 @@ public class ObservationService {
         return ObservationDeleteResponseDto.builder().id(observation.getId()).build();
     }
 
+    public int deleteObservations(Long userId, List<Long> observationIds) {
+        observationIds.forEach(observationId -> {
+            deleteObservation(userId, observationId);
+        });
+        return observationIds.size();
+    }
+
     public ObservationResponseDto updateObservation(Long userId, Long observationId,
                                                     ObservationUpdateRequestDto requestDto,
                                                     List<MultipartFile> observationImages) {
