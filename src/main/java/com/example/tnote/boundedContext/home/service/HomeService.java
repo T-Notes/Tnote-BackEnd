@@ -14,6 +14,8 @@ import com.example.tnote.boundedContext.home.constant.LogType;
 import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.home.dto.LogEntry;
+import com.example.tnote.boundedContext.home.dto.LogsDeleteRequestDto;
+import com.example.tnote.boundedContext.home.dto.LogsDeleteResponseDto;
 import com.example.tnote.boundedContext.home.dto.UnifiedLogResponseDto;
 import com.example.tnote.boundedContext.home.repository.ClassLogQueryRepository;
 import com.example.tnote.boundedContext.home.repository.ConsultationQueryRepository;
@@ -219,4 +221,31 @@ public class HomeService {
                 .todos(todos)
                 .build();
     }
+
+    @Transactional
+    public LogsDeleteResponseDto deleteLogs(Long userId, LogsDeleteRequestDto deleteRequest) {
+        int deletedClassLogsCount = 0;
+        int deletedProceedingsCount = 0;
+        int deletedObservationsCount = 0;
+        int deletedConsultationsCount = 0;
+
+        if (!deleteRequest.getClassLogIds().isEmpty()) {
+            deletedClassLogsCount = classLogService.deleteClassLogs(userId, deleteRequest.getClassLogIds());
+        }
+        if (!deleteRequest.getProceedingIds().isEmpty()) {
+            deletedProceedingsCount = proceedingService.deleteProceedings(userId, deleteRequest.getProceedingIds());
+        }
+        if (!deleteRequest.getObservationIds().isEmpty()) {
+            deletedObservationsCount = observationService.deleteObservations(userId, deleteRequest.getObservationIds());
+        }
+        if (!deleteRequest.getConsultationIds().isEmpty()) {
+            deletedConsultationsCount = consultationService.deleteConsultations(userId,
+                    deleteRequest.getConsultationIds());
+        }
+
+        return LogsDeleteResponseDto.of(deletedClassLogsCount, deletedProceedingsCount, deletedObservationsCount,
+                deletedConsultationsCount);
+    }
+
+
 }
