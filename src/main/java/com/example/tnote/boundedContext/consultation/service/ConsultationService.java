@@ -92,6 +92,13 @@ public class ConsultationService {
                 .build();
     }
 
+    public int deleteConsultations(Long userId, List<Long> consultationIds) {
+        consultationIds.forEach(consultationId -> {
+            deleteConsultation(userId, consultationId);
+        });
+        return consultationIds.size();
+    }
+
     public ConsultationDetailResponseDto getConsultationDetail(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
