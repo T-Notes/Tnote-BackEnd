@@ -1,7 +1,6 @@
 package com.example.tnote.boundedContext.observation.dto;
 
-import com.example.tnote.boundedContext.classLog.dto.ClassLogImageResponseDto;
-import com.example.tnote.boundedContext.home.constant.LogType;
+import com.example.tnote.boundedContext.archive.constant.LogType;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.entity.ObservationImage;
 import java.time.LocalDateTime;

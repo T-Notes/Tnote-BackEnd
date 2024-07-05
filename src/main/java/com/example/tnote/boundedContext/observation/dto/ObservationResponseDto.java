@@ -1,7 +1,7 @@
 package com.example.tnote.boundedContext.observation.dto;
 
-import com.example.tnote.boundedContext.home.constant.LogType;
-import com.example.tnote.boundedContext.home.dto.LogEntry;
+import com.example.tnote.boundedContext.archive.constant.LogType;
+import com.example.tnote.boundedContext.archive.dto.LogEntry;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import java.time.LocalDateTime;
 import lombok.Builder;

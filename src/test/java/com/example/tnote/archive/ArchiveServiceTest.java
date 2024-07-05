@@ -1,4 +1,4 @@
-package com.example.tnote.home;
+package com.example.tnote.archive;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -10,7 +10,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
-import com.example.tnote.boundedContext.home.service.HomeService;
+import com.example.tnote.boundedContext.archive.service.ArchiveService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
@@ -35,13 +35,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-public class homeServiceTest {
+public class ArchiveServiceTest {
 
     @Autowired
     TestSyUtils testSyUtils;
 
     @Autowired
-    HomeService homeService;
+    ArchiveService homeService;
 
     @Autowired
     ScheduleService scheduleService;

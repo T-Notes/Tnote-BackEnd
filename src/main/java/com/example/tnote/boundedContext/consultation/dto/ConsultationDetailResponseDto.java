@@ -4,11 +4,9 @@ import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
-import com.example.tnote.boundedContext.home.constant.LogType;
-import com.example.tnote.boundedContext.observation.dto.ObservationImageResponseDto;
+import com.example.tnote.boundedContext.archive.constant.LogType;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter

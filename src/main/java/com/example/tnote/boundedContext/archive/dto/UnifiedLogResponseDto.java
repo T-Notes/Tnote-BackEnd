@@ -1,4 +1,4 @@
-package com.example.tnote.boundedContext.home.dto;
+package com.example.tnote.boundedContext.archive.dto;
 
 import java.util.List;
 import lombok.Builder;

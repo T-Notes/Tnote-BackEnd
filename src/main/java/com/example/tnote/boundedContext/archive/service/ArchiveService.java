@@ -1,4 +1,4 @@
-package com.example.tnote.boundedContext.home.service;
+package com.example.tnote.boundedContext.archive.service;
 
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.ErrorCode;
@@ -10,17 +10,17 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto
 import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.service.ConsultationService;
-import com.example.tnote.boundedContext.home.constant.LogType;
-import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
-import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
-import com.example.tnote.boundedContext.home.dto.LogEntry;
-import com.example.tnote.boundedContext.home.dto.LogsDeleteRequestDto;
-import com.example.tnote.boundedContext.home.dto.LogsDeleteResponseDto;
-import com.example.tnote.boundedContext.home.dto.UnifiedLogResponseDto;
-import com.example.tnote.boundedContext.home.repository.ClassLogQueryRepository;
-import com.example.tnote.boundedContext.home.repository.ConsultationQueryRepository;
-import com.example.tnote.boundedContext.home.repository.ObservationQueryRepository;
-import com.example.tnote.boundedContext.home.repository.ProceedingQueryRepository;
+import com.example.tnote.boundedContext.archive.constant.LogType;
+import com.example.tnote.boundedContext.archive.dto.ArchiveResponseDto;
+import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
+import com.example.tnote.boundedContext.archive.dto.LogEntry;
+import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequestDto;
+import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponseDto;
+import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponseDto;
+import com.example.tnote.boundedContext.archive.repository.ClassLogQueryRepository;
+import com.example.tnote.boundedContext.archive.repository.ConsultationQueryRepository;
+import com.example.tnote.boundedContext.archive.repository.ObservationQueryRepository;
+import com.example.tnote.boundedContext.archive.repository.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
@@ -32,7 +32,6 @@ import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
-import com.example.tnote.boundedContext.todo.dto.TodoSliceResponseDto;
 import com.example.tnote.boundedContext.todo.service.TodoService;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
@@ -42,8 +41,6 @@ import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class HomeService {
+public class ArchiveService {
 
     private final ConsultationQueryRepository consultationQueryRepository;
     private final ObservationQueryRepository observationQueryRepository;

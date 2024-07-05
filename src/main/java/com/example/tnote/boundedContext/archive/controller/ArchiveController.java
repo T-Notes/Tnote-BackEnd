@@ -1,16 +1,16 @@
-package com.example.tnote.boundedContext.home.controller;
+package com.example.tnote.boundedContext.archive.controller;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.base.utils.TokenUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
-import com.example.tnote.boundedContext.home.constant.LogType;
-import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
-import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
-import com.example.tnote.boundedContext.home.dto.LogsDeleteRequestDto;
-import com.example.tnote.boundedContext.home.dto.LogsDeleteResponseDto;
-import com.example.tnote.boundedContext.home.dto.UnifiedLogResponseDto;
-import com.example.tnote.boundedContext.home.service.HomeService;
+import com.example.tnote.boundedContext.archive.constant.LogType;
+import com.example.tnote.boundedContext.archive.dto.ArchiveResponseDto;
+import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
+import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequestDto;
+import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponseDto;
+import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponseDto;
+import com.example.tnote.boundedContext.archive.service.ArchiveService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponseDto;
@@ -28,7 +28,6 @@ import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -41,9 +40,9 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/tnote/home")
-public class HomeController {
+public class ArchiveController {
 
-    private final HomeService homeService;
+    private final ArchiveService homeService;
     private final ScheduleService scheduleService;
     private final RecentLogService recentLogService;
 
