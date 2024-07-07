@@ -71,5 +71,6 @@
 
 ### 최적화
 [ security - @AuthenticationPrincipal 정보 받기 ](https://techj9972.tistory.com/255) <br>
+[ FK 참조관계 도입 고민 ](https://techj9972.tistory.com/301) <br>
 
 
