@@ -4,6 +4,8 @@ import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.ErrorCode;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
@@ -123,6 +125,33 @@ public class ProceedingService {
     @Transactional(readOnly = true)
     public List<ProceedingResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
         List<Proceeding> logs = proceedingRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
+        return logs.stream()
+                .map(ProceedingResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProceedingResponseDto> findByTitleContainingAndDateBetween(String keyword, LocalDate startDate,
+                                                                         LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Proceeding> logs = proceedingRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ProceedingResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProceedingResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
+                                                                                              LocalDate startDate,
+                                                                                              LocalDate endDate,
+                                                                                              Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Proceeding> logs = proceedingRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
+                startOfDay, endOfDay, userId);
+
         return logs.stream()
                 .map(ProceedingResponseDto::of)
                 .toList();
