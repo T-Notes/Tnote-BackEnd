@@ -26,6 +26,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -74,6 +75,7 @@ public class ClassLogService {
                 .id(classLog.getId())
                 .build();
     }
+
     public int deleteClassLogs(Long userId, List<Long> classLogIds) {
         classLogIds.forEach(classLogId -> {
             deleteClassLog(userId, classLogId);
@@ -100,6 +102,33 @@ public class ClassLogService {
     @Transactional(readOnly = true)
     public List<ClassLogResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
         List<ClassLog> logs = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
+        return logs.stream()
+                .map(ClassLogResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ClassLogResponseDto> findByTitleContainingAndDateBetween(String keyword, LocalDate startDate,
+                                                                         LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<ClassLog> logs = classLogRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ClassLogResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ClassLogResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
+                                                                                              LocalDate startDate,
+                                                                                              LocalDate endDate,
+                                                                                              Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<ClassLog> logs = classLogRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
+                startOfDay, endOfDay, userId);
+
         return logs.stream()
                 .map(ClassLogResponseDto::of)
                 .toList();
