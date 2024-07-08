@@ -69,5 +69,12 @@ public interface ProceedingRepository extends JpaRepository<Proceeding, Long> {
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate,
             @Param("userId") Long userId);
+
+    @Query("SELECT p FROM Proceeding p WHERE p.user.id = :userId AND p.workContents LIKE %:keyword% AND p.startDate >= :startDate AND p.endDate <= :endDate")
+    List<Proceeding> findByContentsContaining(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("userId") Long userId);
     void deleteAllByUserId(Long userId);
 }

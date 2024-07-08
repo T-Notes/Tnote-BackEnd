@@ -6,6 +6,8 @@ import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
@@ -136,6 +138,18 @@ public class ProceedingService {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ProceedingResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProceedingResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
+                                                                 LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Proceeding> logs = proceedingRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
                 .map(ProceedingResponseDto::of)
