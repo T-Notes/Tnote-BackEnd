@@ -4,6 +4,8 @@ import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.ErrorCode;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
@@ -124,6 +126,33 @@ public class ObservationService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<ObservationResponseDto> findByTitleContainingAndDateBetween(String keyword, LocalDate startDate,
+                                                                             LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Observation> logs = observationRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ObservationResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ObservationResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
+                                                                                                  LocalDate startDate,
+                                                                                                  LocalDate endDate,
+                                                                                                  Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Observation> logs = observationRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
+                startOfDay, endOfDay, userId);
+
+        return logs.stream()
+                .map(ObservationResponseDto::of)
+                .toList();
+    }
+
     private void updateObservationItem(ObservationUpdateRequestDto requestDto, Observation observation,
                                        List<MultipartFile> observationImages) {
         updateObservationFields(requestDto, observation);
@@ -138,7 +167,7 @@ public class ObservationService {
     }
 
     private void updateObservationFields(ObservationUpdateRequestDto requestDto, Observation observation) {
-        observation.updateStudentName(requestDto.getStudentName());
+        observation.updateStudentName(requestDto.getTitle());
         observation.updateStartDate(requestDto.getStartDate());
         observation.updateEndDate(requestDto.getEndDate());
         observation.updateObservationContents(requestDto.getObservationContents());
