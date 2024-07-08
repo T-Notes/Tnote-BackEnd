@@ -17,10 +17,10 @@ import com.example.tnote.boundedContext.archive.dto.LogEntry;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequestDto;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponseDto;
 import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponseDto;
-import com.example.tnote.boundedContext.archive.repository.ClassLogQueryRepository;
-import com.example.tnote.boundedContext.archive.repository.ConsultationQueryRepository;
-import com.example.tnote.boundedContext.archive.repository.ObservationQueryRepository;
-import com.example.tnote.boundedContext.archive.repository.ProceedingQueryRepository;
+import com.example.tnote.boundedContext.classLog.repository.query.ClassLogQueryRepository;
+import com.example.tnote.boundedContext.consultation.repository.query.ConsultationQueryRepository;
+import com.example.tnote.boundedContext.observation.repository.query.ObservationQueryRepository;
+import com.example.tnote.boundedContext.proceeding.repository.query.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
@@ -157,6 +157,44 @@ public class ArchiveService {
         }
         if (logType == LogType.ALL || logType == LogType.PROCEEDING) {
             logs.addAll(proceedingService.findLogsByScheduleAndUser(scheduleId, userId));
+        }
+
+        int totalLogs = logs.size();
+        System.out.println("Total logs fetched: " + totalLogs);
+        logs.sort(Comparator.comparing(LogEntry::getCreatedAt).reversed());
+
+        int start = (int) pageable.getOffset();
+        if (start >= totalLogs) {
+            System.out.println("Start index exceeds the log list size.");
+            return UnifiedLogResponseDto.from(Collections.emptyList(), totalLogs);
+        }
+
+        int end = Math.min((start + pageable.getPageSize()), totalLogs);
+        System.out.println("Returning logs from index " + start + " to " + end);
+        List<LogEntry> pageContent = logs.subList(start, end);
+
+        return UnifiedLogResponseDto.from(pageContent, totalLogs);
+    }
+
+    public UnifiedLogResponseDto searchLogsByFilter(Long userId, LocalDate startDate, LocalDate endDate,
+                                                    String searchType, String keyword, Pageable pageable) {
+        List<LogEntry> logs = new ArrayList<>();
+
+        if ("title".equals(searchType)) {
+            logs.addAll(classLogService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
+            logs.addAll(consultationService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
+            logs.addAll(proceedingService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
+            logs.addAll(observationService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
+        }
+        if ("titleAndContent".equals(searchType)) {
+            logs.addAll(classLogService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
+                    endDate, userId));
+            logs.addAll(consultationService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
+                    endDate, userId));
+            logs.addAll(proceedingService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
+                    endDate, userId));
+            logs.addAll(observationService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
+                    endDate, userId));
         }
 
         int totalLogs = logs.size();
