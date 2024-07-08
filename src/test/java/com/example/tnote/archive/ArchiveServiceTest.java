@@ -85,14 +85,14 @@ public class ArchiveServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        List<ConsultationResponseDto> response = homeService.findAllOfConsultation(consultation.getStudentName(),
+        List<ConsultationResponseDto> response = homeService.findAllOfConsultation(consultation.getTitle(),
                 user1.getId(), schedule1.getId());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         LocalDateTime date = LocalDateTime.parse("2024-03-01 13:47:13.248", formatter);
 
         // then
-        assertThat(response.get(0).getStudentName()).isEqualTo("a");
+        assertThat(response.get(0).getTitle()).isEqualTo("a");
         assertThat(response.get(0).getStartDate()).isEqualTo(date);
         assertThat(response.get(0).getEndDate()).isEqualTo(date);
         assertThat(response.get(0).getConsultationContents()).isEqualTo("a");
@@ -113,7 +113,7 @@ public class ArchiveServiceTest {
 
         // then
         assertThatThrownBy(
-                () -> homeService.findAllOfConsultation(consultation.getStudentName(), 222L, schedule1.getId()))
+                () -> homeService.findAllOfConsultation(consultation.getTitle(), 222L, schedule1.getId()))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -125,14 +125,14 @@ public class ArchiveServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        List<ObservationResponseDto> response = homeService.findAllOfObservation(observation.getStudentName(),
+        List<ObservationResponseDto> response = homeService.findAllOfObservation(observation.getTitle(),
                 user1.getId(), schedule1.getId());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         LocalDateTime date = LocalDateTime.parse("2024-03-01 13:47:13.248", formatter);
 
         // then
-        assertThat(response.get(0).getStudentName()).isEqualTo("a");
+        assertThat(response.get(0).getTitle()).isEqualTo("a");
         assertThat(response.get(0).getStartDate()).isEqualTo(date);
         assertThat(response.get(0).getEndDate()).isEqualTo(date);
         assertThat(response.get(0).getObservationContents()).isEqualTo("a");
@@ -151,7 +151,7 @@ public class ArchiveServiceTest {
 
         // then
         assertThatThrownBy(
-                () -> homeService.findAllOfObservation(observation.getStudentName(), 222L, schedule1.getId()))
+                () -> homeService.findAllOfObservation(observation.getTitle(), 222L, schedule1.getId()))
                 .isInstanceOf(CustomException.class);
     }
 
