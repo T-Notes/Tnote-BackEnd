@@ -5,14 +5,14 @@ import lombok.Getter;
 
 @Getter
 public class ObservationUpdateRequestDto {
-    private String studentName;
+    private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String observationContents; // 관찰 내용
     private String guidance; // 해석 및 지도 방안
 
     public boolean hasStudentName() {
-        return studentName != null;
+        return title != null;
     }
 
     public boolean hasStartDate() {
