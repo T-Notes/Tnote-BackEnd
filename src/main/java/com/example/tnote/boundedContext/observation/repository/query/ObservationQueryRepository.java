@@ -1,4 +1,4 @@
-package com.example.tnote.boundedContext.archive.repository;
+package com.example.tnote.boundedContext.observation.repository.query;
 
 import static com.example.tnote.boundedContext.observation.entity.QObservation.observation;
 
