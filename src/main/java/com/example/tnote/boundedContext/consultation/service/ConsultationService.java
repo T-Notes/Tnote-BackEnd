@@ -4,6 +4,8 @@ import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.ErrorCode;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
@@ -128,6 +130,32 @@ public class ConsultationService {
                 .map(ConsultationResponseDto::of)
                 .toList();
     }
+    @Transactional(readOnly = true)
+    public List<ConsultationResponseDto> findByTitleContainingAndDateBetween(String keyword, LocalDate startDate,
+                                                                         LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Consultation> logs = consultationRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ConsultationResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ConsultationResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
+                                                                                              LocalDate startDate,
+                                                                                              LocalDate endDate,
+                                                                                              Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Consultation> logs = consultationRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
+                startOfDay, endOfDay, userId);
+
+        return logs.stream()
+                .map(ConsultationResponseDto::of)
+                .toList();
+    }
 
     private void updateConsultationItem(ConsultationUpdateRequestDto requestDto, Consultation consultation,
                                         List<MultipartFile> consultationImages) {
@@ -143,7 +171,7 @@ public class ConsultationService {
     }
 
     private void updateConsultationFields(ConsultationUpdateRequestDto requestDto, Consultation consultation) {
-        consultation.updateStudentName(requestDto.getStudentName());
+        consultation.updateStudentName(requestDto.getTitle());
         consultation.updateStartDate(requestDto.getStartDate());
         consultation.updateEndDate(requestDto.getEndDate());
         consultation.updateConsultationContents(requestDto.getConsultationContents());
