@@ -99,7 +99,6 @@ public class ArchiveServiceTest {
         assertThat(response.get(0).getCounselingField()).isEqualTo(CounselingField.HEALTH);
         assertThat(response.get(0).getConsultationResult()).isEqualTo("a");
         assertThat(response.get(0).getCounselingType()).isEqualTo(CounselingType.STUDENT);
-
     }
 
     @Test
