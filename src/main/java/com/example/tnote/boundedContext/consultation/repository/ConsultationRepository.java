@@ -68,6 +68,12 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
             @Param("startDate") LocalDateTime startDate,
             @Param("endDate") LocalDateTime endDate,
             @Param("userId") Long userId);
+    @Query("SELECT c FROM Consultation c WHERE c.user.id = :userId AND c.consultationContents LIKE %:keyword% AND c.startDate >= :startDate AND c.endDate <= :endDate")
+    List<Consultation> findByContentsContaining(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("userId") Long userId);
 
     void deleteAllByUserId(Long userId);
 }

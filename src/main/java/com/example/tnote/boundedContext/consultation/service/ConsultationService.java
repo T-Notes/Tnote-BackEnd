@@ -143,6 +143,18 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
+    public List<ConsultationResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
+                                                                   LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Consultation> logs = consultationRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ConsultationResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public List<ConsultationResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
                                                                                               LocalDate startDate,
                                                                                               LocalDate endDate,
