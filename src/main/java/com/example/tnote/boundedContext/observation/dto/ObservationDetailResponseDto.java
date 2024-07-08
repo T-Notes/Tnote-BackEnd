@@ -9,23 +9,23 @@ import lombok.Getter;
 
 @Getter
 public class ObservationDetailResponseDto {
-    private Long id;
-    private Long userId;
-    private String studentName;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
-    private String observationContents; // 관찰 내용
-    private String guidance; // 해석 및 지도 방안
-    private List<String> observationImageUrls;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private String logType;
-    private List<ObservationImageResponseDto> images;
+    private final Long id;
+    private final Long userId;
+    private final String title;
+    private final LocalDateTime startDate;
+    private final LocalDateTime endDate;
+    private final String observationContents; // 관찰 내용
+    private final String guidance; // 해석 및 지도 방안
+    private final List<String> observationImageUrls;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
+    private final String logType;
+    private final List<ObservationImageResponseDto> images;
 
     public ObservationDetailResponseDto(Observation observation, List<ObservationImage> observationImages) {
         this.id = observation.getId();
         this.userId = observation.getUser().getId();
-        this.studentName = observation.getStudentName();
+        this.title = observation.getTitle();
         this.startDate = observation.getStartDate();
         this.endDate = observation.getEndDate();
         this.observationContents = observation.getObservationContents();

@@ -34,7 +34,7 @@ public class Observation extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "observation_id")
     private Long id;
-    private String studentName;
+    private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String observationContents; // 관찰 내용
@@ -58,8 +58,8 @@ public class Observation extends BaseTimeEntity {
         this.observationImage.clear();
     }
 
-    public void updateStudentName(String studentName) {
-        this.studentName = studentName;
+    public void updateStudentName(String title) {
+        this.title = title;
     }
 
     public void updateStartDate(LocalDateTime startDate) {

@@ -19,7 +19,7 @@ public class ObservationQueryRepository {
                 .selectFrom(observation)
                 .where(
                         observation.schedule.id.eq(scheduleId)
-                                .and(observation.studentName.like("%" + keyword + "%"))
+                                .and(observation.title.like("%" + keyword + "%"))
                 )
                 .orderBy(observation.id.desc())
                 .fetch();
