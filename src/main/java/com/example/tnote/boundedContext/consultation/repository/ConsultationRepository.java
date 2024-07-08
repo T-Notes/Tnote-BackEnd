@@ -10,6 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface ConsultationRepository extends JpaRepository<Consultation, Long> {
     @Query("select c from Consultation c where c.user.id = :userId and c.schedule.id = :scheduleId")
@@ -53,6 +54,20 @@ public interface ConsultationRepository extends JpaRepository<Consultation, Long
             Long userId,
             Long scheduleId,
             LocalDate date);
+
+    @Query("SELECT c FROM Consultation c WHERE c.user.id = :userId AND c.title LIKE %:keyword% AND c.startDate >= :startDate AND c.endDate <= :endDate")
+    List<Consultation> findByTitleContaining(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("userId") Long userId);
+
+    @Query("SELECT c FROM Consultation c WHERE c.user.id = :userId AND (c.title LIKE %:keyword% OR c.consultationContents LIKE %:keyword%) AND c.startDate >= :startDate AND c.endDate <= :endDate")
+    List<Consultation> findByTitleOrPlanOrClassContentsContaining(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("userId") Long userId);
 
     void deleteAllByUserId(Long userId);
 }
