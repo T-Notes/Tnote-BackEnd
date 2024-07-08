@@ -10,7 +10,7 @@ import lombok.Getter;
 
 @Getter
 public class ConsultationUpdateRequestDto {
-    private String studentName;
+    private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private CounselingField counselingField;
@@ -19,7 +19,7 @@ public class ConsultationUpdateRequestDto {
     private String consultationResult;
 
     public boolean hasStudentName() {
-        return studentName != null;
+        return title != null;
     }
 
     public boolean hasStartDate() {

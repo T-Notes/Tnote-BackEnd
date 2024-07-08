@@ -16,7 +16,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ConsultationRequestDto {
-    private String studentName;
+    private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private CounselingField counselingField;
@@ -53,7 +53,7 @@ public class ConsultationRequestDto {
     public Consultation toEntity(User user, Schedule schedule) {
         return Consultation.builder()
                 .user(user)
-                .studentName(this.studentName)
+                .title(this.title)
                 .startDate(DateUtils.adjustStartDateTime(this.startDate, this.isAllDay))
                 .endDate(DateUtils.adjustEndDateTime(this.endDate, this.isAllDay))
                 .counselingField(this.counselingField)

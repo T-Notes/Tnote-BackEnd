@@ -35,7 +35,7 @@ public class Consultation extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "consultation_id")
     private Long id;
-    private String studentName;
+    private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private CounselingField counselingField;
@@ -56,8 +56,8 @@ public class Consultation extends BaseTimeEntity {
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
-    public void updateStudentName(String studentName) {
-        this.studentName = studentName;
+    public void updateStudentName(String title) {
+        this.title = title;
     }
 
     public void updateStartDate(LocalDateTime startDate) {

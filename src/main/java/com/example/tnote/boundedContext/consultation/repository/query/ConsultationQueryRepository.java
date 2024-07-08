@@ -1,4 +1,4 @@
-package com.example.tnote.boundedContext.archive.repository;
+package com.example.tnote.boundedContext.consultation.repository.query;
 
 import static com.example.tnote.boundedContext.consultation.entity.QConsultation.consultation;
 
@@ -19,7 +19,7 @@ public class ConsultationQueryRepository {
                 .selectFrom(consultation)
                 .where(
                         consultation.schedule.id.eq(scheduleId)
-                                .and(consultation.studentName.like("%" + keyword + "%"))
+                                .and(consultation.title.like("%" + keyword + "%"))
                 )
                 .orderBy(consultation.id.desc())
                 .fetch();

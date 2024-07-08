@@ -13,7 +13,7 @@ import lombok.Getter;
 @Builder
 public class ConsultationResponseDto implements LogEntry {
     private Long id;
-    private String studentName;
+    private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private CounselingField counselingField;
@@ -31,7 +31,7 @@ public class ConsultationResponseDto implements LogEntry {
     public static ConsultationResponseDto of(Consultation consultation) {
         return ConsultationResponseDto.builder()
                 .id(consultation.getId())
-                .studentName(consultation.getStudentName())
+                .title(consultation.getTitle())
                 .startDate(consultation.getStartDate())
                 .endDate(consultation.getEndDate())
                 .counselingField(consultation.getCounselingField())
