@@ -39,7 +39,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/tnote/home")
+@RequestMapping("/tnote/archive")
 public class ArchiveController {
 
     private final ArchiveService archiveService;
