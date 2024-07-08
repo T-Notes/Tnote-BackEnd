@@ -72,5 +72,12 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             @Param("endDate") LocalDateTime endDate,
             @Param("userId") Long userId);
 
+    @Query("SELECT o FROM Observation o WHERE o.user.id = :userId AND o.observationContents LIKE %:keyword% AND o.startDate >= :startDate AND o.endDate <= :endDate")
+    List<Observation> findByContentsContaining(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("userId") Long userId);
+
     void deleteAllByUserId(Long userId);
 }

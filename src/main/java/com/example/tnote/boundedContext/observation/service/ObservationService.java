@@ -139,6 +139,18 @@ public class ObservationService {
     }
 
     @Transactional(readOnly = true)
+    public List<ObservationResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
+                                                                  LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Observation> logs = observationRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ObservationResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public List<ObservationResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
                                                                                                   LocalDate startDate,
                                                                                                   LocalDate endDate,
