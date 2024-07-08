@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface ObservationRepository extends JpaRepository<Observation, Long> {
     @Query("select o from Observation o where o.user.id = :userId and o.schedule.id = :scheduleId")
@@ -28,6 +29,7 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             Long scheduleId,
             LocalDateTime startOfDay,
             LocalDateTime endOfDay);
+
     @Query("SELECT o FROM Observation o where o.schedule.id = :scheduleId ORDER BY o.createdAt DESC")
     Slice<Observation> findAllByScheduleId(Long scheduleId, Pageable pageable);
 
@@ -45,14 +47,30 @@ public interface ObservationRepository extends JpaRepository<Observation, Long> 
             "WHERE o.user.id = :userId " +
             "AND o.schedule.id = :scheduleId " +
             "AND ((" +
-            "FUNCTION('YEAR', o.startDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', o.startDate) = FUNCTION('MONTH', :date)" +
+            "FUNCTION('YEAR', o.startDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', o.startDate) = FUNCTION('MONTH', :date)"
+            +
             ") OR (" +
-            "FUNCTION('YEAR', o.endDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', o.endDate) = FUNCTION('MONTH', :date)" +
+            "FUNCTION('YEAR', o.endDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', o.endDate) = FUNCTION('MONTH', :date)"
+            +
             "))")
     List<Observation> findByUserIdAndScheduleIdAndYearMonth(
             Long userId,
             Long scheduleId,
             LocalDate date);
+
+    @Query("SELECT o FROM Observation o WHERE o.user.id = :userId AND o.title LIKE %:keyword% AND o.startDate >= :startDate AND o.endDate <= :endDate")
+    List<Observation> findByTitleContaining(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("userId") Long userId);
+
+    @Query("SELECT o FROM Observation o WHERE o.user.id = :userId AND (o.title LIKE %:keyword% OR o.observationContents LIKE %:keyword%) AND o.startDate >= :startDate AND o.endDate <= :endDate")
+    List<Observation> findByTitleOrPlanOrClassContentsContaining(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("userId") Long userId);
 
     void deleteAllByUserId(Long userId);
 }
