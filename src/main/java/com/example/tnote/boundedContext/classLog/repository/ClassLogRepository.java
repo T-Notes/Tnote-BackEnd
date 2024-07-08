@@ -70,5 +70,13 @@ public interface ClassLogRepository extends JpaRepository<ClassLog, Long> {
             @Param("endDate") LocalDateTime endDate,
             @Param("userId") Long userId);
 
+
+    @Query("SELECT c FROM ClassLog c WHERE c.user.id = :userId AND c.classContents LIKE %:keyword% AND c.startDate >= :startDate AND c.endDate <= :endDate")
+    List<ClassLog> findByContentsContaining(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("userId") Long userId);
+
     void deleteAllByUserId(Long userId);
 }

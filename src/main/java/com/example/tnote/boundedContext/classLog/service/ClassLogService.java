@@ -120,6 +120,18 @@ public class ClassLogService {
     }
 
     @Transactional(readOnly = true)
+    public List<ClassLogResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
+                                                                         LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<ClassLog> logs = classLogRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ClassLogResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
     public List<ClassLogResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
                                                                                               LocalDate startDate,
                                                                                               LocalDate endDate,
