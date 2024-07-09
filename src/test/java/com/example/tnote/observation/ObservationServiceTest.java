@@ -71,7 +71,7 @@ public class ObservationServiceTest {
         LocalDateTime now = LocalDateTime.now();
 
         ObservationRequestDto requestDto = ObservationRequestDto.builder()
-                .studentName("김태환")
+                .title("김태환")
                 .startDate(now)
                 .endDate(now.plusHours(2))
                 .guidance("지도")
@@ -88,7 +88,7 @@ public class ObservationServiceTest {
                 Collections.emptyList());
 
         assertThat(result).isNotNull();
-        assertThat(result.getStudentName()).isEqualTo(requestDto.getStudentName());
+        assertThat(result.getTitle()).isEqualTo(requestDto.getTitle());
         verify(observationRepository).save(any(Observation.class));
     }
 

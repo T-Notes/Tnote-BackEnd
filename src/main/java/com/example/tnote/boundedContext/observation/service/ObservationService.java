@@ -4,6 +4,8 @@ import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.ErrorCode;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
@@ -92,10 +94,18 @@ public class ObservationService {
         Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
                 .orElseThrow(() -> CustomException.OBSERVATION_NOT_FOUNT);
 
+        deleteExistedImagesByObservation(observation);
         observationRepository.delete(observation);
         recentLogService.deleteRecentLog(observation.getId(), "OBSERVATION");
 
         return ObservationDeleteResponseDto.builder().id(observation.getId()).build();
+    }
+
+    public int deleteObservations(Long userId, List<Long> observationIds) {
+        observationIds.forEach(observationId -> {
+            deleteObservation(userId, observationId);
+        });
+        return observationIds.size();
     }
 
     public ObservationResponseDto updateObservation(Long userId, Long observationId,
@@ -116,9 +126,51 @@ public class ObservationService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<ObservationResponseDto> findByTitleContainingAndDateBetween(String keyword, LocalDate startDate,
+                                                                             LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Observation> logs = observationRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ObservationResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ObservationResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
+                                                                  LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Observation> logs = observationRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ObservationResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ObservationResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
+                                                                                                  LocalDate startDate,
+                                                                                                  LocalDate endDate,
+                                                                                                  Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Observation> logs = observationRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
+                startOfDay, endOfDay, userId);
+
+        return logs.stream()
+                .map(ObservationResponseDto::of)
+                .toList();
+    }
+
     private void updateObservationItem(ObservationUpdateRequestDto requestDto, Observation observation,
                                        List<MultipartFile> observationImages) {
         updateObservationFields(requestDto, observation);
+        if (observationImages == null || observationImages.isEmpty()) {
+            deleteExistedImages(observation);
+        }
         if (observationImages != null && !observationImages.isEmpty()) {
             List<ObservationImage> updatedImages = deleteExistedImagesAndUploadNewImages(observation,
                     observationImages);
@@ -127,21 +179,11 @@ public class ObservationService {
     }
 
     private void updateObservationFields(ObservationUpdateRequestDto requestDto, Observation observation) {
-        if (requestDto.hasStudentName()) {
-            observation.updateStudentName(requestDto.getStudentName());
-        }
-        if (requestDto.hasStartDate()) {
-            observation.updateStartDate(requestDto.getStartDate());
-        }
-        if (requestDto.hasEndDate()) {
-            observation.updateEndDate(requestDto.getEndDate());
-        }
-        if (requestDto.hasObservationContents()) {
-            observation.updateObservationContents(requestDto.getObservationContents());
-        }
-        if (requestDto.hasGuidance()) {
-            observation.updateGuidance(requestDto.getGuidance());
-        }
+        observation.updateStudentName(requestDto.getTitle());
+        observation.updateStartDate(requestDto.getStartDate());
+        observation.updateEndDate(requestDto.getEndDate());
+        observation.updateObservationContents(requestDto.getObservationContents());
+        observation.updateGuidance(requestDto.getGuidance());
     }
 
     private List<ObservationImage> uploadObservationImages(Observation observation,
@@ -217,7 +259,11 @@ public class ObservationService {
     }
 
     private void deleteExistedImages(Observation observation) {
+        deleteS3Images(observation);
         observationImageRepository.deleteByObservationId(observation.getId());
+    }
+
+    private void deleteExistedImagesByObservation(Observation observation) {
         deleteS3Images(observation);
     }
 

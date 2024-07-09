@@ -3,8 +3,8 @@ package com.example.tnote.boundedContext.consultation.dto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
-import com.example.tnote.boundedContext.home.constant.LogType;
-import com.example.tnote.boundedContext.home.dto.LogEntry;
+import com.example.tnote.boundedContext.archive.constant.LogType;
+import com.example.tnote.boundedContext.archive.dto.LogEntry;
 import java.time.LocalDateTime;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,7 +13,7 @@ import lombok.Getter;
 @Builder
 public class ConsultationResponseDto implements LogEntry {
     private Long id;
-    private String studentName;
+    private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private CounselingField counselingField;
@@ -31,7 +31,7 @@ public class ConsultationResponseDto implements LogEntry {
     public static ConsultationResponseDto of(Consultation consultation) {
         return ConsultationResponseDto.builder()
                 .id(consultation.getId())
-                .studentName(consultation.getStudentName())
+                .title(consultation.getTitle())
                 .startDate(consultation.getStartDate())
                 .endDate(consultation.getEndDate())
                 .counselingField(consultation.getCounselingField())

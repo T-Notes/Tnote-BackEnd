@@ -138,7 +138,7 @@ public class TestSyUtils {
                                            CounselingField counselingField, CounselingType counselingType,
                                            String consultationContents, String consultationResult) {
         Consultation consultation = Consultation.builder()
-                .studentName(studentName)
+                .title(studentName)
                 .startDate(startDate)
                 .endDate(endDate)
                 .counselingField(counselingField)
@@ -182,7 +182,7 @@ public class TestSyUtils {
     public Observation createObservation(String studentName, LocalDateTime startDate, LocalDateTime endDate,
                                          String observationContents, String guidance) {
         Observation consultation = Observation.builder()
-                .studentName(studentName)
+                .title(studentName)
                 .startDate(startDate)
                 .endDate(endDate)
                 .observationContents(observationContents)

@@ -4,6 +4,10 @@ import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.ErrorCode;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
@@ -83,12 +87,20 @@ public class ProceedingService {
         Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
                 .orElseThrow(() -> CustomException.PROCEEDING_NOT_FOUNT);
 
+        deleteExistedImagesByProceeding(proceeding);
         proceedingRepository.delete(proceeding);
         recentLogService.deleteRecentLog(proceeding.getId(), "PROCEEDING");
 
         return ProceedingDeleteResponseDto.builder()
                 .id(proceeding.getId())
                 .build();
+    }
+
+    public int deleteProceedings(Long userId, List<Long> proceedingIds) {
+        proceedingIds.forEach(proceedingId -> {
+            deleteProceeding(userId, proceedingId);
+        });
+        return proceedingIds.size();
     }
 
     public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
@@ -120,9 +132,51 @@ public class ProceedingService {
                 .toList();
     }
 
+    @Transactional(readOnly = true)
+    public List<ProceedingResponseDto> findByTitleContainingAndDateBetween(String keyword, LocalDate startDate,
+                                                                         LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Proceeding> logs = proceedingRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ProceedingResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProceedingResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
+                                                                 LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Proceeding> logs = proceedingRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ProceedingResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ProceedingResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
+                                                                                              LocalDate startDate,
+                                                                                              LocalDate endDate,
+                                                                                              Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Proceeding> logs = proceedingRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
+                startOfDay, endOfDay, userId);
+
+        return logs.stream()
+                .map(ProceedingResponseDto::of)
+                .toList();
+    }
+
     private void updateEachProceedingItem(ProceedingUpdateRequestDto requestDto, Proceeding proceeding,
                                           List<MultipartFile> proceedingImages) {
         updateProceedingFields(requestDto, proceeding);
+        if (proceedingImages == null || proceedingImages.isEmpty()) {
+            deleteExistedImages(proceeding);
+        }
         if (proceedingImages != null && !proceedingImages.isEmpty()) {
             List<ProceedingImage> updatedImages = deleteExistedImagesAndUploadNewImages(proceeding, proceedingImages);
             proceeding.updateProceedingImage(updatedImages);
@@ -130,21 +184,11 @@ public class ProceedingService {
     }
 
     private void updateProceedingFields(ProceedingUpdateRequestDto requestDto, Proceeding proceeding) {
-        if (requestDto.hasTitle()) {
-            proceeding.updateTitle(requestDto.getTitle());
-        }
-        if (requestDto.hasStartDate()) {
-            proceeding.updateStartDate(requestDto.getStartDate());
-        }
-        if (requestDto.hasEndDate()) {
-            proceeding.updateEndDate(requestDto.getEndDate());
-        }
-        if (requestDto.hasLocation()) {
-            proceeding.updateLocation(requestDto.getLocation());
-        }
-        if (requestDto.hasWorkContents()) {
-            proceeding.updateWorkContents(requestDto.getWorkContents());
-        }
+        proceeding.updateTitle(requestDto.getTitle());
+        proceeding.updateStartDate(requestDto.getStartDate());
+        proceeding.updateEndDate(requestDto.getEndDate());
+        proceeding.updateLocation(requestDto.getLocation());
+        proceeding.updateWorkContents(requestDto.getWorkContents());
     }
 
     private List<ProceedingImage> uploadProceedingImages(Proceeding proceeding, List<MultipartFile> proceedingImages) {
@@ -219,7 +263,11 @@ public class ProceedingService {
     }
 
     private void deleteExistedImages(Proceeding proceeding) {
+        deleteS3Images(proceeding);
         proceedingImageRepository.deleteByProceedingId(proceeding.getId());
+    }
+
+    private void deleteExistedImagesByProceeding(Proceeding proceeding) {
         deleteS3Images(proceeding);
     }
 

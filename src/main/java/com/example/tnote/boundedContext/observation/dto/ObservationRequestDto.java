@@ -12,7 +12,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ObservationRequestDto {
-    private String studentName;
+    private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String observationContents; // 관찰 내용
@@ -23,7 +23,7 @@ public class ObservationRequestDto {
     public Observation toEntity(User user, Schedule schedule) {
         return Observation.builder()
                 .user(user)
-                .studentName(this.studentName)
+                .title(this.title)
                 .startDate(DateUtils.adjustStartDateTime(this.startDate, this.isAllDay))
                 .endDate(DateUtils.adjustEndDateTime(this.endDate, this.isAllDay))
                 .observationContents(this.observationContents)

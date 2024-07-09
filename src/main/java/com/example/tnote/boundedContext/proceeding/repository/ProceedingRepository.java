@@ -11,6 +11,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface ProceedingRepository extends JpaRepository<Proceeding, Long> {
     @Query("select p from Proceeding p where p.user.id = :userId and p.schedule.id = :scheduleId")
@@ -55,5 +56,25 @@ public interface ProceedingRepository extends JpaRepository<Proceeding, Long> {
             Long scheduleId,
             LocalDate date);
 
+    @Query("SELECT p FROM Proceeding p WHERE p.user.id = :userId AND p.title LIKE %:keyword% AND p.startDate >= :startDate AND p.endDate <= :endDate")
+    List<Proceeding> findByTitleContaining(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("userId") Long userId);
+
+    @Query("SELECT p FROM Proceeding p WHERE p.user.id = :userId AND (p.title LIKE %:keyword% OR p.workContents LIKE %:keyword%) AND p.startDate >= :startDate AND p.endDate <= :endDate")
+    List<Proceeding> findByTitleOrPlanOrClassContentsContaining(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("userId") Long userId);
+
+    @Query("SELECT p FROM Proceeding p WHERE p.user.id = :userId AND p.workContents LIKE %:keyword% AND p.startDate >= :startDate AND p.endDate <= :endDate")
+    List<Proceeding> findByContentsContaining(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("userId") Long userId);
     void deleteAllByUserId(Long userId);
 }

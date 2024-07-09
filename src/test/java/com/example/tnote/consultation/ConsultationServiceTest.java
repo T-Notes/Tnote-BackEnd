@@ -73,7 +73,7 @@ public class ConsultationServiceTest {
         LocalDateTime now = LocalDateTime.now();
 
         ConsultationRequestDto requestDto = ConsultationRequestDto.builder()
-                .studentName("김태")
+                .title("김태")
                 .startDate(now)
                 .endDate(now.plusHours(2))
                 .counselingField(CounselingField.FRIENDSHIP)
@@ -92,7 +92,7 @@ public class ConsultationServiceTest {
                 Collections.emptyList());
 
         assertThat(result).isNotNull();
-        assertThat(result.getStudentName()).isEqualTo(requestDto.getStudentName());
+        assertThat(result.getTitle()).isEqualTo(requestDto.getTitle());
         verify(consultationRepository).save(any(Consultation.class));
     }
 
@@ -104,7 +104,7 @@ public class ConsultationServiceTest {
         LocalDateTime now = LocalDateTime.now();
 
         ConsultationRequestDto requestDto = ConsultationRequestDto.builder()
-                .studentName("김태")
+                .title("김태")
                 .startDate(now)
                 .endDate(now.plusHours(2))
                 .counselingField(null)

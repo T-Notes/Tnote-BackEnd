@@ -2,10 +2,10 @@ package com.example.tnote.boundedContext.schedule.service;
 
 
 import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.boundedContext.home.repository.ClassLogQueryRepository;
-import com.example.tnote.boundedContext.home.repository.ConsultationQueryRepository;
-import com.example.tnote.boundedContext.home.repository.ObservationQueryRepository;
-import com.example.tnote.boundedContext.home.repository.ProceedingQueryRepository;
+import com.example.tnote.boundedContext.classLog.repository.query.ClassLogQueryRepository;
+import com.example.tnote.boundedContext.consultation.repository.query.ConsultationQueryRepository;
+import com.example.tnote.boundedContext.observation.repository.query.ObservationQueryRepository;
+import com.example.tnote.boundedContext.proceeding.repository.query.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.recentLog.repository.RecentLogRepository;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleDeleteResponseDto;
 import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;

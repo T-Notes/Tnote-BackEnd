@@ -1,4 +1,4 @@
-package com.example.tnote.boundedContext.home.repository;
+package com.example.tnote.boundedContext.observation.repository.query;
 
 import static com.example.tnote.boundedContext.observation.entity.QObservation.observation;
 
@@ -19,7 +19,7 @@ public class ObservationQueryRepository {
                 .selectFrom(observation)
                 .where(
                         observation.schedule.id.eq(scheduleId)
-                                .and(observation.studentName.like("%" + keyword + "%"))
+                                .and(observation.title.like("%" + keyword + "%"))
                 )
                 .orderBy(observation.id.desc())
                 .fetch();

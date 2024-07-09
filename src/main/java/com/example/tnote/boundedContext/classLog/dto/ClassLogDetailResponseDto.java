@@ -2,7 +2,7 @@ package com.example.tnote.boundedContext.classLog.dto;
 
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
-import com.example.tnote.boundedContext.home.constant.LogType;
+import com.example.tnote.boundedContext.archive.constant.LogType;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.Getter;

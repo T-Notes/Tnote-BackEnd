@@ -1,7 +1,7 @@
 package com.example.tnote.boundedContext.observation.dto;
 
-import com.example.tnote.boundedContext.home.constant.LogType;
-import com.example.tnote.boundedContext.home.dto.LogEntry;
+import com.example.tnote.boundedContext.archive.constant.LogType;
+import com.example.tnote.boundedContext.archive.dto.LogEntry;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import java.time.LocalDateTime;
 import lombok.Builder;
@@ -11,7 +11,7 @@ import lombok.Getter;
 @Builder
 public class ObservationResponseDto implements LogEntry {
     private Long id;
-    private String studentName;
+    private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private String observationContents; // 관찰 내용
@@ -27,7 +27,7 @@ public class ObservationResponseDto implements LogEntry {
     public static ObservationResponseDto of(Observation observation) {
         return ObservationResponseDto.builder()
                 .id(observation.getId())
-                .studentName(observation.getStudentName())
+                .title(observation.getTitle())
                 .startDate(observation.getStartDate())
                 .endDate(observation.getEndDate())
                 .observationContents(observation.getObservationContents())

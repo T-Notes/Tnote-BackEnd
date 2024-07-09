@@ -1,4 +1,4 @@
-package com.example.tnote.home;
+package com.example.tnote.archive;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -10,7 +10,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
-import com.example.tnote.boundedContext.home.service.HomeService;
+import com.example.tnote.boundedContext.archive.service.ArchiveService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
@@ -35,13 +35,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 @Transactional
-public class homeServiceTest {
+public class ArchiveServiceTest {
 
     @Autowired
     TestSyUtils testSyUtils;
 
     @Autowired
-    HomeService homeService;
+    ArchiveService homeService;
 
     @Autowired
     ScheduleService scheduleService;
@@ -85,21 +85,20 @@ public class homeServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        List<ConsultationResponseDto> response = homeService.findAllOfConsultation(consultation.getStudentName(),
+        List<ConsultationResponseDto> response = homeService.findAllOfConsultation(consultation.getTitle(),
                 user1.getId(), schedule1.getId());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         LocalDateTime date = LocalDateTime.parse("2024-03-01 13:47:13.248", formatter);
 
         // then
-        assertThat(response.get(0).getStudentName()).isEqualTo("a");
+        assertThat(response.get(0).getTitle()).isEqualTo("a");
         assertThat(response.get(0).getStartDate()).isEqualTo(date);
         assertThat(response.get(0).getEndDate()).isEqualTo(date);
         assertThat(response.get(0).getConsultationContents()).isEqualTo("a");
         assertThat(response.get(0).getCounselingField()).isEqualTo(CounselingField.HEALTH);
         assertThat(response.get(0).getConsultationResult()).isEqualTo("a");
         assertThat(response.get(0).getCounselingType()).isEqualTo(CounselingType.STUDENT);
-
     }
 
     @Test
@@ -113,7 +112,7 @@ public class homeServiceTest {
 
         // then
         assertThatThrownBy(
-                () -> homeService.findAllOfConsultation(consultation.getStudentName(), 222L, schedule1.getId()))
+                () -> homeService.findAllOfConsultation(consultation.getTitle(), 222L, schedule1.getId()))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -125,14 +124,14 @@ public class homeServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        List<ObservationResponseDto> response = homeService.findAllOfObservation(observation.getStudentName(),
+        List<ObservationResponseDto> response = homeService.findAllOfObservation(observation.getTitle(),
                 user1.getId(), schedule1.getId());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");
         LocalDateTime date = LocalDateTime.parse("2024-03-01 13:47:13.248", formatter);
 
         // then
-        assertThat(response.get(0).getStudentName()).isEqualTo("a");
+        assertThat(response.get(0).getTitle()).isEqualTo("a");
         assertThat(response.get(0).getStartDate()).isEqualTo(date);
         assertThat(response.get(0).getEndDate()).isEqualTo(date);
         assertThat(response.get(0).getObservationContents()).isEqualTo("a");
@@ -151,7 +150,7 @@ public class homeServiceTest {
 
         // then
         assertThatThrownBy(
-                () -> homeService.findAllOfObservation(observation.getStudentName(), 222L, schedule1.getId()))
+                () -> homeService.findAllOfObservation(observation.getTitle(), 222L, schedule1.getId()))
                 .isInstanceOf(CustomException.class);
     }
 

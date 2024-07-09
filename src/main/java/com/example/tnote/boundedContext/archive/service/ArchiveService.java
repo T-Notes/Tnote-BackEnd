@@ -1,4 +1,4 @@
-package com.example.tnote.boundedContext.home.service;
+package com.example.tnote.boundedContext.archive.service;
 
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.ErrorCode;
@@ -10,15 +10,17 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto
 import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.service.ConsultationService;
-import com.example.tnote.boundedContext.home.constant.LogType;
-import com.example.tnote.boundedContext.home.dto.ArchiveResponseDto;
-import com.example.tnote.boundedContext.home.dto.ArchiveSliceResponseDto;
-import com.example.tnote.boundedContext.home.dto.LogEntry;
-import com.example.tnote.boundedContext.home.dto.UnifiedLogResponseDto;
-import com.example.tnote.boundedContext.home.repository.ClassLogQueryRepository;
-import com.example.tnote.boundedContext.home.repository.ConsultationQueryRepository;
-import com.example.tnote.boundedContext.home.repository.ObservationQueryRepository;
-import com.example.tnote.boundedContext.home.repository.ProceedingQueryRepository;
+import com.example.tnote.boundedContext.archive.constant.LogType;
+import com.example.tnote.boundedContext.archive.dto.ArchiveResponseDto;
+import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
+import com.example.tnote.boundedContext.archive.dto.LogEntry;
+import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequestDto;
+import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponseDto;
+import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponseDto;
+import com.example.tnote.boundedContext.classLog.repository.query.ClassLogQueryRepository;
+import com.example.tnote.boundedContext.consultation.repository.query.ConsultationQueryRepository;
+import com.example.tnote.boundedContext.observation.repository.query.ObservationQueryRepository;
+import com.example.tnote.boundedContext.proceeding.repository.query.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
@@ -30,7 +32,6 @@ import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
-import com.example.tnote.boundedContext.todo.dto.TodoSliceResponseDto;
 import com.example.tnote.boundedContext.todo.service.TodoService;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
@@ -40,8 +41,6 @@ import java.util.Comparator;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -49,7 +48,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class HomeService {
+public class ArchiveService {
 
     private final ConsultationQueryRepository consultationQueryRepository;
     private final ObservationQueryRepository observationQueryRepository;
@@ -177,6 +176,50 @@ public class HomeService {
         return UnifiedLogResponseDto.from(pageContent, totalLogs);
     }
 
+    public UnifiedLogResponseDto searchLogsByFilter(Long userId, LocalDate startDate, LocalDate endDate,
+                                                    String searchType, String keyword, Pageable pageable) {
+        List<LogEntry> logs = new ArrayList<>();
+
+        if ("title".equals(searchType)) {
+            logs.addAll(classLogService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
+            logs.addAll(consultationService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
+            logs.addAll(proceedingService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
+            logs.addAll(observationService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
+        }
+        if ("content".equals((searchType))){
+            logs.addAll(classLogService.findByContentsContaining(keyword, startDate, endDate, userId));
+            logs.addAll(consultationService.findByContentsContaining(keyword, startDate, endDate, userId));
+            logs.addAll(proceedingService.findByContentsContaining(keyword, startDate, endDate, userId));
+            logs.addAll(observationService.findByContentsContaining(keyword, startDate, endDate, userId));
+        }
+        if ("titleAndContent".equals(searchType)) {
+            logs.addAll(classLogService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
+                    endDate, userId));
+            logs.addAll(consultationService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
+                    endDate, userId));
+            logs.addAll(proceedingService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
+                    endDate, userId));
+            logs.addAll(observationService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
+                    endDate, userId));
+        }
+
+        int totalLogs = logs.size();
+        System.out.println("Total logs fetched: " + totalLogs);
+        logs.sort(Comparator.comparing(LogEntry::getCreatedAt).reversed());
+
+        int start = (int) pageable.getOffset();
+        if (start >= totalLogs) {
+            System.out.println("Start index exceeds the log list size.");
+            return UnifiedLogResponseDto.from(Collections.emptyList(), totalLogs);
+        }
+
+        int end = Math.min((start + pageable.getPageSize()), totalLogs);
+        System.out.println("Returning logs from index " + start + " to " + end);
+        List<LogEntry> pageContent = logs.subList(start, end);
+
+        return UnifiedLogResponseDto.from(pageContent, totalLogs);
+    }
+
     public ArchiveResponseDto readDailyLogs(Long userId, Long scheduleId, LocalDate date) {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
@@ -219,4 +262,31 @@ public class HomeService {
                 .todos(todos)
                 .build();
     }
+
+    @Transactional
+    public LogsDeleteResponseDto deleteLogs(Long userId, LogsDeleteRequestDto deleteRequest) {
+        int deletedClassLogsCount = 0;
+        int deletedProceedingsCount = 0;
+        int deletedObservationsCount = 0;
+        int deletedConsultationsCount = 0;
+
+        if (!deleteRequest.getClassLogIds().isEmpty()) {
+            deletedClassLogsCount = classLogService.deleteClassLogs(userId, deleteRequest.getClassLogIds());
+        }
+        if (!deleteRequest.getProceedingIds().isEmpty()) {
+            deletedProceedingsCount = proceedingService.deleteProceedings(userId, deleteRequest.getProceedingIds());
+        }
+        if (!deleteRequest.getObservationIds().isEmpty()) {
+            deletedObservationsCount = observationService.deleteObservations(userId, deleteRequest.getObservationIds());
+        }
+        if (!deleteRequest.getConsultationIds().isEmpty()) {
+            deletedConsultationsCount = consultationService.deleteConsultations(userId,
+                    deleteRequest.getConsultationIds());
+        }
+
+        return LogsDeleteResponseDto.of(deletedClassLogsCount, deletedProceedingsCount, deletedObservationsCount,
+                deletedConsultationsCount);
+    }
+
+
 }

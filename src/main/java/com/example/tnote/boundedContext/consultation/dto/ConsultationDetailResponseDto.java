@@ -4,34 +4,32 @@ import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
-import com.example.tnote.boundedContext.home.constant.LogType;
-import com.example.tnote.boundedContext.observation.dto.ObservationImageResponseDto;
+import com.example.tnote.boundedContext.archive.constant.LogType;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 public class ConsultationDetailResponseDto {
-    private Long id;
-    private Long userId;
-    private String studentName;
-    private LocalDateTime startDate;
-    private LocalDateTime endDate;
-    private CounselingField counselingField;
-    private CounselingType counselingType;
-    private String consultationContents;
-    private String consultationResult;
-    private List<String> consultationImageUrls;
-    private LocalDateTime createdAt;
-    private LocalDateTime updatedAt;
-    private String logType;
-    private List<ConsultationImageResponseDto> images;
+    private final Long id;
+    private final Long userId;
+    private final String title;
+    private final LocalDateTime startDate;
+    private final LocalDateTime endDate;
+    private final CounselingField counselingField;
+    private final CounselingType counselingType;
+    private final String consultationContents;
+    private final String consultationResult;
+    private final List<String> consultationImageUrls;
+    private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
+    private final String logType;
+    private final List<ConsultationImageResponseDto> images;
 
     public ConsultationDetailResponseDto(Consultation consultation, List<ConsultationImage> consultationImages) {
         this.id = consultation.getId();
         this.userId = consultation.getUser().getId();
-        this.studentName = consultation.getStudentName();
+        this.title = consultation.getTitle();
         this.startDate = consultation.getStartDate();
         this.endDate = consultation.getEndDate();
         this.counselingField = consultation.getCounselingField();

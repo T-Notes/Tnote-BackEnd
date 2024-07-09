@@ -1,4 +1,4 @@
-package com.example.tnote.boundedContext.home.dto;
+package com.example.tnote.boundedContext.archive.dto;
 
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;

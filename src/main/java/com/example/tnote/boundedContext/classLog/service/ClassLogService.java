@@ -24,9 +24,9 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -67,7 +67,7 @@ public class ClassLogService {
         ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
                 .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
 
-        deleteExistedImages(classLog);
+        deleteExistedImageByClassLog(classLog);
         classLogRepository.delete(classLog);
         recentLogService.deleteRecentLog(classLog.getId(), "CLASS_LOG");
 
@@ -76,6 +76,12 @@ public class ClassLogService {
                 .build();
     }
 
+    public int deleteClassLogs(Long userId, List<Long> classLogIds) {
+        classLogIds.forEach(classLogId -> {
+            deleteClassLog(userId, classLogId);
+        });
+        return classLogIds.size();
+    }
 
     @Transactional(readOnly = true)
     public ClassLogSliceResponseDto readAllClassLog(Long userId, Long scheduleId, Pageable pageable) {
@@ -96,6 +102,45 @@ public class ClassLogService {
     @Transactional(readOnly = true)
     public List<ClassLogResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
         List<ClassLog> logs = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
+        return logs.stream()
+                .map(ClassLogResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ClassLogResponseDto> findByTitleContainingAndDateBetween(String keyword, LocalDate startDate,
+                                                                         LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<ClassLog> logs = classLogRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ClassLogResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ClassLogResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
+                                                                         LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<ClassLog> logs = classLogRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ClassLogResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ClassLogResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
+                                                                                              LocalDate startDate,
+                                                                                              LocalDate endDate,
+                                                                                              Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<ClassLog> logs = classLogRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
+                startOfDay, endOfDay, userId);
+
         return logs.stream()
                 .map(ClassLogResponseDto::of)
                 .toList();
@@ -122,6 +167,9 @@ public class ClassLogService {
     private void updateEachClassLogItem(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog,
                                         List<MultipartFile> classLogImages) {
         updateClassLogFields(classLogUpdateRequestDto, classLog);
+        if (classLogImages == null || classLogImages.isEmpty()) {
+            deleteExistedImages(classLog);
+        }
         if (classLogImages != null && !classLogImages.isEmpty()) {
             List<ClassLogImage> updatedImages = deleteExistedImagesAndUploadNewImages(classLog, classLogImages);
             classLog.updateClassLogImages(updatedImages);
@@ -129,27 +177,13 @@ public class ClassLogService {
     }
 
     private void updateClassLogFields(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog) {
-        if (classLogUpdateRequestDto.hasTitle()) {
-            classLog.updateTitle(classLogUpdateRequestDto.getTitle());
-        }
-        if (classLogUpdateRequestDto.hasStartDate()) {
-            classLog.updateStartDate(classLogUpdateRequestDto.getStartDate());
-        }
-        if (classLogUpdateRequestDto.hasEndDate()) {
-            classLog.updateEndDate(classLogUpdateRequestDto.getEndDate());
-        }
-        if (classLogUpdateRequestDto.hasPlan()) {
-            classLog.updatePlan(classLogUpdateRequestDto.getPlan());
-        }
-        if (classLogUpdateRequestDto.hasSubmission()) {
-            classLog.updateSubmission(classLogUpdateRequestDto.getSubmission());
-        }
-        if (classLogUpdateRequestDto.hasClassContents()) {
-            classLog.updateClassContents(classLogUpdateRequestDto.getClassContents());
-        }
-        if (classLogUpdateRequestDto.hasMagnitude()) {
-            classLog.updateMagnitude(classLogUpdateRequestDto.getMagnitude());
-        }
+        classLog.updateTitle(classLogUpdateRequestDto.getTitle());
+        classLog.updateStartDate(classLogUpdateRequestDto.getStartDate());
+        classLog.updateEndDate(classLogUpdateRequestDto.getEndDate());
+        classLog.updatePlan(classLogUpdateRequestDto.getPlan());
+        classLog.updateSubmission(classLogUpdateRequestDto.getSubmission());
+        classLog.updateClassContents(classLogUpdateRequestDto.getClassContents());
+        classLog.updateMagnitude(classLogUpdateRequestDto.getMagnitude());
     }
 
     private List<ClassLogImage> uploadClassLogImages(ClassLog classLog, List<MultipartFile> classLogImages) {
@@ -224,15 +258,24 @@ public class ClassLogService {
     }
 
     private void deleteExistedImages(ClassLog classLog) {
+        System.out.println("Deleting existing images for classLog ID: " + classLog.getId());
+        deleteS3Images(classLog);
         classLogImageRepository.deleteByClassLogId(classLog.getId());
+    }
+
+    private void deleteExistedImageByClassLog(ClassLog classLog) {
+        System.out.println("Deleting existing images for classLog ID: " + classLog.getId());
         deleteS3Images(classLog);
     }
 
     private void deleteS3Images(ClassLog classLog) {
+        System.out.println("Starting to delete images from S3 for classLog ID: " + classLog.getId());
         List<ClassLogImage> classLogImages = classLog.getClassLogImage();
         for (ClassLogImage classLogImage : classLogImages) {
             String imageKey = classLogImage.getClassLogImageUrl().substring(49);
+            System.out.println("Deleting image from S3: " + imageKey);
             awsS3Uploader.deleteImage(imageKey);
         }
     }
+
 }

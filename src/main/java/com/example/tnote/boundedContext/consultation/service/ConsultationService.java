@@ -4,6 +4,8 @@ import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.ErrorCode;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
@@ -83,12 +85,20 @@ public class ConsultationService {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
 
+        deleteExistedImagesByConsultation(consultation);
         consultationRepository.delete(consultation);
         recentLogService.deleteRecentLog(consultation.getId(), "CONSULTATION");
 
         return ConsultationDeleteResponseDto.builder()
                 .id(consultation.getId())
                 .build();
+    }
+
+    public int deleteConsultations(Long userId, List<Long> consultationIds) {
+        consultationIds.forEach(consultationId -> {
+            deleteConsultation(userId, consultationId);
+        });
+        return consultationIds.size();
     }
 
     public ConsultationDetailResponseDto getConsultationDetail(Long userId, Long consultationId) {
@@ -120,10 +130,51 @@ public class ConsultationService {
                 .map(ConsultationResponseDto::of)
                 .toList();
     }
+    @Transactional(readOnly = true)
+    public List<ConsultationResponseDto> findByTitleContainingAndDateBetween(String keyword, LocalDate startDate,
+                                                                         LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Consultation> logs = consultationRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ConsultationResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ConsultationResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
+                                                                   LocalDate endDate, Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Consultation> logs = consultationRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(ConsultationResponseDto::of)
+                .toList();
+    }
+
+    @Transactional(readOnly = true)
+    public List<ConsultationResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
+                                                                                              LocalDate startDate,
+                                                                                              LocalDate endDate,
+                                                                                              Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Consultation> logs = consultationRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
+                startOfDay, endOfDay, userId);
+
+        return logs.stream()
+                .map(ConsultationResponseDto::of)
+                .toList();
+    }
 
     private void updateConsultationItem(ConsultationUpdateRequestDto requestDto, Consultation consultation,
                                         List<MultipartFile> consultationImages) {
         updateConsultationFields(requestDto, consultation);
+        if (consultationImages == null || consultationImages.isEmpty()) {
+            deleteExistedImages(consultation);
+        }
         if (consultationImages != null && !consultationImages.isEmpty()) {
             List<ConsultationImage> updatedImages = deleteExistedImagesAndUploadNewImages(consultation,
                     consultationImages);
@@ -132,29 +183,15 @@ public class ConsultationService {
     }
 
     private void updateConsultationFields(ConsultationUpdateRequestDto requestDto, Consultation consultation) {
-        if (requestDto.hasStudentName()) {
-            consultation.updateStudentName(requestDto.getStudentName());
-        }
-        if (requestDto.hasStartDate()) {
-            consultation.updateStartDate(requestDto.getStartDate());
-        }
-        if (requestDto.hasEndDate()) {
-            consultation.updateEndDate(requestDto.getEndDate());
-        }
-        if (requestDto.hasConsultationContents()) {
-            consultation.updateConsultationContents(requestDto.getConsultationContents());
-        }
-        if (requestDto.hasConsultationResult()) {
-            consultation.updateConsultationResult(requestDto.getConsultationResult());
-        }
-        if (requestDto.hasCounselingField()) {
-            requestDto.validateEnums();
-            consultation.updateCounselingField(requestDto.getCounselingField());
-        }
-        if (requestDto.hasCounselingType()) {
-            requestDto.validateEnums();
-            consultation.updateCounselingType(requestDto.getCounselingType());
-        }
+        consultation.updateStudentName(requestDto.getTitle());
+        consultation.updateStartDate(requestDto.getStartDate());
+        consultation.updateEndDate(requestDto.getEndDate());
+        consultation.updateConsultationContents(requestDto.getConsultationContents());
+        consultation.updateConsultationResult(requestDto.getConsultationResult());
+        requestDto.validateEnums();
+        consultation.updateCounselingField(requestDto.getCounselingField());
+        requestDto.validateEnums();
+        consultation.updateCounselingType(requestDto.getCounselingType());
     }
 
     private List<ConsultationImage> uploadConsultationImages(Consultation consultation,
@@ -230,7 +267,11 @@ public class ConsultationService {
     }
 
     private void deleteExistedImages(Consultation consultation) {
+        deleteS3Images(consultation);
         consultationImageRepository.deleteByConsultationId(consultation.getId());
+    }
+
+    private void deleteExistedImagesByConsultation(Consultation consultation) {
         deleteS3Images(consultation);
     }
 

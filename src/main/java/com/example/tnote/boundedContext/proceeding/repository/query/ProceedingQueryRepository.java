@@ -1,4 +1,4 @@
-package com.example.tnote.boundedContext.home.repository;
+package com.example.tnote.boundedContext.proceeding.repository.query;
 
 import static com.example.tnote.boundedContext.proceeding.entity.QProceeding.proceeding;
 

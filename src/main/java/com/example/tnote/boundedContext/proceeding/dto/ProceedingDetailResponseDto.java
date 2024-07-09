@@ -1,11 +1,10 @@
 package com.example.tnote.boundedContext.proceeding.dto;
 
-import com.example.tnote.boundedContext.home.constant.LogType;
+import com.example.tnote.boundedContext.archive.constant.LogType;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter

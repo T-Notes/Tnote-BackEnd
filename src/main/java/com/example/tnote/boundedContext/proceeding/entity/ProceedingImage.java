@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Version;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -31,12 +32,14 @@ public class ProceedingImage {
     private String proceedingImageUrl;
 
     @JsonBackReference
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "proceeding_id")
     private Proceeding proceeding;
     @Column(name = "original_file_name")
     private String name;
 
+    @Version
+    private Long version;
     @Builder
     public ProceedingImage(Proceeding proceeding, String proceedingImageUrl, String originalFileName) {
         this.proceeding = proceeding;
