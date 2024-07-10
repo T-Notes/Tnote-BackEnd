@@ -29,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/tnote/schedule")
+@RequestMapping("/tnote/v1/schedule")
 public class ScheduleController {
 
     private final ScheduleService scheduleService;
@@ -88,7 +88,7 @@ public class ScheduleController {
     }
 
     // 남은 수업 일수 체크
-    @GetMapping("/leftClassDays/{scheduleId}")
+    @GetMapping("/leftClassDay/{scheduleId}")
     public ResponseEntity<Result> countLeftDays(
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
             @AuthenticationPrincipal PrincipalDetails user,
@@ -102,7 +102,7 @@ public class ScheduleController {
     }
 
     // 남은 수업 횟수 체크
-    @GetMapping("/leftClasses/{scheduleId}")
+    @GetMapping("/leftClass/{scheduleId}")
     public ResponseEntity<Result> countLeftClasses(
             @AuthenticationPrincipal PrincipalDetails user,
             @PathVariable("scheduleId") Long scheduleId) {

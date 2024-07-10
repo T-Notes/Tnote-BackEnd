@@ -30,7 +30,7 @@ public class AuthController {
         return ResponseEntity.ok(Result.of(jwt));
     }
 
-    @GetMapping("/tnote/refresh")
+    @GetMapping("/tnote/v1/refresh")
     public ResponseEntity<Result> refreshToken(HttpServletRequest request) {
         JwtResponse response = authService.refreshToken(request.getHeader("RefreshToken"));
 

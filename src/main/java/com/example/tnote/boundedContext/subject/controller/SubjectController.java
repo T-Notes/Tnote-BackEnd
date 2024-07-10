@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/tnote/subjects")
+@RequestMapping("/tnote/v1/subjects")
 public class SubjectController {
 
     private final SubjectService subjectService;
@@ -81,7 +81,7 @@ public class SubjectController {
     }
 
     // 특정 과목 조회
-    @GetMapping("/details/{scheduleId}/{subjectId}")
+    @GetMapping("/detail/{scheduleId}/{subjectId}")
     public ResponseEntity<Result> findSubject(@PathVariable Long scheduleId, @PathVariable Long subjectId,
                                               @AuthenticationPrincipal PrincipalDetails user) {
 
