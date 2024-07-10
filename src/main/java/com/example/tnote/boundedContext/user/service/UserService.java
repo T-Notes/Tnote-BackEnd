@@ -1,5 +1,7 @@
 package com.example.tnote.boundedContext.user.service;
 
+import static com.example.tnote.base.exception.ErrorCode.DATA_NOT_FOUND;
+
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.CookieUtils;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
@@ -39,7 +41,7 @@ public class UserService {
     public UserResponse getUserInfo(Long userId) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "user 정보가 없습니다. "));
 
         return UserResponse.of(user);
     }
@@ -47,7 +49,7 @@ public class UserService {
     @Transactional
     public UserResponse updateAlarmInfo(Long userId, UserAlarmUpdate dto) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "user 정보가 없습니다. "));
 
         user.updateAlarm(dto.isAlarm());
 
@@ -58,7 +60,7 @@ public class UserService {
     public UserResponse updateExtraInfo(Long userId, UserUpdateRequest dto) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "user 정보가 없습니다. "));
 
         updateUserItem(dto, user);
 
@@ -87,7 +89,7 @@ public class UserService {
     public void logout(HttpServletRequest request, HttpServletResponse response, Long userId) {
 
         userRepository.findById(userId)
-                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "user 정보가 없습니다. "));
 
         // TODO : 로그아웃 진행시 리프래쉬 삭제 ( refresh 토큰 블랙 리스팅 )
         CookieUtils.deleteCookie(request, response, "AccessToken");
@@ -96,15 +98,16 @@ public class UserService {
     @Transactional(readOnly = true)
     public UserMailResponse getMail(Long userId) {
         User currentUser = userRepository.findById(userId)
-                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "user 정보가 없습니다. "));
         return UserMailResponse.of(currentUser);
     }
 
     @Transactional(readOnly = true)
     public UserResponse findById(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> CustomException.USER_NOT_FOUND);
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "user 정보가 없습니다. "));
         if (user.getSchool() == null || user.getSchool().isEmpty()) {
-            throw CustomException.USER_NOT_FOUND;
+            throw new CustomException(DATA_NOT_FOUND, "user 정보가 없습니다. ");
         }
         return UserResponse.of(user);
     }

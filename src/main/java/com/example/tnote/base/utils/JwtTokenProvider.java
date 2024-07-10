@@ -1,5 +1,9 @@
 package com.example.tnote.base.utils;
 
+import static com.example.tnote.base.exception.ErrorCode.JWT_ERROR;
+import static com.example.tnote.base.exception.ErrorCode.NOT_VALID;
+import static com.example.tnote.base.exception.ErrorCode.NO_PERMISSION;
+
 import com.example.tnote.base.constant.Constants;
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.user.dto.Token;
@@ -93,13 +97,13 @@ public class JwtTokenProvider {
             return !claimsJws.getBody().getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
             // 만료시 not found token 보내기
-            throw CustomException.EXPIRED_ACCESS_TOKEN;
+            throw new CustomException(JWT_ERROR, "access token 유효시간 초과");
         } catch (UnsupportedJwtException e) {
-            throw CustomException.UNSUPPORTED;
+            throw new CustomException(NO_PERMISSION, " 지원되지 않는 jwt입니다");
         } catch (MalformedJwtException | IllegalArgumentException e) {
-            throw CustomException.WRONG_TOKEN;
+            throw new CustomException(JWT_ERROR, " 잘못된 토큰입니다");
         } catch (SignatureException e) {
-            throw CustomException.WRONG_SIGNATURE;
+            throw new CustomException(NOT_VALID, "유효하지 않은 signature입니다");
         }
     }
 
