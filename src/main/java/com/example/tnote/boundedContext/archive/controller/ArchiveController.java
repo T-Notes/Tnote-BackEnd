@@ -2,6 +2,7 @@ package com.example.tnote.boundedContext.archive.controller;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.base.utils.TokenUtils;
+import com.example.tnote.boundedContext.archive.constant.DateType;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.archive.constant.LogType;
@@ -155,15 +156,14 @@ public class ArchiveController {
 
     @GetMapping("/searching/log")
     public ResponseEntity<Result> searchLogsByFilter(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate startDate,
-                                                     @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate endDate,
+                                                     @RequestParam(value = "dateType", required = false, defaultValue = "ALL") DateType dateType,
                                                      @RequestParam(value = "searchType", required = false, defaultValue = "title") String searchType,
                                                      @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
                                                      @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                      @RequestParam(value = "size", required = false, defaultValue = "8") int size) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        UnifiedLogResponseDto response = archiveService.searchLogsByFilter(principalDetails.getId(), startDate, endDate,
+        UnifiedLogResponseDto response = archiveService.searchLogsByFilter(principalDetails.getId(), dateType,
                 searchType, keyword, pageRequest);
 
         return ResponseEntity.ok(Result.of(response));
