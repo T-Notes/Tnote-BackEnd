@@ -1,7 +1,10 @@
 package com.example.tnote.boundedContext.archive.service;
 
+import static com.example.tnote.base.utils.DateUtils.calculateStartDate;
+
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.ErrorCode;
+import com.example.tnote.boundedContext.archive.constant.DateType;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
@@ -176,9 +179,11 @@ public class ArchiveService {
         return UnifiedLogResponseDto.from(pageContent, totalLogs);
     }
 
-    public UnifiedLogResponseDto searchLogsByFilter(Long userId, LocalDate startDate, LocalDate endDate,
+    public UnifiedLogResponseDto searchLogsByFilter(Long userId, DateType dateType,
                                                     String searchType, String keyword, Pageable pageable) {
         List<LogEntry> logs = new ArrayList<>();
+        LocalDate startDate = calculateStartDate(dateType);
+        LocalDate endDate = LocalDate.now();
 
         if ("title".equals(searchType)) {
             logs.addAll(classLogService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
@@ -186,7 +191,7 @@ public class ArchiveService {
             logs.addAll(proceedingService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
             logs.addAll(observationService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
         }
-        if ("content".equals((searchType))){
+        if ("content".equals((searchType))) {
             logs.addAll(classLogService.findByContentsContaining(keyword, startDate, endDate, userId));
             logs.addAll(consultationService.findByContentsContaining(keyword, startDate, endDate, userId));
             logs.addAll(proceedingService.findByContentsContaining(keyword, startDate, endDate, userId));
