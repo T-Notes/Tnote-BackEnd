@@ -2,8 +2,6 @@ package com.example.tnote.boundedContext.archive.controller;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.base.utils.TokenUtils;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.archive.constant.LogType;
 import com.example.tnote.boundedContext.archive.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
@@ -11,6 +9,8 @@ import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequestDto;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponseDto;
 import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponseDto;
 import com.example.tnote.boundedContext.archive.service.ArchiveService;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponseDto;
@@ -18,6 +18,13 @@ import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
 import com.example.tnote.boundedContext.schedule.service.ScheduleService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -40,6 +47,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/tnote/archive")
+@Tag(name = "Archive", description = "Archive API")
 public class ArchiveController {
 
     private final ArchiveService archiveService;
@@ -48,6 +56,11 @@ public class ArchiveController {
 
     // 학생 이름 검색 했을때 나올 내용 - keyword로 통합
     @GetMapping("/searching/{scheduleId}")
+    @Operation(summary = "find specific Archive api", description = "특정 학기 Archive 조 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공"),
+            @ApiResponse(responseCode = "404", description = "로그인 실패")
+    })
     public ResponseEntity<Result> findAll(
             @RequestParam(name = "keyword", required = false, defaultValue = "") String keyword,
             @AuthenticationPrincipal PrincipalDetails user, @PathVariable Long scheduleId) {
@@ -73,6 +86,12 @@ public class ArchiveController {
 
     // 아카이브 명 검색 ( = 학기명 검색 )
     @GetMapping("/semester")
+    @Operation(summary = "search archive name api", description = "아카이브명 검색 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = SemesterNameResponseDto.class)))),
+            @ApiResponse(responseCode = "404", description = "로그인 실패")
+    })
     public ResponseEntity<Result> findSemester(
             @RequestParam(name = "semesterName", required = false, defaultValue = "") String semesterName,
             @AuthenticationPrincipal PrincipalDetails user) {

@@ -3,6 +3,7 @@ server:
   error:
     include-message: always
     include-binding-errors: always
+  forward-headers-strategy: framework
 
 spring:
   profiles:
@@ -12,7 +13,7 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/tnote
     username: ENC(F5+adB/0vrUkdE45AyRanQ==)
-    password: rlaxoghks12
+    password: root
 
   devtools:
     livereload:
@@ -93,3 +94,4 @@ cloud:
       static: ap-northeast-2
     stack:
       auto: false
+

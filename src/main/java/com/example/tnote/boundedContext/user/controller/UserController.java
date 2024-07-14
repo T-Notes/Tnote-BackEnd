@@ -11,6 +11,12 @@ import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.service.AuthService;
 import com.example.tnote.boundedContext.user.service.UserService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -43,6 +49,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/tnote/v1/user")
+@Tag(name = "User", description = "User API")
 public class UserController {
 
     private final UserService userService;
@@ -57,6 +64,11 @@ public class UserController {
 
 
     @GetMapping("/school")
+    @Operation(summary = "search school info API", description = "학교 정보 검색 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공"),
+            @ApiResponse(responseCode = "404", description = "로그인 실패")
+    })
     public ResponseEntity<Result> findSchool(@RequestParam("region") String region,
                                              @RequestParam("schoolType") String schoolType,
                                              @RequestParam("schoolName") String schoolName)
@@ -116,12 +128,24 @@ public class UserController {
     }
 
     @GetMapping
+    @Operation(summary = "find user info API(with accessToken)", description = "accessToken로 User 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공",
+                    content = {@Content(schema = @Schema(implementation = UserResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "로그인 실패")
+    })
     public ResponseEntity<Result> getInfo(@AuthenticationPrincipal PrincipalDetails user) {
         UserResponse response = userService.findById(user.getId());
         return ResponseEntity.ok(Result.of(response));
     }
 
     @GetMapping("/{userId}")
+    @Operation(summary = "find user info api(with userId)", description = "userId로 User 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공",
+                    content = {@Content(schema = @Schema(implementation = UserResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "로그인 실패")
+    })
     public ResponseEntity<Result> getUserInfo(@PathVariable Long userId) {
 
         UserResponse response = userService.getUserInfo(userId);
@@ -131,6 +155,12 @@ public class UserController {
 
 
     @PatchMapping
+    @Operation(summary = "update user info api", description = "accessToken로 User 수정 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공",
+                    content = {@Content(schema = @Schema(implementation = UserResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "로그인 실패")
+    })
     public ResponseEntity<Result> updateExtraInfo(@AuthenticationPrincipal PrincipalDetails user,
                                                   @RequestBody UserUpdateRequest dto) {
 
@@ -141,6 +171,12 @@ public class UserController {
     }
 
     @PatchMapping("/alarm")
+    @Operation(summary = "update user alarm info api", description = "accessToken로 User alarm 수정 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공",
+                    content = {@Content(schema = @Schema(implementation = UserResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "로그인 실패")
+    })
     public ResponseEntity<Result> updateAlarmInfo(@AuthenticationPrincipal PrincipalDetails user,
                                                   @RequestBody UserAlarmUpdate dto) {
 
@@ -151,6 +187,11 @@ public class UserController {
     }
 
     @PostMapping("/logout")
+    @Operation(summary = "logout api", description = "로그아웃 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공"),
+            @ApiResponse(responseCode = "404", description = "로그인 실패")
+    })
     public ResponseEntity<Result> logout(HttpServletRequest request,
                                          HttpServletResponse response,
                                          @AuthenticationPrincipal PrincipalDetails user) {
@@ -163,6 +204,12 @@ public class UserController {
     }
 
     @DeleteMapping
+    @Operation(summary = "delete user info api", description = "accessToken로 User 삭제 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공",
+                    content = {@Content(schema = @Schema(implementation = UserDeleteResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "로그인 실패")
+    })
     public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal PrincipalDetails user
             , HttpServletRequest request) {
         String oauthAccessToken = request.getHeader("oauthAccessToken");
@@ -176,6 +223,12 @@ public class UserController {
 
     // 탈퇴할때 작성할 회원의 메일 조회 - depreciated
     @GetMapping("/mail")
+    @Operation(summary = "find user mail api", description = "User 메일 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공",
+                    content = {@Content(schema = @Schema(implementation = UserMailResponse.class))}),
+            @ApiResponse(responseCode = "404", description = "로그인 실패")
+    })
     public ResponseEntity<Result> getMail(@AuthenticationPrincipal PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
