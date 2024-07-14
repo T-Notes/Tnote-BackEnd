@@ -71,9 +71,7 @@ public class ClassLogService {
         classLogRepository.delete(classLog);
         recentLogService.deleteRecentLog(classLog.getId(), "CLASS_LOG");
 
-        return ClassLogDeleteResponseDto.builder()
-                .id(classLog.getId())
-                .build();
+        return ClassLogDeleteResponseDto.of(classLog);
     }
 
     public int deleteClassLogs(Long userId, List<Long> classLogIds) {
