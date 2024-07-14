@@ -83,18 +83,12 @@ public class ClassLogService {
 
     @Transactional(readOnly = true)
     public ClassLogSliceResponseDto readAllClassLog(Long userId, Long scheduleId, Pageable pageable) {
-        List<ClassLog> classLogs = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
+        List<ClassLog> classLogList = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByScheduleId(scheduleId, pageable);
-        int numberOfClassLog = classLogs.size();
         List<ClassLogResponseDto> classLogResponseDtos = allClassLogsSlice.getContent().stream()
                 .map(ClassLogResponseDto::of).toList();
 
-        return ClassLogSliceResponseDto.builder()
-                .classLogs(classLogResponseDtos)
-                .numberOfClassLog(numberOfClassLog)
-                .page(allClassLogsSlice.getPageable().getPageNumber())
-                .isLast(allClassLogsSlice.isLast())
-                .build();
+        return ClassLogSliceResponseDto.from(classLogResponseDtos, classLogList, allClassLogsSlice);
     }
 
     @Transactional(readOnly = true)
@@ -119,7 +113,7 @@ public class ClassLogService {
 
     @Transactional(readOnly = true)
     public List<ClassLogResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
-                                                                         LocalDate endDate, Long userId) {
+                                                              LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<ClassLog> logs = classLogRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
