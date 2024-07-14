@@ -32,7 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/tnote/v1/classLog")
+@RequestMapping("/tnote/v1/classLogs")
 @RequiredArgsConstructor
 public class ClassLogController {
     private final ClassLogService classLogService;
