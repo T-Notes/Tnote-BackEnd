@@ -202,22 +202,16 @@ public class ClassLogService {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
-        List<ClassLog> classLogs = classLogRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId,
+        List<ClassLog> classLogList = classLogRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId,
                 startOfDay, endOfDay);
         Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
                 userId, scheduleId,
                 startOfDay, endOfDay, pageable);
 
-        int numberOfClassLog = classLogs.size();
         List<ClassLogResponseDto> classLogResponseDtos = allClassLogsSlice.getContent().stream()
                 .map(ClassLogResponseDto::of).toList();
 
-        return ClassLogSliceResponseDto.builder()
-                .classLogs(classLogResponseDtos)
-                .numberOfClassLog(numberOfClassLog)
-                .page(allClassLogsSlice.getPageable().getPageNumber())
-                .isLast(allClassLogsSlice.isLast())
-                .build();
+        return ClassLogSliceResponseDto.from(classLogResponseDtos, classLogList, allClassLogsSlice);
     }
 
     @Transactional(readOnly = true)
