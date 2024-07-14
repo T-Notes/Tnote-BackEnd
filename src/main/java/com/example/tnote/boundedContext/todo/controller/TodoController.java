@@ -28,7 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/tnote/v1/todos")
+@RequestMapping("/tnote/v1/todo")
 public class TodoController {
 
     private final TodoService todoService;

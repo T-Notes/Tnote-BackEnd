@@ -88,10 +88,10 @@ public class SubjectService {
     }
 
     @Transactional
-    public SubjectsDeleteResponseDto deleteSubjects(Long scheduleId, Long subjectsId, Long userId) {
+    public SubjectsDeleteResponseDto deleteSubjects(Long scheduleId, Long subjectId, Long userId) {
 
         User currentUser = checkCurrentUser(userId);
-        Subjects subject = authorization(subjectsId, currentUser.getId());
+        Subjects subject = authorization(subjectId, currentUser.getId());
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new CustomException(DATA_NOT_FOUND, "학기 데이터가 없습니다."));
 

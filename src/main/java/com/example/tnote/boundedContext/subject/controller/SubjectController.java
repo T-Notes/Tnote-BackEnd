@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/tnote/v1/subjects")
+@RequestMapping("/tnote/v1/subject")
 public class SubjectController {
 
     private final SubjectService subjectService;
@@ -44,26 +44,26 @@ public class SubjectController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @PatchMapping("/{subjectsId}")
+    @PatchMapping("/{subjectId}")
     public ResponseEntity<Result> updateSubjects(@RequestBody SubjectsUpdateRequestDto dto,
-                                                 @PathVariable("subjectsId") Long subjectsId,
+                                                 @PathVariable("subjectId") Long subjectId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        SubjectResponseDto response = subjectService.updateSubjects(dto, subjectsId, currentUser.getId());
+        SubjectResponseDto response = subjectService.updateSubjects(dto, subjectId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @DeleteMapping("/{scheduleId}/{subjectsId}")
+    @DeleteMapping("/{scheduleId}/{subjectId}")
     public ResponseEntity<Result> deleteSubjects(@PathVariable Long scheduleId,
-                                                 @PathVariable Long subjectsId,
+                                                 @PathVariable Long subjectId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        SubjectsDeleteResponseDto response = subjectService.deleteSubjects(scheduleId, subjectsId, currentUser.getId());
+        SubjectsDeleteResponseDto response = subjectService.deleteSubjects(scheduleId, subjectId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
