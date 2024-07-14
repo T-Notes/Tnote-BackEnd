@@ -54,7 +54,7 @@ public class ClassLogController {
         return ResponseEntity.ok(Result.of(classLogResponseDto));
     }
 
-    @GetMapping("/{scheduleId}/classLogs")
+    @GetMapping("/{scheduleId}")
     public ResponseEntity<Result> getAllClassLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @PathVariable Long scheduleId,
                                                   @RequestParam(value = "page", required = false, defaultValue = "0") int page,
