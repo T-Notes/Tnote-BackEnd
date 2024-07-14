@@ -192,13 +192,13 @@ public class ArchiveService {
             logs.addAll(observationService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
         }
         if ("content".equals((searchType))) {
-            logs.addAll(classLogService.findByContentsContaining(keyword, startDate, endDate, userId));
+            logs.addAll(classLogService.findByClassContents(keyword, startDate, endDate, userId));
             logs.addAll(consultationService.findByContentsContaining(keyword, startDate, endDate, userId));
             logs.addAll(proceedingService.findByContentsContaining(keyword, startDate, endDate, userId));
             logs.addAll(observationService.findByContentsContaining(keyword, startDate, endDate, userId));
         }
         if ("titleAndContent".equals(searchType)) {
-            logs.addAll(classLogService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
+            logs.addAll(classLogService.findByTitleOrClassContents(keyword, startDate,
                     endDate, userId));
             logs.addAll(consultationService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
                     endDate, userId));
