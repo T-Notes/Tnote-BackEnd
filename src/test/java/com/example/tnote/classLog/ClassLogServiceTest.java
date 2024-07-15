@@ -26,7 +26,9 @@ import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -67,14 +69,21 @@ public class ClassLogServiceTest {
         Long userId = 1L;
         Long scheduleId = 2L;
         User mockUser = mock(User.class);
-        Schedule mockSchedule = mock(Schedule.class);
-
-        LocalDateTime now = LocalDateTime.now();
+        Schedule mockSchedule = new Schedule(1L, "1학기", null,
+                LocalDate.of(2024, 1, 1),
+                LocalDate.of(2024, 3, 28),
+                mockUser,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>());
 
         ClassLogRequestDto requestDto = ClassLogRequestDto.builder()
                 .title("테스트 수업 로그")
-                .startDate(now)
-                .endDate(now.plusHours(2))
+                .startDate(mockSchedule.getStartDate().atStartOfDay())
+                .endDate(mockSchedule.getStartDate().atStartOfDay().plusHours(2))
                 .plan("테스트 학습 계획")
                 .classContents("테스트 수업 내용")
                 .submission("테스트 제출 과제")
