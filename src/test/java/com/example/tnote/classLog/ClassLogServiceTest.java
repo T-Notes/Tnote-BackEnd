@@ -55,7 +55,7 @@ public class ClassLogServiceTest {
     private ClassLogRepository classLogRepository;
     @Mock
     private ClassLogImageRepository classLogImageRepository;
-    @Mock지
+    @Mock
     ScheduleRepository scheduleRepository;
 
     @InjectMocks
