@@ -10,6 +10,9 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 @RestControllerAdvice
 public class GlobalExceptionHandler {
 
+
+    private static final String LOG_FORMAT = "\nException Class = {}\nResponse Code = {}\nMessage = {}";
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception exception) {
         log.warn("[Exception] occurs : ", exception);
@@ -18,15 +21,20 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<ErrorResponse> handleCustomException(CustomException exception) {
-        ErrorCodes errorCode = exception.getErrorCode();
-        StackTraceElement element = exception.getStackTrace()[0];
-        log.warn("[{}] occurs caused by {}.{}() {} line : {}", errorCode.name(), element.getClassName(),
-                element.getMethodName(), element.getLineNumber(), errorCode.getMessage());
-        return ResponseEntity.status(errorCode.getStatus())
+    public ResponseEntity<ErrorResponse> handleCustomException(CustomException e) {
+        ErrorCode errorCode = e.getErrorCode();
+        logException(e, errorCode);
+        return ResponseEntity.status(errorCode.getHttpStatus())
                 .body(new ErrorResponse(errorCode.name(), errorCode.getMessage()));
     }
 
     public record ErrorResponse(String code, String message) {
+    }
+
+    private void logException(final Exception e, final ErrorCode errorCode) {
+        log.error(LOG_FORMAT,
+                e.getClass(),
+                errorCode.getHttpStatus().value(),
+                errorCode.getMessage());
     }
 }
