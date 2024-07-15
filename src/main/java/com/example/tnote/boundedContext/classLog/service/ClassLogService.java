@@ -44,10 +44,8 @@ public class ClassLogService {
 
     public ClassLogResponseDto save(Long userId, Long scheduleId, ClassLogRequestDto request,
                                     List<MultipartFile> classLogImages) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
+        User user = findUserById(userId);
+        Schedule schedule = findScheduleById(scheduleId);
 
         ClassLog classLog = classLogRepository.save(request.toEntity(user, schedule));
         if (classLog.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || classLog.getEndDate()
@@ -63,8 +61,7 @@ public class ClassLogService {
     }
 
     public ClassLogDeleteResponseDto deleteClassLog(Long userId, Long classLogId) {
-        ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
-                .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
+        ClassLog classLog = findByIdAndUserId(classLogId, userId);
 
         deleteExistedImageByClassLog(classLog);
         classLogRepository.delete(classLog);
@@ -138,8 +135,7 @@ public class ClassLogService {
     }
 
     public ClassLogDetailResponseDto getClassLogDetail(Long userId, Long classLogId) {
-        ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
-                .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
+        ClassLog classLog = findByIdAndUserId(classLogId, userId);
         List<ClassLogImage> classLogImages = classLogImageRepository.findClassLogImagesByClassLogId(classLogId);
         recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
         return new ClassLogDetailResponseDto(classLog, classLogImages);
@@ -148,8 +144,7 @@ public class ClassLogService {
     public ClassLogResponseDto updateClassLog(Long userId, Long classLogId,
                                               ClassLogUpdateRequestDto classLogUpdateRequestDto,
                                               List<MultipartFile> classLogImages) {
-        ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
-                .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
+        ClassLog classLog = findByIdAndUserId(classLogId, userId);
         updateEachClassLogItem(classLogUpdateRequestDto, classLog, classLogImages);
         recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
         return ClassLogResponseDto.of(classLog);
@@ -264,4 +259,18 @@ public class ClassLogService {
         }
     }
 
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
+    }
+
+    private Schedule findScheduleById(Long scheduleId) {
+        return scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
+    }
+
+    private ClassLog findByIdAndUserId(Long classLogId, Long userId) {
+        return classLogRepository.findByIdAndUserId(classLogId, userId)
+                .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
+    }
 }
