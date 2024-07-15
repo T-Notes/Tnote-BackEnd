@@ -55,7 +55,7 @@ public class ClassLogServiceTest {
     private ClassLogRepository classLogRepository;
     @Mock
     private ClassLogImageRepository classLogImageRepository;
-    @Mock
+    @Mock지
     ScheduleRepository scheduleRepository;
 
     @InjectMocks
@@ -73,7 +73,6 @@ public class ClassLogServiceTest {
 
     @BeforeEach
     void setUp() {
-        // Common setup for User, Schedule, and ClassLog mocks
         mockUser = mock(User.class);
         mockSchedule = new Schedule(1L, "1학기", null,
                 LocalDate.of(2024, 1, 1),
