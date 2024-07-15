@@ -1,6 +1,8 @@
 package com.example.tnote.boundedContext.todo.service;
 
 
+import static com.example.tnote.base.exception.ErrorCode.DATA_NOT_FOUND;
+
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
@@ -105,29 +107,29 @@ public class TodoService {
 
         if (!schedule.getUser().equals(currentUser)) {
             log.warn("학기를 작성한 user와 현 user가 다릅니다");
-            throw CustomException.USER_NOT_FOUND;
+            throw new CustomException(DATA_NOT_FOUND, "user 정보가 없습니다. ");
         }
     }
 
     private User checkCurrentUser(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "user 정보가 없습니다. "));
     }
 
     private Schedule checkSchedule(Long id) {
         return scheduleRepository.findById(id)
-                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
+                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "학기 정보가 없습니다."));
     }
 
 
     private Todo authorization(Long id, User member) {
 
         Todo todos = todoRepository.findById(id).orElseThrow(
-                () -> CustomException.TODO_NOT_FOUND);
+                () -> new CustomException(DATA_NOT_FOUND, "todo 정보가 없습니다. "));
 
         if (!todos.getUser().getId().equals(member.getId())) {
             log.warn("member doesn't have authentication , user {}", todos.getUser());
-            throw CustomException.USER_NOT_FOUND;
+            throw new CustomException(DATA_NOT_FOUND, "user 정보가 없습니다. ");
         }
         return todos;
 

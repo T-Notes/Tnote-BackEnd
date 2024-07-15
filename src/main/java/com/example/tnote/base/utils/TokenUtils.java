@@ -1,5 +1,7 @@
 package com.example.tnote.base.utils;
 
+import static com.example.tnote.base.exception.ErrorCode.JWT_ERROR;
+
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import lombok.RequiredArgsConstructor;
@@ -13,7 +15,7 @@ public class TokenUtils {
     public static PrincipalDetails checkValidToken(PrincipalDetails user) {
         if (user == null) {
             log.warn("PrincipalDetails is null");
-            throw CustomException.WRONG_TOKEN;
+            throw new CustomException(JWT_ERROR, "jwt가 올바르지 않습니다");
         }
         return user;
     }

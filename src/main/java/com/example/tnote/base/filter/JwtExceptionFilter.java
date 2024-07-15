@@ -26,9 +26,11 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+
         try {
             filterChain.doFilter(request, response);
         } catch (JwtException e) {
+
             Map<String, String> map = new HashMap<>();
             map.put("code", e.getClass().getSimpleName());
             map.put("message", e.getMessage());
@@ -40,7 +42,9 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
             response.getWriter().print(objectMapper.writeValueAsString(map));
+
         } catch (CustomException e) {
+
             ErrorCode errorCode = e.getErrorCode();
             Map<String, String> map = new HashMap<>();
             map.put("code", errorCode.name());

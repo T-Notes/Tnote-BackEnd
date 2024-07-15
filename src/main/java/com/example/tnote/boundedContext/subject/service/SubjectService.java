@@ -1,6 +1,9 @@
 package com.example.tnote.boundedContext.subject.service;
 
 
+import static com.example.tnote.base.exception.ErrorCode.DATA_NOT_FOUND;
+import static com.example.tnote.base.exception.ErrorCode.NOT_VALID;
+
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
@@ -90,11 +93,11 @@ public class SubjectService {
         User currentUser = checkCurrentUser(userId);
         Subjects subject = authorization(subjectsId, currentUser.getId());
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> CustomException.SCHEDULE_NOT_FOUND);
+                () -> new CustomException(DATA_NOT_FOUND, "학기 데이터가 없습니다."));
 
         if (!subject.getSchedule().equals(schedule)) {
             log.warn("해당하는 학기가 존재하지 않습니다");
-            throw CustomException.SCHEDULE_NOT_FOUND;
+            throw new CustomException(DATA_NOT_FOUND, "학기 데이터가 없습니다.");
         }
 
         subjectRepository.deleteById(subject.getId());
@@ -124,12 +127,12 @@ public class SubjectService {
 
     private User checkCurrentUser(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> CustomException.USER_NOT_FOUND);
+                () -> new CustomException(DATA_NOT_FOUND, "user 정보가 없습니다"));
     }
 
     private Schedule checkCurrentSchedule(Long scheduleId) {
         return scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> CustomException.SCHEDULE_NOT_FOUND);
+                () -> new CustomException(DATA_NOT_FOUND, "학기 데이터가 없습니다."));
     }
 
     private void matchUserWithSchedule(Long scheduleId, Long userId) {
@@ -138,18 +141,18 @@ public class SubjectService {
 
         if (!schedule.getUser().equals(user)) {
             log.warn("스케쥴 user와 현 user가 다릅니다");
-            throw CustomException.SCHEDULE_NOT_FOUND;
+            throw new CustomException(DATA_NOT_FOUND, "학기 데이터가 없습니다.");
         }
     }
 
     private Subjects authorization(Long id, Long userId) {
 
         Subjects subjects = subjectRepository.findById(id).orElseThrow(
-                () -> CustomException.SUBJECT_NOT_FOUND);
+                () -> new CustomException(DATA_NOT_FOUND, "과목 정보가 없습니다"));
 
         if (!subjects.getSchedule().getUser().getId().equals(userId)) {
             log.warn("member doesn't have authentication , user {}", subjects.getSchedule().getUser());
-            throw CustomException.USER_NOT_FOUND;
+            throw new CustomException(DATA_NOT_FOUND, "user 정보가 없습니다");
         }
         return subjects;
 
@@ -162,12 +165,12 @@ public class SubjectService {
         if (matcher.find()) {
             return Integer.parseInt(matcher.group());
         }
-        throw CustomException.WRONG_CLASS_TIME;
+        throw new CustomException(NOT_VALID, " 학기 날짜 정보가 유효하지 않습니다");
     }
 
     private void compareLastClass(String subjectLastClass, String scheduleLastClass) {
         if (extractNumber(subjectLastClass) > extractNumber(scheduleLastClass)) {
-            throw CustomException.WRONG_CLASS_TIME;
+            throw new CustomException(NOT_VALID, " 학기 날짜 정보가 유효하지 않습니다.");
         }
     }
 }

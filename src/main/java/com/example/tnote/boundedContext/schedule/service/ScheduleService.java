@@ -1,6 +1,8 @@
 package com.example.tnote.boundedContext.schedule.service;
 
 
+import static com.example.tnote.base.exception.ErrorCode.DATA_NOT_FOUND;
+
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.classLog.repository.query.ClassLogQueryRepository;
 import com.example.tnote.boundedContext.consultation.repository.query.ConsultationQueryRepository;
@@ -47,7 +49,7 @@ public class ScheduleService {
     public ScheduleResponseDto addSchedule(ScheduleRequestDto dto, Long userId) {
 
         User currentUser = userRepository.findById(userId).orElseThrow(
-                () -> CustomException.USER_NOT_FOUND);
+                () -> new CustomException(DATA_NOT_FOUND, "user가 없습니다"));
 
         Schedule schedule = dto.toEntity(currentUser);
 
@@ -201,12 +203,12 @@ public class ScheduleService {
 
     private Schedule getSchedule(Long scheduleId) {
         return scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> CustomException.SCHEDULE_NOT_FOUND);
+                () -> new CustomException(DATA_NOT_FOUND, "schedule이 없습니다."));
     }
 
     private User checkCurrentUser(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> CustomException.USER_NOT_FOUND);
+                () -> new CustomException(DATA_NOT_FOUND, "user가 없습니다."));
     }
 
     private void matchUserWithSchedule(Long scheduleId, Long userId) {
@@ -215,20 +217,20 @@ public class ScheduleService {
 
         if (!schedule.getUser().equals(currentUser)) {
             log.warn("스케쥴 작성자와 현재 유저가 다른 유저입니다.");
-            throw CustomException.USER_NOT_FOUND;
+            throw new CustomException(DATA_NOT_FOUND, "user가 없습니다.");
         }
     }
 
     private void checkUser(Long userId) {
         if (userId == null) {
             log.warn("없는 user 입니다");
-            throw CustomException.USER_NOT_FOUND;
+            throw new CustomException(DATA_NOT_FOUND, "user가 없습니다.");
         }
     }
 
     private void compareScheduleWithUser(Long userId, Schedule schedule) {
         if (!schedule.getUser().getId().equals(userId)) {
-            throw CustomException.USER_NOT_FOUND;
+            throw new CustomException(DATA_NOT_FOUND, "user가 없습니다.");
         }
     }
 

@@ -30,6 +30,8 @@ public class QProceedingImage extends EntityPathBase<ProceedingImage> {
 
     public final StringPath proceedingImageUrl = createString("proceedingImageUrl");
 
+    public final NumberPath<Long> version = createNumber("version", Long.class);
+
     public QProceedingImage(String variable) {
         this(ProceedingImage.class, forVariable(variable), INITS);
     }

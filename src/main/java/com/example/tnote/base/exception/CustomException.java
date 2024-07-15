@@ -7,6 +7,7 @@ public class CustomException extends RuntimeException {
 
     private final ErrorCode errorCode;
 
+    // 기존
     public static final CustomException CLASS_LOG_NOT_FOUNT = new CustomException(ErrorCode.CLASS_LOG_NOT_FOUNT);
     public static final CustomException INVALID_CLASS_LOG_DATA = new CustomException(ErrorCode.INVALID_CLASS_LOG_DATA);
     public static final CustomException INVALID_CLASS_LOG_DATE = new CustomException(ErrorCode.INVALID_CLASS_LOG_DATE);
@@ -29,7 +30,7 @@ public class CustomException extends RuntimeException {
             ErrorCode.INVALID_PROCEEDING_DATA);
     public static final CustomException INVALID_PROCEEDING_DATE = new CustomException(
             ErrorCode.INVALID_PROCEEDING_DATE);
-    public static final CustomException BAD_REQUEST = new CustomException(ErrorCode.BAD_REQUEST);
+
     public static final CustomException UNAUTHORIZED = new CustomException(ErrorCode.UNAUTHORIZED);
     public static final CustomException WRONG_TOKEN = new CustomException(ErrorCode.WRONG_TOKEN);
     public static final CustomException WRONG_REFRESH_TOKEN = new CustomException(ErrorCode.WRONG_REFRESH_TOKEN);
@@ -49,9 +50,14 @@ public class CustomException extends RuntimeException {
     public static final CustomException USER_NOT_FOUND = new CustomException(ErrorCode.USER_NOT_FOUND);
     public static final CustomException WRONG_CLASS_TIME = new CustomException(ErrorCode.WRONG_CLASS_TIME);
 
-
+    // 이후
     public CustomException(ErrorCode errorCode) {
         super(errorCode.getMessage());
+        this.errorCode = errorCode;
+    }
+
+    public CustomException(ErrorCode errorCode, String msg) {
+        super(errorCode.getMessage() + " : " + msg);
         this.errorCode = errorCode;
     }
 }
