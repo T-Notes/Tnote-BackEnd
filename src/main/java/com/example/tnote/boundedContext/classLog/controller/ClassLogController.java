@@ -1,7 +1,7 @@
 package com.example.tnote.boundedContext.classLog.controller;
 
 
-import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
@@ -45,7 +45,7 @@ public class ClassLogController {
                                                  @RequestPart(name = "classLogImages", required = false) List<MultipartFile> classLogImages) {
         if (principalDetails == null) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Result.of(CustomException.UNAUTHORIZED.getMessage()));
+                    .body(Result.of(CustomExceptions.UNAUTHORIZED.getMessage()));
         }
         ClassLogResponseDto classLogResponseDto = classLogService.save(principalDetails.getId(), scheduleId,
                 classLogRequestDto,

@@ -1,6 +1,6 @@
 package com.example.tnote.boundedContext.classLog.service;
 
-import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.base.exception.ErrorCodes;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
@@ -50,7 +50,7 @@ public class ClassLogService {
         ClassLog classLog = classLogRepository.save(request.toEntity(user, schedule));
         if (classLog.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || classLog.getEndDate()
                 .toLocalDate().isAfter(schedule.getEndDate())) {
-            throw new CustomException(ErrorCodes.INVALID_CLASS_LOG_DATE);
+            throw new CustomExceptions(ErrorCodes.INVALID_CLASS_LOG_DATE);
         }
         if (classLogImages != null && !classLogImages.isEmpty()) {
             List<ClassLogImage> uploadedImages = uploadClassLogImages(classLog, classLogImages);
@@ -261,16 +261,16 @@ public class ClassLogService {
 
     private User findUserById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
+                .orElseThrow(() -> CustomExceptions.USER_NOT_FOUND);
     }
 
     private Schedule findScheduleById(Long scheduleId) {
         return scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
+                .orElseThrow(() -> CustomExceptions.SCHEDULE_NOT_FOUND);
     }
 
     private ClassLog findByIdAndUserId(Long classLogId, Long userId) {
         return classLogRepository.findByIdAndUserId(classLogId, userId)
-                .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
+                .orElseThrow(() -> CustomExceptions.CLASS_LOG_NOT_FOUNT);
     }
 }

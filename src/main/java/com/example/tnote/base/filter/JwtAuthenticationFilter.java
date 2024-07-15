@@ -1,6 +1,6 @@
 package com.example.tnote.base.filter;
 
-import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.base.utils.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null) {
             if (!jwtTokenProvider.isValidToken(token)) {
-                throw CustomException.WRONG_TOKEN;
+                throw CustomExceptions.WRONG_TOKEN;
             }
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);

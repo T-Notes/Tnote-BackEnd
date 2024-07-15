@@ -9,7 +9,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
@@ -27,7 +27,6 @@ import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -122,7 +121,7 @@ public class ClassLogServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThatExceptionOfType(CustomException.class)
+        assertThatExceptionOfType(CustomExceptions.class)
                 .isThrownBy(() -> classLogService.save(userId, scheduleId, requestDto, classLogImages));
 
         verify(userRepository).findById(userId);
@@ -184,7 +183,7 @@ public class ClassLogServiceTest {
         when(classLogRepository.findByIdAndUserId(NonClassLogId, userId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> classLogService.getClassLogDetail(userId, NonClassLogId))
-                .isInstanceOf(CustomException.class);
+                .isInstanceOf(CustomExceptions.class);
     }
 
     @DisplayName("학급일지 삭제: 학급일지 삭제 작업 확인")

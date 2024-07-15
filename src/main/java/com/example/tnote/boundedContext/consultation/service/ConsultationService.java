@@ -1,6 +1,6 @@
 package com.example.tnote.boundedContext.consultation.service;
 
-import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.base.exception.ErrorCodes;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
@@ -46,14 +46,14 @@ public class ConsultationService {
                                         List<MultipartFile> consultationImages) {
         requestDto.validateEnums();
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
+                .orElseThrow(() -> CustomExceptions.USER_NOT_FOUND);
         Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
+                .orElseThrow(() -> CustomExceptions.SCHEDULE_NOT_FOUND);
 
         Consultation consultation = consultationRepository.save(requestDto.toEntity(user, schedule));
         if (consultation.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || consultation.getEndDate()
                 .toLocalDate().isAfter(schedule.getEndDate())) {
-            throw new CustomException(ErrorCodes.INVALID_CONSULTATION_DATE);
+            throw new CustomExceptions(ErrorCodes.INVALID_CONSULTATION_DATE);
         }
         if (consultationImages != null && !consultationImages.isEmpty()) {
             List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
@@ -81,7 +81,7 @@ public class ConsultationService {
 
     public ConsultationDeleteResponseDto deleteConsultation(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
-                .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
+                .orElseThrow(() -> CustomExceptions.CONSULTATION_NOT_FOUNT);
 
         deleteExistedImagesByConsultation(consultation);
         consultationRepository.delete(consultation);
@@ -101,7 +101,7 @@ public class ConsultationService {
 
     public ConsultationDetailResponseDto getConsultationDetail(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
-                .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
+                .orElseThrow(() -> CustomExceptions.CONSULTATION_NOT_FOUNT);
         List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultationId(
                 consultationId);
         recentLogService.saveRecentLog(userId, consultation.getId(), consultation.getSchedule().getId(),
@@ -113,7 +113,7 @@ public class ConsultationService {
                                                       ConsultationUpdateRequestDto requestDto,
                                                       List<MultipartFile> consultationImages) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
-                .orElseThrow(() -> CustomException.CONSULTATION_NOT_FOUNT);
+                .orElseThrow(() -> CustomExceptions.CONSULTATION_NOT_FOUNT);
 
         updateConsultationItem(requestDto, consultation, consultationImages);
         recentLogService.saveRecentLog(userId, consultation.getId(), consultation.getSchedule().getId(),

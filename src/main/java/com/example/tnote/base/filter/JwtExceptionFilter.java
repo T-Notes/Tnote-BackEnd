@@ -1,7 +1,5 @@
 package com.example.tnote.base.filter;
 
-import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.base.exception.ErrorCodes;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
@@ -39,19 +37,6 @@ public class JwtExceptionFilter extends OncePerRequestFilter {
 
             response.setContentType("application/json;charset=UTF-8");
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            response.getWriter().print(objectMapper.writeValueAsString(map));
-        } catch (CustomException e) {
-            ErrorCodes errorCode = e.getErrorCode();
-            Map<String, String> map = new HashMap<>();
-            map.put("code", errorCode.name());
-            map.put("message", errorCode.getMessage());
-
-            StackTraceElement element = e.getStackTrace()[0];
-            log.warn("[{}] occurs caused by {}.{}() {} line : {}", errorCode.name(), element.getClassName(),
-                    element.getMethodName(), element.getLineNumber(), errorCode.getMessage());
-
-            response.setContentType("application/json;charset=UTF-8");
-            response.setStatus(errorCode.getStatus().value());
             response.getWriter().print(objectMapper.writeValueAsString(map));
         }
     }
