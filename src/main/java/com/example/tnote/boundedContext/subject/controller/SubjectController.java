@@ -34,7 +34,7 @@ import org.springframework.web.bind.annotation.RestController;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/tnote/v1/subjects")
+@RequestMapping("/tnote/v1/subject")
 @Tag(name = "Subject", description = "Subject API")
 public class SubjectController {
 
@@ -58,7 +58,8 @@ public class SubjectController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @PatchMapping("/{subjectsId}")
+
+    @PatchMapping("/{subjectId}")
     @Operation(summary = "update Subject api", description = "accessToken로 Subject 수정 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
@@ -66,17 +67,17 @@ public class SubjectController {
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
     public ResponseEntity<Result> updateSubjects(@RequestBody SubjectsUpdateRequestDto dto,
-                                                 @PathVariable("subjectsId") Long subjectsId,
+                                                 @PathVariable("subjectId") Long subjectId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        SubjectResponseDto response = subjectService.updateSubjects(dto, subjectsId, currentUser.getId());
+        SubjectResponseDto response = subjectService.updateSubjects(dto, subjectId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @DeleteMapping("/{scheduleId}/{subjectsId}")
+    @DeleteMapping("/{scheduleId}/{subjectId}")
     @Operation(summary = "delete Subject api", description = "accessToken로 Subject 삭제 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
@@ -84,12 +85,12 @@ public class SubjectController {
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
     public ResponseEntity<Result> deleteSubjects(@PathVariable Long scheduleId,
-                                                 @PathVariable Long subjectsId,
+                                                 @PathVariable Long subjectId,
                                                  @AuthenticationPrincipal PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        SubjectsDeleteResponseDto response = subjectService.deleteSubjects(scheduleId, subjectsId, currentUser.getId());
+        SubjectsDeleteResponseDto response = subjectService.deleteSubjects(scheduleId, subjectId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
