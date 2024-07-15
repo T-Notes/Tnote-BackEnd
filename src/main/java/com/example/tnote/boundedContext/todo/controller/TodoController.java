@@ -8,6 +8,13 @@ import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
 import com.example.tnote.boundedContext.todo.dto.TodoUpdateRequestDto;
 import com.example.tnote.boundedContext.todo.service.TodoService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -29,11 +36,18 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/tnote/v1/todo")
+@Tag(name = "Todo", description = "Todo API")
 public class TodoController {
 
     private final TodoService todoService;
 
     @PostMapping("/{scheduleId}")
+    @Operation(summary = "create todo api", description = "accessToken로 Todo 생성 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공",
+                    content = {@Content(schema = @Schema(implementation = TodoResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "로그인 실패")
+    })
     public ResponseEntity<Result> saveTodo(@RequestBody TodoRequestDto dto,
                                            @PathVariable Long scheduleId,
                                            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
@@ -46,6 +60,12 @@ public class TodoController {
     }
 
     @PatchMapping("/{scheduleId}/{todoId}")
+    @Operation(summary = "Todo api", description = "accessToken로 Todo 수정 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공",
+                    content = {@Content(schema = @Schema(implementation = TodoResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "로그인 실패")
+    })
     public ResponseEntity<Result> updateSubjects(@RequestBody TodoUpdateRequestDto dto,
                                                  @PathVariable Long scheduleId,
                                                  @PathVariable("todoId") Long todoId,
@@ -60,6 +80,12 @@ public class TodoController {
     }
 
     @DeleteMapping("/{scheduleId}/{todoId}")
+    @Operation(summary = "delete todo api", description = "accessToken로 Todo 삭제 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공",
+                    content = {@Content(schema = @Schema(implementation = TodoDeleteResponseDto.class))}),
+            @ApiResponse(responseCode = "404", description = "로그인 실패")
+    })
     public ResponseEntity<Result> deleteTodo(@PathVariable Long todoId,
                                              @PathVariable Long scheduleId,
                                              @AuthenticationPrincipal PrincipalDetails user) {
@@ -73,6 +99,12 @@ public class TodoController {
 
     // 홈페이지에서 특정 날짜에 대한 todo list 조회 ( 날짜 안넘겨주면 오늘 날짜로 기본으로 매핑 )
     @GetMapping("/{scheduleId}")
+    @Operation(summary = "find Todo api", description = "accessToken로 Todo 조회 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공",
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = TodoResponseDto.class)))),
+            @ApiResponse(responseCode = "404", description = "로그인 실패")
+    })
     public ResponseEntity<Result> findTodo(
             @PathVariable Long scheduleId,
             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,

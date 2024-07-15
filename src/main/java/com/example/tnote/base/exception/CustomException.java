@@ -50,7 +50,7 @@ public class CustomException extends RuntimeException {
     public static final CustomException USER_NOT_FOUND = new CustomException(ErrorCode.USER_NOT_FOUND);
     public static final CustomException WRONG_CLASS_TIME = new CustomException(ErrorCode.WRONG_CLASS_TIME);
 
-    // 이기후
+    // 이후
     public CustomException(ErrorCode errorCode) {
         super(errorCode.getMessage());
         this.errorCode = errorCode;

@@ -13,7 +13,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpectedException(Exception exception) {
 
-        log.warn("[Exception] occurs : ", exception);
+        log.warn("[Exception] occurs :", exception);
 
         return ResponseEntity.internalServerError()
                 .body(new ErrorResponse("UNEXPECTED_ERROR", "some errors occurred : " + exception.getMessage()));
