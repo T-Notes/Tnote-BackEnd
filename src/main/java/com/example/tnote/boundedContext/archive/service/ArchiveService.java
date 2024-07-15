@@ -4,6 +4,19 @@ import static com.example.tnote.base.exception.ErrorCode.DATA_NOT_FOUND;
 
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.ErrorCode;
+import static com.example.tnote.base.utils.DateUtils.calculateStartDate;
+
+import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.ErrorCode;
+import com.example.tnote.boundedContext.archive.constant.DateType;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.classLog.service.ClassLogService;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
+import com.example.tnote.boundedContext.consultation.entity.Consultation;
+import com.example.tnote.boundedContext.consultation.service.ConsultationService;
 import com.example.tnote.boundedContext.archive.constant.LogType;
 import com.example.tnote.boundedContext.archive.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
@@ -178,9 +191,11 @@ public class ArchiveService {
         return UnifiedLogResponseDto.from(pageContent, totalLogs);
     }
 
-    public UnifiedLogResponseDto searchLogsByFilter(Long userId, LocalDate startDate, LocalDate endDate,
+    public UnifiedLogResponseDto searchLogsByFilter(Long userId, DateType dateType,
                                                     String searchType, String keyword, Pageable pageable) {
         List<LogEntry> logs = new ArrayList<>();
+        LocalDate startDate = calculateStartDate(dateType);
+        LocalDate endDate = LocalDate.now();
 
         if ("title".equals(searchType)) {
             logs.addAll(classLogService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
