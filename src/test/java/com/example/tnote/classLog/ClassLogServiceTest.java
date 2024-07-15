@@ -149,12 +149,25 @@ public class ClassLogServiceTest {
         Long userId = 1L;
         Long classLogId = 1L;
 
+
         User mockUser = mock(User.class);
         when(mockUser.getId()).thenReturn(userId);
 
         ClassLog mockClassLog = mock(ClassLog.class);
         when(mockClassLog.getId()).thenReturn(classLogId);
         when(mockClassLog.getUser()).thenReturn(mockUser);
+
+        Schedule mockSchedule = new Schedule(1L, "1학기", null,
+                LocalDate.of(2024, 1, 1),
+                LocalDate.of(2024, 3, 28),
+                mockUser,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>());
+        when(mockClassLog.getSchedule()).thenReturn(mockSchedule);
 
         ClassLogImage mockClassLogImage1 = mock(ClassLogImage.class);
         ClassLogImage mockClassLogImage2 = mock(ClassLogImage.class);
