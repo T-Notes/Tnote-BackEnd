@@ -18,6 +18,7 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
+import com.example.tnote.boundedContext.classLog.exception.ClassLogException;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogImageRepository;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
@@ -183,7 +184,7 @@ public class ClassLogServiceTest {
         when(classLogRepository.findByIdAndUserId(NonClassLogId, userId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> classLogService.getClassLogDetail(userId, NonClassLogId))
-                .isInstanceOf(CustomExceptions.class);
+                .isInstanceOf(ClassLogException.class);
     }
 
     @DisplayName("학급일지 삭제: 학급일지 삭제 작업 확인")
