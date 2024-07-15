@@ -90,7 +90,7 @@ public class ClassLogServiceTest {
 
     @DisplayName("학급일지 저장: 정상적인 경우 성공적으로 저장 확인")
     @Test
-    void save() {
+    void save_Success() {
         ClassLogRequestDto requestDto = ClassLogRequestDto.builder()
                 .title("테스트 수업 로그")
                 .startDate(mockSchedule.getStartDate().atStartOfDay())
@@ -116,7 +116,7 @@ public class ClassLogServiceTest {
 
     @DisplayName("학급일지 저장: 존재하지 않는 사용자로 인한 예외 발생 확인")
     @Test
-    void noUserSave() {
+    void save_Fail() {
         ClassLogRequestDto requestDto = mock(ClassLogRequestDto.class);
         List<MultipartFile> classLogImages = Collections.emptyList();
 
@@ -152,7 +152,7 @@ public class ClassLogServiceTest {
 
     @DisplayName("학급일지 상세 조회: 학급일지 상세 정보 조회 확인")
     @Test
-    void getClassLogDetails() {
+    void getClassLogDetails_Success() {
         when(mockUser.getId()).thenReturn(userId);
         when(mockClassLog.getId()).thenReturn(classLogId);
         when(mockClassLog.getUser()).thenReturn(mockUser);
@@ -178,7 +178,7 @@ public class ClassLogServiceTest {
 
     @DisplayName("존재하지 않는 학급일지의 상세정보 조회 시 예외 발생")
     @Test
-    void getClassLogDetailException() {
+    void getClassLogDetail_Fail() {
         Long NonClassLogId = 100L;
 
         when(classLogRepository.findByIdAndUserId(NonClassLogId, userId)).thenReturn(Optional.empty());
