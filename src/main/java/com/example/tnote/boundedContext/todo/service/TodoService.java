@@ -52,9 +52,7 @@ public class TodoService {
         Todo todo = getTodo(scheduleId, todoId, userId);
 
         todoRepository.deleteById(todo.getId());
-        return TodoDeleteResponseDto.builder()
-                .id(todo.getId())
-                .build();
+        return TodoDeleteResponseDto.of(todo);
     }
 
     @Transactional(readOnly = true)

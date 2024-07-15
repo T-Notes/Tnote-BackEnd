@@ -110,7 +110,7 @@ public class ScheduleController {
 
     // 실패 - token이 유효하지 않은 경우
     @DeleteMapping("/{scheduleId}")
-    @Operation(summary = "delete Schedule api", description = "accessToken로 Schedule 삭제 API")
+    @Operation(summary = "delete Schedule api", description = "accessToken으로 Schedule 삭제 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
                     content = {@Content(schema = @Schema(implementation = ScheduleDeleteResponseDto.class))}),
