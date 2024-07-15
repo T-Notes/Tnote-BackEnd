@@ -12,6 +12,8 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
+import com.example.tnote.boundedContext.classLog.exception.ClassLogErrorCode;
+import com.example.tnote.boundedContext.classLog.exception.ClassLogException;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogImageRepository;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
@@ -50,7 +52,7 @@ public class ClassLogService {
         ClassLog classLog = classLogRepository.save(request.toEntity(user, schedule));
         if (classLog.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || classLog.getEndDate()
                 .toLocalDate().isAfter(schedule.getEndDate())) {
-            throw new CustomExceptions(ErrorCodes.INVALID_CLASS_LOG_DATE);
+            throw new ClassLogException(ClassLogErrorCode.INVALID_CLASS_LOG_DATE);
         }
         if (classLogImages != null && !classLogImages.isEmpty()) {
             List<ClassLogImage> uploadedImages = uploadClassLogImages(classLog, classLogImages);
@@ -271,6 +273,6 @@ public class ClassLogService {
 
     private ClassLog findByIdAndUserId(Long classLogId, Long userId) {
         return classLogRepository.findByIdAndUserId(classLogId, userId)
-                .orElseThrow(() -> CustomExceptions.CLASS_LOG_NOT_FOUNT);
+                .orElseThrow(() -> new ClassLogException(ClassLogErrorCode.CLASS_LOG_NOT_FOUNT));
     }
 }
