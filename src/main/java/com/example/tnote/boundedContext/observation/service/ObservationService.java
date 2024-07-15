@@ -1,11 +1,9 @@
 package com.example.tnote.boundedContext.observation.service;
 
 import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.base.exception.ErrorCode;
+import com.example.tnote.base.exception.ErrorCodes;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
-import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
@@ -54,7 +52,7 @@ public class ObservationService {
 
         if (observation.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || observation.getEndDate()
                 .toLocalDate().isAfter(schedule.getEndDate())) {
-            throw new CustomException(ErrorCode.INVALID_OBSERVATION_DATE);
+            throw new CustomException(ErrorCodes.INVALID_OBSERVATION_DATE);
         }
         if (observationImages != null && !observationImages.isEmpty()) {
             List<ObservationImage> uploadedImages = uploadObservationImages(observation, observationImages);

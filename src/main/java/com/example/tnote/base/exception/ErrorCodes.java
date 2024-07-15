@@ -6,7 +6,8 @@ import org.springframework.http.HttpStatus;
 
 @Getter
 @RequiredArgsConstructor
-public enum ErrorCode {
+public enum ErrorCodes {
+    //todo 삭제 할 enum 클래스입니다.
 
     // class log
     CLASS_LOG_NOT_FOUNT(HttpStatus.NOT_FOUND, "not found classLog"),
@@ -66,4 +67,5 @@ public enum ErrorCode {
 
     private final HttpStatus status;
     private final String message;
+
 }

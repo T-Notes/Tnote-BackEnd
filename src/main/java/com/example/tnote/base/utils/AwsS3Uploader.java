@@ -1,13 +1,9 @@
 package com.example.tnote.base.utils;
 
-import static com.example.tnote.base.exception.ErrorCode.POST_IMAGE_CONVERT_ERROR;
-import static com.example.tnote.base.exception.ErrorCode.POST_IMAGE_INVALID_EXTENSION;
-
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.example.tnote.base.exception.CustomException;
 import com.mysema.commons.lang.Pair;
 import java.io.File;
 import java.io.FileOutputStream;

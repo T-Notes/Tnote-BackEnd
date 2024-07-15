@@ -3,7 +3,7 @@ package com.example.tnote.boundedContext.archive.service;
 import static com.example.tnote.base.utils.DateUtils.calculateStartDate;
 
 import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.base.exception.ErrorCode;
+import com.example.tnote.base.exception.ErrorCodes;
 import com.example.tnote.boundedContext.archive.constant.DateType;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
@@ -232,7 +232,7 @@ public class ArchiveService {
         LocalDate endDate = schedule.getEndDate();
 
         if (date.isBefore(startDate) || (endDate != null && date.isAfter(endDate))) {
-            throw new CustomException(ErrorCode.DATES_NOT_INCLUDED_IN_SEMESTER);
+            throw new CustomException(ErrorCodes.DATES_NOT_INCLUDED_IN_SEMESTER);
         }
         List<ClassLogResponseDto> classLogs = classLogService.readDailyClassLog(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, scheduleId,

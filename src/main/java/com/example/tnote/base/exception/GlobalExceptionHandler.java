@@ -19,7 +19,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<ErrorResponse> handleCustomException(CustomException exception) {
-        ErrorCode errorCode = exception.getErrorCode();
+        ErrorCodes errorCode = exception.getErrorCode();
         StackTraceElement element = exception.getStackTrace()[0];
         log.warn("[{}] occurs caused by {}.{}() {} line : {}", errorCode.name(), element.getClassName(),
                 element.getMethodName(), element.getLineNumber(), errorCode.getMessage());
