@@ -7,4 +7,10 @@ import lombok.Getter;
 @Builder
 public class UserDeleteResponseDto {
     private Long id;
+
+    public static UserDeleteResponseDto of(KakaoUnlinkResponse unlink) {
+        return UserDeleteResponseDto.builder()
+                .id(unlink.getId())
+                .build();
+    }
 }

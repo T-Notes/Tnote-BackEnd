@@ -102,9 +102,7 @@ public class SubjectService {
 
         subjectRepository.deleteById(subject.getId());
 
-        return SubjectsDeleteResponseDto.builder()
-                .id(subject.getId())
-                .build();
+        return SubjectsDeleteResponseDto.of(subject);
     }
 
     @Transactional(readOnly = true)

@@ -76,9 +76,7 @@ public class AuthService {
 
         KakaoUnlinkResponse unlink = kakaoRequestService.unLink(oauthAccessToken);
 
-        return UserDeleteResponseDto.builder()
-                .id(unlink.getId())
-                .build();
+        return UserDeleteResponseDto.of(unlink);
     }
 
     // 연관키로 묶여 있음

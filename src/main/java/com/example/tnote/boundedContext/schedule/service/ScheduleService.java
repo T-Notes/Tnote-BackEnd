@@ -20,7 +20,6 @@ import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
-import com.example.tnote.boundedContext.user.service.UserService;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -43,7 +42,6 @@ public class ScheduleService {
     private final ConsultationQueryRepository consultationQueryRepository;
     private final ObservationQueryRepository observationQueryRepository;
     private final RecentLogRepository recentLogRepository;
-    private final UserService userService;
 
     @Transactional
     public ScheduleResponseDto addSchedule(ScheduleRequestDto dto, Long userId) {
@@ -94,16 +92,16 @@ public class ScheduleService {
         proceedingQueryRepository.deleteAllByScheduleIdAndUserId(scheduleId, userId);
         consultationQueryRepository.deleteAllByScheduleIdAndUserId(scheduleId, userId);
         observationQueryRepository.deleteAllByScheduleIdAndUserId(scheduleId, userId);
-        recentLogRepository.deleteAllByUserIdAndScheduleId(userId, scheduleId);
+        
+        // TODO : For queries with named parameters you need to provide names for method parameters 에러
+//        recentLogRepository.deleteAllByUserIdAndScheduleId(userId, scheduleId);
 
         if (currentUser.getLastScheduleId() == scheduleId) {
             currentUser.updateLastScheduleName(null);
             currentUser.updateLastScheduleId(0);
         }
 
-        return ScheduleDeleteResponseDto.builder()
-                .id(own.getId())
-                .build();
+        return ScheduleDeleteResponseDto.of(own);
     }
 
     private Schedule authorizationWriter(Long id, User member) {
