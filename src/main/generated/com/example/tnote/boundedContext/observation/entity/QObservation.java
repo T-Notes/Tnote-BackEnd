@@ -43,7 +43,7 @@ public class QObservation extends EntityPathBase<Observation> {
 
     public final DateTimePath<java.time.LocalDateTime> startDate = createDateTime("startDate", java.time.LocalDateTime.class);
 
-    public final StringPath studentName = createString("studentName");
+    public final StringPath title = createString("title");
 
     //inherited
     public final DateTimePath<java.time.LocalDateTime> updatedAt = _super.updatedAt;

@@ -30,6 +30,8 @@ public class QConsultationImage extends EntityPathBase<ConsultationImage> {
 
     public final StringPath name = createString("name");
 
+    public final NumberPath<Long> version = createNumber("version", Long.class);
+
     public QConsultationImage(String variable) {
         this(ConsultationImage.class, forVariable(variable), INITS);
     }

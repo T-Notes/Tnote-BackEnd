@@ -30,6 +30,8 @@ public class QObservationImage extends EntityPathBase<ObservationImage> {
 
     public final StringPath observationImageUrl = createString("observationImageUrl");
 
+    public final NumberPath<Long> version = createNumber("version", Long.class);
+
     public QObservationImage(String variable) {
         this(ObservationImage.class, forVariable(variable), INITS);
     }
