@@ -1,6 +1,6 @@
 package com.example.tnote.boundedContext.consultation.dto;
 
-import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
@@ -33,13 +33,13 @@ public class ConsultationRequestDto {
 
     private void validateCounselingField() {
         if (counselingField == null || EnumUtils.isValidEnum(CounselingField.class, counselingField.name())) {
-            throw CustomException.INVALID_COUNSELING_FIELD;
+            throw CustomExceptions.INVALID_COUNSELING_FIELD;
         }
     }
 
     private void validateCounselingType() {
         if (counselingType == null || EnumUtils.isValidEnum(CounselingType.class, counselingType.name())) {
-            throw CustomException.INVALID_COUNSELING_TYPE;
+            throw CustomExceptions.INVALID_COUNSELING_TYPE;
         }
     }
 

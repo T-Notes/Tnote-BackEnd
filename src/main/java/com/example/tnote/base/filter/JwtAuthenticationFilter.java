@@ -1,8 +1,6 @@
 package com.example.tnote.base.filter;
 
-import static com.example.tnote.base.exception.ErrorCode.JWT_ERROR;
-
-import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.base.utils.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -32,8 +30,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String requestUri = request.getRequestURI();
         if (requestUri.matches("^\\/login(?:\\/.*)?$") || requestUri.matches("^\\/oauth2(?:\\/.*)?$")
-                || requestUri.matches("^\\/favicon.ico(?:\\/.*)?$") || requestUri.matches(
-                "^\\/swagger.ui(?:\\/.*)?$")) {
+                || requestUri.matches("^\\/favicon.ico(?:\\/.*)?$")) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -42,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null) {
             if (!jwtTokenProvider.isValidToken(token)) {
-                throw new CustomException(JWT_ERROR, "token이 유효하지 않습니다.");
+                throw CustomExceptions.WRONG_TOKEN;
             }
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);

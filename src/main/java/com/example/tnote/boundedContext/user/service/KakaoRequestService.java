@@ -1,8 +1,6 @@
 package com.example.tnote.boundedContext.user.service;
 
-import static com.example.tnote.base.exception.ErrorCode.JWT_ERROR;
-
-import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.base.utils.JwtTokenProvider;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
@@ -73,7 +71,7 @@ public class KakaoRequestService implements RequestService {
         }
 
         RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
-                .orElseThrow(() -> new CustomException(JWT_ERROR, "틀린 refresh token 입니다. "));
+                .orElseThrow(() -> CustomExceptions.WRONG_REFRESH_TOKEN);
 
         return getBuild(newToken_AccessToken.getAccessToken(), refreshToken.getRefreshToken(), user,
                 tokenResponse.getAccessToken());

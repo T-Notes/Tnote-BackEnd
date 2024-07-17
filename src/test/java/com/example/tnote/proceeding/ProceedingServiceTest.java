@@ -9,7 +9,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
@@ -101,7 +101,7 @@ public class ProceedingServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThatExceptionOfType(CustomException.class)
+        assertThatExceptionOfType(CustomExceptions.class)
                 .isThrownBy(() -> proceedingService.save(userId, scheduleId, requestDto, proceedingImages));
 
         verify(userRepository).findById(userId);
@@ -170,7 +170,7 @@ public class ProceedingServiceTest {
         when(proceedingRepository.findByIdAndUserId(proceedingId, userId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> proceedingService.getProceedingDetails(userId, proceedingId))
-                .isInstanceOf(CustomException.class);
+                .isInstanceOf(CustomExceptions.class);
     }
 
     @DisplayName("업무일지 삭제: 업무일지 삭제 작업 확인")

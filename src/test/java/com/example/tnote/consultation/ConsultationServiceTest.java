@@ -9,7 +9,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
@@ -115,7 +115,7 @@ public class ConsultationServiceTest {
                 .build();
 
         assertThatThrownBy(() -> consultationService.save(userId, scheduleId, requestDto, Collections.emptyList()))
-                .isInstanceOf(CustomException.class);
+                .isInstanceOf(CustomExceptions.class);
     }
 
     @DisplayName("상담일지 저장: 존재하지 않는 사용자로 인한 예외 발생 확인")
@@ -128,7 +128,7 @@ public class ConsultationServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThatExceptionOfType(CustomException.class)
+        assertThatExceptionOfType(CustomExceptions.class)
                 .isThrownBy(() -> consultationService.save(userId, scheduleId, requestDto, consultationImages));
 
         verify(userRepository).findById(userId);
@@ -198,7 +198,7 @@ public class ConsultationServiceTest {
         when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> consultationService.getConsultationDetail(userId, consultationId))
-                .isInstanceOf(CustomException.class);
+                .isInstanceOf(CustomExceptions.class);
     }
 
     @DisplayName("상담일지 삭제: 상담일지 삭제 작업 확인")

@@ -1,9 +1,6 @@
 package com.example.tnote.boundedContext.user.service;
 
-import static com.example.tnote.base.exception.ErrorCode.DATA_NOT_FOUND;
-import static com.example.tnote.base.exception.ErrorCode.JWT_ERROR;
-
-import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.base.utils.JwtTokenProvider;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
@@ -41,7 +38,7 @@ public class AuthService {
 
         if (jwtTokenProvider.isExpired(refreshToken)) {
             // refresh token 만료시 재로그인 필요
-            throw new CustomException(JWT_ERROR, "refresh token 유효시간이 만료됐습니다.");
+            throw CustomExceptions.EXPIRED_REFRESH_TOKEN;
         }
 
         RefreshToken refreshTokenObj = refreshTokenService.findByRefreshToken(refreshToken);
@@ -55,7 +52,7 @@ public class AuthService {
 
     private User getUserFromRefreshToken(RefreshToken refreshToken) {
         return userRepository.findByEmail(refreshToken.getKeyEmail())
-                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "user 정보가 없습니다. "));
+                .orElseThrow(() -> CustomExceptions.USER_NOT_FOUND);
     }
 
     private JwtResponse buildSignInResponse(String accessToken, String refreshToken, Long userId) {
@@ -70,13 +67,15 @@ public class AuthService {
     public UserDeleteResponseDto deleteUser(Long userId, String oauthAccessToken) {
 
         User currentUser = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "user 정보가 없습니다. "));
+                .orElseThrow(() -> CustomExceptions.USER_NOT_FOUND);
 
         deleteAll(currentUser);
 
         KakaoUnlinkResponse unlink = kakaoRequestService.unLink(oauthAccessToken);
 
-        return UserDeleteResponseDto.of(unlink);
+        return UserDeleteResponseDto.builder()
+                .id(unlink.getId())
+                .build();
     }
 
     // 연관키로 묶여 있음

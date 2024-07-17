@@ -1,7 +1,7 @@
 package com.example.tnote.boundedContext.classLog.service;
 
-import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.base.exception.ErrorCode;
+import com.example.tnote.base.exception.CustomExceptions;
+import com.example.tnote.base.exception.ErrorCodes;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
@@ -12,6 +12,8 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
+import com.example.tnote.boundedContext.classLog.exception.ClassLogErrorCode;
+import com.example.tnote.boundedContext.classLog.exception.ClassLogException;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogImageRepository;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
@@ -26,7 +28,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -45,15 +46,13 @@ public class ClassLogService {
 
     public ClassLogResponseDto save(Long userId, Long scheduleId, ClassLogRequestDto request,
                                     List<MultipartFile> classLogImages) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> CustomException.USER_NOT_FOUND);
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
+        User user = findUserById(userId);
+        Schedule schedule = findScheduleById(scheduleId);
 
         ClassLog classLog = classLogRepository.save(request.toEntity(user, schedule));
         if (classLog.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || classLog.getEndDate()
                 .toLocalDate().isAfter(schedule.getEndDate())) {
-            throw new CustomException(ErrorCode.INVALID_CLASS_LOG_DATE);
+            throw new ClassLogException(ClassLogErrorCode.INVALID_CLASS_LOG_DATE);
         }
         if (classLogImages != null && !classLogImages.isEmpty()) {
             List<ClassLogImage> uploadedImages = uploadClassLogImages(classLog, classLogImages);
@@ -64,16 +63,13 @@ public class ClassLogService {
     }
 
     public ClassLogDeleteResponseDto deleteClassLog(Long userId, Long classLogId) {
-        ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
-                .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
+        ClassLog classLog = findByIdAndUserId(classLogId, userId);
 
         deleteExistedImageByClassLog(classLog);
         classLogRepository.delete(classLog);
         recentLogService.deleteRecentLog(classLog.getId(), "CLASS_LOG");
 
-        return ClassLogDeleteResponseDto.builder()
-                .id(classLog.getId())
-                .build();
+        return ClassLogDeleteResponseDto.of(classLog);
     }
 
     public int deleteClassLogs(Long userId, List<Long> classLogIds) {
@@ -85,18 +81,12 @@ public class ClassLogService {
 
     @Transactional(readOnly = true)
     public ClassLogSliceResponseDto readAllClassLog(Long userId, Long scheduleId, Pageable pageable) {
-        List<ClassLog> classLogs = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
+        List<ClassLog> classLogList = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByScheduleId(scheduleId, pageable);
-        int numberOfClassLog = classLogs.size();
         List<ClassLogResponseDto> classLogResponseDtos = allClassLogsSlice.getContent().stream()
                 .map(ClassLogResponseDto::of).toList();
 
-        return ClassLogSliceResponseDto.builder()
-                .classLogs(classLogResponseDtos)
-                .numberOfClassLog(numberOfClassLog)
-                .page(allClassLogsSlice.getPageable().getPageNumber())
-                .isLast(allClassLogsSlice.isLast())
-                .build();
+        return ClassLogSliceResponseDto.from(classLogResponseDtos, classLogList, allClassLogsSlice);
     }
 
     @Transactional(readOnly = true)
@@ -120,8 +110,8 @@ public class ClassLogService {
     }
 
     @Transactional(readOnly = true)
-    public List<ClassLogResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
-                                                                         LocalDate endDate, Long userId) {
+    public List<ClassLogResponseDto> findByClassContents(String keyword, LocalDate startDate,
+                                                         LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<ClassLog> logs = classLogRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
@@ -132,10 +122,10 @@ public class ClassLogService {
     }
 
     @Transactional(readOnly = true)
-    public List<ClassLogResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
-                                                                                              LocalDate startDate,
-                                                                                              LocalDate endDate,
-                                                                                              Long userId) {
+    public List<ClassLogResponseDto> findByTitleOrClassContents(String keyword,
+                                                                LocalDate startDate,
+                                                                LocalDate endDate,
+                                                                Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<ClassLog> logs = classLogRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
@@ -147,8 +137,7 @@ public class ClassLogService {
     }
 
     public ClassLogDetailResponseDto getClassLogDetail(Long userId, Long classLogId) {
-        ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
-                .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
+        ClassLog classLog = findByIdAndUserId(classLogId, userId);
         List<ClassLogImage> classLogImages = classLogImageRepository.findClassLogImagesByClassLogId(classLogId);
         recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
         return new ClassLogDetailResponseDto(classLog, classLogImages);
@@ -157,8 +146,7 @@ public class ClassLogService {
     public ClassLogResponseDto updateClassLog(Long userId, Long classLogId,
                                               ClassLogUpdateRequestDto classLogUpdateRequestDto,
                                               List<MultipartFile> classLogImages) {
-        ClassLog classLog = classLogRepository.findByIdAndUserId(classLogId, userId)
-                .orElseThrow(() -> CustomException.CLASS_LOG_NOT_FOUNT);
+        ClassLog classLog = findByIdAndUserId(classLogId, userId);
         updateEachClassLogItem(classLogUpdateRequestDto, classLog, classLogImages);
         recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
         return ClassLogResponseDto.of(classLog);
@@ -210,22 +198,17 @@ public class ClassLogService {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
-        List<ClassLog> classLogs = classLogRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId,
+        List<ClassLog> classLogList = classLogRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId,
+                scheduleId,
                 startOfDay, endOfDay);
         Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
                 userId, scheduleId,
                 startOfDay, endOfDay, pageable);
 
-        int numberOfClassLog = classLogs.size();
         List<ClassLogResponseDto> classLogResponseDtos = allClassLogsSlice.getContent().stream()
                 .map(ClassLogResponseDto::of).toList();
 
-        return ClassLogSliceResponseDto.builder()
-                .classLogs(classLogResponseDtos)
-                .numberOfClassLog(numberOfClassLog)
-                .page(allClassLogsSlice.getPageable().getPageNumber())
-                .isLast(allClassLogsSlice.isLast())
-                .build();
+        return ClassLogSliceResponseDto.from(classLogResponseDtos, classLogList, allClassLogsSlice);
     }
 
     @Transactional(readOnly = true)
@@ -278,4 +261,18 @@ public class ClassLogService {
         }
     }
 
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> CustomExceptions.USER_NOT_FOUND);
+    }
+
+    private Schedule findScheduleById(Long scheduleId) {
+        return scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> CustomExceptions.SCHEDULE_NOT_FOUND);
+    }
+
+    private ClassLog findByIdAndUserId(Long classLogId, Long userId) {
+        return classLogRepository.findByIdAndUserId(classLogId, userId)
+                .orElseThrow(() -> new ClassLogException(ClassLogErrorCode.CLASS_LOG_NOT_FOUNT));
+    }
 }

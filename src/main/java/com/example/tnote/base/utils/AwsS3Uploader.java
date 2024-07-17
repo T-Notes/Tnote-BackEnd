@@ -1,14 +1,9 @@
 package com.example.tnote.base.utils;
 
-import static com.example.tnote.base.exception.ErrorCode.DATA_NOT_FOUND;
-import static com.example.tnote.base.exception.ErrorCode.NOT_VALID;
-import static com.example.tnote.base.exception.ErrorCode.NO_PERMISSION;
-
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
-import com.example.tnote.base.exception.CustomException;
 import com.mysema.commons.lang.Pair;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -18,8 +13,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -31,25 +26,24 @@ public class AwsS3Uploader {
     @Value("${cloud.aws.s3.bucket}")
     private String bucketName;
 
-    public Pair<String, String> upload(MultipartFile multipartFile, String dirName) {
+    public Pair<String, String> upload(MultipartFile multipartFile, String dirName){
         try {
             if (!multipartFile.isEmpty()) {
                 String originalFileName = multipartFile.getOriginalFilename();
                 String fileExtension = originalFileName.substring(originalFileName.lastIndexOf(".") + 1);
 
                 // 허용된 확장자 리스트 업데이트
-                List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png", "gif", "pdf", "xls", "xlsx", "ppt",
-                        "pptx");
+                List<String> allowedExtensions = Arrays.asList("jpg", "jpeg", "png", "gif", "pdf", "xls", "xlsx", "ppt", "pptx");
 
                 // 파일 확장자 검증
                 if (!allowedExtensions.contains(fileExtension.toLowerCase())) {
-                    throw new CustomException(NO_PERMISSION, "File이 허용되지 않습니다.");
+                    throw new IllegalStateException("File type not allowed");
                 }
 
                 String fileName = dirName + "/" + UUID.randomUUID() + "." + fileExtension;
 
                 File uploadFile = convert(multipartFile)
-                        .orElseThrow(() -> new CustomException(NOT_VALID, "File conversion failed"));
+                        .orElseThrow(() -> new RuntimeException("File conversion failed"));
 
                 amazonS3.putObject(new PutObjectRequest(bucketName, fileName, uploadFile)
                         .withCannedAcl(CannedAccessControlList.PublicRead));
@@ -57,11 +51,12 @@ public class AwsS3Uploader {
                 removeNewFile(uploadFile);
                 return Pair.of(amazonS3.getUrl(bucketName, fileName).toString(), originalFileName);
             }
-            throw new CustomException(DATA_NOT_FOUND, "File is empty and cannot be uploaded");
+            throw new IllegalStateException("File is empty and cannot be uploaded");
         } catch (IOException e) {
-            throw new CustomException(NOT_VALID, "Failed to upload file to S3");
+            throw new RuntimeException("Failed to upload file to S3", e);
         }
     }
+
 
 
     // 로컬서버에 저장된 이미지 지우기

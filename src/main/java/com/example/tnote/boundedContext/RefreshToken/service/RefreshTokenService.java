@@ -23,7 +23,7 @@ public class RefreshTokenService {
     @Transactional
     public RefreshToken save(String refreshToken, String email, Long expirationMs) {
         userRepository.findByEmail(email)
-                .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "user data가 없습니다."));
+                .orElseThrow(() -> CustomExceptions.BAD_REQUEST);
 
         // 기존의 만료된 리프레시 토큰 삭제
         if (refreshTokenRepository.existsByKeyEmail(email)) {
@@ -42,6 +42,6 @@ public class RefreshTokenService {
     @Transactional(readOnly = true)
     public RefreshToken findByRefreshToken(String refreshToken) {
         return refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> new CustomException(JWT_ERROR, "refresh token이 유효하지 않습니다."));
+                .orElseThrow(() -> CustomExceptions.WRONG_REFRESH_TOKEN);
     }
 }

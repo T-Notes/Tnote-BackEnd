@@ -1,13 +1,9 @@
 package com.example.tnote.boundedContext.archive.service;
 
-import static com.example.tnote.base.exception.ErrorCode.DATA_NOT_FOUND;
-
-import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.base.exception.ErrorCode;
 import static com.example.tnote.base.utils.DateUtils.calculateStartDate;
 
-import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.base.exception.ErrorCode;
+import com.example.tnote.base.exception.CustomExceptions;
+import com.example.tnote.base.exception.ErrorCodes;
 import com.example.tnote.boundedContext.archive.constant.DateType;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
@@ -24,25 +20,17 @@ import com.example.tnote.boundedContext.archive.dto.LogEntry;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequestDto;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponseDto;
 import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.repository.query.ClassLogQueryRepository;
-import com.example.tnote.boundedContext.classLog.service.ClassLogService;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
-import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.repository.query.ConsultationQueryRepository;
-import com.example.tnote.boundedContext.consultation.service.ConsultationService;
+import com.example.tnote.boundedContext.observation.repository.query.ObservationQueryRepository;
+import com.example.tnote.boundedContext.proceeding.repository.query.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
-import com.example.tnote.boundedContext.observation.repository.query.ObservationQueryRepository;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
-import com.example.tnote.boundedContext.proceeding.repository.query.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
@@ -127,7 +115,7 @@ public class ArchiveService {
 
     private void findUser(Long userId) {
         userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(DATA_NOT_FOUND, "user data is not found"));
+                () -> CustomExceptions.USER_NOT_FOUND);
     }
 
     public ArchiveSliceResponseDto readLogsByDate(Long userId, Long scheduleId, LocalDate startDate, LocalDate endDate,
@@ -204,13 +192,13 @@ public class ArchiveService {
             logs.addAll(observationService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
         }
         if ("content".equals((searchType))) {
-            logs.addAll(classLogService.findByContentsContaining(keyword, startDate, endDate, userId));
+            logs.addAll(classLogService.findByClassContents(keyword, startDate, endDate, userId));
             logs.addAll(consultationService.findByContentsContaining(keyword, startDate, endDate, userId));
             logs.addAll(proceedingService.findByContentsContaining(keyword, startDate, endDate, userId));
             logs.addAll(observationService.findByContentsContaining(keyword, startDate, endDate, userId));
         }
         if ("titleAndContent".equals(searchType)) {
-            logs.addAll(classLogService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
+            logs.addAll(classLogService.findByTitleOrClassContents(keyword, startDate,
                     endDate, userId));
             logs.addAll(consultationService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
                     endDate, userId));
@@ -239,12 +227,12 @@ public class ArchiveService {
 
     public ArchiveResponseDto readDailyLogs(Long userId, Long scheduleId, LocalDate date) {
         Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> CustomException.SCHEDULE_NOT_FOUND);
+                .orElseThrow(() -> CustomExceptions.SCHEDULE_NOT_FOUND);
         LocalDate startDate = schedule.getStartDate();
         LocalDate endDate = schedule.getEndDate();
 
         if (date.isBefore(startDate) || (endDate != null && date.isAfter(endDate))) {
-            throw new CustomException(ErrorCode.DATES_NOT_INCLUDED_IN_SEMESTER);
+            throw new CustomExceptions(ErrorCodes.DATES_NOT_INCLUDED_IN_SEMESTER);
         }
         List<ClassLogResponseDto> classLogs = classLogService.readDailyClassLog(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, scheduleId,

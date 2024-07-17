@@ -1,9 +1,7 @@
 package com.example.tnote.boundedContext.schedule.service;
 
 
-import static com.example.tnote.base.exception.ErrorCode.DATA_NOT_FOUND;
-
-import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.boundedContext.classLog.repository.query.ClassLogQueryRepository;
 import com.example.tnote.boundedContext.consultation.repository.query.ConsultationQueryRepository;
 import com.example.tnote.boundedContext.observation.repository.query.ObservationQueryRepository;
@@ -20,6 +18,7 @@ import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
+import com.example.tnote.boundedContext.user.service.UserService;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -42,12 +41,13 @@ public class ScheduleService {
     private final ConsultationQueryRepository consultationQueryRepository;
     private final ObservationQueryRepository observationQueryRepository;
     private final RecentLogRepository recentLogRepository;
+    private final UserService userService;
 
     @Transactional
     public ScheduleResponseDto addSchedule(ScheduleRequestDto dto, Long userId) {
 
         User currentUser = userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(DATA_NOT_FOUND, "user가 없습니다"));
+                () -> CustomExceptions.USER_NOT_FOUND);
 
         Schedule schedule = dto.toEntity(currentUser);
 
@@ -92,16 +92,16 @@ public class ScheduleService {
         proceedingQueryRepository.deleteAllByScheduleIdAndUserId(scheduleId, userId);
         consultationQueryRepository.deleteAllByScheduleIdAndUserId(scheduleId, userId);
         observationQueryRepository.deleteAllByScheduleIdAndUserId(scheduleId, userId);
-        
-        // TODO : For queries with named parameters you need to provide names for method parameters 에러
-//        recentLogRepository.deleteAllByUserIdAndScheduleId(userId, scheduleId);
+        recentLogRepository.deleteAllByUserIdAndScheduleId(userId, scheduleId);
 
         if (currentUser.getLastScheduleId() == scheduleId) {
             currentUser.updateLastScheduleName(null);
             currentUser.updateLastScheduleId(0);
         }
 
-        return ScheduleDeleteResponseDto.of(own);
+        return ScheduleDeleteResponseDto.builder()
+                .id(own.getId())
+                .build();
     }
 
     private Schedule authorizationWriter(Long id, User member) {
@@ -201,12 +201,12 @@ public class ScheduleService {
 
     private Schedule getSchedule(Long scheduleId) {
         return scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new CustomException(DATA_NOT_FOUND, "schedule이 없습니다."));
+                () -> CustomExceptions.SCHEDULE_NOT_FOUND);
     }
 
     private User checkCurrentUser(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> new CustomException(DATA_NOT_FOUND, "user가 없습니다."));
+                () -> CustomExceptions.USER_NOT_FOUND);
     }
 
     private void matchUserWithSchedule(Long scheduleId, Long userId) {
@@ -215,20 +215,20 @@ public class ScheduleService {
 
         if (!schedule.getUser().equals(currentUser)) {
             log.warn("스케쥴 작성자와 현재 유저가 다른 유저입니다.");
-            throw new CustomException(DATA_NOT_FOUND, "user가 없습니다.");
+            throw CustomExceptions.USER_NOT_FOUND;
         }
     }
 
     private void checkUser(Long userId) {
         if (userId == null) {
             log.warn("없는 user 입니다");
-            throw new CustomException(DATA_NOT_FOUND, "user가 없습니다.");
+            throw CustomExceptions.USER_NOT_FOUND;
         }
     }
 
     private void compareScheduleWithUser(Long userId, Schedule schedule) {
         if (!schedule.getUser().getId().equals(userId)) {
-            throw new CustomException(DATA_NOT_FOUND, "user가 없습니다.");
+            throw CustomExceptions.USER_NOT_FOUND;
         }
     }
 
