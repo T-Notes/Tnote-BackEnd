@@ -7,18 +7,17 @@ import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepo
 import com.example.tnote.boundedContext.user.dto.JwtResponse;
 import com.example.tnote.boundedContext.user.dto.KakaoUnlinkResponse;
 import com.example.tnote.boundedContext.user.dto.KakaoUserInfo;
+import com.example.tnote.boundedContext.user.dto.OauthRefreshDto;
 import com.example.tnote.boundedContext.user.dto.Token;
 import com.example.tnote.boundedContext.user.dto.TokenResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
+import com.example.tnote.boundedContext.user.service.feign.KakaoAuthClient;
+import com.example.tnote.boundedContext.user.service.feign.KakaoInfoClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
 
 @Service
@@ -30,6 +29,8 @@ public class KakaoRequestService implements RequestService {
     private final RefreshTokenRepository refreshTokenRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final WebClient webClient;
+    private final KakaoAuthClient kakaoAuthClient;
+    private final KakaoInfoClient kakaoInfoClient;
 
     @Value("${spring.security.oauth2.client.registration.kakao.authorization-grant-type}")
     private String GRANT_TYPE;
@@ -67,67 +68,42 @@ public class KakaoRequestService implements RequestService {
             refreshTokenRepository.save(newRefreshToken);
 
             return getBuild(newToken_AccessToken.getAccessToken(), newToken_RefreshToken.getRefreshToken(), user,
-                    tokenResponse.getAccessToken());
+                    tokenResponse.getRefreshToken());
         }
 
         RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
                 .orElseThrow(() -> CustomExceptions.WRONG_REFRESH_TOKEN);
 
         return getBuild(newToken_AccessToken.getAccessToken(), refreshToken.getRefreshToken(), user,
-                tokenResponse.getAccessToken());
+                tokenResponse.getRefreshToken());
     }
 
-    private JwtResponse getBuild(String accessToken, String refreshToken, User user, String oauthToken) {
+    private JwtResponse getBuild(String accessToken, String refreshToken, User user, String oauthRefreshToken) {
         return JwtResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .userId(user.getId())
-                .oauthAccessToken(oauthToken)
+                .oauthRefreshToken(oauthRefreshToken)
                 .build();
     }
 
     @Override
     public TokenResponse getToken(String code) {
-        MultiValueMap<String, String> formData = new LinkedMultiValueMap<>();
-        formData.add("grant_type", GRANT_TYPE);
-        formData.add("redirect_uri", REDIRECT_URI);
-        formData.add("client_id", CLIENT_ID);
-        formData.add("code", code);
-
-        return webClient.mutate()
-                .baseUrl(TOKEN_URI)
-                .build()
-                .post()
-                .contentType(MediaType.APPLICATION_FORM_URLENCODED)
-                .body(BodyInserters.fromFormData(formData))
-                .retrieve()
-                .bodyToMono(TokenResponse.class)
-                .block();
+        return kakaoAuthClient.getToken(GRANT_TYPE, CLIENT_ID, REDIRECT_URI, code);
     }
 
     @Override
     public KakaoUserInfo getUserInfo(String accessToken) {
-        return webClient.mutate()
-                .baseUrl("https://kapi.kakao.com")
-                .build()
-                .get()
-                .uri("/v2/user/me")
-                .headers(h -> h.setBearerAuth(accessToken))
-                .retrieve()
-                .bodyToMono(KakaoUserInfo.class)
-                .block();
+        return kakaoInfoClient.getUserInfo("Bearer " + accessToken);
     }
 
     @Override
     public KakaoUnlinkResponse unLink(String accessToken) {
-        return webClient.mutate()
-                .baseUrl("https://kapi.kakao.com")
-                .build()
-                .post()
-                .uri("/v1/user/unlink")
-                .headers(h -> h.setBearerAuth(accessToken))
-                .retrieve()
-                .bodyToMono(KakaoUnlinkResponse.class)
-                .block();
+        return kakaoInfoClient.unlink("Bearer " + accessToken);
     }
+
+    public OauthRefreshDto refresh(String refreshToken) {
+        return kakaoAuthClient.refresh("refresh_token", CLIENT_ID, refreshToken);
+    }
+
 }
