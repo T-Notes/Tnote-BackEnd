@@ -11,10 +11,10 @@ import lombok.NoArgsConstructor;
 public class TokenResponse {
 
     private String tokenType;
-    private String accessToken;
-    private Integer expiresIn;
-    private String refreshToken;
-    private Integer refreshTokenExpiresIn;
+    private String accessToken; // oauth access token
+    private Integer expiresIn; // oauth access token expire time
+    private String refreshToken; // oauth refresh token
+    private Integer refreshTokenExpiresIn; // oauth refresh token expire time
     private String error;
     private String errorDescription;
 }

@@ -200,11 +200,11 @@ public class UserController {
     })
     public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal PrincipalDetails user
             , HttpServletRequest request) {
-        String oauthAccessToken = request.getHeader("oauthAccessToken");
+        String oauthRefreshToken = request.getHeader("oauthRefreshToken");
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        UserDeleteResponseDto response = authService.deleteUser(currentUser.getId(), oauthAccessToken);
+        UserDeleteResponseDto response = authService.deleteUser(currentUser.getId(), oauthRefreshToken);
 
         return ResponseEntity.ok(Result.of(response));
     }

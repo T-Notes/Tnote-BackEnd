@@ -10,6 +10,7 @@ import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepo
 import com.example.tnote.boundedContext.RefreshToken.service.RefreshTokenService;
 import com.example.tnote.boundedContext.user.dto.JwtResponse;
 import com.example.tnote.boundedContext.user.dto.KakaoUnlinkResponse;
+import com.example.tnote.boundedContext.user.dto.OauthRefreshDto;
 import com.example.tnote.boundedContext.user.dto.Token;
 import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -67,14 +68,16 @@ public class AuthService {
     }
 
     @Transactional
-    public UserDeleteResponseDto deleteUser(Long userId, String oauthAccessToken) {
+    public UserDeleteResponseDto deleteUser(Long userId, String oauthRefreshToken) {
 
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(DATA_NOT_FOUND, "user 정보가 없습니다. "));
 
         deleteAll(currentUser);
 
-        KakaoUnlinkResponse unlink = kakaoRequestService.unLink(oauthAccessToken);
+        OauthRefreshDto dto = kakaoRequestService.refresh(oauthRefreshToken);
+
+        KakaoUnlinkResponse unlink = kakaoRequestService.unLink(dto.getAccess_token());
 
         return UserDeleteResponseDto.builder()
                 .id(unlink.getId())
