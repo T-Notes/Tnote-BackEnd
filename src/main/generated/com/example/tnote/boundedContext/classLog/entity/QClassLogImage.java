@@ -30,6 +30,8 @@ public class QClassLogImage extends EntityPathBase<ClassLogImage> {
 
     public final StringPath name = createString("name");
 
+    public final NumberPath<Long> version = createNumber("version", Long.class);
+
     public QClassLogImage(String variable) {
         this(ClassLogImage.class, forVariable(variable), INITS);
     }

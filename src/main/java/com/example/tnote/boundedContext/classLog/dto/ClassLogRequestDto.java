@@ -1,8 +1,9 @@
 package com.example.tnote.boundedContext.classLog.dto;
 
-import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.classLog.exception.ClassLogErrorCode;
+import com.example.tnote.boundedContext.classLog.exception.ClassLogException;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.user.entity.User;
 import java.time.LocalDateTime;
@@ -42,16 +43,16 @@ public class ClassLogRequestDto {
 
     private void validate() {
         if (title == null || title.trim().isEmpty()) {
-            throw CustomException.INVALID_CLASS_LOG_DATA;
+            throw new ClassLogException(ClassLogErrorCode.INVALID_CLASS_LOG_DATA);
         }
         if (startDate == null) {
-            throw CustomException.INVALID_CLASS_LOG_DATA;
+            throw new ClassLogException(ClassLogErrorCode.INVALID_CLASS_LOG_DATA);
         }
         if (endDate == null) {
-            throw CustomException.INVALID_CLASS_LOG_DATA;
+            throw new ClassLogException(ClassLogErrorCode.INVALID_CLASS_LOG_DATA);
         }
         if (endDate.isBefore(startDate)) {
-            throw CustomException.INVALID_CLASS_LOG_DATA;
+            throw new ClassLogException(ClassLogErrorCode.INVALID_CLASS_LOG_DATA);
         }
     }
 }

@@ -1,5 +1,8 @@
 package com.example.tnote.base.utils;
 
+import static com.example.tnote.base.exception.ErrorCode.NO_PERMISSION;
+
+import com.example.tnote.base.exception.CustomException;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -61,7 +64,7 @@ public class FindCityUtils {
         urlConnection.setDoInput(true);
 
         if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-            throw new IOException("HTTP error code : " + urlConnection.getResponseCode());
+            throw new CustomException(NO_PERMISSION, "http connection 에러");
         }
         return urlConnection.getInputStream();
     }

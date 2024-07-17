@@ -3,7 +3,7 @@ package com.example.tnote.archive;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
@@ -113,7 +113,7 @@ public class ArchiveServiceTest {
         // then
         assertThatThrownBy(
                 () -> homeService.findAllOfConsultation(consultation.getTitle(), 222L, schedule1.getId()))
-                .isInstanceOf(CustomException.class);
+                .isInstanceOf(CustomExceptions.class);
     }
 
     @Test
@@ -151,7 +151,7 @@ public class ArchiveServiceTest {
         // then
         assertThatThrownBy(
                 () -> homeService.findAllOfObservation(observation.getTitle(), 222L, schedule1.getId()))
-                .isInstanceOf(CustomException.class);
+                .isInstanceOf(CustomExceptions.class);
     }
 
 
@@ -192,7 +192,7 @@ public class ArchiveServiceTest {
 
         // then
         assertThatThrownBy(() -> homeService.findAllOfClassLog(classLog.getTitle(), 222L, schedule1.getId()))
-                .isInstanceOf(CustomException.class);
+                .isInstanceOf(CustomExceptions.class);
     }
 
     @Test
@@ -229,7 +229,7 @@ public class ArchiveServiceTest {
 
         // then
         assertThatThrownBy(() -> homeService.findAllOfProceeding(proceeding.getTitle(), 222L, schedule1.getId()))
-                .isInstanceOf(CustomException.class);
+                .isInstanceOf(CustomExceptions.class);
     }
 
     @Test
@@ -255,7 +255,7 @@ public class ArchiveServiceTest {
 
         // then
         assertThatThrownBy(() -> scheduleService.searchSemester("2024년 3학년 1학기", null))
-                .isInstanceOf(CustomException.class);
+                .isInstanceOf(CustomExceptions.class);
     }
 
 }

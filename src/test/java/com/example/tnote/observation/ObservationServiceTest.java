@@ -9,7 +9,7 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
@@ -102,7 +102,7 @@ public class ObservationServiceTest {
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());
 
-        assertThatExceptionOfType(CustomException.class)
+        assertThatExceptionOfType(CustomExceptions.class)
                 .isThrownBy(() -> observationService.save(userId, scheduleId, requestDto, observationImages));
 
         verify(userRepository).findById(userId);
@@ -175,7 +175,7 @@ public class ObservationServiceTest {
         when(observationRepository.findByIdAndUserId(observationId, userId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> observationService.readObservationDetail(userId, observationId))
-                .isInstanceOf(CustomException.class);
+                .isInstanceOf(CustomExceptions.class);
     }
 
     @DisplayName("관찰일지 삭제: 관찰일지 삭제 작업 확인")
