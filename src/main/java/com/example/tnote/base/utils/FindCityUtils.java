@@ -1,8 +1,9 @@
 package com.example.tnote.base.utils;
 
-import static com.example.tnote.base.exception.ErrorCode.NO_PERMISSION;
 
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
+import com.example.tnote.base.exception.ErrorCodes;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -64,7 +65,7 @@ public class FindCityUtils {
         urlConnection.setDoInput(true);
 
         if (urlConnection.getResponseCode() != HttpURLConnection.HTTP_OK) {
-            throw new CustomException(NO_PERMISSION, "http connection 에러");
+            throw new CustomExceptions(ErrorCodes.NOT_EXPIRED_TOKEN); //todo 임시 예외 코드 추후 수정필요
         }
         return urlConnection.getInputStream();
     }

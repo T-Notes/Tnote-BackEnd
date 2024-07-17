@@ -1,9 +1,7 @@
 package com.example.tnote.boundedContext.RefreshToken.service;
 
-import static com.example.tnote.base.exception.ErrorCode.DATA_NOT_FOUND;
-import static com.example.tnote.base.exception.ErrorCode.JWT_ERROR;
-
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
 import com.example.tnote.boundedContext.user.repository.UserRepository;

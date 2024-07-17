@@ -1,8 +1,9 @@
 package com.example.tnote.base.utils;
 
-import static com.example.tnote.base.exception.ErrorCode.NOT_VALID;
+import static com.example.tnote.base.exception.ErrorCodes.NOT_VALID_FIELD;
 
 import com.example.tnote.base.exception.CustomException;
+import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponseDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -27,7 +28,7 @@ public class LogEntryCreator {
             // Map 객체를 JSON 문자열로 변환
             return objectMapper.writeValueAsString(logEntryMap);
         } catch (Exception e) {
-            throw new CustomException(NOT_VALID, "Failed to create log entry");
+            throw new CustomExceptions(NOT_VALID_FIELD);
         }
     }
 
@@ -35,7 +36,7 @@ public class LogEntryCreator {
         try {
             return objectMapper.readValue(logEntry, RecentLogResponseDto.class);
         } catch (Exception e) {
-            throw new CustomException(NOT_VALID, "Failed to convert log entry to DTO");
+            throw new CustomExceptions(NOT_VALID_FIELD);
         }
     }
 }
