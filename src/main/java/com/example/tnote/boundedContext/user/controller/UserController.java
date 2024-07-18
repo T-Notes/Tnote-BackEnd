@@ -1,7 +1,8 @@
 package com.example.tnote.boundedContext.user.controller;
 
 import com.example.tnote.base.response.Result;
-import com.example.tnote.base.utils.FindCityUtils;
+import com.example.tnote.base.utils.SchoolPlanUtil;
+import com.example.tnote.base.utils.SchoolUtils;
 import com.example.tnote.base.utils.TokenUtils;
 import com.example.tnote.boundedContext.user.dto.UserAlarmUpdate;
 import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
@@ -11,7 +12,10 @@ import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.service.AuthService;
 import com.example.tnote.boundedContext.user.service.UserService;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -54,7 +58,8 @@ public class UserController {
 
     private final UserService userService;
     private final AuthService authService;
-    private final FindCityUtils findCityUtils;
+    private final SchoolUtils schoolUtils;
+    private final SchoolPlanUtil schoolPlanUtil;
 
     @Value("${api.career-key}")
     private String KEY;
@@ -64,67 +69,32 @@ public class UserController {
 
 
     @GetMapping("/school")
-    @Operation(summary = "search school info API", description = "학교 정보 검색 API")
+    @Operation(summary = "search school info API", description = "학교 기본 정보 검색 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> findSchool(@RequestParam("region") String region,
-                                             @RequestParam("schoolType") String schoolType,
-                                             @RequestParam("schoolName") String schoolName)
-            throws IOException, ParseException {
+    public ResponseEntity<Result> findSchoolInfo(@RequestParam("code") String code,
+                                                 @RequestParam("schoolName") String schoolName,
+                                                 @RequestParam("schoolType") String schoolType)
+            throws IOException {
+        String result = schoolUtils.schoolInfo("schoolInfo", code, schoolName, schoolType);
 
-        HttpURLConnection urlConnection = null;
-        InputStream stream = null;
-        String result = null;
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        String gubun = findCityUtils.changeGubun(schoolType);
-        int encodeRegion = findCityUtils.findCityCode(region);
-        String encodeSchoolName = URLEncoder.encode(schoolName, "UTF-8");
+        JsonNode rootNode = objectMapper.readTree(result);
+        JsonNode rowNode = rootNode.path("schoolInfo").get(1).path("row");
 
-        StringBuilder urlStr = new StringBuilder(
-                callBackUrl + "apiKey=" + KEY
-                        + "&svcType=api&svcCode=SCHOOL&contentType=json"
-                        + "&gubun=" + gubun
-                        + "&region=" + encodeRegion
-                        + "&searchSchulNm=" + encodeSchoolName);
-        try {
-            URL url = new URL(urlStr.toString());
-
-            urlConnection = (HttpURLConnection) url.openConnection();
-            stream = findCityUtils.getNetworkConnection(urlConnection);
-            result = findCityUtils.readStreamToString(stream);
-
-            if (stream != null) {
-                stream.close();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            if (urlConnection != null) {
-                urlConnection.disconnect();
-            }
+        String[] resultArray = new String[3];
+        if (rowNode.isArray() && rowNode.size() > 0) {
+            JsonNode firstRow = rowNode.get(0);
+            resultArray[0] = firstRow.path("SD_SCHUL_CODE").asText();
+            resultArray[1] = firstRow.path("SCHUL_NM").asText();
+            resultArray[2] = firstRow.path("ORG_RDNMA").asText();
         }
 
-        JSONObject parsingData = (JSONObject) new JSONParser().parse(result.toString());
+        return ResponseEntity.ok(Result.of(resultArray));
 
-        // REST API 호출 상태 출력하기
-        StringBuilder out = new StringBuilder();
-        out.append(parsingData.get("status") + " : " + parsingData.get("status_message") + "\n");
-
-        JSONObject dataSearch = (JSONObject) parsingData.get("dataSearch");
-        JSONArray content = (JSONArray) dataSearch.get("content");
-
-        ArrayList<Object> schoolList = new ArrayList<>();
-
-        // 데이터 출력하기
-        JSONObject tmp;
-        for (int i = 0; i < content.size(); i++) {
-            tmp = (JSONObject) content.get(i);
-            schoolList.add(Arrays.asList(tmp.get("schoolName"), tmp.get("adres")));
-        }
-
-        return ResponseEntity.ok(Result.of(schoolList));
     }
 
     @GetMapping
