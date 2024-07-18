@@ -30,8 +30,8 @@ spring:
       port: 6379
 
 api:
-  career-key: ENC(me8ibcck0Bw3TpcnGLcVP9AFtxf9OFvaIBqUC2aC6j9q0dhD9+Gq0jrAIF1zr/li)
-  call-back-url: "http://www.career.go.kr/cnet/openapi/getOpenApi?"
+  career-key: ENC(Njc5lZRU/nXPNWZmufc0M8vAg1Qt0USuJIRm4k1xKP/euN2ALFEAaK84GDZqKqx0)
+  call-back-url: "https://open.neis.go.kr/hub"
 
 jasypt:
   encryptor:

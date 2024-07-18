@@ -24,19 +24,10 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.minidev.json.JSONArray;
-import net.minidev.json.JSONObject;
-import net.minidev.json.parser.JSONParser;
-import net.minidev.json.parser.ParseException;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -61,13 +52,6 @@ public class UserController {
     private final SchoolUtils schoolUtils;
     private final SchoolPlanUtil schoolPlanUtil;
 
-    @Value("${api.career-key}")
-    private String KEY;
-
-    @Value("${api.call-back-url}")
-    private String callBackUrl;
-
-
     @GetMapping("/school")
     @Operation(summary = "search school info API", description = "학교 기본 정보 검색 API")
     @ApiResponses(value = {
@@ -78,6 +62,7 @@ public class UserController {
                                                  @RequestParam("schoolName") String schoolName,
                                                  @RequestParam("schoolType") String schoolType)
             throws IOException {
+
         String result = schoolUtils.schoolInfo("schoolInfo", code, schoolName, schoolType);
 
         ObjectMapper objectMapper = new ObjectMapper();
@@ -97,12 +82,44 @@ public class UserController {
 
     }
 
+    @GetMapping("/school/plan")
+    @Operation(summary = "search school plan info API", description = "학사 일정 정보 검색 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "로그인 성공"),
+            @ApiResponse(responseCode = "404", description = "로그인 실패")
+    })
+    public ResponseEntity<Result> findSchoolPlan(@RequestParam("code") String code,
+                                                 @RequestParam("scheduleCode") String scheduleCode)
+            throws IOException {
+
+        String result = schoolPlanUtil.schoolPlan("SchoolSchedule", code, scheduleCode);
+
+        ObjectMapper objectMapper = new ObjectMapper();
+
+        JsonNode rootNode = objectMapper.readTree(result);
+        JsonNode rowNode = rootNode.path("SchoolSchedule").get(1).path("row");
+
+        // 특정 필드를 추출하여 리스트로 저장
+        List<String> resultList = new ArrayList<>();
+
+        for (JsonNode node : rowNode) {
+            String AA_YMD = node.path("AA_YMD").asText(); // 학사 일자
+            String EVENT_NM = node.path("EVENT_NM").asText(); // 행사 명
+            resultList.add(
+                    String.format("AA_YMD: %s, EVENT_NM: %s", AA_YMD, EVENT_NM));
+        }
+
+        return ResponseEntity.ok(Result.of(resultList));
+
+    }
+
+
     @GetMapping
     @Operation(summary = "find user info API(with accessToken)", description = "accessToken로 User 조회 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그인 성공",
+            @ApiResponse(responseCode = "200", description = "성공",
                     content = {@Content(schema = @Schema(implementation = UserResponse.class))}),
-            @ApiResponse(responseCode = "404", description = "로그인 실패")
+            @ApiResponse(responseCode = "404", description = "실패")
     })
     public ResponseEntity<Result> getInfo(@AuthenticationPrincipal PrincipalDetails user) {
         UserResponse response = userService.findById(user.getId());
@@ -112,11 +129,12 @@ public class UserController {
     @GetMapping("/{userId}")
     @Operation(summary = "find user info api(with userId)", description = "userId로 User 조회 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그인 성공",
+            @ApiResponse(responseCode = "200", description = "성공",
                     content = {@Content(schema = @Schema(implementation = UserResponse.class))}),
-            @ApiResponse(responseCode = "404", description = "로그인 실패")
+            @ApiResponse(responseCode = "404", description = "실패")
     })
-    public ResponseEntity<Result> getUserInfo(@PathVariable Long userId) {
+    public ResponseEntity<Result> getUserInfo(
+            @Parameter(required = true, description = "userId 작성") @PathVariable Long userId) {
 
         UserResponse response = userService.getUserInfo(userId);
 
@@ -127,9 +145,9 @@ public class UserController {
     @PatchMapping
     @Operation(summary = "update user info api", description = "accessToken로 User 수정 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그인 성공",
+            @ApiResponse(responseCode = "200", description = "성공",
                     content = {@Content(schema = @Schema(implementation = UserResponse.class))}),
-            @ApiResponse(responseCode = "404", description = "로그인 실패")
+            @ApiResponse(responseCode = "404", description = "실패")
     })
     public ResponseEntity<Result> updateExtraInfo(@AuthenticationPrincipal PrincipalDetails user,
                                                   @RequestBody UserUpdateRequest dto) {
@@ -143,9 +161,9 @@ public class UserController {
     @PatchMapping("/alarm")
     @Operation(summary = "update user alarm info api", description = "accessToken로 User alarm 수정 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그인 성공",
+            @ApiResponse(responseCode = "200", description = "성공",
                     content = {@Content(schema = @Schema(implementation = UserResponse.class))}),
-            @ApiResponse(responseCode = "404", description = "로그인 실패")
+            @ApiResponse(responseCode = "404", description = "실패")
     })
     public ResponseEntity<Result> updateAlarmInfo(@AuthenticationPrincipal PrincipalDetails user,
                                                   @RequestBody UserAlarmUpdate dto) {
@@ -159,8 +177,8 @@ public class UserController {
     @PostMapping("/logout")
     @Operation(summary = "logout api", description = "로그아웃 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그인 성공"),
-            @ApiResponse(responseCode = "404", description = "로그인 실패")
+            @ApiResponse(responseCode = "200", description = "성공"),
+            @ApiResponse(responseCode = "404", description = "실패")
     })
     public ResponseEntity<Result> logout(HttpServletRequest request,
                                          HttpServletResponse response,
@@ -176,17 +194,17 @@ public class UserController {
     @DeleteMapping
     @Operation(summary = "delete user info api", description = "accessToken로 User 삭제 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그인 성공",
+            @ApiResponse(responseCode = "200", description = "성공",
                     content = {@Content(schema = @Schema(implementation = UserDeleteResponseDto.class))}),
-            @ApiResponse(responseCode = "404", description = "로그인 실패")
+            @ApiResponse(responseCode = "404", description = "실패")
     })
     public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal PrincipalDetails user
             , HttpServletRequest request) {
-        String oauthAccessToken = request.getHeader("oauthAccessToken");
+        String oauthRefreshToken = request.getHeader("oauthRefreshToken");
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        UserDeleteResponseDto response = authService.deleteUser(currentUser.getId(), oauthAccessToken);
+        UserDeleteResponseDto response = authService.deleteUser(currentUser.getId(), oauthRefreshToken);
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -195,9 +213,9 @@ public class UserController {
     @GetMapping("/mail")
     @Operation(summary = "find user mail api", description = "User 메일 조회 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그인 성공",
+            @ApiResponse(responseCode = "200", description = "성공",
                     content = {@Content(schema = @Schema(implementation = UserMailResponse.class))}),
-            @ApiResponse(responseCode = "404", description = "로그인 실패")
+            @ApiResponse(responseCode = "404", description = "실패")
     })
     public ResponseEntity<Result> getMail(@AuthenticationPrincipal PrincipalDetails user) {
 
