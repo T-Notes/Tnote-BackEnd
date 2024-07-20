@@ -27,8 +27,13 @@ public class SecurityConfig {
     private final JwtTokenProvider jwtTokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
-    private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final JwtExceptionFilter jwtExceptionFilter;
+
+    private final String[] COMMON_WHITE_LIST = new String[]
+            {
+                    "/favicon.ico/**", "/login/**", "/error/**", "/swagger-ui/**", "/v3/api-docs/**",
+                    "/tnote/v1/user/school", "/tnote/v1/user/school/plan", "/tnote/v1/refresh"
+            };
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -54,9 +59,7 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(authorizeRequests ->
                         authorizeRequests
-                                .requestMatchers("/favicon.ico/**", "/login/**", "/error/**", "/tnote/v1/refresh",
-                                        "/tnote/v1/user/school", "/tnote/v1/user/school/plan", "/swagger-ui/**",
-                                        "/v3/api-docs/**").permitAll()
+                                .requestMatchers(COMMON_WHITE_LIST).permitAll()
                                 .anyRequest().authenticated()
                 )
                 .cors(

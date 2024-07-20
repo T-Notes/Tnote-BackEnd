@@ -1,6 +1,9 @@
 package com.example.tnote.boundedContext.user.service;
 
-import com.example.tnote.base.exception.CustomExceptions;
+import static com.example.tnote.boundedContext.user.exception.UserErrorCode.EXPIRED_REFRESH_TOKEN;
+import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
+
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.JwtTokenProvider;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
@@ -39,7 +42,7 @@ public class AuthService {
 
         if (jwtTokenProvider.isExpired(refreshToken)) {
             // refresh token 만료시 재로그인 필요
-            throw CustomExceptions.EXPIRED_REFRESH_TOKEN;
+            throw new CustomException(EXPIRED_REFRESH_TOKEN);
         }
 
         RefreshToken refreshTokenObj = refreshTokenService.findByRefreshToken(refreshToken);
@@ -53,7 +56,7 @@ public class AuthService {
 
     private User getUserFromRefreshToken(RefreshToken refreshToken) {
         return userRepository.findByEmail(refreshToken.getKeyEmail())
-                .orElseThrow(() -> CustomExceptions.USER_NOT_FOUND);
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
 
     private JwtResponse buildSignInResponse(String accessToken, String refreshToken, Long userId) {
@@ -68,7 +71,7 @@ public class AuthService {
     public UserDeleteResponseDto deleteUser(Long userId, String oauthRefreshToken) {
 
         User currentUser = userRepository.findById(userId)
-                .orElseThrow(() -> CustomExceptions.USER_NOT_FOUND);
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
         deleteAll(currentUser);
 
@@ -76,9 +79,7 @@ public class AuthService {
 
         KakaoUnlinkResponse unlink = kakaoRequestService.unLink(dto.getAccess_token());
 
-        return UserDeleteResponseDto.builder()
-                .id(unlink.getId())
-                .build();
+        return UserDeleteResponseDto.of(unlink);
     }
 
     // 연관키로 묶여 있음
