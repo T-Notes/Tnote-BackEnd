@@ -1,9 +1,12 @@
 package com.example.tnote.boundedContext.user.service;
 
+import static com.example.tnote.boundedContext.user.exception.UserErrorCode.INVALID_REFRESH_TOKEN;
 import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
 
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.CookieUtils;
+import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
+import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
 import com.example.tnote.boundedContext.user.dto.UserAlarmUpdate;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
@@ -25,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     protected final ConsultationRepository consultationRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
     public UserResponse signUp(String email, String name) {
@@ -88,10 +92,14 @@ public class UserService {
     @Transactional
     public void logout(HttpServletRequest request, HttpServletResponse response, Long userId) {
 
-        userRepository.findById(userId)
+        User user = userRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
 
-        // TODO : 로그아웃 진행시 리프래쉬 삭제 ( refresh 토큰 블랙 리스팅 )
+        RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
+                .orElseThrow(() -> new CustomException(INVALID_REFRESH_TOKEN));
+
+        refreshTokenRepository.delete(refreshToken);
+
         CookieUtils.deleteCookie(request, response, "AccessToken");
     }
 
