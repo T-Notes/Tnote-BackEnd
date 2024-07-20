@@ -1,7 +1,7 @@
 package com.example.tnote.boundedContext.todo.service;
 
 
-import static com.example.tnote.boundedContext.todo.exception.TodoErrorCode.SCHEDULE_NOT_FOUND;
+import static com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode.SCHEDULE_NOT_FOUND;
 import static com.example.tnote.boundedContext.todo.exception.TodoErrorCode.TODO_NOT_FOUND;
 import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
 

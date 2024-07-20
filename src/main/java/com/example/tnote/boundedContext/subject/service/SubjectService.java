@@ -1,9 +1,9 @@
 package com.example.tnote.boundedContext.subject.service;
 
 
+import static com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode.SCHEDULE_NOT_FOUND;
 import static com.example.tnote.boundedContext.subject.exception.SubjectErrorCode.SUBJECT_NOT_FOUND;
 import static com.example.tnote.boundedContext.subject.exception.SubjectErrorCode.WRONG_CLASS_TIME;
-import static com.example.tnote.boundedContext.todo.exception.TodoErrorCode.SCHEDULE_NOT_FOUND;
 import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
 
 import com.example.tnote.base.exception.CustomException;

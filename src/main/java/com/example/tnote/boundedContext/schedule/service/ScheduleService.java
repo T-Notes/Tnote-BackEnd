@@ -1,6 +1,10 @@
 package com.example.tnote.boundedContext.schedule.service;
 
 
+import static com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode.SCHEDULE_NOT_FOUND;
+import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
+
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.classLog.repository.query.ClassLogQueryRepository;
 import com.example.tnote.boundedContext.consultation.repository.query.ConsultationQueryRepository;
 import com.example.tnote.boundedContext.observation.repository.query.ObservationQueryRepository;
@@ -17,7 +21,6 @@ import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
-import com.example.tnote.boundedContext.user.service.UserService;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
@@ -40,13 +43,12 @@ public class ScheduleService {
     private final ConsultationQueryRepository consultationQueryRepository;
     private final ObservationQueryRepository observationQueryRepository;
     private final RecentLogRepository recentLogRepository;
-    private final UserService userService;
 
     @Transactional
     public ScheduleResponseDto addSchedule(ScheduleRequestDto dto, Long userId) {
 
         User currentUser = userRepository.findById(userId).orElseThrow(
-                () -> CustomException.USER_NOT_FOUND);
+                () -> new CustomException(USER_NOT_FOUND));
 
         Schedule schedule = dto.toEntity(currentUser);
 
@@ -98,9 +100,7 @@ public class ScheduleService {
             currentUser.updateLastScheduleId(0);
         }
 
-        return ScheduleDeleteResponseDto.builder()
-                .id(own.getId())
-                .build();
+        return ScheduleDeleteResponseDto.of(own);
     }
 
     private Schedule authorizationWriter(Long id, User member) {
@@ -200,12 +200,12 @@ public class ScheduleService {
 
     private Schedule getSchedule(Long scheduleId) {
         return scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> CustomException.SCHEDULE_NOT_FOUND);
+                () -> new CustomException(SCHEDULE_NOT_FOUND));
     }
 
     private User checkCurrentUser(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> CustomException.USER_NOT_FOUND);
+                () -> new CustomException(USER_NOT_FOUND));
     }
 
     private void matchUserWithSchedule(Long scheduleId, Long userId) {
@@ -214,20 +214,20 @@ public class ScheduleService {
 
         if (!schedule.getUser().equals(currentUser)) {
             log.warn("스케쥴 작성자와 현재 유저가 다른 유저입니다.");
-            throw CustomException.USER_NOT_FOUND;
+            throw new CustomException(USER_NOT_FOUND);
         }
     }
 
     private void checkUser(Long userId) {
         if (userId == null) {
             log.warn("없는 user 입니다");
-            throw CustomException.USER_NOT_FOUND;
+            throw new CustomException(USER_NOT_FOUND);
         }
     }
 
     private void compareScheduleWithUser(Long userId, Schedule schedule) {
         if (!schedule.getUser().getId().equals(userId)) {
-            throw CustomException.USER_NOT_FOUND;
+            throw new CustomException(USER_NOT_FOUND);
         }
     }
 
