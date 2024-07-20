@@ -1,9 +1,9 @@
 package com.example.tnote.boundedContext.archive.service;
 
 import static com.example.tnote.base.utils.DateUtils.calculateStartDate;
+import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
 
-import com.example.tnote.base.exception.CustomExceptions;
-import com.example.tnote.base.exception.ErrorCodes;
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.archive.constant.DateType;
 import com.example.tnote.boundedContext.archive.constant.LogType;
 import com.example.tnote.boundedContext.archive.dto.ArchiveResponseDto;
@@ -115,7 +115,7 @@ public class ArchiveService {
 
     private void findUser(Long userId) {
         userRepository.findById(userId).orElseThrow(
-                () -> CustomExceptions.USER_NOT_FOUND);
+                () -> new CustomException(USER_NOT_FOUND));
     }
 
     public ArchiveSliceResponseDto readLogsByDate(Long userId, Long scheduleId, LocalDate startDate, LocalDate endDate,
