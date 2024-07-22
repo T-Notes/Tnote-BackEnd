@@ -4,7 +4,6 @@ import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.base.exception.ErrorCodes;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
-import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
@@ -15,6 +14,7 @@ import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingImageRepository;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -130,7 +130,7 @@ public class ProceedingService {
 
     @Transactional(readOnly = true)
     public List<ProceedingResponseDto> findByTitleContainingAndDateBetween(String keyword, LocalDate startDate,
-                                                                         LocalDate endDate, Long userId) {
+                                                                           LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
@@ -142,7 +142,7 @@ public class ProceedingService {
 
     @Transactional(readOnly = true)
     public List<ProceedingResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
-                                                                 LocalDate endDate, Long userId) {
+                                                                LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
@@ -154,9 +154,9 @@ public class ProceedingService {
 
     @Transactional(readOnly = true)
     public List<ProceedingResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
-                                                                                              LocalDate startDate,
-                                                                                              LocalDate endDate,
-                                                                                              Long userId) {
+                                                                                                LocalDate startDate,
+                                                                                                LocalDate endDate,
+                                                                                                Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByTitleOrPlanOrClassContentsContaining(keyword,

@@ -126,7 +126,7 @@ public class ObservationService {
 
     @Transactional(readOnly = true)
     public List<ObservationResponseDto> findByTitleContainingAndDateBetween(String keyword, LocalDate startDate,
-                                                                             LocalDate endDate, Long userId) {
+                                                                            LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Observation> logs = observationRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
@@ -138,7 +138,7 @@ public class ObservationService {
 
     @Transactional(readOnly = true)
     public List<ObservationResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
-                                                                  LocalDate endDate, Long userId) {
+                                                                 LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Observation> logs = observationRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
@@ -150,9 +150,9 @@ public class ObservationService {
 
     @Transactional(readOnly = true)
     public List<ObservationResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
-                                                                                                  LocalDate startDate,
-                                                                                                  LocalDate endDate,
-                                                                                                  Long userId) {
+                                                                                                 LocalDate startDate,
+                                                                                                 LocalDate endDate,
+                                                                                                 Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Observation> logs = observationRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
