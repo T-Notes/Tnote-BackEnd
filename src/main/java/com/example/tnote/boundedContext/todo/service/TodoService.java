@@ -5,7 +5,6 @@ import static com.example.tnote.boundedContext.schedule.exception.ScheduleErrorC
 import static com.example.tnote.boundedContext.todo.exception.TodoErrorCode.TODO_NOT_FOUND;
 import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
 
-import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
@@ -15,6 +14,7 @@ import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
 import com.example.tnote.boundedContext.todo.dto.TodoSliceResponseDto;
 import com.example.tnote.boundedContext.todo.dto.TodoUpdateRequestDto;
 import com.example.tnote.boundedContext.todo.entity.Todo;
+import com.example.tnote.boundedContext.todo.exception.TodoException;
 import com.example.tnote.boundedContext.todo.repository.TodoQueryRepository;
 import com.example.tnote.boundedContext.todo.repository.TodoRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -107,29 +107,29 @@ public class TodoService {
 
         if (!schedule.getUser().equals(currentUser)) {
             log.warn("학기를 작성한 user와 현 user가 다릅니다");
-            throw new CustomException(USER_NOT_FOUND);
+            throw new TodoException(USER_NOT_FOUND);
         }
     }
 
     private User checkCurrentUser(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+                .orElseThrow(() -> new TodoException(USER_NOT_FOUND));
     }
 
     private Schedule checkSchedule(Long id) {
         return scheduleRepository.findById(id)
-                .orElseThrow(() -> new CustomException(SCHEDULE_NOT_FOUND));
+                .orElseThrow(() -> new TodoException(SCHEDULE_NOT_FOUND));
     }
 
 
     private Todo authorization(Long id, User member) {
 
         Todo todos = todoRepository.findById(id).orElseThrow(
-                () -> new CustomException(TODO_NOT_FOUND));
+                () -> new TodoException(TODO_NOT_FOUND));
 
         if (!todos.getUser().getId().equals(member.getId())) {
             log.warn("member doesn't have authentication , user {}", todos.getUser());
-            throw new CustomException(USER_NOT_FOUND);
+            throw new TodoException(USER_NOT_FOUND);
         }
         return todos;
 

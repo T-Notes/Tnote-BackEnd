@@ -1,10 +1,10 @@
 package com.example.tnote.boundedContext.RefreshToken.service;
 
-import static com.example.tnote.base.exception.ErrorCode.DATA_NOT_FOUND;
-import static com.example.tnote.base.exception.ErrorCode.JWT_ERROR;
 
-import com.example.tnote.base.exception.CustomException;
+import static com.example.tnote.boundedContext.RefreshToken.exception.RefreshTokenErrorCode.INVALID_REFRESH_TOKEN;
+
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
+import com.example.tnote.boundedContext.RefreshToken.exception.RefreshTokenException;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDateTime;
@@ -23,7 +23,7 @@ public class RefreshTokenService {
     @Transactional
     public RefreshToken save(String refreshToken, String email, Long expirationMs) {
         userRepository.findByEmail(email)
-                .orElseThrow(() -> CustomExceptions.BAD_REQUEST);
+                .orElseThrow(() -> new RefreshTokenException(INVALID_REFRESH_TOKEN));
 
         // 기존의 만료된 리프레시 토큰 삭제
         if (refreshTokenRepository.existsByKeyEmail(email)) {
@@ -42,6 +42,6 @@ public class RefreshTokenService {
     @Transactional(readOnly = true)
     public RefreshToken findByRefreshToken(String refreshToken) {
         return refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(() -> CustomExceptions.WRONG_REFRESH_TOKEN);
+                .orElseThrow(() -> new RefreshTokenException(INVALID_REFRESH_TOKEN));
     }
 }
