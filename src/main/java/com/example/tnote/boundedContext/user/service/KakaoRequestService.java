@@ -2,7 +2,6 @@ package com.example.tnote.boundedContext.user.service;
 
 import static com.example.tnote.boundedContext.user.exception.UserErrorCode.INVALID_REFRESH_TOKEN;
 
-import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.JwtTokenProvider;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
@@ -14,6 +13,7 @@ import com.example.tnote.boundedContext.user.dto.Token;
 import com.example.tnote.boundedContext.user.dto.TokenResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
 import com.example.tnote.boundedContext.user.entity.User;
+import com.example.tnote.boundedContext.user.exception.UserException;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import com.example.tnote.boundedContext.user.service.feign.KakaoAuthClient;
 import com.example.tnote.boundedContext.user.service.feign.KakaoInfoClient;
@@ -72,7 +72,7 @@ public class KakaoRequestService implements RequestService {
         }
 
         RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
-                .orElseThrow(() -> new CustomException(INVALID_REFRESH_TOKEN));
+                .orElseThrow(() -> new UserException(INVALID_REFRESH_TOKEN));
 
         return getBuild(newToken_AccessToken.getAccessToken(), refreshToken.getRefreshToken(), user,
                 tokenResponse.getRefreshToken());

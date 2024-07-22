@@ -14,6 +14,7 @@ import com.example.tnote.boundedContext.user.dto.OauthRefreshDto;
 import com.example.tnote.boundedContext.user.dto.Token;
 import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
 import com.example.tnote.boundedContext.user.entity.User;
+import com.example.tnote.boundedContext.user.exception.UserException;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -56,7 +57,7 @@ public class AuthService {
 
     private User getUserFromRefreshToken(RefreshToken refreshToken) {
         return userRepository.findByEmail(refreshToken.getKeyEmail())
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
     }
 
     private JwtResponse buildSignInResponse(String accessToken, String refreshToken, Long userId) {
@@ -71,7 +72,7 @@ public class AuthService {
     public UserDeleteResponseDto deleteUser(Long userId, String oauthRefreshToken) {
 
         User currentUser = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
         deleteAll(currentUser);
 
