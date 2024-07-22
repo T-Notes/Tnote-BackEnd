@@ -1,7 +1,11 @@
 package com.example.tnote.boundedContext.todo.service;
 
 
-import com.example.tnote.base.exception.CustomExceptions;
+import static com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode.SCHEDULE_NOT_FOUND;
+import static com.example.tnote.boundedContext.todo.exception.TodoErrorCode.TODO_NOT_FOUND;
+import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
+
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
@@ -18,6 +22,7 @@ import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
@@ -50,9 +55,7 @@ public class TodoService {
         Todo todo = getTodo(scheduleId, todoId, userId);
 
         todoRepository.deleteById(todo.getId());
-        return TodoDeleteResponseDto.builder()
-                .id(todo.getId())
-                .build();
+        return TodoDeleteResponseDto.of(todo);
     }
 
     @Transactional(readOnly = true)
@@ -86,7 +89,7 @@ public class TodoService {
         if (dto.hasContent()) {
             todos.updateContent(dto.getContent());
         }
-        if (dto.hasStatus() && dto.getStatus() != todos.getStatus()) {
+        if (dto.hasStatus() && !Objects.equals(dto.getStatus(), todos.getStatus())) {
             todos.updateStatus(dto.getStatus());
         }
     }
@@ -95,8 +98,7 @@ public class TodoService {
         User currentUser = checkCurrentUser(userId);
 
         matchUserWithSchedule(scheduleId, currentUser.getId());
-        Todo todos = authorization(todoId, currentUser);
-        return todos;
+        return authorization(todoId, currentUser);
     }
 
     private void matchUserWithSchedule(Long scheduleId, Long userId) {
@@ -105,29 +107,29 @@ public class TodoService {
 
         if (!schedule.getUser().equals(currentUser)) {
             log.warn("학기를 작성한 user와 현 user가 다릅니다");
-            throw CustomExceptions.USER_NOT_FOUND;
+            throw new CustomException(USER_NOT_FOUND);
         }
     }
 
     private User checkCurrentUser(Long id) {
         return userRepository.findById(id)
-                .orElseThrow(() -> CustomExceptions.USER_NOT_FOUND);
+                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
     }
 
     private Schedule checkSchedule(Long id) {
         return scheduleRepository.findById(id)
-                .orElseThrow(() -> CustomExceptions.SCHEDULE_NOT_FOUND);
+                .orElseThrow(() -> new CustomException(SCHEDULE_NOT_FOUND));
     }
 
 
     private Todo authorization(Long id, User member) {
 
         Todo todos = todoRepository.findById(id).orElseThrow(
-                () -> CustomExceptions.TODO_NOT_FOUND);
+                () -> new CustomException(TODO_NOT_FOUND));
 
         if (!todos.getUser().getId().equals(member.getId())) {
             log.warn("member doesn't have authentication , user {}", todos.getUser());
-            throw CustomExceptions.USER_NOT_FOUND;
+            throw new CustomException(USER_NOT_FOUND);
         }
         return todos;
 

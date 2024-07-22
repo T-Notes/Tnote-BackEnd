@@ -1,7 +1,9 @@
 package com.example.tnote.boundedContext.user.service.auth;
 
 
-import static com.example.tnote.base.exception.ErrorCodes.USER_NOT_FOUND;
+
+import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
+
 
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.CustomExceptions;
@@ -25,7 +27,7 @@ public class PrincipalDetailService implements UserDetailsService {
     public PrincipalDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         User user = userRepository.findByEmail(email).orElseThrow();
         if (user == null) {
-            throw new CustomExceptions(USER_NOT_FOUND);
+            throw new CustomException(USER_NOT_FOUND);
         }
         return new PrincipalDetails(user);
     }
