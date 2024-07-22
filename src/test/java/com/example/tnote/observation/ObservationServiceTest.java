@@ -153,7 +153,8 @@ public class ObservationServiceTest {
         List<ObservationImage> mockObservationImages = List.of(mockObservationImage);
 
         when(observationRepository.findByIdAndUserId(userId, observationId)).thenReturn(Optional.of(mockObservation));
-        when(observationImageRepository.findObservationImageByObservationId(observationId)).thenReturn(mockObservationImages);
+        when(observationImageRepository.findObservationImageByObservationId(observationId)).thenReturn(
+                mockObservationImages);
 
         ObservationDetailResponseDto result = observationService.readObservationDetail(userId, observationId);
 

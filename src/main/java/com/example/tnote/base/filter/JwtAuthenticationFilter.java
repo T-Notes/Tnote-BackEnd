@@ -1,6 +1,8 @@
 package com.example.tnote.base.filter;
 
-import com.example.tnote.base.exception.CustomExceptions;
+import static com.example.tnote.boundedContext.RefreshToken.exception.RefreshTokenErrorCode.TOKEN_NOT_FOUND;
+
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.JwtTokenProvider;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -39,7 +41,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         if (token != null) {
             if (!jwtTokenProvider.isValidToken(token)) {
-                throw CustomExceptions.WRONG_TOKEN;
+                throw new CustomException(TOKEN_NOT_FOUND);
             }
             Authentication authentication = jwtTokenProvider.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);

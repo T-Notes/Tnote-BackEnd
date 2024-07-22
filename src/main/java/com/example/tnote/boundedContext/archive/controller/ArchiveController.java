@@ -3,8 +3,6 @@ package com.example.tnote.boundedContext.archive.controller;
 import com.example.tnote.base.response.Result;
 import com.example.tnote.base.utils.TokenUtils;
 import com.example.tnote.boundedContext.archive.constant.DateType;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.archive.constant.LogType;
 import com.example.tnote.boundedContext.archive.dto.ArchiveResponseDto;
 import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
