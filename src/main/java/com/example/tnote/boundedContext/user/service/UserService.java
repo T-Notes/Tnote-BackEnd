@@ -1,15 +1,18 @@
 package com.example.tnote.boundedContext.user.service;
 
+import static com.example.tnote.boundedContext.user.exception.UserErrorCode.INVALID_REFRESH_TOKEN;
 import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
 
-import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.CookieUtils;
+import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
+import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
 import com.example.tnote.boundedContext.user.dto.UserAlarmUpdate;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
 import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
 import com.example.tnote.boundedContext.user.entity.User;
+import com.example.tnote.boundedContext.user.exception.UserException;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -25,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     protected final ConsultationRepository consultationRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
     public UserResponse signUp(String email, String name) {
@@ -41,7 +45,7 @@ public class UserService {
     public UserResponse getUserInfo(Long userId) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
         return UserResponse.of(user);
     }
@@ -49,7 +53,7 @@ public class UserService {
     @Transactional
     public UserResponse updateAlarmInfo(Long userId, UserAlarmUpdate dto) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
         user.updateAlarm(dto.isAlarm());
 
@@ -60,7 +64,7 @@ public class UserService {
     public UserResponse updateExtraInfo(Long userId, UserUpdateRequest dto) {
 
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
         updateUserItem(dto, user);
 
@@ -88,25 +92,29 @@ public class UserService {
     @Transactional
     public void logout(HttpServletRequest request, HttpServletResponse response, Long userId) {
 
-        userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
-        // TODO : 로그아웃 진행시 리프래쉬 삭제 ( refresh 토큰 블랙 리스팅 )
+        RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
+                .orElseThrow(() -> new UserException(INVALID_REFRESH_TOKEN));
+
+        refreshTokenRepository.delete(refreshToken);
+
         CookieUtils.deleteCookie(request, response, "AccessToken");
     }
 
     @Transactional(readOnly = true)
     public UserMailResponse getMail(Long userId) {
         User currentUser = userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
         return UserMailResponse.of(currentUser);
     }
 
     @Transactional(readOnly = true)
     public UserResponse findById(Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
+        User user = userRepository.findById(userId).orElseThrow(() -> new UserException(USER_NOT_FOUND));
         if (user.getSchool() == null || user.getSchool().isEmpty()) {
-            throw new CustomException(USER_NOT_FOUND);
+            throw new UserException(USER_NOT_FOUND);
         }
         return UserResponse.of(user);
     }
