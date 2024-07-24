@@ -3,9 +3,9 @@ package com.example.tnote.boundedContext.user.service;
 import static com.example.tnote.boundedContext.RefreshToken.exception.RefreshTokenErrorCode.EXPIRED_REFRESH_TOKEN;
 import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
 
-import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.utils.JwtTokenProvider;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
+import com.example.tnote.boundedContext.RefreshToken.exception.RefreshTokenException;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
 import com.example.tnote.boundedContext.RefreshToken.service.RefreshTokenService;
 import com.example.tnote.boundedContext.user.dto.JwtResponse;
@@ -43,7 +43,7 @@ public class AuthService {
 
         if (jwtTokenProvider.isExpired(refreshToken)) {
             // refresh token 만료시 재로그인 필요
-            throw new CustomException(EXPIRED_REFRESH_TOKEN);
+            throw new RefreshTokenException(EXPIRED_REFRESH_TOKEN);
         }
 
         RefreshToken refreshTokenObj = refreshTokenService.findByRefreshToken(refreshToken);

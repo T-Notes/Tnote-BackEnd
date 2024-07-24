@@ -1,10 +1,12 @@
 package com.example.tnote.boundedContext.user.service;
 
-import static com.example.tnote.boundedContext.user.exception.UserErrorCode.INVALID_REFRESH_TOKEN;
+
+import static com.example.tnote.boundedContext.RefreshToken.exception.RefreshTokenErrorCode.INVALID_REFRESH_TOKEN;
 import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
 
 import com.example.tnote.base.utils.CookieUtils;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
+import com.example.tnote.boundedContext.RefreshToken.exception.RefreshTokenException;
 import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
 import com.example.tnote.boundedContext.user.dto.UserAlarmUpdate;
@@ -96,7 +98,7 @@ public class UserService {
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
         RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
-                .orElseThrow(() -> new UserException(INVALID_REFRESH_TOKEN));
+                .orElseThrow(() -> new RefreshTokenException(INVALID_REFRESH_TOKEN)); // 수정
 
         refreshTokenRepository.delete(refreshToken);
 
