@@ -98,7 +98,7 @@ public class UserService {
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
         RefreshToken refreshToken = refreshTokenRepository.findByKeyEmail(user.getEmail())
-                .orElseThrow(() -> new RefreshTokenException(INVALID_REFRESH_TOKEN));
+                .orElseThrow(() -> new RefreshTokenException(INVALID_REFRESH_TOKEN)); // 수정
 
         refreshTokenRepository.delete(refreshToken);
 
