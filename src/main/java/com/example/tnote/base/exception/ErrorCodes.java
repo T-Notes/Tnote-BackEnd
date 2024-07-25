@@ -9,11 +9,6 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCodes {
     //todo 삭제 할 enum 클래스입니다.
 
-    // observation
-    OBSERVATION_NOT_FOUNT(HttpStatus.NOT_FOUND, "not found observation"),
-    INVALID_OBSERVATION_DATA(HttpStatus.BAD_REQUEST, "Invalid observation data"),
-    INVALID_OBSERVATION_DATE(HttpStatus.BAD_REQUEST, "Observation date must be within the schedule dates"),
-
     // common
     BAD_REQUEST(HttpStatus.BAD_REQUEST, "bad request"),
     UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "unauthorized"),
