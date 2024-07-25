@@ -1,7 +1,5 @@
 package com.example.tnote.boundedContext.consultation.service;
 
-import com.example.tnote.base.exception.CustomExceptions;
-import com.example.tnote.base.exception.ErrorCodes;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
@@ -30,7 +28,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.http.impl.conn.ConnectionShutdownException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -132,8 +129,8 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findByTitleContainingAndDateBetween(String keyword, LocalDate startDate,
-                                                                             LocalDate endDate, Long userId) {
+    public List<ConsultationResponseDto> findByTitleContaining(String keyword, LocalDate startDate,
+                                                               LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Consultation> logs = consultationRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
@@ -156,10 +153,10 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
-                                                                                                  LocalDate startDate,
-                                                                                                  LocalDate endDate,
-                                                                                                  Long userId) {
+    public List<ConsultationResponseDto> findByTitleOrPlanOrClassContents(String keyword,
+                                                                          LocalDate startDate,
+                                                                          LocalDate endDate,
+                                                                          Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Consultation> logs = consultationRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
