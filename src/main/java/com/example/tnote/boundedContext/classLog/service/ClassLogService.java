@@ -1,6 +1,5 @@
 package com.example.tnote.boundedContext.classLog.service;
 
-import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
