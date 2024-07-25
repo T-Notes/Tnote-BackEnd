@@ -100,7 +100,7 @@ public class ClassLogService {
     }
 
     @Transactional(readOnly = true)
-    public List<ClassLogResponseDto> findByTitleContaining(String keyword, LocalDate startDate,
+    public List<ClassLogResponseDto> findByTitle(String keyword, LocalDate startDate,
                                                                          LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
