@@ -12,18 +12,25 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceRespon
 import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
+import com.example.tnote.boundedContext.consultation.exception.ConsultationErrorCode;
+import com.example.tnote.boundedContext.consultation.exception.ConsultationException;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationImageRepository;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode;
+import com.example.tnote.boundedContext.schedule.exception.ScheduleException;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
+import com.example.tnote.boundedContext.user.exception.UserErrorCode;
+import com.example.tnote.boundedContext.user.exception.UserException;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.http.impl.conn.ConnectionShutdownException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -45,15 +52,13 @@ public class ConsultationService {
     public ConsultationResponseDto save(Long userId, Long scheduleId, ConsultationRequestDto requestDto,
                                         List<MultipartFile> consultationImages) {
         requestDto.validateEnums();
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> CustomExceptions.USER_NOT_FOUND);
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> CustomExceptions.SCHEDULE_NOT_FOUND);
+        User user = findUserById(userId);
+        Schedule schedule = findScheduleById(scheduleId);
 
         Consultation consultation = consultationRepository.save(requestDto.toEntity(user, schedule));
         if (consultation.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || consultation.getEndDate()
                 .toLocalDate().isAfter(schedule.getEndDate())) {
-            throw new CustomExceptions(ErrorCodes.INVALID_CONSULTATION_DATE);
+            throw new ConsultationException(ConsultationErrorCode.INVALID_CONSULTATION_DATE);
         }
         if (consultationImages != null && !consultationImages.isEmpty()) {
             List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
@@ -81,7 +86,7 @@ public class ConsultationService {
 
     public ConsultationDeleteResponseDto deleteConsultation(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
-                .orElseThrow(() -> CustomExceptions.CONSULTATION_NOT_FOUNT);
+                .orElseThrow(() -> new ConsultationException(ConsultationErrorCode.CONSULTATION_NOT_FOUNT));
 
         deleteExistedImagesByConsultation(consultation);
         consultationRepository.delete(consultation);
@@ -100,8 +105,7 @@ public class ConsultationService {
     }
 
     public ConsultationDetailResponseDto getConsultationDetail(Long userId, Long consultationId) {
-        Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
-                .orElseThrow(() -> CustomExceptions.CONSULTATION_NOT_FOUNT);
+        Consultation consultation = findConsultationByIdAndUserId(consultationId, userId);
         List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultationId(
                 consultationId);
         recentLogService.saveRecentLog(userId, consultation.getId(), consultation.getSchedule().getId(),
@@ -112,9 +116,7 @@ public class ConsultationService {
     public ConsultationResponseDto updateConsultation(Long userId, Long consultationId,
                                                       ConsultationUpdateRequestDto requestDto,
                                                       List<MultipartFile> consultationImages) {
-        Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
-                .orElseThrow(() -> CustomExceptions.CONSULTATION_NOT_FOUNT);
-
+        Consultation consultation = findConsultationByIdAndUserId(consultationId, userId);
         updateConsultationItem(requestDto, consultation, consultationImages);
         recentLogService.saveRecentLog(userId, consultation.getId(), consultation.getSchedule().getId(),
                 "CONSULTATION");
@@ -280,5 +282,20 @@ public class ConsultationService {
             String imageKey = consultationImage.getConsultationImageUrl().substring(49);
             awsS3Uploader.deleteImage(imageKey);
         }
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+    }
+
+    private Schedule findScheduleById(Long scheduleId) {
+        return scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
+    }
+
+    private Consultation findConsultationByIdAndUserId(Long consultationId, Long userId) {
+        return consultationRepository.findByIdAndUserId(consultationId, userId)
+                .orElseThrow(() -> new ConsultationException(ConsultationErrorCode.CONSULTATION_NOT_FOUNT));
     }
 }
