@@ -1,7 +1,12 @@
 package com.example.tnote.boundedContext.subject.service;
 
 
-import com.example.tnote.base.exception.CustomExceptions;
+import static com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode.SCHEDULE_NOT_FOUND;
+import static com.example.tnote.boundedContext.subject.exception.SubjectErrorCode.SUBJECT_NOT_FOUND;
+import static com.example.tnote.boundedContext.subject.exception.SubjectErrorCode.WRONG_CLASS_TIME;
+import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
+
+import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
@@ -11,6 +16,7 @@ import com.example.tnote.boundedContext.subject.dto.SubjectResponseDto;
 import com.example.tnote.boundedContext.subject.dto.SubjectsDeleteResponseDto;
 import com.example.tnote.boundedContext.subject.dto.SubjectsUpdateRequestDto;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
+import com.example.tnote.boundedContext.subject.exception.SubjectException;
 import com.example.tnote.boundedContext.subject.repository.SubjectQueryRepository;
 import com.example.tnote.boundedContext.subject.repository.SubjectRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -90,18 +96,16 @@ public class SubjectService {
         User currentUser = checkCurrentUser(userId);
         Subjects subject = authorization(subjectsId, currentUser.getId());
         Schedule schedule = scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> CustomExceptions.SCHEDULE_NOT_FOUND);
+                () -> new CustomException(SCHEDULE_NOT_FOUND));
 
         if (!subject.getSchedule().equals(schedule)) {
             log.warn("해당하는 학기가 존재하지 않습니다");
-            throw CustomExceptions.SCHEDULE_NOT_FOUND;
+            throw new SubjectException(SCHEDULE_NOT_FOUND);
         }
 
         subjectRepository.deleteById(subject.getId());
 
-        return SubjectsDeleteResponseDto.builder()
-                .id(subject.getId())
-                .build();
+        return SubjectsDeleteResponseDto.of(subject);
     }
 
     @Transactional(readOnly = true)
@@ -124,12 +128,12 @@ public class SubjectService {
 
     private User checkCurrentUser(Long id) {
         return userRepository.findById(id).orElseThrow(
-                () -> CustomExceptions.USER_NOT_FOUND);
+                () -> new SubjectException(USER_NOT_FOUND));
     }
 
     private Schedule checkCurrentSchedule(Long scheduleId) {
         return scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> CustomExceptions.SCHEDULE_NOT_FOUND);
+                () -> new SubjectException(SCHEDULE_NOT_FOUND));
     }
 
     private void matchUserWithSchedule(Long scheduleId, Long userId) {
@@ -138,18 +142,18 @@ public class SubjectService {
 
         if (!schedule.getUser().equals(user)) {
             log.warn("스케쥴 user와 현 user가 다릅니다");
-            throw CustomExceptions.SCHEDULE_NOT_FOUND;
+            throw new SubjectException(SCHEDULE_NOT_FOUND);
         }
     }
 
     private Subjects authorization(Long id, Long userId) {
 
         Subjects subjects = subjectRepository.findById(id).orElseThrow(
-                () -> CustomExceptions.SUBJECT_NOT_FOUND);
+                () -> new SubjectException(SUBJECT_NOT_FOUND));
 
         if (!subjects.getSchedule().getUser().getId().equals(userId)) {
             log.warn("member doesn't have authentication , user {}", subjects.getSchedule().getUser());
-            throw CustomExceptions.USER_NOT_FOUND;
+            throw new SubjectException(USER_NOT_FOUND);
         }
         return subjects;
 
@@ -162,12 +166,12 @@ public class SubjectService {
         if (matcher.find()) {
             return Integer.parseInt(matcher.group());
         }
-        throw CustomExceptions.WRONG_CLASS_TIME;
+        throw new SubjectException(WRONG_CLASS_TIME);
     }
 
     private void compareLastClass(String subjectLastClass, String scheduleLastClass) {
         if (extractNumber(subjectLastClass) > extractNumber(scheduleLastClass)) {
-            throw CustomExceptions.WRONG_CLASS_TIME;
+            throw new SubjectException(WRONG_CLASS_TIME);
         }
     }
 }

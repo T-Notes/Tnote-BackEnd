@@ -148,7 +148,8 @@ public class ProceedingServiceTest {
         List<ProceedingImage> mockProceedingImages = List.of(mockProceedingImage);
 
         when(proceedingRepository.findByIdAndUserId(proceedingId, userId)).thenReturn(Optional.of(mockProceeding));
-        when(proceedingImageRepository.findProceedingImageByProceedingId(proceedingId)).thenReturn(mockProceedingImages);
+        when(proceedingImageRepository.findProceedingImageByProceedingId(proceedingId)).thenReturn(
+                mockProceedingImages);
 
         ProceedingDetailResponseDto result = proceedingService.getProceedingDetails(userId, proceedingId);
 
