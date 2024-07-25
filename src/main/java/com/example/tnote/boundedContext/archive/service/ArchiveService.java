@@ -188,14 +188,14 @@ public class ArchiveService {
         LocalDate endDate = LocalDate.now();
 
         if ("title".equals(searchType)) {
-            logs.addAll(classLogService.findByTitleContaining(keyword, startDate, endDate, userId));
-            logs.addAll(consultationService.findByTitleContaining(keyword, startDate, endDate, userId));
+            logs.addAll(classLogService.findByTitle(keyword, startDate, endDate, userId));
+            logs.addAll(consultationService.findByTitle(keyword, startDate, endDate, userId));
             logs.addAll(proceedingService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
             logs.addAll(observationService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
         }
         if ("content".equals((searchType))) {
             logs.addAll(classLogService.findByClassContents(keyword, startDate, endDate, userId));
-            logs.addAll(consultationService.findByContentsContaining(keyword, startDate, endDate, userId));
+            logs.addAll(consultationService.findByContents(keyword, startDate, endDate, userId));
             logs.addAll(proceedingService.findByContentsContaining(keyword, startDate, endDate, userId));
             logs.addAll(observationService.findByContentsContaining(keyword, startDate, endDate, userId));
         }
