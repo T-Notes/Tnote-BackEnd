@@ -32,7 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/tnote/consultation")
+@RequestMapping("/tnote/v1/consultation")
 @RequiredArgsConstructor
 public class ConsultationController {
     private final ConsultationService consultationService;
