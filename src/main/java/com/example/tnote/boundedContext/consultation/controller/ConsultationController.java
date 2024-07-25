@@ -60,7 +60,7 @@ public class ConsultationController {
         return ResponseEntity.ok(Result.of(consultationResponseDto));
     }
 
-    @GetMapping("/{scheduleId}/consultation")
+    @GetMapping("/{scheduleId}")
     public ResponseEntity<Result> getAllConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                       @PathVariable Long scheduleId,
                                                       @RequestParam(value = "page", required = false, defaultValue = "0") int page,
