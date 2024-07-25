@@ -37,14 +37,14 @@ import org.springframework.web.multipart.MultipartFile;
 public class ConsultationController {
     private final ConsultationService consultationService;
 
-    @GetMapping("/fields")
-    public ResponseEntity<Result> getCounselingFields() {
+    @GetMapping("/field")
+    public ResponseEntity<Result> getCounselingField() {
         List<CounselingField> response = Arrays.asList(CounselingField.values());
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @GetMapping("/types")
-    public ResponseEntity<Result> getCounselingTypes() {
+    @GetMapping("/type")
+    public ResponseEntity<Result> getCounselingType() {
         List<CounselingType> response = Arrays.asList(CounselingType.values());
         return ResponseEntity.ok(Result.of(response));
     }
