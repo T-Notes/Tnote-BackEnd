@@ -129,7 +129,7 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findByTitleContaining(String keyword, LocalDate startDate,
+    public List<ConsultationResponseDto> findByTitle(String keyword, LocalDate startDate,
                                                                LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
@@ -141,7 +141,7 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
+    public List<ConsultationResponseDto> findByContents(String keyword, LocalDate startDate,
                                                                   LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
