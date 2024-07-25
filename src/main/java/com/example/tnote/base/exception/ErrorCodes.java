@@ -9,17 +9,8 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCodes {
     //todo 삭제 할 enum 클래스입니다.
 
-    // class log
-    CLASS_LOG_NOT_FOUNT(HttpStatus.NOT_FOUND, "not found classLog"),
-    INVALID_CLASS_LOG_DATA(HttpStatus.BAD_REQUEST, "Invalid class log data"),
-    INVALID_CLASS_LOG_DATE(HttpStatus.BAD_REQUEST, "ClassLog date must be within the schedule dates"),
 
     // consultation
-    CONSULTATION_NOT_FOUNT(HttpStatus.NOT_FOUND, "not found consultation"),
-    INVALID_CONSULTATION_DATA(HttpStatus.BAD_REQUEST, "Invalid consultation log data"),
-    INVALID_COUNSELING_TYPE(HttpStatus.BAD_REQUEST, "Invalid counseling type"),
-    INVALID_COUNSELING_FIELD(HttpStatus.BAD_REQUEST, "Invalid counseling field"),
-    INVALID_CONSULTATION_DATE(HttpStatus.BAD_REQUEST, "Consultation date must be within the schedule dates"),
 
     // observation
     OBSERVATION_NOT_FOUNT(HttpStatus.NOT_FOUND, "not found observation"),
