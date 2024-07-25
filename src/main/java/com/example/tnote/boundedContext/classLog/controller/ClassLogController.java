@@ -1,7 +1,6 @@
 package com.example.tnote.boundedContext.classLog.controller;
 
 
-import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
@@ -32,7 +31,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/tnote/v1/classLogs")
+@RequestMapping("/tnote/v1/classLog")
 @RequiredArgsConstructor
 public class ClassLogController {
     private final ClassLogService classLogService;
@@ -43,10 +42,6 @@ public class ClassLogController {
                                                  @PathVariable Long scheduleId,
                                                  @RequestPart ClassLogRequestDto classLogRequestDto,
                                                  @RequestPart(name = "classLogImages", required = false) List<MultipartFile> classLogImages) {
-        if (principalDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(Result.of(CustomExceptions.UNAUTHORIZED.getMessage()));
-        }
         ClassLogResponseDto classLogResponseDto = classLogService.save(principalDetails.getId(), scheduleId,
                 classLogRequestDto,
                 classLogImages);
@@ -55,7 +50,7 @@ public class ClassLogController {
     }
 
     @GetMapping("/{scheduleId}")
-    public ResponseEntity<Result> getAllClassLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    public ResponseEntity<Result> getAllClassLog(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @PathVariable Long scheduleId,
                                                   @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                   @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
