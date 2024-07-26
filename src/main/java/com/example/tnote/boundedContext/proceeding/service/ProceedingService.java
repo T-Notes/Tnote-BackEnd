@@ -12,12 +12,18 @@ import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDt
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
+import com.example.tnote.boundedContext.proceeding.exception.ProceedingErrorCode;
+import com.example.tnote.boundedContext.proceeding.exception.ProceedingException;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingImageRepository;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode;
+import com.example.tnote.boundedContext.schedule.exception.ScheduleException;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
+import com.example.tnote.boundedContext.user.exception.UserErrorCode;
+import com.example.tnote.boundedContext.user.exception.UserException;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -44,16 +50,14 @@ public class ProceedingService {
 
     public ProceedingResponseDto save(Long userId, Long scheduleId, ProceedingRequestDto requestDto,
                                       List<MultipartFile> proceedingImages) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> CustomExceptions.USER_NOT_FOUND);
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> CustomExceptions.SCHEDULE_NOT_FOUND);
+        User user = findUserById(userId);
+        Schedule schedule = findScheduleById(scheduleId);
 
         Proceeding proceeding = proceedingRepository.save(requestDto.toEntity(user, schedule));
 
         if (proceeding.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || proceeding.getEndDate()
                 .toLocalDate().isAfter(schedule.getEndDate())) {
-            throw new CustomExceptions(ErrorCodes.INVALID_PROCEEDING_DATE);
+            throw new ProceedingException(ProceedingErrorCode.INVALID_PROCEEDING_DATE);
         }
         if (proceedingImages != null && !proceedingImages.isEmpty()) {
             List<ProceedingImage> uploadedImages = uploadProceedingImages(proceeding, proceedingImages);
@@ -80,8 +84,7 @@ public class ProceedingService {
     }
 
     public ProceedingDeleteResponseDto deleteProceeding(Long userId, Long proceedingId) {
-        Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
-                .orElseThrow(() -> CustomExceptions.PROCEEDING_NOT_FOUNT);
+        Proceeding proceeding = findByIdAndUserId(proceedingId, userId);
 
         deleteExistedImagesByProceeding(proceeding);
         proceedingRepository.delete(proceeding);
@@ -100,8 +103,7 @@ public class ProceedingService {
     }
 
     public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
-        Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
-                .orElseThrow(() -> CustomExceptions.PROCEEDING_NOT_FOUNT);
+        Proceeding proceeding = findByIdAndUserId(proceedingId, userId);
         List<ProceedingImage> proceedingImages = proceedingImageRepository.findProceedingImageByProceedingId(
                 proceedingId);
         recentLogService.saveRecentLog(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
@@ -112,8 +114,7 @@ public class ProceedingService {
     public ProceedingResponseDto updateProceeding(Long userId, Long proceedingId,
                                                   ProceedingUpdateRequestDto updateRequestDto,
                                                   List<MultipartFile> proceedingImages) {
-        Proceeding proceeding = proceedingRepository.findByIdAndUserId(proceedingId, userId)
-                .orElseThrow(() -> CustomExceptions.PROCEEDING_NOT_FOUNT);
+        Proceeding proceeding = findByIdAndUserId(proceedingId, userId);
         updateEachProceedingItem(updateRequestDto, proceeding, proceedingImages);
         recentLogService.saveRecentLog(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
 
@@ -273,5 +274,20 @@ public class ProceedingService {
             String imageKey = proceedingImage.getProceedingImageUrl().substring(49);
             awsS3Uploader.deleteImage(imageKey);
         }
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+    }
+
+    private Schedule findScheduleById(Long scheduleId) {
+        return scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
+    }
+
+    private Proceeding findByIdAndUserId(Long proceedingId, Long userId) {
+        return proceedingRepository.findByIdAndUserId(proceedingId, userId)
+                .orElseThrow(() -> new ProceedingException(ProceedingErrorCode.PROCEEDING_NOT_FOUNT));
     }
 }

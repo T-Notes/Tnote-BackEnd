@@ -10,12 +10,18 @@ import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponse
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.entity.ObservationImage;
+import com.example.tnote.boundedContext.observation.exception.ObservationErrorCode;
+import com.example.tnote.boundedContext.observation.exception.ObservationException;
 import com.example.tnote.boundedContext.observation.repository.ObservationImageRepository;
 import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode;
+import com.example.tnote.boundedContext.schedule.exception.ScheduleException;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
+import com.example.tnote.boundedContext.user.exception.UserErrorCode;
+import com.example.tnote.boundedContext.user.exception.UserException;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -42,15 +48,13 @@ public class ObservationService {
 
     public ObservationResponseDto save(Long userId, Long scheduleId, ObservationRequestDto requestDto,
                                        List<MultipartFile> observationImages) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> CustomExceptions.USER_NOT_FOUND);
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> CustomExceptions.SCHEDULE_NOT_FOUND);
+        User user = findUserById(userId);
+        Schedule schedule = findScheduleById(scheduleId);
         Observation observation = observationRepository.save(requestDto.toEntity(user, schedule));
 
         if (observation.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || observation.getEndDate()
                 .toLocalDate().isAfter(schedule.getEndDate())) {
-            throw new CustomExceptions(ErrorCodes.INVALID_OBSERVATION_DATE);
+            throw new ObservationException(ObservationErrorCode.INVALID_OBSERVATION_DATE);
         }
         if (observationImages != null && !observationImages.isEmpty()) {
             List<ObservationImage> uploadedImages = uploadObservationImages(observation, observationImages);
@@ -78,8 +82,7 @@ public class ObservationService {
     }
 
     public ObservationDetailResponseDto readObservationDetail(Long userId, Long observationId) {
-        Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
-                .orElseThrow(() -> CustomExceptions.OBSERVATION_NOT_FOUNT);
+        Observation observation = findObservationByIdAndUserId(observationId, userId);
         List<ObservationImage> observationImages = observationImageRepository.findObservationImageByObservationId(
                 observationId);
         recentLogService.saveRecentLog(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
@@ -87,8 +90,7 @@ public class ObservationService {
     }
 
     public ObservationDeleteResponseDto deleteObservation(Long userId, Long observationId) {
-        Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
-                .orElseThrow(() -> CustomExceptions.OBSERVATION_NOT_FOUNT);
+        Observation observation = findObservationByIdAndUserId(observationId, userId);
 
         deleteExistedImagesByObservation(observation);
         observationRepository.delete(observation);
@@ -107,8 +109,7 @@ public class ObservationService {
     public ObservationResponseDto updateObservation(Long userId, Long observationId,
                                                     ObservationUpdateRequestDto requestDto,
                                                     List<MultipartFile> observationImages) {
-        Observation observation = observationRepository.findByIdAndUserId(observationId, userId)
-                .orElseThrow(() -> CustomExceptions.OBSERVATION_NOT_FOUNT);
+        Observation observation = findObservationByIdAndUserId(observationId, userId);
         updateObservationItem(requestDto, observation, observationImages);
         recentLogService.saveRecentLog(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
         return ObservationResponseDto.of(observation);
@@ -269,5 +270,20 @@ public class ObservationService {
             String imageKey = observationImage.getObservationImageUrl().substring(49);
             awsS3Uploader.deleteImage(imageKey);
         }
+    }
+
+    private User findUserById(Long userId) {
+        return userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
+    }
+
+    private Schedule findScheduleById(Long scheduleId) {
+        return scheduleRepository.findById(scheduleId)
+                .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
+    }
+
+    private Observation findObservationByIdAndUserId(Long observationId, Long userId) {
+        return observationRepository.findByIdAndUserId(observationId, userId)
+                .orElseThrow(() -> new ObservationException(ObservationErrorCode.OBSERVATION_NOT_FOUNT));
     }
 }

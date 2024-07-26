@@ -32,19 +32,19 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/tnote/consultation")
+@RequestMapping("/tnote/v1/consultation")
 @RequiredArgsConstructor
 public class ConsultationController {
     private final ConsultationService consultationService;
 
-    @GetMapping("/fields")
-    public ResponseEntity<Result> getCounselingFields() {
+    @GetMapping("/field")
+    public ResponseEntity<Result> getCounselingField() {
         List<CounselingField> response = Arrays.asList(CounselingField.values());
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @GetMapping("/types")
-    public ResponseEntity<Result> getCounselingTypes() {
+    @GetMapping("/type")
+    public ResponseEntity<Result> getCounselingType() {
         List<CounselingType> response = Arrays.asList(CounselingType.values());
         return ResponseEntity.ok(Result.of(response));
     }
@@ -60,8 +60,8 @@ public class ConsultationController {
         return ResponseEntity.ok(Result.of(consultationResponseDto));
     }
 
-    @GetMapping("/{scheduleId}/consultations")
-    public ResponseEntity<Result> getAllConsultations(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    @GetMapping("/{scheduleId}")
+    public ResponseEntity<Result> getAllConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                       @PathVariable Long scheduleId,
                                                       @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                       @RequestParam(value = "size", required = false, defaultValue = "4") int size) {

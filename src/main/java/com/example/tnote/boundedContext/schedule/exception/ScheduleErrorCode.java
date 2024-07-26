@@ -7,7 +7,8 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ScheduleErrorCode implements ErrorCode {
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "schedule를 찾을 수 없습니다."),
-    INVALID_SCHEDULE(HttpStatus.BAD_REQUEST, "유효한 학기가 아닙니다.");
+    INVALID_SCHEDULE(HttpStatus.BAD_REQUEST, "유효한 학기가 아닙니다."),
+    DATES_NOT_INCLUDED_IN_SEMESTER(HttpStatus.NOT_FOUND, "해당 학기의 기간이 아닙니다."),;
     private final HttpStatus httpStatus;
     private final String message;
 
