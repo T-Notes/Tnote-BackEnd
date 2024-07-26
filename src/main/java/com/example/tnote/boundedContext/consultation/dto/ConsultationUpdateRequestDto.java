@@ -3,6 +3,8 @@ package com.example.tnote.boundedContext.consultation.dto;
 import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
+import com.example.tnote.boundedContext.consultation.exception.ConsultationErrorCode;
+import com.example.tnote.boundedContext.consultation.exception.ConsultationException;
 import java.time.LocalDateTime;
 import java.util.EnumSet;
 import lombok.Getter;
@@ -46,11 +48,11 @@ public class ConsultationUpdateRequestDto {
     }
     public void validateEnums() {
         if (hasCounselingField() && !EnumSet.allOf(CounselingField.class).contains(counselingField)) {
-            throw CustomExceptions.INVALID_COUNSELING_FIELD;
+            throw new ConsultationException(ConsultationErrorCode.INVALID_COUNSELING_FIELD);
         }
 
         if (hasCounselingType() && !EnumSet.allOf(CounselingType.class).contains(counselingType)) {
-            throw CustomExceptions.INVALID_COUNSELING_TYPE;
+            throw new ConsultationException(ConsultationErrorCode.INVALID_COUNSELING_TYPE);
         }
     }
 }

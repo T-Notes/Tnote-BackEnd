@@ -33,6 +33,8 @@ import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.repository.query.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode;
+import com.example.tnote.boundedContext.schedule.exception.ScheduleException;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
 import com.example.tnote.boundedContext.todo.service.TodoService;
@@ -186,21 +188,21 @@ public class ArchiveService {
         LocalDate endDate = LocalDate.now();
 
         if ("title".equals(searchType)) {
-            logs.addAll(classLogService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
-            logs.addAll(consultationService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
+            logs.addAll(classLogService.findByTitle(keyword, startDate, endDate, userId));
+            logs.addAll(consultationService.findByTitle(keyword, startDate, endDate, userId));
             logs.addAll(proceedingService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
             logs.addAll(observationService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
         }
         if ("content".equals((searchType))) {
             logs.addAll(classLogService.findByClassContents(keyword, startDate, endDate, userId));
-            logs.addAll(consultationService.findByContentsContaining(keyword, startDate, endDate, userId));
+            logs.addAll(consultationService.findByContents(keyword, startDate, endDate, userId));
             logs.addAll(proceedingService.findByContentsContaining(keyword, startDate, endDate, userId));
             logs.addAll(observationService.findByContentsContaining(keyword, startDate, endDate, userId));
         }
         if ("titleAndContent".equals(searchType)) {
             logs.addAll(classLogService.findByTitleOrClassContents(keyword, startDate,
                     endDate, userId));
-            logs.addAll(consultationService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
+            logs.addAll(consultationService.findByTitleOrPlanOrClassContents(keyword, startDate,
                     endDate, userId));
             logs.addAll(proceedingService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
                     endDate, userId));
@@ -227,12 +229,12 @@ public class ArchiveService {
 
     public ArchiveResponseDto readDailyLogs(Long userId, Long scheduleId, LocalDate date) {
         Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> CustomExceptions.SCHEDULE_NOT_FOUND);
+                .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
         LocalDate startDate = schedule.getStartDate();
         LocalDate endDate = schedule.getEndDate();
 
         if (date.isBefore(startDate) || (endDate != null && date.isAfter(endDate))) {
-            throw new CustomExceptions(ErrorCodes.DATES_NOT_INCLUDED_IN_SEMESTER);
+            throw new ScheduleException(ScheduleErrorCode.DATES_NOT_INCLUDED_IN_SEMESTER);
         }
         List<ClassLogResponseDto> classLogs = classLogService.readDailyClassLog(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, scheduleId,

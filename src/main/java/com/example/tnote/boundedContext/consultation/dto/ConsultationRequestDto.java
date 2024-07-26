@@ -5,6 +5,8 @@ import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
+import com.example.tnote.boundedContext.consultation.exception.ConsultationErrorCode;
+import com.example.tnote.boundedContext.consultation.exception.ConsultationException;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.user.entity.User;
 import java.time.LocalDateTime;
@@ -33,13 +35,13 @@ public class ConsultationRequestDto {
 
     private void validateCounselingField() {
         if (counselingField == null || EnumUtils.isValidEnum(CounselingField.class, counselingField.name())) {
-            throw CustomExceptions.INVALID_COUNSELING_FIELD;
+            throw new ConsultationException(ConsultationErrorCode.INVALID_COUNSELING_FIELD);
         }
     }
 
     private void validateCounselingType() {
         if (counselingType == null || EnumUtils.isValidEnum(CounselingType.class, counselingType.name())) {
-            throw CustomExceptions.INVALID_COUNSELING_TYPE;
+            throw new ConsultationException(ConsultationErrorCode.INVALID_COUNSELING_TYPE);
         }
     }
 

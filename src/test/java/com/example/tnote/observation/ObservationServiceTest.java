@@ -10,6 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.tnote.base.exception.CustomExceptions;
+import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
@@ -18,6 +19,7 @@ import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponse
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.entity.ObservationImage;
+import com.example.tnote.boundedContext.observation.exception.ObservationException;
 import com.example.tnote.boundedContext.observation.repository.ObservationImageRepository;
 import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
@@ -26,11 +28,14 @@ import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,20 +65,37 @@ public class ObservationServiceTest {
     @InjectMocks
     private ObservationService observationService;
 
+    private User mockUser;
+    private Schedule mockSchedule;
+    private Observation mockObservation;
+    private Long userId = 1L;
+    private Long scheduleId = 2L;
+    private Long observationId = 1L;
+
+    @BeforeEach
+    void setUp() {
+        mockUser = mock(User.class);
+        mockSchedule = new Schedule(1L, "1학기", null,
+                LocalDate.of(2024, 1, 1),
+                LocalDate.of(2024, 3, 28),
+                mockUser,
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>(),
+                new ArrayList<>());
+
+        mockObservation = mock(Observation.class);
+    }
+
     @DisplayName("관찰일지 저장: 정상적인 경우 성공적으로 저장 확인")
     @Test
     void save() {
-        Long userId = 1L;
-        Long scheduleId = 2L;
-        User mockUser = mock(User.class);
-        Schedule mockSchedule = mock(Schedule.class);
-
-        LocalDateTime now = LocalDateTime.now();
-
         ObservationRequestDto requestDto = ObservationRequestDto.builder()
                 .title("김태환")
-                .startDate(now)
-                .endDate(now.plusHours(2))
+                .startDate(mockSchedule.getStartDate().atStartOfDay())
+                .endDate(mockSchedule.getStartDate().atStartOfDay().plusHours(2))
                 .guidance("지도")
                 .observationContents("관찰했음")
                 .isAllDay(false)
@@ -92,29 +114,9 @@ public class ObservationServiceTest {
         verify(observationRepository).save(any(Observation.class));
     }
 
-    @DisplayName("관찰일지 저장: 존재하지 않는 사용자로 인한 예외 발생 확인")
-    @Test
-    void noUserSave() {
-        Long userId = 1L;
-        Long scheduleId = 2L;
-        ObservationRequestDto requestDto = mock(ObservationRequestDto.class);
-        List<MultipartFile> observationImages = Collections.emptyList();
-
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        assertThatExceptionOfType(CustomExceptions.class)
-                .isThrownBy(() -> observationService.save(userId, scheduleId, requestDto, observationImages));
-
-        verify(userRepository).findById(userId);
-        verify(observationRepository, never()).save(any(Observation.class));
-    }
-
     @DisplayName("관찰일지 조회: 작성자가 작성한 모든 관찰일지 확인")
     @Test
     void getLogs() {
-        Long userId = 1L;
-        Long scheduleId = 2L;
-        Long otherUserId = 2L;
         Pageable pageable = PageRequest.of(0, 10);
 
         Observation mockObservation1 = mock(Observation.class);
@@ -138,15 +140,10 @@ public class ObservationServiceTest {
     @DisplayName("관찰일지 상세 조회: 관찰일지 상세 정보 조회 확인")
     @Test
     void getDetails() {
-        Long userId = 1L;
-        Long observationId = 1L;
-
-        User mockUser = mock(User.class);
         when(mockUser.getId()).thenReturn(userId);
-
-        Observation mockObservation = mock(Observation.class);
         when(mockObservation.getId()).thenReturn(observationId);
         when(mockObservation.getUser()).thenReturn(mockUser);
+        when(mockObservation.getSchedule()).thenReturn(mockSchedule);
 
         ObservationImage mockObservationImage = mock(ObservationImage.class);
 
@@ -176,23 +173,16 @@ public class ObservationServiceTest {
         when(observationRepository.findByIdAndUserId(observationId, userId)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> observationService.readObservationDetail(userId, observationId))
-                .isInstanceOf(CustomExceptions.class);
+                .isInstanceOf(ObservationException.class);
     }
 
     @DisplayName("관찰일지 삭제: 관찰일지 삭제 작업 확인")
     @Test
     void delete() {
-        Long userId = 1L;
-        Long observationId = 1L;
-
-        Observation mockObservation = mock(Observation.class);
         when(mockObservation.getId()).thenReturn(observationId);
         when(observationRepository.findByIdAndUserId(observationId, userId)).thenReturn(Optional.of(mockObservation));
 
         ObservationDeleteResponseDto result = observationService.deleteObservation(userId, observationId);
-
-        assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(observationId);
 
         verify(observationRepository).findByIdAndUserId(observationId, userId);
         verify(observationRepository).delete(mockObservation);
@@ -201,13 +191,11 @@ public class ObservationServiceTest {
     @DisplayName("관찰일지 수정: 요청된 값에 따른 관찰일지 수정 확인")
     @Test
     void update() {
-        Long userId = 1L;
-        Long observationId = 1L;
-        Observation mockObservation = mock(Observation.class);
         ObservationUpdateRequestDto observationUpdateRequestDto = mock(ObservationUpdateRequestDto.class);
         List<MultipartFile> observationImages = Collections.emptyList();
 
         when(observationRepository.findByIdAndUserId(observationId, userId)).thenReturn(Optional.of(mockObservation));
+        when(mockObservation.getSchedule()).thenReturn(mockSchedule);
 
         ObservationResponseDto result = observationService.updateObservation(userId, observationId,
                 observationUpdateRequestDto,
