@@ -186,7 +186,7 @@ public class UserController {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        userService.logout(request, response, currentUser.getId());
+        userService.logout(request, response);
 
         return ResponseEntity.ok(Result.of("로그아웃 되었습니다."));
     }
