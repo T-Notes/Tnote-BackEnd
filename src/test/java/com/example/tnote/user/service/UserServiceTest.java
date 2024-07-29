@@ -74,7 +74,6 @@ public class UserServiceTest {
     void updateExtraInfo() {
 
         // given
-        testSyUtils.login(principalDetails2);
 
         // when
         UserUpdateRequest userInfo = UserUpdateRequest.builder()
@@ -96,7 +95,6 @@ public class UserServiceTest {
     void update_alarm_info() {
 
         // given
-        testSyUtils.login(principalDetails2);
 
         // when
         UserAlarmUpdate userInfo = UserAlarmUpdate.builder()
@@ -114,7 +112,6 @@ public class UserServiceTest {
     void otherUserUpdateExtraInfo() {
 
         // given
-        testSyUtils.login(principalDetails);
 
         // when
         UserUpdateRequest userInfo = UserUpdateRequest.builder()
@@ -151,7 +148,6 @@ public class UserServiceTest {
     void getUserInfo() {
 
         // given
-        testSyUtils.login(principalDetails);
 
         // when
         UserResponse userInfo = userService.getUserInfo(user1.getId());
@@ -170,7 +166,6 @@ public class UserServiceTest {
     void otherUserGetInfo() {
 
         // given
-        testSyUtils.login(principalDetails);
 
         // when
 
@@ -184,7 +179,6 @@ public class UserServiceTest {
     void noneUserGetInfo() {
 
         // given
-        testSyUtils.login(principalDetails);
 
         // when
 
@@ -198,13 +192,11 @@ public class UserServiceTest {
     void logout() {
 
         // given
-        testSyUtils.login(principalDetails);
-
         MockHttpServletRequest request = new MockHttpServletRequest();
         MockHttpServletResponse response = new MockHttpServletResponse();
 
         // when
-        userService.logout(request, response, user1.getId());
+        userService.logout(request, response);
 
         UserResponse updatedUser = userService.getUserInfo(user1.getId());
 
@@ -213,28 +205,10 @@ public class UserServiceTest {
     }
 
     @Test
-    @DisplayName("다른 유저 정보 로그 아웃 성공")
-    void otherUserLogout() {
-
-        // given
-        testSyUtils.login(principalDetails);
-
-        MockHttpServletRequest request = new MockHttpServletRequest();
-        MockHttpServletResponse response = new MockHttpServletResponse();
-
-        // when
-
-        // then
-        assertThatThrownBy(() -> userService.logout(request, response, 222L))
-                .isInstanceOf(CustomException.class);
-    }
-
-    @Test
     @DisplayName("유저 메일 정보 조회 성공")
     void getMail() {
 
         // given
-        testSyUtils.login(principalDetails);
 
         // when
         UserMailResponse mail = userService.getMail(user1.getId());
@@ -249,7 +223,6 @@ public class UserServiceTest {
     void otherUserGetMail() {
 
         // given
-        testSyUtils.login(principalDetails);
 
         // when
 
