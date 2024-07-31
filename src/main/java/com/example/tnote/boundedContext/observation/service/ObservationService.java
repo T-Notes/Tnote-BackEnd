@@ -141,7 +141,7 @@ public class ObservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
+    public List<ObservationResponseDto> findByTitleOrPlanOrContents(String keyword,
                                                                                                  LocalDate startDate,
                                                                                                  LocalDate endDate,
                                                                                                  Long userId) {

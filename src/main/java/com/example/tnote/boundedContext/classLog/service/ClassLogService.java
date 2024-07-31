@@ -124,7 +124,7 @@ public class ClassLogService {
     }
 
     @Transactional(readOnly = true)
-    public List<ClassLogResponseDto> findByTitleOrClassContents(String keyword,
+    public List<ClassLogResponseDto> findByTitleOrPlanOrContents(String keyword,
                                                                 LocalDate startDate,
                                                                 LocalDate endDate,
                                                                 Long userId) {
