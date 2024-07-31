@@ -208,16 +208,10 @@ public class ObservationService {
                 userId, scheduleId, startOfDay,
                 endOfDay, pageable);
 
-        int numberOfObservation = observations.size();
         List<ObservationResponseDto> responseDto = allObservationSlice.getContent().stream()
                 .map(ObservationResponseDto::of).toList();
 
-        return ObservationSliceResponseDto.builder()
-                .observations(responseDto)
-                .numberOfObservation(numberOfObservation)
-                .page(allObservationSlice.getPageable().getPageNumber())
-                .isLast(allObservationSlice.isLast())
-                .build();
+        return ObservationSliceResponseDto.from(responseDto, observations, allObservationSlice);
     }
 
     @Transactional(readOnly = true)
