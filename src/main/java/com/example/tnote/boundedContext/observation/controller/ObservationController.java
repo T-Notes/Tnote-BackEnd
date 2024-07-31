@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/tnote/observation")
+@RequestMapping("/tnote/v1/observation")
 @RequiredArgsConstructor
 public class ObservationController {
     private final ObservationService observationService;
@@ -46,8 +46,8 @@ public class ObservationController {
         return ResponseEntity.ok(Result.of(observationResponseDto));
     }
 
-    @GetMapping("/{scheduleId}/observations")
-    public ResponseEntity<Result> getAllObservations(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    @GetMapping("/{scheduleId}/all")
+    public ResponseEntity<Result> getAllObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                      @PathVariable Long scheduleId,
                                                      @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                      @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
