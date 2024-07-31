@@ -68,17 +68,10 @@ public class ObservationService {
     public ObservationSliceResponseDto readAllObservation(Long userId, Long scheduleId, Pageable pageable) {
         List<Observation> observations = observationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<Observation> allObservationSlice = observationRepository.findAllByScheduleId(scheduleId, pageable);
-        int numberOfObservation = observations.size();
-
         List<ObservationResponseDto> responseDto = allObservationSlice.getContent().stream()
                 .map(ObservationResponseDto::of).toList();
 
-        return ObservationSliceResponseDto.builder()
-                .observations(responseDto)
-                .numberOfObservation(numberOfObservation)
-                .page(allObservationSlice.getPageable().getPageNumber())
-                .isLast(allObservationSlice.isLast())
-                .build();
+        return ObservationSliceResponseDto.from(responseDto, observations, allObservationSlice);
     }
 
     public ObservationDetailResponseDto readObservationDetail(Long userId, Long observationId) {
