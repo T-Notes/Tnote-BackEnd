@@ -204,7 +204,7 @@ public class ArchiveService {
                     endDate, userId));
             logs.addAll(consultationService.findByTitleOrPlanOrContents(keyword, startDate,
                     endDate, userId));
-            logs.addAll(proceedingService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
+            logs.addAll(proceedingService.findByTitleOrPlanOrContents(keyword, startDate,
                     endDate, userId));
             logs.addAll(observationService.findByTitleOrPlanOrContents(keyword, startDate,
                     endDate, userId));
