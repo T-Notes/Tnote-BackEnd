@@ -84,9 +84,7 @@ public class ProceedingService {
         proceedingRepository.delete(proceeding);
         recentLogService.deleteRecentLog(proceeding.getId(), "PROCEEDING");
 
-        return ProceedingDeleteResponseDto.builder()
-                .id(proceeding.getId())
-                .build();
+        return ProceedingDeleteResponseDto.of(proceeding);
     }
 
     public int deleteProceedings(Long userId, List<Long> proceedingIds) {
