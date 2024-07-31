@@ -191,22 +191,22 @@ public class ArchiveService {
             logs.addAll(classLogService.findByTitle(keyword, startDate, endDate, userId));
             logs.addAll(consultationService.findByTitle(keyword, startDate, endDate, userId));
             logs.addAll(proceedingService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
-            logs.addAll(observationService.findByTitleContainingAndDateBetween(keyword, startDate, endDate, userId));
+            logs.addAll(observationService.findByTitle(keyword, startDate, endDate, userId));
         }
         if ("content".equals((searchType))) {
-            logs.addAll(classLogService.findByClassContents(keyword, startDate, endDate, userId));
+            logs.addAll(classLogService.findByContents(keyword, startDate, endDate, userId));
             logs.addAll(consultationService.findByContents(keyword, startDate, endDate, userId));
             logs.addAll(proceedingService.findByContentsContaining(keyword, startDate, endDate, userId));
-            logs.addAll(observationService.findByContentsContaining(keyword, startDate, endDate, userId));
+            logs.addAll(observationService.findByContents(keyword, startDate, endDate, userId));
         }
         if ("titleAndContent".equals(searchType)) {
-            logs.addAll(classLogService.findByTitleOrClassContents(keyword, startDate,
+            logs.addAll(classLogService.findByTitleOrPlanOrContents(keyword, startDate,
                     endDate, userId));
-            logs.addAll(consultationService.findByTitleOrPlanOrClassContents(keyword, startDate,
+            logs.addAll(consultationService.findByTitleOrPlanOrContents(keyword, startDate,
                     endDate, userId));
             logs.addAll(proceedingService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
                     endDate, userId));
-            logs.addAll(observationService.findByTitleOrPlanOrClassContentsContainingAndDateBetween(keyword, startDate,
+            logs.addAll(observationService.findByTitleOrPlanOrContents(keyword, startDate,
                     endDate, userId));
         }
 

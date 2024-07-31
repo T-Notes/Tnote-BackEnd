@@ -153,7 +153,7 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findByTitleOrPlanOrClassContents(String keyword,
+    public List<ConsultationResponseDto> findByTitleOrPlanOrContents(String keyword,
                                                                           LocalDate startDate,
                                                                           LocalDate endDate,
                                                                           Long userId) {
