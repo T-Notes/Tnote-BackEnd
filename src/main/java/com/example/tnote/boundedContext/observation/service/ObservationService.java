@@ -89,7 +89,7 @@ public class ObservationService {
         observationRepository.delete(observation);
         recentLogService.deleteRecentLog(observation.getId(), "OBSERVATION");
 
-        return ObservationDeleteResponseDto.builder().id(observation.getId()).build();
+        return ObservationDeleteResponseDto.of(observation.getId());
     }
 
     public int deleteObservations(Long userId, List<Long> observationIds) {
