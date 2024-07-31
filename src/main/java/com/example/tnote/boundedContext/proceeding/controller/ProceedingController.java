@@ -75,7 +75,7 @@ public class ProceedingController {
     @GetMapping("/{proceedingId}")
     public ResponseEntity<Result> getProceedingDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                        @PathVariable Long proceedingId) {
-        ProceedingDetailResponseDto proceedingDetailResponseDto = proceedingService.getProceedingDetails(
+        ProceedingDetailResponseDto proceedingDetailResponseDto = proceedingService.getProceedingDetail(
                 principalDetails.getId(), proceedingId);
 
         return ResponseEntity.ok(Result.of(proceedingDetailResponseDto));

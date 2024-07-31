@@ -94,7 +94,7 @@ public class ProceedingService {
         return proceedingIds.size();
     }
 
-    public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
+    public ProceedingDetailResponseDto getProceedingDetail(Long userId, Long proceedingId) {
         Proceeding proceeding = findByIdAndUserId(proceedingId, userId);
         List<ProceedingImage> proceedingImages = proceedingImageRepository.findProceedingImageByProceedingId(
                 proceedingId);
