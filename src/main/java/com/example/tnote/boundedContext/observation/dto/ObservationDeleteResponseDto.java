@@ -7,4 +7,10 @@ import lombok.Getter;
 @Builder
 public class ObservationDeleteResponseDto {
     private Long id;
+
+    public static ObservationDeleteResponseDto of(Long id){
+        return ObservationDeleteResponseDto.builder()
+                .id(id)
+                .build();
+    }
 }
