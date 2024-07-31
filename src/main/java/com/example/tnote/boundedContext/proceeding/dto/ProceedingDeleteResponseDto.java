@@ -1,5 +1,6 @@
 package com.example.tnote.boundedContext.proceeding.dto;
 
+import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -8,9 +9,9 @@ import lombok.Getter;
 public class ProceedingDeleteResponseDto {
     private Long id;
 
-    public static ProceedingDeleteResponseDto of(Long proceedingId) {
+    public static ProceedingDeleteResponseDto of(Proceeding proceeding) {
         return ProceedingDeleteResponseDto.builder()
-                .id(proceedingId)
+                .id(proceeding.getId())
                 .build();
     }
 }
