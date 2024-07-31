@@ -71,16 +71,10 @@ public class ProceedingService {
     public ProceedingSliceResponseDto readAllProceeding(Long userId, Long scheduleId, Pageable pageable) {
         List<Proceeding> proceedings = proceedingRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<Proceeding> allProceedingSlice = proceedingRepository.findAllByScheduleId(scheduleId, pageable);
-        int numberOfProceeding = proceedings.size();
         List<ProceedingResponseDto> responseDto = allProceedingSlice.getContent().stream()
                 .map(ProceedingResponseDto::of).toList();
 
-        return ProceedingSliceResponseDto.builder()
-                .proceedings(responseDto)
-                .numberOfProceeding(numberOfProceeding)
-                .page(allProceedingSlice.getPageable().getPageNumber())
-                .isLast(allProceedingSlice.isLast())
-                .build();
+        return ProceedingSliceResponseDto.from(responseDto, proceedings, allProceedingSlice);
     }
 
     public ProceedingDeleteResponseDto deleteProceeding(Long userId, Long proceedingId) {
@@ -90,9 +84,7 @@ public class ProceedingService {
         proceedingRepository.delete(proceeding);
         recentLogService.deleteRecentLog(proceeding.getId(), "PROCEEDING");
 
-        return ProceedingDeleteResponseDto.builder()
-                .id(proceeding.getId())
-                .build();
+        return ProceedingDeleteResponseDto.of(proceeding);
     }
 
     public int deleteProceedings(Long userId, List<Long> proceedingIds) {
@@ -102,7 +94,7 @@ public class ProceedingService {
         return proceedingIds.size();
     }
 
-    public ProceedingDetailResponseDto getProceedingDetails(Long userId, Long proceedingId) {
+    public ProceedingDetailResponseDto getProceedingDetail(Long userId, Long proceedingId) {
         Proceeding proceeding = findByIdAndUserId(proceedingId, userId);
         List<ProceedingImage> proceedingImages = proceedingImageRepository.findProceedingImageByProceedingId(
                 proceedingId);
@@ -130,8 +122,8 @@ public class ProceedingService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProceedingResponseDto> findByTitleContainingAndDateBetween(String keyword, LocalDate startDate,
-                                                                           LocalDate endDate, Long userId) {
+    public List<ProceedingResponseDto> findByTitle(String keyword, LocalDate startDate,
+                                                   LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
@@ -142,8 +134,8 @@ public class ProceedingService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProceedingResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
-                                                                LocalDate endDate, Long userId) {
+    public List<ProceedingResponseDto> findByContents(String keyword, LocalDate startDate,
+                                                      LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
@@ -154,10 +146,10 @@ public class ProceedingService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProceedingResponseDto> findByTitleOrPlanOrClassContentsContainingAndDateBetween(String keyword,
-                                                                                                LocalDate startDate,
-                                                                                                LocalDate endDate,
-                                                                                                Long userId) {
+    public List<ProceedingResponseDto> findByTitleOrPlanOrContents(String keyword,
+                                                                   LocalDate startDate,
+                                                                   LocalDate endDate,
+                                                                   Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
@@ -220,16 +212,10 @@ public class ProceedingService {
                 userId, scheduleId, startOfDay,
                 endOfDay, pageable);
 
-        int numberOfProceeding = proceedings.size();
         List<ProceedingResponseDto> responseDto = allProceedingSlice.getContent().stream()
                 .map(ProceedingResponseDto::of).toList();
 
-        return ProceedingSliceResponseDto.builder()
-                .proceedings(responseDto)
-                .numberOfProceeding(numberOfProceeding)
-                .page(allProceedingSlice.getPageable().getPageNumber())
-                .isLast(allProceedingSlice.isLast())
-                .build();
+        return ProceedingSliceResponseDto.from(responseDto, proceedings, allProceedingSlice);
     }
 
     @Transactional(readOnly = true)

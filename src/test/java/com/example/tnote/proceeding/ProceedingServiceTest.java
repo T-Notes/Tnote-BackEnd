@@ -144,7 +144,7 @@ public class ProceedingServiceTest {
         when(proceedingImageRepository.findProceedingImageByProceedingId(proceedingId)).thenReturn(
                 mockProceedingImages);
 
-        ProceedingDetailResponseDto result = proceedingService.getProceedingDetails(userId, proceedingId);
+        ProceedingDetailResponseDto result = proceedingService.getProceedingDetail(userId, proceedingId);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(proceedingId);
@@ -162,7 +162,7 @@ public class ProceedingServiceTest {
 
         when(proceedingRepository.findByIdAndUserId(proceedingId, userId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> proceedingService.getProceedingDetails(userId, proceedingId))
+        assertThatThrownBy(() -> proceedingService.getProceedingDetail(userId, proceedingId))
                 .isInstanceOf(ProceedingException.class);
     }
 

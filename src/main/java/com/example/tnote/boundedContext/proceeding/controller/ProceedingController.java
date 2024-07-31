@@ -30,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/tnote/proceeding")
+@RequestMapping("/tnote/v1/proceeding")
 @RequiredArgsConstructor
 public class ProceedingController {
     private final ProceedingService proceedingService;
@@ -50,7 +50,7 @@ public class ProceedingController {
         return ResponseEntity.ok(Result.of(proceedingResponseDto));
     }
 
-    @GetMapping("/{scheduleId}/proceedings")
+    @GetMapping("/{scheduleId}/all")
     public ResponseEntity<Result> getAllProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                    @PathVariable Long scheduleId,
                                                    @RequestParam(value = "page", required = false, defaultValue = "0") int page,
@@ -73,10 +73,9 @@ public class ProceedingController {
     }
 
     @GetMapping("/{proceedingId}")
-    public ResponseEntity<Result> getProceedingDetails(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    public ResponseEntity<Result> getProceedingDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                        @PathVariable Long proceedingId) {
-        //todo 아카이브 컨트롤러로 위치 변경해야하는지 회의필요
-        ProceedingDetailResponseDto proceedingDetailResponseDto = proceedingService.getProceedingDetails(
+        ProceedingDetailResponseDto proceedingDetailResponseDto = proceedingService.getProceedingDetail(
                 principalDetails.getId(), proceedingId);
 
         return ResponseEntity.ok(Result.of(proceedingDetailResponseDto));
