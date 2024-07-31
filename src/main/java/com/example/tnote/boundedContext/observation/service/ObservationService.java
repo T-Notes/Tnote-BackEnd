@@ -129,7 +129,7 @@ public class ObservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
+    public List<ObservationResponseDto> findByContents(String keyword, LocalDate startDate,
                                                                  LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
