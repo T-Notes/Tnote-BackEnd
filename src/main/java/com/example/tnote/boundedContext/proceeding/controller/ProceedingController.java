@@ -30,7 +30,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Slf4j
 @RestController
-@RequestMapping("/tnote/proceeding")
+@RequestMapping("/tnote/v1/proceeding")
 @RequiredArgsConstructor
 public class ProceedingController {
     private final ProceedingService proceedingService;
