@@ -214,16 +214,10 @@ public class ProceedingService {
                 userId, scheduleId, startOfDay,
                 endOfDay, pageable);
 
-        int numberOfProceeding = proceedings.size();
         List<ProceedingResponseDto> responseDto = allProceedingSlice.getContent().stream()
                 .map(ProceedingResponseDto::of).toList();
 
-        return ProceedingSliceResponseDto.builder()
-                .proceedings(responseDto)
-                .numberOfProceeding(numberOfProceeding)
-                .page(allProceedingSlice.getPageable().getPageNumber())
-                .isLast(allProceedingSlice.isLast())
-                .build();
+        return ProceedingSliceResponseDto.from(responseDto, proceedings, allProceedingSlice);
     }
 
     @Transactional(readOnly = true)
