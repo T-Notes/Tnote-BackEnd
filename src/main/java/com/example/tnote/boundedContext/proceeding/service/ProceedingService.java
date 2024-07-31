@@ -122,7 +122,7 @@ public class ProceedingService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProceedingResponseDto> findByTitleContainingAndDateBetween(String keyword, LocalDate startDate,
+    public List<ProceedingResponseDto> findByTitle(String keyword, LocalDate startDate,
                                                                            LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
@@ -134,7 +134,7 @@ public class ProceedingService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProceedingResponseDto> findByContentsContaining(String keyword, LocalDate startDate,
+    public List<ProceedingResponseDto> findByContents(String keyword, LocalDate startDate,
                                                                 LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
