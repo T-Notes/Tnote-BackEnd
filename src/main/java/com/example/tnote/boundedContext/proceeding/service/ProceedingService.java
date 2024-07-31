@@ -71,16 +71,10 @@ public class ProceedingService {
     public ProceedingSliceResponseDto readAllProceeding(Long userId, Long scheduleId, Pageable pageable) {
         List<Proceeding> proceedings = proceedingRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<Proceeding> allProceedingSlice = proceedingRepository.findAllByScheduleId(scheduleId, pageable);
-        int numberOfProceeding = proceedings.size();
         List<ProceedingResponseDto> responseDto = allProceedingSlice.getContent().stream()
                 .map(ProceedingResponseDto::of).toList();
 
-        return ProceedingSliceResponseDto.builder()
-                .proceedings(responseDto)
-                .numberOfProceeding(numberOfProceeding)
-                .page(allProceedingSlice.getPageable().getPageNumber())
-                .isLast(allProceedingSlice.isLast())
-                .build();
+        return ProceedingSliceResponseDto.from(responseDto, proceedings, allProceedingSlice);
     }
 
     public ProceedingDeleteResponseDto deleteProceeding(Long userId, Long proceedingId) {
