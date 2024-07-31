@@ -7,4 +7,10 @@ import lombok.Getter;
 @Builder
 public class ProceedingDeleteResponseDto {
     private Long id;
+
+    public static ProceedingDeleteResponseDto of(Long proceedingId) {
+        return ProceedingDeleteResponseDto.builder()
+                .id(proceedingId)
+                .build();
+    }
 }
