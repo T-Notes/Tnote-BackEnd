@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import lombok.Getter;
 
 @Getter
-public class RegisterRequest {
+public class PlanSaveRequest {
     private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
