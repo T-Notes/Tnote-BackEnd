@@ -17,7 +17,7 @@ public class PlanSaveRequest {
     //todo 참석자 필드 어떻게 요청받을지 정해지면 필드 추가 and 추후에 추가될 기능이라고함
 
     public Plan toEntity(User user, Schedule schedule) {
-        return new Plan(this.title, this.startDate, this.endDate, this.location, user, schedule,
-                new ArrayList<>());
+        return new Plan(this.title, this.startDate, this.endDate, this.contents, this.location, user, schedule,
+                new ArrayList<>(), new ArrayList<>());
     }
 }
