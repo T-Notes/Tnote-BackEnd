@@ -15,28 +15,50 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "PLAN_TB")
 public class Plan {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "plan_id")
     private Long id;
+
     private String title;
+
     private LocalDateTime startDate;
+
     private LocalDateTime endDate;
+
     private String location;
+
+    private String contents;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
+
     @OneToMany(mappedBy = "plan", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Participant> participant;
 
+    public Plan() {
+    }
+
+    public Plan(final String title, final LocalDateTime startDate,
+                final LocalDateTime endDate, final String location, final User user,
+                final Schedule schedule, final List<Participant> participant) {
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.location = location;
+        this.user = user;
+        this.schedule = schedule;
+        this.participant = participant;
+    }
 }
