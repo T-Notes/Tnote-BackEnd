@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class RegisterResponse {
+public class PlanResponse {
     private Long id;
     private String title;
     private LocalDateTime startDate;
@@ -18,8 +18,8 @@ public class RegisterResponse {
     private String contents;
     private List<Participant> participantList;
 
-    public static RegisterResponse from(final Plan plan) {
-        return RegisterResponse.builder()
+    public static PlanResponse from(final Plan plan) {
+        return PlanResponse.builder()
                 .id(plan.getId())
                 .title(plan.getTitle())
                 .startDate(plan.getStartDate())
