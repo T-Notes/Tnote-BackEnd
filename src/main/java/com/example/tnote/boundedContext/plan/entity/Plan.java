@@ -1,5 +1,6 @@
 package com.example.tnote.boundedContext.plan.entity;
 
+import com.example.tnote.base.entity.BaseTimeEntity;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.user.entity.User;
 import jakarta.persistence.CascadeType;
@@ -20,7 +21,7 @@ import lombok.Getter;
 @Entity
 @Getter
 @Table(name = "PLAN_TB")
-public class Plan {
+public class Plan extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "plan_id")
