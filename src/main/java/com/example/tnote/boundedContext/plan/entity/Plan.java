@@ -3,6 +3,7 @@ package com.example.tnote.boundedContext.plan.entity;
 import com.example.tnote.base.entity.BaseTimeEntity;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.user.entity.User;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -15,6 +16,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
 
@@ -48,18 +50,28 @@ public class Plan extends BaseTimeEntity {
     @OneToMany(mappedBy = "plan", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Participant> participant;
 
+    @JsonManagedReference
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
+    private List<PlanImage> planImages = new ArrayList<>();
+
     public Plan() {
     }
 
     public Plan(final String title, final LocalDateTime startDate,
-                final LocalDateTime endDate, final String location, final User user,
-                final Schedule schedule, final List<Participant> participant) {
+                final LocalDateTime endDate, final String contents, final String location, final User user,
+                final Schedule schedule, final List<Participant> participant, final List<PlanImage> planImages) {
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
+        this.contents = contents;
         this.location = location;
         this.user = user;
         this.schedule = schedule;
         this.participant = participant;
+        this.planImages = planImages;
+    }
+
+    public void clearImages() {
+        this.planImages.clear();
     }
 }
