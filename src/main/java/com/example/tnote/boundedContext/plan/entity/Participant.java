@@ -1,5 +1,6 @@
 package com.example.tnote.boundedContext.plan.entity;
 
+import com.example.tnote.base.entity.BaseTimeEntity;
 import com.example.tnote.boundedContext.user.entity.User;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -18,7 +19,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "PARTICIPANT")
-public class Participant {
+public class Participant extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
