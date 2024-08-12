@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.user.controller;
 
 import com.example.tnote.base.response.Result;
+import com.example.tnote.base.utils.FindCityUtils;
 import com.example.tnote.base.utils.SchoolPlanUtil;
 import com.example.tnote.base.utils.SchoolUtils;
 import com.example.tnote.base.utils.TokenUtils;
@@ -25,9 +26,13 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.minidev.json.JSONArray;
+import net.minidev.json.JSONObject;
+import net.minidev.json.parser.JSONParser;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -51,6 +56,7 @@ public class UserController {
     private final AuthService authService;
     private final SchoolUtils schoolUtils;
     private final SchoolPlanUtil schoolPlanUtil;
+    private final FindCityUtils findCityUtils;
 
     @GetMapping("/school")
     @Operation(summary = "search school info API", description = "학교 기본 정보 검색 API")
@@ -58,28 +64,34 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> findSchoolInfo(@RequestParam("code") String code,
-                                                 @RequestParam("schoolName") String schoolName,
-                                                 @RequestParam("schoolType") String schoolType)
-            throws IOException {
+    public ResponseEntity<Result> findSchool(@RequestParam("region") String region,
+                                             @RequestParam("code") String code,
+                                             @RequestParam("schoolType") String schoolType,
+                                             @RequestParam("schoolName") String schoolName)
+            throws IOException, net.minidev.json.parser.ParseException {
 
-        String result = schoolUtils.schoolInfo("schoolInfo", code, schoolName, schoolType);
+        String apiUrl = schoolPlanUtil.buildApiUrl(region, schoolType, schoolName);
+        String apiResponse = schoolPlanUtil.fetchApiData(apiUrl);
 
-        ObjectMapper objectMapper = new ObjectMapper();
+        JSONObject parsingData = (JSONObject) new JSONParser().parse(apiResponse);
 
-        JsonNode rootNode = objectMapper.readTree(result);
-        JsonNode rowNode = rootNode.path("schoolInfo").get(1).path("row");
+        JSONObject dataSearch = (JSONObject) parsingData.get("dataSearch");
+        JSONArray content = (JSONArray) dataSearch.get("content");
 
-        String[] resultArray = new String[3];
-        if (rowNode.isArray() && rowNode.size() > 0) {
-            JsonNode firstRow = rowNode.get(0);
-            resultArray[0] = firstRow.path("SD_SCHUL_CODE").asText();
-            resultArray[1] = firstRow.path("SCHUL_NM").asText();
-            resultArray[2] = firstRow.path("ORG_RDNMA").asText();
+        ArrayList<Object> schoolList = new ArrayList<>();
+
+        // 데이터 출력하기
+        JSONObject tmp;
+        for (int i = 0; i < content.size(); i++) {
+            tmp = (JSONObject) content.get(i);
+            schoolList.add(Arrays.asList(tmp.get("schoolName"), tmp.get("adres")));
         }
 
-        return ResponseEntity.ok(Result.of(resultArray));
+        String info = schoolUtils.schoolInfo("schoolInfo", code, schoolName, schoolType);
 
+        schoolList.add(schoolPlanUtil.extractSchoolCode(info));
+
+        return ResponseEntity.ok(Result.of(schoolList));
     }
 
     @GetMapping("/school/plan")
@@ -184,7 +196,7 @@ public class UserController {
                                          HttpServletResponse response,
                                          @AuthenticationPrincipal PrincipalDetails user) {
 
-        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
+        TokenUtils.checkValidToken(user);
 
         userService.logout(request, response);
 
