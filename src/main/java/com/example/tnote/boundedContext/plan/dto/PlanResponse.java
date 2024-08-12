@@ -16,6 +16,7 @@ public class PlanResponse {
     private LocalDateTime endDate;
     private String location;
     private String contents;
+    private String participants;
     private List<PlanImage> planImageList;
 
     public static PlanResponse from(final Plan plan) {
@@ -26,6 +27,7 @@ public class PlanResponse {
                 .endDate(plan.getEndDate())
                 .location(plan.getLocation())
                 .contents(plan.getContents())
+                .participants(plan.getParticipants())
                 .planImageList(plan.getPlanImages())
                 .build();
     }
