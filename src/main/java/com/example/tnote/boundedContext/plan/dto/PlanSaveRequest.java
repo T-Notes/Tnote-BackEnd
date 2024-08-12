@@ -18,6 +18,6 @@ public class PlanSaveRequest {
 
     public Plan toEntity(User user, Schedule schedule) {
         return new Plan(this.title, this.startDate, this.endDate, this.contents, this.location, user, schedule,
-                new ArrayList<>(), new ArrayList<>());
+                new ArrayList<>());
     }
 }

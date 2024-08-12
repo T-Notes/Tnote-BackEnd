@@ -1,6 +1,5 @@
 package com.example.tnote.boundedContext.plan.dto;
 
-import com.example.tnote.boundedContext.plan.entity.Participant;
 import com.example.tnote.boundedContext.plan.entity.Plan;
 import com.example.tnote.boundedContext.plan.entity.PlanImage;
 import java.time.LocalDateTime;
@@ -17,7 +16,6 @@ public class PlanResponse {
     private LocalDateTime endDate;
     private String location;
     private String contents;
-    private List<Participant> participantList;
     private List<PlanImage> planImageList;
 
     public static PlanResponse from(final Plan plan) {
@@ -28,7 +26,6 @@ public class PlanResponse {
                 .endDate(plan.getEndDate())
                 .location(plan.getLocation())
                 .contents(plan.getContents())
-                .participantList(plan.getParticipant())
                 .planImageList(plan.getPlanImages())
                 .build();
     }

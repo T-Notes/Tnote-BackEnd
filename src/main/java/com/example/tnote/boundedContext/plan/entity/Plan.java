@@ -47,8 +47,6 @@ public class Plan extends BaseTimeEntity {
     @JoinColumn(name = "schedule_id")
     private Schedule schedule;
 
-    @OneToMany(mappedBy = "plan", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    private List<Participant> participant;
 
     @JsonManagedReference
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
@@ -59,7 +57,7 @@ public class Plan extends BaseTimeEntity {
 
     public Plan(final String title, final LocalDateTime startDate,
                 final LocalDateTime endDate, final String contents, final String location, final User user,
-                final Schedule schedule, final List<Participant> participant, final List<PlanImage> planImages) {
+                final Schedule schedule, final List<PlanImage> planImages) {
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -67,7 +65,6 @@ public class Plan extends BaseTimeEntity {
         this.location = location;
         this.user = user;
         this.schedule = schedule;
-        this.participant = participant;
         this.planImages = planImages;
     }
 
