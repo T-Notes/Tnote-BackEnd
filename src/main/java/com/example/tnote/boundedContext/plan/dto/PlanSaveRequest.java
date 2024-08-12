@@ -21,4 +21,15 @@ public class PlanSaveRequest {
         return new Plan(this.title, this.startDate, this.endDate, this.contents, this.location, this.participants,
                 user, schedule, new ArrayList<>());
     }
+
+    public PlanSaveRequest(String title, LocalDateTime startDate, LocalDateTime endDate, String location,
+                           String contents,
+                           String participants) {
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.location = location;
+        this.contents = contents;
+        this.participants = participants;
+    }
 }
