@@ -42,7 +42,7 @@ public class PlanService {
 
     @Transactional
     public PlanResponse save(final Long userId, final Long scheduleId, final PlanSaveRequest registerRequest,
-                             List<MultipartFile> planImages) {
+                             final List<MultipartFile> planImages) {
         User user = userRepository.findUserById(userId);
         Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
         Plan plan = registerRequest.toEntity(user, schedule);
