@@ -1,6 +1,9 @@
 package com.example.tnote.boundedContext.plan.service;
 
 import com.example.tnote.base.utils.AwsS3Uploader;
+import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
+import com.example.tnote.boundedContext.plan.dto.PlanDeleteResponse;
 import com.example.tnote.boundedContext.plan.dto.PlanResponses;
 import com.example.tnote.boundedContext.plan.dto.PlanSaveRequest;
 import com.example.tnote.boundedContext.plan.dto.PlanResponse;
@@ -68,9 +71,18 @@ public class PlanService {
         return PlanResponses.of(responses, plans, planSlice);
     }
 
+    @Transactional
+    public PlanDeleteResponse delete(final Long planId, final Long userId) {
+        Plan plan = planRepository.findByIdAndUserId(planId, userId)
+                .orElseThrow(() -> new PlanException(PlanErrorCode.NOT_FOUND));
+        deleteExistedImage(plan);
+
+        return new PlanDeleteResponse(plan.getId());
+    }
+
     private List<PlanImage> uploadPlanImages(Plan plan, List<MultipartFile> planImages) {
         return planImages.stream()
-                .map(file -> awsS3Uploader.upload(file, "classLog"))
+                .map(file -> awsS3Uploader.upload(file, "plan"))
                 .map(pair -> createPlanImage(plan, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
@@ -79,6 +91,22 @@ public class PlanService {
         plan.clearImages();
 
         return planImageRepository.save(new PlanImage(imageUrl, originalFileName, plan));
+    }
+
+    private void deleteExistedImage(Plan plan) {
+        System.out.println("Deleting existing images for plan ID: " + plan.getId());
+        deleteS3Images(plan);
+        planImageRepository.deleteByPlanId(plan.getId());
+    }
+
+    private void deleteS3Images(Plan plan) {
+        System.out.println("Starting to delete images from S3 for plan ID: " + plan.getId());
+        List<PlanImage> planImages = plan.getPlanImages();
+        for (PlanImage planImage : planImages) {
+            String imageKey = planImage.getPlanImageUrl().substring(49);
+            System.out.println("Deleting image from S3: " + imageKey);
+            awsS3Uploader.deleteImage(imageKey);
+        }
     }
 
     private List<PlanResponse> convertToPlanResponseList(final Slice<Plan> planSlice) {
