@@ -95,4 +95,13 @@ public class Schedule extends BaseTimeEntity {
     public void updateEndDate(LocalDate endDate) {
         this.endDate = endDate;
     }
+
+    public Schedule(Long id, String semesterName, String lastClass, LocalDate startDate, LocalDate endDate, User user) {
+        this.id = id;
+        this.semesterName = semesterName;
+        this.lastClass = lastClass;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.user = user;
+    }
 }
