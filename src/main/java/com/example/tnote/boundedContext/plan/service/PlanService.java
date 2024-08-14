@@ -1,7 +1,8 @@
 package com.example.tnote.boundedContext.plan.service;
 
 import com.example.tnote.base.utils.AwsS3Uploader;
-import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
+import com.example.tnote.boundedContext.plan.dto.PlanDeleteResponse;
+import com.example.tnote.boundedContext.plan.dto.PlanResponses;
 import com.example.tnote.boundedContext.plan.dto.PlanSaveRequest;
 import com.example.tnote.boundedContext.plan.dto.PlanResponse;
 import com.example.tnote.boundedContext.plan.entity.Plan;
@@ -15,6 +16,8 @@ import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.util.List;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -40,7 +43,7 @@ public class PlanService {
 
     @Transactional
     public PlanResponse save(final Long userId, final Long scheduleId, final PlanSaveRequest registerRequest,
-                             List<MultipartFile> planImages) {
+                             final List<MultipartFile> planImages) {
         User user = userRepository.findUserById(userId);
         Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
         Plan plan = registerRequest.toEntity(user, schedule);
@@ -58,9 +61,31 @@ public class PlanService {
         return PlanResponse.from(planRepository.save(plan));
     }
 
+    public PlanResponses findAll(final Long userId, final Long scheduleId, final Pageable pageable) {
+        List<Plan> plans = planRepository.findALLByUserIdAndScheduleId(userId, scheduleId);
+        Slice<Plan> planSlice = planRepository.findALLByUserIdAndScheduleId(userId, scheduleId, pageable);
+
+        List<PlanResponse> responses = convertToPlanResponseList(planSlice);
+        return PlanResponses.of(responses, plans, planSlice);
+    }
+
+    @Transactional
+    public PlanDeleteResponse delete(final Long planId, final Long userId) {
+        Plan plan = findByIdAndUserId(planId, userId);
+        deleteExistedImage(plan);
+        planRepository.delete(plan);
+
+        return new PlanDeleteResponse(plan);
+    }
+
+    public PlanResponse find(final Long userId, final Long planId) {
+        Plan plan = findByIdAndUserId(planId, userId);
+        return PlanResponse.from(plan);
+    }
+
     private List<PlanImage> uploadPlanImages(Plan plan, List<MultipartFile> planImages) {
         return planImages.stream()
-                .map(file -> awsS3Uploader.upload(file, "classLog"))
+                .map(file -> awsS3Uploader.upload(file, "plan"))
                 .map(pair -> createPlanImage(plan, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
@@ -68,6 +93,32 @@ public class PlanService {
     private PlanImage createPlanImage(Plan plan, String imageUrl, String originalFileName) {
         plan.clearImages();
 
-        return planImageRepository.save(new PlanImage(imageUrl,originalFileName,plan));
+        return planImageRepository.save(new PlanImage(imageUrl, originalFileName, plan));
+    }
+
+    private void deleteExistedImage(Plan plan) {
+        System.out.println("Deleting existing images for plan ID: " + plan.getId());
+        deleteS3Images(plan);
+    }
+
+    private void deleteS3Images(Plan plan) {
+        System.out.println("Starting to delete images from S3 for plan ID: " + plan.getId());
+        List<PlanImage> planImages = plan.getPlanImages();
+        for (PlanImage planImage : planImages) {
+            String imageKey = planImage.getPlanImageUrl().substring(49);
+            System.out.println("Deleting image from S3: " + imageKey);
+            awsS3Uploader.deleteImage(imageKey);
+        }
+    }
+
+    private List<PlanResponse> convertToPlanResponseList(final Slice<Plan> planSlice) {
+        return planSlice.getContent().stream()
+                .map(PlanResponse::from)
+                .toList();
+    }
+
+    private Plan findByIdAndUserId(Long planId, Long userId) {
+        return planRepository.findByIdAndUserId(planId, userId)
+                .orElseThrow(() -> new PlanException(PlanErrorCode.NOT_FOUND));
     }
 }
