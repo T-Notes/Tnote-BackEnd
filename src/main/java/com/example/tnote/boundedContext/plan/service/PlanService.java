@@ -83,25 +83,25 @@ public class PlanService {
         return PlanResponse.from(plan);
     }
 
-    private List<PlanImage> uploadPlanImages(Plan plan, List<MultipartFile> planImages) {
+    private List<PlanImage> uploadPlanImages(final Plan plan, final List<MultipartFile> planImages) {
         return planImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "plan"))
                 .map(pair -> createPlanImage(plan, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
 
-    private PlanImage createPlanImage(Plan plan, String imageUrl, String originalFileName) {
+    private PlanImage createPlanImage(final Plan plan, final String imageUrl, final String originalFileName) {
         plan.clearImages();
 
         return planImageRepository.save(new PlanImage(imageUrl, originalFileName, plan));
     }
 
-    private void deleteExistedImage(Plan plan) {
+    private void deleteExistedImage(final Plan plan) {
         System.out.println("Deleting existing images for plan ID: " + plan.getId());
         deleteS3Images(plan);
     }
 
-    private void deleteS3Images(Plan plan) {
+    private void deleteS3Images(final Plan plan) {
         System.out.println("Starting to delete images from S3 for plan ID: " + plan.getId());
         List<PlanImage> planImages = plan.getPlanImages();
         for (PlanImage planImage : planImages) {
