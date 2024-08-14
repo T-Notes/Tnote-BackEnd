@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum PlanErrorCode implements ErrorCode {
 
+    NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 일정입니다."),
     INVALID_PLAN_DATE(HttpStatus.BAD_REQUEST, "해당 기간에 일치하는 일정이 존재하지 않습니다.");
     private final HttpStatus httpStatus;
     private final String message;
