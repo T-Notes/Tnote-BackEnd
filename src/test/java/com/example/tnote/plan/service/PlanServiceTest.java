@@ -126,6 +126,7 @@ class PlanServiceTest {
     @Nested
     class find {
         User user = mock(User.class);
+        User user2 = mock(User.class);
         LocalDate startDate = LocalDate.of(2024, 1, 10);
         LocalDate endDate = LocalDate.of(2024, 1, 20);
         Schedule schedule = new Schedule(1L, "1학기", null,
@@ -138,12 +139,14 @@ class PlanServiceTest {
             Long scheduleId = 1L;
             Pageable pageable = PageRequest.of(0, 10);
             List<Plan> mockPlans = Arrays.asList(
-                    new Plan("Development", LocalDateTime.now(), LocalDateTime.now().plusDays(1), "Seoul", "Project Development", "Team", user, schedule, new ArrayList<>()),
-                    new Plan("Meeting", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Busan", "Team Meeting", "Staff", user, schedule, new ArrayList<>())
+                    new Plan("Development", LocalDateTime.now(), LocalDateTime.now().plusDays(1), "Seoul",
+                            "Project Development", "Team", user, schedule, new ArrayList<>()),
+                    new Plan("Meeting", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Busan", "Team Meeting",
+                            "Staff", user, schedule, new ArrayList<>())
             );
-            Slice<Plan> planSlice =  new PageImpl<>(mockPlans, pageable, mockPlans.size());
+            Slice<Plan> planSlice = new PageImpl<>(mockPlans, pageable, mockPlans.size());
 
-            when(planRepository.findALLByUserIdAndScheduleId(userId,scheduleId)).thenReturn(mockPlans);
+            when(planRepository.findALLByUserIdAndScheduleId(userId, scheduleId)).thenReturn(mockPlans);
             when(planRepository.findALLByUserIdAndScheduleId(userId, scheduleId, pageable)).thenReturn(planSlice);
 
             PlanResponses responses = planService.findAll(userId, scheduleId, pageable);
@@ -151,5 +154,18 @@ class PlanServiceTest {
             assertThat(responses.getPlans()).extracting("title").containsExactlyInAnyOrder("Development", "Meeting");
         }
 
+        @DisplayName("일정 상세조회")
+        @Test
+        void find() {
+            Long userId = 1L;
+            Long planId = 1L;
+            Plan plan1 = mock(Plan.class);
+
+            when(planRepository.findByIdAndUserId(planId, userId)).thenReturn(Optional.of(plan1));
+
+            PlanResponse response = planService.find(userId, 1L);
+
+            assertThat(response).isNotNull();
+        }
     }
 }
