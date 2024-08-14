@@ -10,7 +10,7 @@ public class PlanDeleteResponse {
     public PlanDeleteResponse() {
     }
 
-    public PlanDeleteResponse(Long id) {
-        this.id = id;
+    public PlanDeleteResponse(final Plan plan) {
+        this.id = plan.getId();
     }
 }
