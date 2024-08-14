@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -13,6 +14,7 @@ import com.example.tnote.boundedContext.plan.dto.PlanDeleteResponse;
 import com.example.tnote.boundedContext.plan.dto.PlanResponse;
 import com.example.tnote.boundedContext.plan.dto.PlanSaveRequest;
 import com.example.tnote.boundedContext.plan.entity.Plan;
+import com.example.tnote.boundedContext.plan.exception.PlanException;
 import com.example.tnote.boundedContext.plan.repository.PlanRepository;
 import com.example.tnote.boundedContext.plan.service.PlanService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
@@ -96,5 +98,22 @@ class PlanServiceTest {
             assertThat(response.getId()).isEqualTo(plan.getId());
             verify(planRepository).delete(plan);
         }
+
+
+        @Test
+        @DisplayName("존재하지 않는 일정 삭제 시 예외")
+        void deleteNotExist() {
+            Long planId = 12L;
+            Long userId = 1L;
+
+            when(planRepository.findByIdAndUserId(planId, userId)).thenReturn(Optional.empty());
+
+            assertThatThrownBy(() -> {
+                planService.delete(planId, userId);
+            }).isInstanceOf(PlanException.class);
+
+            verify(planRepository, never()).delete(any(Plan.class));
+        }
+
     }
 }
