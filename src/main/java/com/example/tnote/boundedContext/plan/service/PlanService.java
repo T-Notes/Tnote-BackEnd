@@ -97,7 +97,6 @@ public class PlanService {
     private void deleteExistedImage(Plan plan) {
         System.out.println("Deleting existing images for plan ID: " + plan.getId());
         deleteS3Images(plan);
-        planImageRepository.deleteByPlanId(plan.getId());
     }
 
     private void deleteS3Images(Plan plan) {
