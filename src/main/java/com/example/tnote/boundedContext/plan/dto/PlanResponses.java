@@ -26,7 +26,8 @@ public class PlanResponses {
         this.isLast = isLast;
     }
 
-    public static PlanResponses of(final List<PlanResponse> planResponses, final List<Plan> plans, Slice<Plan> slice) {
+    public static PlanResponses of(final List<PlanResponse> planResponses, final List<Plan> plans,
+                                   final Slice<Plan> slice) {
         return PlanResponses.builder()
                 .plans(planResponses)
                 .numberOfClassLog(plans.size())
