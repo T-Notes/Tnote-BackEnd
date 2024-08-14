@@ -1,8 +1,11 @@
 package com.example.tnote.base.utils;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -33,6 +36,14 @@ public class SchoolPlanUtil {
 
     @Value("${api.call-back-url}")
     private String callBackUrl;
+
+    private final FindCityUtils findCityUtils;
+
+    @Value("${api.career-key-openAPI}")
+    private String KEYOpenAPI;
+
+    @Value("${api.call-back-url-openAPI}")
+    private String callBackUrlOpenAPI;
 
     /**
      * make URL with variable in class
@@ -103,4 +114,29 @@ public class SchoolPlanUtil {
         return sb.toString();
     }
 
+    public String buildApiUrl(String region, String schoolType, String schoolName) throws UnsupportedEncodingException {
+        return callBackUrlOpenAPI + "apiKey=" + KEYOpenAPI +
+                "&svcType=api&svcCode=SCHOOL&contentType=json" +
+                "&gubun=" + findCityUtils.changeGubun(schoolType) +
+                "&region=" + findCityUtils.findCityCode(region) +
+                "&searchSchulNm=" + URLEncoder.encode(schoolName, "UTF-8");
+    }
+
+    public String fetchApiData(String apiUrl) throws IOException {
+        URL url = new URL(apiUrl);
+        HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
+        return findCityUtils.readStreamToString(findCityUtils.getNetworkConnection(urlConnection));
+    }
+
+    public String extractSchoolCode(String schoolInfo) throws IOException {
+        ObjectMapper objectMapper = new ObjectMapper();
+        JsonNode rootNode = objectMapper.readTree(schoolInfo);
+        JsonNode rowNode = rootNode.path("schoolInfo").get(1).path("row");
+
+        if (rowNode.isArray() && rowNode.size() > 0) {
+            return rowNode.get(0).path("SD_SCHUL_CODE").asText();
+        }
+
+        return null;
+    }
 }
