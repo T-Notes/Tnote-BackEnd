@@ -49,7 +49,7 @@ public class PlanController {
         return ResponseEntity.ok(Result.of(planService.findAll(principalDetails.getId(), scheduleId, pageRequest)));
     }
 
-    @DeleteMapping(value = "/{scheduleId}")
+    @DeleteMapping()
     public ResponseEntity<Result> delete(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                          @RequestParam final Long planId) {
         return ResponseEntity.ok(Result.of(planService.delete(principalDetails.getId(), planId)));
