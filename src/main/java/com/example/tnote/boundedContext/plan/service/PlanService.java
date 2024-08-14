@@ -1,8 +1,6 @@
 package com.example.tnote.boundedContext.plan.service;
 
 import com.example.tnote.base.utils.AwsS3Uploader;
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
-import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.plan.dto.PlanDeleteResponse;
 import com.example.tnote.boundedContext.plan.dto.PlanResponses;
 import com.example.tnote.boundedContext.plan.dto.PlanSaveRequest;
