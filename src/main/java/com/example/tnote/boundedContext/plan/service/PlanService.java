@@ -117,7 +117,7 @@ public class PlanService {
                 .toList();
     }
 
-    private Plan findByIdAndUserId(Long planId, Long userId) {
+    private Plan findByIdAndUserId(final Long planId, final Long userId) {
         return planRepository.findByIdAndUserId(planId, userId)
                 .orElseThrow(() -> new PlanException(PlanErrorCode.NOT_FOUND));
     }
