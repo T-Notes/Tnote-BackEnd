@@ -73,12 +73,16 @@ public class PlanService {
 
     @Transactional
     public PlanDeleteResponse delete(final Long planId, final Long userId) {
-        Plan plan = planRepository.findByIdAndUserId(planId, userId)
-                .orElseThrow(() -> new PlanException(PlanErrorCode.NOT_FOUND));
+        Plan plan = findByIdAndUserId(planId, userId);
         deleteExistedImage(plan);
         planRepository.delete(plan);
 
         return new PlanDeleteResponse(plan);
+    }
+
+    public PlanResponse find(final Long userId, final Long planId) {
+        Plan plan = findByIdAndUserId(planId, userId);
+        return PlanResponse.from(plan);
     }
 
     private List<PlanImage> uploadPlanImages(Plan plan, List<MultipartFile> planImages) {
@@ -113,5 +117,10 @@ public class PlanService {
         return planSlice.getContent().stream()
                 .map(PlanResponse::from)
                 .toList();
+    }
+
+    private Plan findByIdAndUserId(Long planId, Long userId) {
+        return planRepository.findByIdAndUserId(planId, userId)
+                .orElseThrow(() -> new PlanException(PlanErrorCode.NOT_FOUND));
     }
 }
