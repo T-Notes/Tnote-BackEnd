@@ -67,7 +67,10 @@ custom:
   jwt:
     secret-key: ENC(mPmTeeNrRUGIWZYPHgTkNDTj1kM4SfkEnivsBxKvWgKBMhXAqtHxqjkFNjcUw7W8u6gc1nQxIzYL2JvzmBQx4cceAvtYQ0LmFxjIve2nvzU=)
 
+
 api:
+  career-key-openAPI: ENC(me8ibcck0Bw3TpcnGLcVP9AFtxf9OFvaIBqUC2aC6j9q0dhD9+Gq0jrAIF1zr/li)
+  call-back-url-openAPI: "http://www.career.go.kr/cnet/openapi/getOpenApi?"
   career-key: ENC(CDDvKzDfcmgZjWlUJE9M5fnjEG8laSMo8bqr6hb/PLNut8K8hdupBXzTkRjq7iX2)
   call-back-url: "https://open.neis.go.kr/hub"
 
