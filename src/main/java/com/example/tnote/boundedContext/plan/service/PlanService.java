@@ -31,9 +31,9 @@ public class PlanService {
     private final ScheduleRepository scheduleRepository;
     private final AwsS3Uploader awsS3Uploader;
 
-    public PlanService(PlanRepository planRepository, PlanImageRepository planImageRepository,
-                       UserRepository userRepository, ScheduleRepository scheduleRepository,
-                       AwsS3Uploader awsS3Uploader) {
+    public PlanService(final PlanRepository planRepository, final PlanImageRepository planImageRepository,
+                       final UserRepository userRepository, final ScheduleRepository scheduleRepository,
+                       final AwsS3Uploader awsS3Uploader) {
         this.planRepository = planRepository;
         this.planImageRepository = planImageRepository;
         this.userRepository = userRepository;
