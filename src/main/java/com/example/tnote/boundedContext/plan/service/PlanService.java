@@ -76,6 +76,7 @@ public class PlanService {
         Plan plan = planRepository.findByIdAndUserId(planId, userId)
                 .orElseThrow(() -> new PlanException(PlanErrorCode.NOT_FOUND));
         deleteExistedImage(plan);
+        planRepository.delete(plan);
 
         return new PlanDeleteResponse(plan.getId());
     }
