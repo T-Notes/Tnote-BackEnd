@@ -17,6 +17,7 @@ public class PlanResponse {
     private String location;
     private String contents;
     private String participants;
+    private String color;
     private List<PlanImage> planImageList;
 
     public static PlanResponse from(final Plan plan) {
@@ -28,6 +29,7 @@ public class PlanResponse {
                 .location(plan.getLocation())
                 .contents(plan.getContents())
                 .participants(plan.getParticipants())
+                .color(plan.getColor())
                 .planImageList(plan.getPlanImages())
                 .build();
     }
