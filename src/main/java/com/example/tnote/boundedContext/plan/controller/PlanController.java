@@ -29,14 +29,27 @@ public class PlanController {
         this.planService = planService;
     }
 
-    @PostMapping(value = "/{scheduleId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> save(@AuthenticationPrincipal final PrincipalDetails principalDetails,
-                                       @PathVariable final Long scheduleId,
+                                       @RequestParam final Long scheduleId,
                                        @RequestPart final PlanSaveRequest planSaveRequest,
                                        @RequestPart(name = "planImages", required = false) final List<MultipartFile> planImages) {
         return ResponseEntity.ok(
                 Result.of(planService.save(principalDetails.getId(), scheduleId, planSaveRequest, planImages)));
+    }
+
+    @GetMapping
+    public ResponseEntity<Result> find(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                       @RequestParam final Long planId) {
+
+        return ResponseEntity.ok(Result.of(planService.find(principalDetails.getId(), planId)));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Result> delete(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                         @RequestParam final Long planId) {
+        return ResponseEntity.ok(Result.of(planService.delete(principalDetails.getId(), planId)));
     }
 
     @GetMapping(value = "/all")
@@ -47,11 +60,5 @@ public class PlanController {
 
         PageRequest pageRequest = PageRequest.of(page, size);
         return ResponseEntity.ok(Result.of(planService.findAll(principalDetails.getId(), scheduleId, pageRequest)));
-    }
-
-    @DeleteMapping()
-    public ResponseEntity<Result> delete(@AuthenticationPrincipal final PrincipalDetails principalDetails,
-                                         @RequestParam final Long planId) {
-        return ResponseEntity.ok(Result.of(planService.delete(principalDetails.getId(), planId)));
     }
 }
