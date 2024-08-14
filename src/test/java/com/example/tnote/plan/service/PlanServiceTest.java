@@ -77,7 +77,7 @@ class PlanServiceTest {
         @Test
         void save() {
             PlanSaveRequest request = new PlanSaveRequest("Development", startDateTime, endDateTime, "Seoul",
-                    "Project Development", "Team");
+                    "Project Development", "Team", "red");
 
             when(userRepository.findUserById(1L)).thenReturn(user);
             when(scheduleRepository.findScheduleById(1L)).thenReturn(schedule);
@@ -94,7 +94,7 @@ class PlanServiceTest {
             Long planId = 1L;
             Long userId = 1L;
             Plan plan = new Plan("New Year Plan", startDateTime, endDateTime, "New York",
-                    "Celebration", "Everyone", user, schedule, new ArrayList<>());
+                    "Celebration", "Everyone", "red", user, schedule, new ArrayList<>());
 
             when(planRepository.findByIdAndUserId(planId, userId)).thenReturn(Optional.of(plan));
             doNothing().when(planRepository).delete(plan);
@@ -140,9 +140,9 @@ class PlanServiceTest {
             Pageable pageable = PageRequest.of(0, 10);
             List<Plan> mockPlans = Arrays.asList(
                     new Plan("Development", LocalDateTime.now(), LocalDateTime.now().plusDays(1), "Seoul",
-                            "Project Development", "Team", user, schedule, new ArrayList<>()),
+                            "Project Development", "Team", "red", user, schedule, new ArrayList<>()),
                     new Plan("Meeting", LocalDateTime.now(), LocalDateTime.now().plusHours(1), "Busan", "Team Meeting",
-                            "Staff", user, schedule, new ArrayList<>())
+                            "Staff", "red", user, schedule, new ArrayList<>())
             );
             Slice<Plan> planSlice = new PageImpl<>(mockPlans, pageable, mockPlans.size());
 

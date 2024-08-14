@@ -31,9 +31,9 @@ public class PlanService {
     private final ScheduleRepository scheduleRepository;
     private final AwsS3Uploader awsS3Uploader;
 
-    public PlanService(PlanRepository planRepository, PlanImageRepository planImageRepository,
-                       UserRepository userRepository, ScheduleRepository scheduleRepository,
-                       AwsS3Uploader awsS3Uploader) {
+    public PlanService(final PlanRepository planRepository, final PlanImageRepository planImageRepository,
+                       final UserRepository userRepository, final ScheduleRepository scheduleRepository,
+                       final AwsS3Uploader awsS3Uploader) {
         this.planRepository = planRepository;
         this.planImageRepository = planImageRepository;
         this.userRepository = userRepository;
@@ -83,25 +83,25 @@ public class PlanService {
         return PlanResponse.from(plan);
     }
 
-    private List<PlanImage> uploadPlanImages(Plan plan, List<MultipartFile> planImages) {
+    private List<PlanImage> uploadPlanImages(final Plan plan, final List<MultipartFile> planImages) {
         return planImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "plan"))
                 .map(pair -> createPlanImage(plan, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
 
-    private PlanImage createPlanImage(Plan plan, String imageUrl, String originalFileName) {
+    private PlanImage createPlanImage(final Plan plan, final String imageUrl, final String originalFileName) {
         plan.clearImages();
 
         return planImageRepository.save(new PlanImage(imageUrl, originalFileName, plan));
     }
 
-    private void deleteExistedImage(Plan plan) {
+    private void deleteExistedImage(final Plan plan) {
         System.out.println("Deleting existing images for plan ID: " + plan.getId());
         deleteS3Images(plan);
     }
 
-    private void deleteS3Images(Plan plan) {
+    private void deleteS3Images(final Plan plan) {
         System.out.println("Starting to delete images from S3 for plan ID: " + plan.getId());
         List<PlanImage> planImages = plan.getPlanImages();
         for (PlanImage planImage : planImages) {
@@ -117,7 +117,7 @@ public class PlanService {
                 .toList();
     }
 
-    private Plan findByIdAndUserId(Long planId, Long userId) {
+    private Plan findByIdAndUserId(final Long planId, final Long userId) {
         return planRepository.findByIdAndUserId(planId, userId)
                 .orElseThrow(() -> new PlanException(PlanErrorCode.NOT_FOUND));
     }

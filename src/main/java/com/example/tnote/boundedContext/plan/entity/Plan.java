@@ -41,6 +41,8 @@ public class Plan extends BaseTimeEntity {
 
     private String participants;
 
+    private String color;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -57,15 +59,16 @@ public class Plan extends BaseTimeEntity {
     public Plan() {
     }
 
-    public Plan(final String title, final LocalDateTime startDate,
-                final LocalDateTime endDate, final String location, final String contents, final String participants,
+    public Plan(final String title, final LocalDateTime startDate, final LocalDateTime endDate,
+                final String location, final String contents, final String participants, final String color,
                 final User user, final Schedule schedule, final List<PlanImage> planImages) {
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
-        this.contents = contents;
         this.location = location;
+        this.contents = contents;
         this.participants = participants;
+        this.color = color;
         this.user = user;
         this.schedule = schedule;
         this.planImages = planImages;
