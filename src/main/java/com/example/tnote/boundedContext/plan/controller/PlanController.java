@@ -39,9 +39,9 @@ public class PlanController {
                 Result.of(planService.save(principalDetails.getId(), scheduleId, planSaveRequest, planImages)));
     }
 
-    @GetMapping(value = "/{scheduleId}/all")
+    @GetMapping(value = "/all")
     public ResponseEntity<Result> findAll(@AuthenticationPrincipal final PrincipalDetails principalDetails,
-                                          @PathVariable final Long scheduleId,
+                                          @RequestParam final Long scheduleId,
                                           @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                           @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
 
