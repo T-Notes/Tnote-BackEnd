@@ -78,7 +78,7 @@ public class PlanService {
         deleteExistedImage(plan);
         planRepository.delete(plan);
 
-        return new PlanDeleteResponse(plan.getId());
+        return new PlanDeleteResponse(plan);
     }
 
     private List<PlanImage> uploadPlanImages(Plan plan, List<MultipartFile> planImages) {
