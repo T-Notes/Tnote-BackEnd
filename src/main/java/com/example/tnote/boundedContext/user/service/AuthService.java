@@ -80,7 +80,7 @@ public class AuthService {
 
         KakaoUnlinkResponse unlink = kakaoRequestService.unLink(dto.getAccess_token());
 
-        return UserDeleteResponseDto.of(unlink);
+        return UserDeleteResponseDto.from(unlink);
     }
 
     // 연관키로 묶여 있음

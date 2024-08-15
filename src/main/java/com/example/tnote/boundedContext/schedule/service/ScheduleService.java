@@ -52,7 +52,7 @@ public class ScheduleService {
 
         Schedule schedule = dto.toEntity(currentUser);
 
-        return ScheduleResponseDto.of(scheduleRepository.save(schedule));
+        return ScheduleResponseDto.from(scheduleRepository.save(schedule));
     }
 
     @Transactional
@@ -63,7 +63,7 @@ public class ScheduleService {
 
         updateEachScheduleItem(dto, schedule);
 
-        return ScheduleResponseDto.of(schedule);
+        return ScheduleResponseDto.from(schedule);
     }
 
     private void updateEachScheduleItem(ScheduleUpdateRequestDto dto, Schedule schedule) {
@@ -100,7 +100,7 @@ public class ScheduleService {
             currentUser.updateLastScheduleId(0);
         }
 
-        return ScheduleDeleteResponseDto.of(own);
+        return ScheduleDeleteResponseDto.from(own);
     }
 
     private Schedule authorizationWriter(Long id, User member) {
@@ -134,7 +134,7 @@ public class ScheduleService {
 
         matchUserWithSchedule(scheduleId, userId);
 
-        return ScheduleResponseDto.of(scheduleQueryRepository.findAllById(scheduleId));
+        return ScheduleResponseDto.from(scheduleQueryRepository.findAllById(scheduleId));
     }
 
     @Transactional(readOnly = true)
@@ -145,7 +145,7 @@ public class ScheduleService {
         List<Schedule> schedules = scheduleQueryRepository.findAllBySemesterNameAndUserId(semesterName, userId);
 
         return schedules.stream()
-                .map(SemesterNameResponseDto::of)
+                .map(SemesterNameResponseDto::from)
                 .toList();
     }
 
@@ -154,14 +154,14 @@ public class ScheduleService {
 
         matchUserWithSchedule(scheduleId, userId);
 
-        return ScheduleResponseDto.excludeLastDayOf(scheduleRepository.findAllById(scheduleId));
+        return ScheduleResponseDto.excludeLastDayFrom(scheduleRepository.findAllById(scheduleId));
     }
 
     @Transactional(readOnly = true)
     public List<SemesterNameResponseDto> findScheduleList(Long userId) {
         User currentUser = checkCurrentUser(userId);
 
-        return SemesterNameResponseDto.of(scheduleQueryRepository.findAllByUserId(currentUser.getId()));
+        return SemesterNameResponseDto.from(scheduleQueryRepository.findAllByUserId(currentUser.getId()));
     }
 
     @Transactional

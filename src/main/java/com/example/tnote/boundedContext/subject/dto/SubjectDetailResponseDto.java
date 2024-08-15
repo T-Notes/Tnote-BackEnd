@@ -15,7 +15,7 @@ public class SubjectDetailResponseDto {
     private String memo;
     private String color;
 
-    public static SubjectDetailResponseDto of(Subjects subject) {
+    public static SubjectDetailResponseDto from(Subjects subject) {
 
         return SubjectDetailResponseDto.builder()
                 .id(subject.getId())

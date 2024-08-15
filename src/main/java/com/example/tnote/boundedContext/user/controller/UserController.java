@@ -1,7 +1,6 @@
 package com.example.tnote.boundedContext.user.controller;
 
 import com.example.tnote.base.response.Result;
-import com.example.tnote.base.utils.FindCityUtils;
 import com.example.tnote.base.utils.SchoolPlanUtil;
 import com.example.tnote.base.utils.SchoolUtils;
 import com.example.tnote.base.utils.TokenUtils;
@@ -56,7 +55,6 @@ public class UserController {
     private final AuthService authService;
     private final SchoolUtils schoolUtils;
     private final SchoolPlanUtil schoolPlanUtil;
-    private final FindCityUtils findCityUtils;
 
     @GetMapping("/school")
     @Operation(summary = "search school info API", description = "학교 기본 정보 검색 API")

@@ -37,7 +37,7 @@ public class UserService {
                 .username(name)
                 .build();
 
-        return UserResponse.of(userRepository.save(user));
+        return UserResponse.from(userRepository.save(user));
     }
 
     @Transactional(readOnly = true)
@@ -46,7 +46,7 @@ public class UserService {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
-        return UserResponse.of(user);
+        return UserResponse.from(user);
     }
 
     @Transactional
@@ -56,7 +56,7 @@ public class UserService {
 
         user.updateAlarm(dto.isAlarm());
 
-        return UserResponse.of(user);
+        return UserResponse.from(user);
     }
 
     @Transactional
@@ -67,7 +67,7 @@ public class UserService {
 
         updateUserItem(dto, user);
 
-        return UserResponse.of(user);
+        return UserResponse.from(user);
     }
 
     private void updateUserItem(UserUpdateRequest dto, User user) {
@@ -98,7 +98,7 @@ public class UserService {
     public UserMailResponse getMail(Long userId) {
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
-        return UserMailResponse.of(currentUser);
+        return UserMailResponse.from(currentUser);
     }
 
     @Transactional(readOnly = true)
@@ -107,6 +107,6 @@ public class UserService {
         if (user.getSchool() == null || user.getSchool().isEmpty()) {
             throw new UserException(USER_NOT_FOUND);
         }
-        return UserResponse.of(user);
+        return UserResponse.from(user);
     }
 }

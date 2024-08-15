@@ -50,7 +50,7 @@ public class SubjectService {
 
         Subjects subjects = dto.toEntity(schedule);
 
-        return SubjectResponseDto.of(subjectRepository.save(subjects));
+        return SubjectResponseDto.from(subjectRepository.save(subjects));
     }
 
     @Transactional
@@ -63,7 +63,7 @@ public class SubjectService {
 
         updateEachSubjectsItem(dto, subjects);
 
-        return SubjectResponseDto.of(subjects);
+        return SubjectResponseDto.from(subjects);
     }
 
     private void updateEachSubjectsItem(SubjectsUpdateRequestDto dto, Subjects subjects) {
@@ -105,14 +105,14 @@ public class SubjectService {
 
         subjectRepository.deleteById(subject.getId());
 
-        return SubjectsDeleteResponseDto.of(subject);
+        return SubjectsDeleteResponseDto.from(subject);
     }
 
     @Transactional(readOnly = true)
     public List<SubjectResponseDto> getMyClass(Long scheduleId, ClassDay day, Long userId) {
         matchUserWithSchedule(scheduleId, userId);
 
-        return SubjectResponseDto.of(
+        return SubjectResponseDto.from(
                 subjectQueryRepository.findAllByScheduleIdAndUserIdAndClassDay(scheduleId, userId, day));
     }
 
@@ -123,7 +123,7 @@ public class SubjectService {
         matchUserWithSchedule(scheduleId, userId);
         Subjects subject = authorization(subjectId, userId);
 
-        return SubjectDetailResponseDto.of(subject);
+        return SubjectDetailResponseDto.from(subject);
     }
 
     private User checkCurrentUser(Long id) {

@@ -46,7 +46,7 @@ public class TodoService {
         matchUserWithSchedule(scheduleId, userId);
         Todo todo = dto.toEntity(checkCurrentUser(userId), checkSchedule(scheduleId), getLocalDate(date));
 
-        return TodoResponseDto.of(todoRepository.save(todo));
+        return TodoResponseDto.from(todoRepository.save(todo));
     }
 
     @Transactional
@@ -55,7 +55,7 @@ public class TodoService {
         Todo todo = getTodo(scheduleId, todoId, userId);
 
         todoRepository.deleteById(todo.getId());
-        return TodoDeleteResponseDto.of(todo);
+        return TodoDeleteResponseDto.from(todo);
     }
 
     @Transactional(readOnly = true)
@@ -63,7 +63,7 @@ public class TodoService {
 
         checkSchedule(scheduleId);
 
-        return TodoResponseDto.of(
+        return TodoResponseDto.from(
                 todoQueryRepository.findAllByUserIdAndDate(userId, scheduleId, getLocalDate(date)));
     }
 
@@ -75,7 +75,7 @@ public class TodoService {
 
         updateEachTodosItem(dto, todos, date);
 
-        return TodoResponseDto.of(todos);
+        return TodoResponseDto.from(todos);
     }
 
     private void updateEachTodosItem(TodoUpdateRequestDto dto, Todo todos, LocalDate date) {
@@ -149,7 +149,7 @@ public class TodoService {
                 userId, scheduleId, startOfDay, endOfDay, pageable);
 
         int numberOfTodo = todos.size();
-        List<TodoResponseDto> responseDto = allTodos.getContent().stream().map(TodoResponseDto::of).toList();
+        List<TodoResponseDto> responseDto = allTodos.getContent().stream().map(TodoResponseDto::from).toList();
 
         return TodoSliceResponseDto.builder()
                 .todos(responseDto)
@@ -165,14 +165,14 @@ public class TodoService {
 
         List<Todo> todos = todoQueryRepository.findByUserIdAndScheduleIdAndDate(userId, scheduleId, date);
 
-        return todos.stream().map(TodoResponseDto::of).toList();
+        return todos.stream().map(TodoResponseDto::from).toList();
     }
 
     @Transactional(readOnly = true)
     public List<TodoResponseDto> readMonthlyTodos(Long userId, Long scheduleId, LocalDate date) {
         List<Todo> todos = todoQueryRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);
 
-        return todos.stream().map(TodoResponseDto::of).toList();
+        return todos.stream().map(TodoResponseDto::from).toList();
     }
 
     private LocalDate getLocalDate(LocalDate date) {
