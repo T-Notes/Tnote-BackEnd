@@ -62,10 +62,10 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> findSchool(@RequestParam("region") String region,
-                                             @RequestParam("code") String code,
-                                             @RequestParam("schoolType") String schoolType,
-                                             @RequestParam("schoolName") String schoolName)
+    public ResponseEntity<Result> findSchool(@RequestParam("region") final String region,
+                                             @RequestParam("code") final String code,
+                                             @RequestParam("schoolType") final String schoolType,
+                                             @RequestParam("schoolName") final String schoolName)
             throws IOException, net.minidev.json.parser.ParseException {
 
         String apiUrl = schoolPlanUtil.buildApiUrl(region, schoolType, schoolName);
@@ -98,8 +98,8 @@ public class UserController {
             @ApiResponse(responseCode = "200", description = "로그인 성공"),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> findSchoolPlan(@RequestParam("code") String code,
-                                                 @RequestParam("scheduleCode") String scheduleCode)
+    public ResponseEntity<Result> findSchoolPlan(@RequestParam("code") final String code,
+                                                 @RequestParam("scheduleCode") final String scheduleCode)
             throws IOException {
 
         String result = schoolPlanUtil.schoolPlan("SchoolSchedule", code, scheduleCode);
@@ -131,7 +131,7 @@ public class UserController {
                     content = {@Content(schema = @Schema(implementation = UserResponse.class))}),
             @ApiResponse(responseCode = "404", description = "실패")
     })
-    public ResponseEntity<Result> getInfo(@AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> getInfo(@AuthenticationPrincipal final PrincipalDetails user) {
         UserResponse response = userService.findById(user.getId());
         return ResponseEntity.ok(Result.of(response));
     }
@@ -144,7 +144,7 @@ public class UserController {
             @ApiResponse(responseCode = "404", description = "실패")
     })
     public ResponseEntity<Result> getUserInfo(
-            @Parameter(required = true, description = "userId 작성") @PathVariable Long userId) {
+            @Parameter(required = true, description = "userId 작성") @PathVariable final Long userId) {
 
         UserResponse response = userService.getUserInfo(userId);
 
@@ -159,8 +159,8 @@ public class UserController {
                     content = {@Content(schema = @Schema(implementation = UserResponse.class))}),
             @ApiResponse(responseCode = "404", description = "실패")
     })
-    public ResponseEntity<Result> updateExtraInfo(@AuthenticationPrincipal PrincipalDetails user,
-                                                  @RequestBody UserUpdateRequest dto) {
+    public ResponseEntity<Result> updateExtraInfo(@AuthenticationPrincipal final PrincipalDetails user,
+                                                  @RequestBody final UserUpdateRequest dto) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
         UserResponse response = userService.updateExtraInfo(currentUser.getId(), dto);
@@ -175,8 +175,8 @@ public class UserController {
                     content = {@Content(schema = @Schema(implementation = UserResponse.class))}),
             @ApiResponse(responseCode = "404", description = "실패")
     })
-    public ResponseEntity<Result> updateAlarmInfo(@AuthenticationPrincipal PrincipalDetails user,
-                                                  @RequestBody UserAlarmUpdate dto) {
+    public ResponseEntity<Result> updateAlarmInfo(@AuthenticationPrincipal final PrincipalDetails user,
+                                                  @RequestBody final UserAlarmUpdate dto) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
         UserResponse response = userService.updateAlarmInfo(currentUser.getId(), dto);
@@ -192,7 +192,7 @@ public class UserController {
     })
     public ResponseEntity<Result> logout(HttpServletRequest request,
                                          HttpServletResponse response,
-                                         @AuthenticationPrincipal PrincipalDetails user) {
+                                         @AuthenticationPrincipal final PrincipalDetails user) {
 
         TokenUtils.checkValidToken(user);
 
@@ -208,7 +208,7 @@ public class UserController {
                     content = {@Content(schema = @Schema(implementation = UserDeleteResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "실패")
     })
-    public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal PrincipalDetails user
+    public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal final PrincipalDetails user
             , HttpServletRequest request) {
         String oauthRefreshToken = request.getHeader("oauthRefreshToken");
 
@@ -227,7 +227,7 @@ public class UserController {
                     content = {@Content(schema = @Schema(implementation = UserMailResponse.class))}),
             @ApiResponse(responseCode = "404", description = "실패")
     })
-    public ResponseEntity<Result> getMail(@AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> getMail(@AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 

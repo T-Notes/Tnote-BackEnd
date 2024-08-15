@@ -34,12 +34,12 @@ public class AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public JwtResponse redirect(String provider, String code, String state) {
+    public JwtResponse redirect(final String provider, final String code, final String state) {
         return kakaoRequestService.redirect(provider, code, state);
     }
 
     @Transactional
-    public JwtResponse refreshToken(String refreshToken) {
+    public JwtResponse refreshToken(final String refreshToken) {
 
         if (jwtTokenProvider.isExpired(refreshToken)) {
             // refresh token 만료시 재로그인 필요
@@ -55,12 +55,12 @@ public class AuthService {
         return buildSignInResponse(newToken.getAccessToken(), refreshToken, user.getId());
     }
 
-    private User getUserFromRefreshToken(RefreshToken refreshToken) {
+    private User getUserFromRefreshToken(final RefreshToken refreshToken) {
         return userRepository.findByEmail(refreshToken.getKeyEmail())
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
     }
 
-    private JwtResponse buildSignInResponse(String accessToken, String refreshToken, Long userId) {
+    private JwtResponse buildSignInResponse(final String accessToken, final String refreshToken, final Long userId) {
         return JwtResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
@@ -69,7 +69,7 @@ public class AuthService {
     }
 
     @Transactional
-    public UserDeleteResponseDto deleteUser(Long userId, String oauthRefreshToken) {
+    public UserDeleteResponseDto deleteUser(final Long userId, final String oauthRefreshToken) {
 
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
@@ -84,7 +84,7 @@ public class AuthService {
     }
 
     // 연관키로 묶여 있음
-    private void deleteAll(User currentUser) {
+    private void deleteAll(final User currentUser) {
         refreshTokenRepository.deleteByKeyEmail(currentUser.getEmail());
         userRepository.delete(currentUser);
     }

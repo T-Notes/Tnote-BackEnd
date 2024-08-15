@@ -48,10 +48,10 @@ public class TodoController {
                     content = {@Content(schema = @Schema(implementation = TodoResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> saveTodo(@RequestBody TodoRequestDto dto,
-                                           @PathVariable("scheduleId") Long scheduleId,
-                                           @RequestParam(value = "date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-                                           @AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> saveTodo(@RequestBody final TodoRequestDto dto,
+                                           @PathVariable("scheduleId") final Long scheduleId,
+                                           @RequestParam(value = "date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final LocalDate date,
+                                           @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
@@ -66,11 +66,11 @@ public class TodoController {
                     content = {@Content(schema = @Schema(implementation = TodoResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> updateSubjects(@RequestBody TodoUpdateRequestDto dto,
-                                                 @PathVariable Long scheduleId,
-                                                 @PathVariable("todoId") Long todoId,
-                                                 @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-                                                 @AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> updateSubjects(@RequestBody final TodoUpdateRequestDto dto,
+                                                 @PathVariable final Long scheduleId,
+                                                 @PathVariable("todoId") final Long todoId,
+                                                 @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final LocalDate date,
+                                                 @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
@@ -86,9 +86,9 @@ public class TodoController {
                     content = {@Content(schema = @Schema(implementation = TodoDeleteResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> deleteTodo(@PathVariable("todoId") Long todoId,
-                                             @PathVariable("scheduleId") Long scheduleId,
-                                             @AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> deleteTodo(@PathVariable("todoId") final Long todoId,
+                                             @PathVariable("scheduleId") final Long scheduleId,
+                                             @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
@@ -106,9 +106,9 @@ public class TodoController {
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
     public ResponseEntity<Result> findTodo(
-            @PathVariable Long scheduleId,
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-            @AuthenticationPrincipal PrincipalDetails user) {
+            @PathVariable final Long scheduleId,
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final LocalDate date,
+            @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
