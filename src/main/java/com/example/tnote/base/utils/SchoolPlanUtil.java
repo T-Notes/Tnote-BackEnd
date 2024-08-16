@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SchoolPlanUtil {
 
-    protected URL url;
+    private URL url;
     private final FindCityUtils findCityUtils;
     private String Type;
     private String path;
@@ -43,13 +43,8 @@ public class SchoolPlanUtil {
     @Value("${api.call-back-url-openAPI}")
     private String callBackUrlOpenAPI;
 
-    /**
-     * make URL with variable in class
-     */
+
     private URL makeURL() throws IOException {
-
-
-        /*URL*/
         callBackUrl += "/" + path + "?KEY=" + KEY;
         callBackUrl += "&Type=" + this.Type;
         callBackUrl += "&pIndex=" + this.pIndex;
@@ -69,7 +64,6 @@ public class SchoolPlanUtil {
         this.Type = Type;
         this.pIndex = pIndex;
         this.pSize = pSize;
-
         this.ATPT_OFCDC_SC_CODE = ATPT_OFCDC_SC_CODE;
         this.SD_SCHUL_CODE = SD_SCHUL_CODE;
 
@@ -78,17 +72,12 @@ public class SchoolPlanUtil {
         return this.url;
     }
 
-
-    /**
-     * call Neis API
-     */
-
     public String schoolPlan(String path, String ATPT_OFCDC_SC_CODE, String SD_SCHUL_CODE)
             throws IOException {
 
         URL url = makeURL(path, KEY, "JSON", "1", "500", ATPT_OFCDC_SC_CODE, SD_SCHUL_CODE);
-        HttpURLConnection conn;
-        conn = (HttpURLConnection) url.openConnection();
+
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
         conn.setRequestMethod("GET");
         conn.setRequestProperty("Content-type", "application/json; charset=utf-8");
 
