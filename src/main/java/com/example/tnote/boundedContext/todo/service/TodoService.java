@@ -41,44 +41,46 @@ public class TodoService {
     private final TodoQueryRepository todoQueryRepository;
 
     @Transactional
-    public TodoResponseDto saveTodo(TodoRequestDto dto, Long scheduleId, Long userId, LocalDate date) {
+    public TodoResponseDto saveTodo(final TodoRequestDto dto, final Long scheduleId, final Long userId,
+                                    final LocalDate date) {
 
         matchUserWithSchedule(scheduleId, userId);
         Todo todo = dto.toEntity(checkCurrentUser(userId), checkSchedule(scheduleId), getLocalDate(date));
 
-        return TodoResponseDto.of(todoRepository.save(todo));
+        return TodoResponseDto.from(todoRepository.save(todo));
     }
 
     @Transactional
-    public TodoDeleteResponseDto deleteTodo(Long todoId, Long scheduleId, Long userId) {
+    public TodoDeleteResponseDto deleteTodo(final Long todoId, final Long scheduleId, final Long userId) {
 
         Todo todo = getTodo(scheduleId, todoId, userId);
 
         todoRepository.deleteById(todo.getId());
-        return TodoDeleteResponseDto.of(todo);
+        return TodoDeleteResponseDto.from(todo);
     }
 
     @Transactional(readOnly = true)
-    public List<TodoResponseDto> findAllTodos(LocalDate date, Long scheduleId, Long userId) {
+    public List<TodoResponseDto> findAllTodos(final LocalDate date, final Long scheduleId, final Long userId) {
 
         checkSchedule(scheduleId);
 
-        return TodoResponseDto.of(
+        return TodoResponseDto.from(
                 todoQueryRepository.findAllByUserIdAndDate(userId, scheduleId, getLocalDate(date)));
     }
 
     @Transactional
-    public TodoResponseDto updateTodos(TodoUpdateRequestDto dto, Long scheduleId, Long todoId, Long userId,
-                                       LocalDate date) {
+    public TodoResponseDto updateTodos(final TodoUpdateRequestDto dto, final Long scheduleId, final Long todoId,
+                                       final Long userId,
+                                       final LocalDate date) {
 
         Todo todos = getTodo(scheduleId, todoId, userId);
 
         updateEachTodosItem(dto, todos, date);
 
-        return TodoResponseDto.of(todos);
+        return TodoResponseDto.from(todos);
     }
 
-    private void updateEachTodosItem(TodoUpdateRequestDto dto, Todo todos, LocalDate date) {
+    private void updateEachTodosItem(final TodoUpdateRequestDto dto, final Todo todos, final LocalDate date) {
 
         if (date == null) {
             todos.updateDate(LocalDate.now());
@@ -94,14 +96,14 @@ public class TodoService {
         }
     }
 
-    private Todo getTodo(Long scheduleId, Long todoId, Long userId) {
+    private Todo getTodo(final Long scheduleId, final Long todoId, final Long userId) {
         User currentUser = checkCurrentUser(userId);
 
         matchUserWithSchedule(scheduleId, currentUser.getId());
         return authorization(todoId, currentUser);
     }
 
-    private void matchUserWithSchedule(Long scheduleId, Long userId) {
+    private void matchUserWithSchedule(final Long scheduleId, final Long userId) {
         Schedule schedule = checkSchedule(scheduleId);
         User currentUser = checkCurrentUser(userId);
 
@@ -111,18 +113,18 @@ public class TodoService {
         }
     }
 
-    private User checkCurrentUser(Long id) {
+    private User checkCurrentUser(final Long id) {
         return userRepository.findById(id)
                 .orElseThrow(() -> new TodoException(USER_NOT_FOUND));
     }
 
-    private Schedule checkSchedule(Long id) {
+    private Schedule checkSchedule(final Long id) {
         return scheduleRepository.findById(id)
                 .orElseThrow(() -> new TodoException(SCHEDULE_NOT_FOUND));
     }
 
 
-    private Todo authorization(Long id, User member) {
+    private Todo authorization(final Long id, final User member) {
 
         Todo todos = todoRepository.findById(id).orElseThrow(
                 () -> new TodoException(TODO_NOT_FOUND));
@@ -136,8 +138,8 @@ public class TodoService {
     }
 
     @Transactional
-    public TodoSliceResponseDto readTodosByDate(Long userId, Long scheduleId, LocalDate startDate,
-                                                LocalDate endDate, Pageable pageable) {
+    public TodoSliceResponseDto readTodosByDate(final Long userId, final Long scheduleId, final LocalDate startDate,
+                                                final LocalDate endDate, Pageable pageable) {
 
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
@@ -149,7 +151,7 @@ public class TodoService {
                 userId, scheduleId, startOfDay, endOfDay, pageable);
 
         int numberOfTodo = todos.size();
-        List<TodoResponseDto> responseDto = allTodos.getContent().stream().map(TodoResponseDto::of).toList();
+        List<TodoResponseDto> responseDto = allTodos.getContent().stream().map(TodoResponseDto::from).toList();
 
         return TodoSliceResponseDto.builder()
                 .todos(responseDto)
@@ -161,18 +163,18 @@ public class TodoService {
     }
 
     @Transactional(readOnly = true)
-    public List<TodoResponseDto> readDailyTodos(Long userId, Long scheduleId, LocalDate date) {
+    public List<TodoResponseDto> readDailyTodos(final Long userId, final Long scheduleId, final LocalDate date) {
 
         List<Todo> todos = todoQueryRepository.findByUserIdAndScheduleIdAndDate(userId, scheduleId, date);
 
-        return todos.stream().map(TodoResponseDto::of).toList();
+        return todos.stream().map(TodoResponseDto::from).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<TodoResponseDto> readMonthlyTodos(Long userId, Long scheduleId, LocalDate date) {
+    public List<TodoResponseDto> readMonthlyTodos(final Long userId, final Long scheduleId, final LocalDate date) {
         List<Todo> todos = todoQueryRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);
 
-        return todos.stream().map(TodoResponseDto::of).toList();
+        return todos.stream().map(TodoResponseDto::from).toList();
     }
 
     private LocalDate getLocalDate(LocalDate date) {

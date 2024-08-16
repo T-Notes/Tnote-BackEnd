@@ -9,7 +9,7 @@ import lombok.Getter;
 public class TodoDeleteResponseDto {
     private Long id;
 
-    public static TodoDeleteResponseDto of(Todo todo) {
+    public static TodoDeleteResponseDto from(Todo todo) {
         return TodoDeleteResponseDto.builder()
                 .id(todo.getId())
                 .build();

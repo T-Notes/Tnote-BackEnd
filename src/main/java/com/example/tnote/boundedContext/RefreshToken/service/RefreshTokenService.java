@@ -23,7 +23,7 @@ public class RefreshTokenService {
     private final UserRepository userRepository;
 
     @Transactional
-    public RefreshToken save(String refreshToken, String email, Long expirationMs) {
+    public RefreshToken save(final String refreshToken, final String email, final Long expirationMs) {
         userRepository.findByEmail(email)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
@@ -42,7 +42,7 @@ public class RefreshTokenService {
     }
 
     @Transactional(readOnly = true)
-    public RefreshToken findByRefreshToken(String refreshToken) {
+    public RefreshToken findByRefreshToken(final String refreshToken) {
         return refreshTokenRepository.findByRefreshToken(refreshToken)
                 .orElseThrow(() -> new RefreshTokenException(INVALID_REFRESH_TOKEN));
 

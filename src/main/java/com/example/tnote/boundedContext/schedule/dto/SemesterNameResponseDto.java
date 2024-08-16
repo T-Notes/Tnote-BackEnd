@@ -11,16 +11,16 @@ public class SemesterNameResponseDto {
     private Long id;
     private String semesterName;
 
-    public static SemesterNameResponseDto of(Schedule schedules) {
+    public static SemesterNameResponseDto from(Schedule schedules) {
         return SemesterNameResponseDto.builder()
                 .id(schedules.getId())
                 .semesterName(schedules.getSemesterName())
                 .build();
     }
 
-    public static List<SemesterNameResponseDto> of(List<Schedule> schedules) {
+    public static List<SemesterNameResponseDto> from(List<Schedule> schedules) {
         return schedules.stream()
-                .map(SemesterNameResponseDto::of)
+                .map(SemesterNameResponseDto::from)
                 .toList();
     }
 }

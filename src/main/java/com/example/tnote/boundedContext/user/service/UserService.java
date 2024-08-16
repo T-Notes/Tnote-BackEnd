@@ -4,7 +4,6 @@ package com.example.tnote.boundedContext.user.service;
 import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
 
 import com.example.tnote.base.utils.CookieUtils;
-import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepository;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
 import com.example.tnote.boundedContext.user.dto.UserAlarmUpdate;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
@@ -27,50 +26,49 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
     private final UserRepository userRepository;
     protected final ConsultationRepository consultationRepository;
-    private final RefreshTokenRepository refreshTokenRepository;
 
     @Transactional
-    public UserResponse signUp(String email, String name) {
+    public UserResponse signUp(final String email, final String name) {
 
         User user = User.builder()
                 .email(email)
                 .username(name)
                 .build();
 
-        return UserResponse.of(userRepository.save(user));
+        return UserResponse.from(userRepository.save(user));
     }
 
     @Transactional(readOnly = true)
-    public UserResponse getUserInfo(Long userId) {
+    public UserResponse getUserInfo(final Long userId) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
-        return UserResponse.of(user);
+        return UserResponse.from(user);
     }
 
     @Transactional
-    public UserResponse updateAlarmInfo(Long userId, UserAlarmUpdate dto) {
+    public UserResponse updateAlarmInfo(final Long userId, final UserAlarmUpdate dto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
         user.updateAlarm(dto.isAlarm());
 
-        return UserResponse.of(user);
+        return UserResponse.from(user);
     }
 
     @Transactional
-    public UserResponse updateExtraInfo(Long userId, UserUpdateRequest dto) {
+    public UserResponse updateExtraInfo(final Long userId, final UserUpdateRequest dto) {
 
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
 
         updateUserItem(dto, user);
 
-        return UserResponse.of(user);
+        return UserResponse.from(user);
     }
 
-    private void updateUserItem(UserUpdateRequest dto, User user) {
+    private void updateUserItem(final UserUpdateRequest dto, final User user) {
         if (dto.hasSchoolName()) {
             user.updateSchool(dto.getSchoolName());
         }
@@ -95,18 +93,18 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserMailResponse getMail(Long userId) {
+    public UserMailResponse getMail(final Long userId) {
         User currentUser = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(USER_NOT_FOUND));
-        return UserMailResponse.of(currentUser);
+        return UserMailResponse.from(currentUser);
     }
 
     @Transactional(readOnly = true)
-    public UserResponse findById(Long userId) {
+    public UserResponse findById(final Long userId) {
         User user = userRepository.findById(userId).orElseThrow(() -> new UserException(USER_NOT_FOUND));
         if (user.getSchool() == null || user.getSchool().isEmpty()) {
             throw new UserException(USER_NOT_FOUND);
         }
-        return UserResponse.of(user);
+        return UserResponse.from(user);
     }
 }

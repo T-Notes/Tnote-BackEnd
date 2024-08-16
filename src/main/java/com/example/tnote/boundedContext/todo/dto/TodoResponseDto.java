@@ -15,7 +15,7 @@ public class TodoResponseDto {
     private LocalDate date;
     private Boolean status;
 
-    public static TodoResponseDto of(Todo todo) {
+    public static TodoResponseDto from(Todo todo) {
 
         return TodoResponseDto.builder()
                 .id(todo.getId())
@@ -25,9 +25,9 @@ public class TodoResponseDto {
                 .build();
     }
 
-    public static List<TodoResponseDto> of(List<Todo> todo) {
+    public static List<TodoResponseDto> from(List<Todo> todo) {
         return todo.stream()
-                .map(TodoResponseDto::of)
+                .map(TodoResponseDto::from)
                 .toList();
     }
 }

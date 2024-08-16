@@ -49,8 +49,8 @@ public class ScheduleController {
                     content = {@Content(schema = @Schema(implementation = ScheduleResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> saveSchedule(@RequestBody ScheduleRequestDto dto,
-                                               @AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> saveSchedule(@RequestBody final ScheduleRequestDto dto,
+                                               @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
         ScheduleResponseDto response = scheduleService.addSchedule(dto, currentUser.getId());
@@ -66,8 +66,8 @@ public class ScheduleController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ScheduleResponseDto.class)))),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> findSchedule(@PathVariable Long scheduleId,
-                                               @AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> findSchedule(@PathVariable final Long scheduleId,
+                                               @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
         List<ScheduleResponseDto> response = scheduleService.findSchedule(scheduleId, currentUser.getId());
@@ -83,7 +83,7 @@ public class ScheduleController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = SemesterNameResponseDto.class)))),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> findScheduleList(@AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> findScheduleList(@AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
         List<SemesterNameResponseDto> response = scheduleService.findScheduleList(currentUser.getId());
@@ -98,9 +98,9 @@ public class ScheduleController {
                     content = {@Content(schema = @Schema(implementation = ScheduleResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> updateSchedule(@RequestBody ScheduleUpdateRequestDto dto,
-                                                 @PathVariable("scheduleId") Long scheduleId,
-                                                 @AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> updateSchedule(@RequestBody final ScheduleUpdateRequestDto dto,
+                                                 @PathVariable("scheduleId") final Long scheduleId,
+                                                 @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
         ScheduleResponseDto response = scheduleService.updateSchedule(dto, scheduleId, currentUser.getId());
@@ -116,8 +116,8 @@ public class ScheduleController {
                     content = {@Content(schema = @Schema(implementation = ScheduleDeleteResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> deleteSchedule(@PathVariable("scheduleId") Long scheduleId,
-                                                 @AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> deleteSchedule(@PathVariable("scheduleId") final Long scheduleId,
+                                                 @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
         ScheduleDeleteResponseDto response = scheduleService.deleteSchedule(scheduleId, currentUser.getId());
@@ -133,9 +133,9 @@ public class ScheduleController {
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
     public ResponseEntity<Result> countLeftDays(
-            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date,
-            @AuthenticationPrincipal PrincipalDetails user,
-            @PathVariable Long scheduleId) {
+            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final LocalDate date,
+            @AuthenticationPrincipal final PrincipalDetails user,
+            @PathVariable final Long scheduleId) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
@@ -153,7 +153,7 @@ public class ScheduleController {
     })
     public ResponseEntity<Result> countLeftClasses(
             @AuthenticationPrincipal PrincipalDetails user,
-            @PathVariable("scheduleId") Long scheduleId) {
+            @PathVariable("scheduleId") final Long scheduleId) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
@@ -170,8 +170,8 @@ public class ScheduleController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = ScheduleResponseDto.class)))),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> findWeek(@PathVariable("scheduleId") Long scheduleId,
-                                           @AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> findWeek(@PathVariable("scheduleId") final Long scheduleId,
+                                           @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
         List<ScheduleResponseDto> response = scheduleService.getAllSubjectsInfoBySchedule(scheduleId,

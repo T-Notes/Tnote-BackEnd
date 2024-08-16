@@ -9,7 +9,7 @@ import lombok.Getter;
 public class ScheduleDeleteResponseDto {
     private Long id;
 
-    public static ScheduleDeleteResponseDto of(Schedule schedule) {
+    public static ScheduleDeleteResponseDto from(Schedule schedule) {
         return ScheduleDeleteResponseDto.builder()
                 .id(schedule.getId())
                 .build();

@@ -19,7 +19,7 @@ public class UserResponse {
     private int scheduleId;
     private String semesterName;
 
-    public static UserResponse of(User user) {
+    public static UserResponse from(User user) {
         return UserResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())
@@ -33,9 +33,9 @@ public class UserResponse {
                 .build();
     }
 
-    public static List<UserResponse> of(List<User> users) {
+    public static List<UserResponse> from(List<User> users) {
         return users.stream()
-                .map(UserResponse::of)
+                .map(UserResponse::from)
                 .toList();
     }
 

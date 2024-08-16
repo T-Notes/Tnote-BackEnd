@@ -40,7 +40,7 @@ public class SubjectService {
     private final SubjectQueryRepository subjectQueryRepository;
 
     @Transactional
-    public SubjectResponseDto addSubjects(SubjectRequestDto dto, Long scheduleId, Long userId) {
+    public SubjectResponseDto addSubjects(final SubjectRequestDto dto, final Long scheduleId, final Long userId) {
 
         matchUserWithSchedule(scheduleId, userId);
 
@@ -50,11 +50,12 @@ public class SubjectService {
 
         Subjects subjects = dto.toEntity(schedule);
 
-        return SubjectResponseDto.of(subjectRepository.save(subjects));
+        return SubjectResponseDto.from(subjectRepository.save(subjects));
     }
 
     @Transactional
-    public SubjectResponseDto updateSubjects(SubjectsUpdateRequestDto dto, Long subjectsId, Long userId) {
+    public SubjectResponseDto updateSubjects(final SubjectsUpdateRequestDto dto, final Long subjectsId,
+                                             final Long userId) {
 
         User currentUser = checkCurrentUser(userId);
         Subjects subjects = authorization(subjectsId, currentUser.getId());
@@ -63,10 +64,10 @@ public class SubjectService {
 
         updateEachSubjectsItem(dto, subjects);
 
-        return SubjectResponseDto.of(subjects);
+        return SubjectResponseDto.from(subjects);
     }
 
-    private void updateEachSubjectsItem(SubjectsUpdateRequestDto dto, Subjects subjects) {
+    private void updateEachSubjectsItem(final SubjectsUpdateRequestDto dto, final Subjects subjects) {
         if (dto.hasMemo()) {
             subjects.updateMemo(dto.getMemo());
         }
@@ -91,7 +92,7 @@ public class SubjectService {
     }
 
     @Transactional
-    public SubjectsDeleteResponseDto deleteSubjects(Long scheduleId, Long subjectsId, Long userId) {
+    public SubjectsDeleteResponseDto deleteSubjects(final Long scheduleId, final Long subjectsId, final Long userId) {
 
         User currentUser = checkCurrentUser(userId);
         Subjects subject = authorization(subjectsId, currentUser.getId());
@@ -105,38 +106,38 @@ public class SubjectService {
 
         subjectRepository.deleteById(subject.getId());
 
-        return SubjectsDeleteResponseDto.of(subject);
+        return SubjectsDeleteResponseDto.from(subject);
     }
 
     @Transactional(readOnly = true)
-    public List<SubjectResponseDto> getMyClass(Long scheduleId, ClassDay day, Long userId) {
+    public List<SubjectResponseDto> getMyClass(final Long scheduleId, final ClassDay day, final Long userId) {
         matchUserWithSchedule(scheduleId, userId);
 
-        return SubjectResponseDto.of(
+        return SubjectResponseDto.from(
                 subjectQueryRepository.findAllByScheduleIdAndUserIdAndClassDay(scheduleId, userId, day));
     }
 
 
     @Transactional(readOnly = true)
-    public SubjectDetailResponseDto getSubject(Long scheduleId, Long subjectId, Long userId) {
+    public SubjectDetailResponseDto getSubject(final Long scheduleId, final Long subjectId, final Long userId) {
 
         matchUserWithSchedule(scheduleId, userId);
         Subjects subject = authorization(subjectId, userId);
 
-        return SubjectDetailResponseDto.of(subject);
+        return SubjectDetailResponseDto.from(subject);
     }
 
-    private User checkCurrentUser(Long id) {
+    private User checkCurrentUser(final Long id) {
         return userRepository.findById(id).orElseThrow(
                 () -> new SubjectException(USER_NOT_FOUND));
     }
 
-    private Schedule checkCurrentSchedule(Long scheduleId) {
+    private Schedule checkCurrentSchedule(final Long scheduleId) {
         return scheduleRepository.findById(scheduleId).orElseThrow(
                 () -> new SubjectException(SCHEDULE_NOT_FOUND));
     }
 
-    private void matchUserWithSchedule(Long scheduleId, Long userId) {
+    private void matchUserWithSchedule(final Long scheduleId, final Long userId) {
         User user = checkCurrentUser(userId);
         Schedule schedule = checkCurrentSchedule(scheduleId);
 
@@ -146,7 +147,7 @@ public class SubjectService {
         }
     }
 
-    private Subjects authorization(Long id, Long userId) {
+    private Subjects authorization(final Long id, final Long userId) {
 
         Subjects subjects = subjectRepository.findById(id).orElseThrow(
                 () -> new SubjectException(SUBJECT_NOT_FOUND));
@@ -159,7 +160,7 @@ public class SubjectService {
 
     }
 
-    private int extractNumber(String text) {
+    private int extractNumber(final String text) {
         Pattern pattern = Pattern.compile("\\d+");
         Matcher matcher = pattern.matcher(text);
 
@@ -169,7 +170,7 @@ public class SubjectService {
         throw new SubjectException(WRONG_CLASS_TIME);
     }
 
-    private void compareLastClass(String subjectLastClass, String scheduleLastClass) {
+    private void compareLastClass(final String subjectLastClass, final String scheduleLastClass) {
         if (extractNumber(subjectLastClass) > extractNumber(scheduleLastClass)) {
             throw new SubjectException(WRONG_CLASS_TIME);
         }

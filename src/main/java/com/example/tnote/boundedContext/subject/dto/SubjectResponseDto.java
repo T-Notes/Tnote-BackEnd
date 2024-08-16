@@ -18,7 +18,7 @@ public class SubjectResponseDto {
     private String color;
     private String semesterName;  // 연관관계를 위함.
 
-    public static SubjectResponseDto of(Subjects subject) {
+    public static SubjectResponseDto from(Subjects subject) {
 
         return SubjectResponseDto.builder()
                 .id(subject.getId())
@@ -32,9 +32,9 @@ public class SubjectResponseDto {
                 .build();
     }
 
-    public static List<SubjectResponseDto> of(List<Subjects> subject) {
+    public static List<SubjectResponseDto> from(List<Subjects> subject) {
         return subject.stream()
-                .map(SubjectResponseDto::of)
+                .map(SubjectResponseDto::from)
                 .toList();
     }
 

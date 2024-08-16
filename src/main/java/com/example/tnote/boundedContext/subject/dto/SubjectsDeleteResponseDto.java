@@ -9,7 +9,7 @@ import lombok.Getter;
 public class SubjectsDeleteResponseDto {
     private Long id;
 
-    public static SubjectsDeleteResponseDto of(Subjects subject) {
+    public static SubjectsDeleteResponseDto from(Subjects subject) {
         return SubjectsDeleteResponseDto.builder()
                 .id(subject.getId())
                 .build();
