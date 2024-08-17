@@ -64,7 +64,7 @@ public class ClassLogService {
 
         ClassLog classLog = classLogRepository.save(request.toEntity(user, schedule));
         if (classLogImages != null && !classLogImages.isEmpty()) {
-            List<ClassLogImage> uploadedImages = uploadClassLogImages(classLog, classLogImages);
+            List<ClassLogImage> uploadedImages = uploadImages(classLog, classLogImages);
             classLog.getClassLogImage().addAll(uploadedImages);
         }
         recentLogService.saveRecentLog(userId, classLog.getId(), scheduleId, "CLASS_LOG");
@@ -183,14 +183,15 @@ public class ClassLogService {
         classLog.updateMagnitude(request.getMagnitude());
     }
 
-    private List<ClassLogImage> uploadClassLogImages(ClassLog classLog, List<MultipartFile> classLogImages) {
+    private List<ClassLogImage> uploadImages(final ClassLog classLog,
+                                             final List<MultipartFile> classLogImages) {
         return classLogImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "classLog"))
-                .map(pair -> createClassLogImage(classLog, pair.getFirst(), pair.getSecond()))
+                .map(pair -> createImage(classLog, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
 
-    private ClassLogImage createClassLogImage(ClassLog classLog, String imageUrl, String originalFileName) {
+    private ClassLogImage createImage(final ClassLog classLog, final String imageUrl, final String originalFileName) {
         log.info("url = {}", imageUrl);
         classLog.clearClassLogImages();
 
@@ -243,7 +244,7 @@ public class ClassLogService {
     private List<ClassLogImage> deleteExistedImagesAndUploadNewImages(ClassLog classLog,
                                                                       List<MultipartFile> classLogImages) {
         deleteExistedImages(classLog);
-        return uploadClassLogImages(classLog, classLogImages);
+        return uploadImages(classLog, classLogImages);
     }
 
     private void deleteExistedImages(ClassLog classLog) {
