@@ -73,7 +73,7 @@ public class ClassLogService {
 
     @Transactional
     public ClassLogDeleteResponse delete(final Long userId, final Long classLogId) {
-        ClassLog classLog = findByIdAndUserId(classLogId, userId);
+        ClassLog classLog = classLogRepository.findClassLogById(classLogId);
 
         deleteExistedImageByClassLog(classLog);
         classLogRepository.delete(classLog);
@@ -145,24 +145,25 @@ public class ClassLogService {
 
     @Transactional
     public ClassLogResponse find(final Long userId, final Long classLogId) {
-        ClassLog classLog = findByIdAndUserId(classLogId, userId);
+        ClassLog classLog = classLogRepository.findClassLogById(classLogId);
         recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
         return ClassLogResponse.from(classLog);
     }
 
     @Transactional
-    public ClassLogResponse updateClassLog(Long userId, Long classLogId,
-                                           ClassLogUpdateRequest classLogUpdateRequestDto,
-                                           List<MultipartFile> classLogImages) {
-        ClassLog classLog = findByIdAndUserId(classLogId, userId);
-        updateEachClassLogItem(classLogUpdateRequestDto, classLog, classLogImages);
+    public ClassLogResponse update(final Long userId, final Long classLogId,
+                                   final ClassLogUpdateRequest classLogUpdateRequestDto,
+                                   final List<MultipartFile> classLogImages) {
+
+        ClassLog classLog = classLogRepository.findClassLogById(classLogId);
+        updateEachItem(classLogUpdateRequestDto, classLog, classLogImages);
         recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
         return ClassLogResponse.from(classLog);
     }
 
-    private void updateEachClassLogItem(ClassLogUpdateRequest classLogUpdateRequestDto, ClassLog classLog,
-                                        List<MultipartFile> classLogImages) {
-        updateClassLogFields(classLogUpdateRequestDto, classLog);
+    private void updateEachItem(final ClassLogUpdateRequest request, final ClassLog classLog,
+                                final List<MultipartFile> classLogImages) {
+        updateFields(request, classLog);
         if (classLogImages == null || classLogImages.isEmpty()) {
             deleteExistedImages(classLog);
         }
@@ -172,14 +173,14 @@ public class ClassLogService {
         }
     }
 
-    private void updateClassLogFields(ClassLogUpdateRequest classLogUpdateRequestDto, ClassLog classLog) {
-        classLog.updateTitle(classLogUpdateRequestDto.getTitle());
-        classLog.updateStartDate(classLogUpdateRequestDto.getStartDate());
-        classLog.updateEndDate(classLogUpdateRequestDto.getEndDate());
-        classLog.updatePlan(classLogUpdateRequestDto.getPlan());
-        classLog.updateSubmission(classLogUpdateRequestDto.getSubmission());
-        classLog.updateClassContents(classLogUpdateRequestDto.getClassContents());
-        classLog.updateMagnitude(classLogUpdateRequestDto.getMagnitude());
+    private void updateFields(final ClassLogUpdateRequest request, final ClassLog classLog) {
+        classLog.updateTitle(request.getTitle());
+        classLog.updateStartDate(request.getStartDate());
+        classLog.updateEndDate(request.getEndDate());
+        classLog.updatePlan(request.getPlan());
+        classLog.updateSubmission(request.getSubmission());
+        classLog.updateClassContents(request.getClassContents());
+        classLog.updateMagnitude(request.getMagnitude());
     }
 
     private List<ClassLogImage> uploadClassLogImages(ClassLog classLog, List<MultipartFile> classLogImages) {

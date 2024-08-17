@@ -174,14 +174,14 @@ public class ClassLogServiceTest {
 
     @DisplayName("학급일지 수정: 요청된 값에 따른 학급일지 수정 성공")
     @Test
-    void updateClassLog() {
+    void update() {
         when(mockClassLog.getSchedule()).thenReturn(mockSchedule);
         ClassLogUpdateRequest classLogUpdateRequestDto = mock(ClassLogUpdateRequest.class);
         List<MultipartFile> classLogImages = Collections.emptyList();
 
         when(classLogRepository.findByIdAndUserId(classLogId, userId)).thenReturn(Optional.of(mockClassLog));
 
-        ClassLogResponse result = classLogService.updateClassLog(userId, classLogId, classLogUpdateRequestDto,
+        ClassLogResponse result = classLogService.update(userId, classLogId, classLogUpdateRequestDto,
                 classLogImages);
 
         assertThat(result).isNotNull();

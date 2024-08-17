@@ -76,7 +76,7 @@ public class ClassLogController {
                                          @RequestPart final ClassLogUpdateRequest classLogUpdateRequestDto,
                                          @RequestPart(name = "classLogImages", required = false) final List<MultipartFile> classLogImages) {
 
-        return ResponseEntity.ok(Result.of(classLogService.updateClassLog(principalDetails.getId(), classLogId,
+        return ResponseEntity.ok(Result.of(classLogService.update(principalDetails.getId(), classLogId,
                 classLogUpdateRequestDto, classLogImages)));
     }
 
