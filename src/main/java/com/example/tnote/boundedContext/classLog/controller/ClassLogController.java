@@ -66,7 +66,7 @@ public class ClassLogController {
     public ResponseEntity<Result> find(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                        @RequestParam final Long classLogId) {
 
-        return ResponseEntity.ok(Result.of(classLogService.getClassLogDetail(principalDetails.getId(),
+        return ResponseEntity.ok(Result.of(classLogService.find(principalDetails.getId(),
                 classLogId)));
     }
 

@@ -8,13 +8,11 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponse;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponses;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequest;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
-import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.classLog.exception.ClassLogException;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogImageRepository;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
@@ -134,37 +132,27 @@ public class ClassLogServiceTest {
     @DisplayName("학급일지 상세 조회: 학급일지 상세 정보 조회 확인")
     @Test
     void getClassLogDetails_Success() {
-        when(mockUser.getId()).thenReturn(userId);
         when(mockClassLog.getId()).thenReturn(classLogId);
-        when(mockClassLog.getUser()).thenReturn(mockUser);
         when(mockClassLog.getSchedule()).thenReturn(mockSchedule);
 
-        ClassLogImage mockClassLogImage1 = mock(ClassLogImage.class);
-        ClassLogImage mockClassLogImage2 = mock(ClassLogImage.class);
-
-        List<ClassLogImage> mockClassLogImages = List.of(mockClassLogImage1, mockClassLogImage2);
-
         when(classLogRepository.findByIdAndUserId(classLogId, userId)).thenReturn(Optional.of(mockClassLog));
-        when(classLogImageRepository.findClassLogImagesByClassLogId(classLogId)).thenReturn(mockClassLogImages);
 
-        ClassLogDetailResponseDto result = classLogService.getClassLogDetail(userId, classLogId);
+        ClassLogResponse result = classLogService.find(userId, classLogId);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(classLogId);
-        assertThat(result.getUserId()).isEqualTo(userId);
 
         verify(classLogRepository).findByIdAndUserId(userId, classLogId);
-        verify(classLogImageRepository).findClassLogImagesByClassLogId(classLogId);
     }
 
     @DisplayName("존재하지 않는 학급일지의 상세정보 조회 시 예외 발생")
     @Test
-    void getClassLogDetail_Fail() {
+    void find_Fail() {
         Long NonClassLogId = 100L;
 
         when(classLogRepository.findByIdAndUserId(NonClassLogId, userId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> classLogService.getClassLogDetail(userId, NonClassLogId))
+        assertThatThrownBy(() -> classLogService.find(userId, NonClassLogId))
                 .isInstanceOf(ClassLogException.class);
     }
 

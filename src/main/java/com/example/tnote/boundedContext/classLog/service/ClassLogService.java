@@ -3,7 +3,6 @@ package com.example.tnote.boundedContext.classLog.service;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponse;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponses;
@@ -40,7 +39,8 @@ public class ClassLogService {
     private final RecentLogService recentLogService;
     private final AwsS3Uploader awsS3Uploader;
 
-    public ClassLogService(final ClassLogRepository classLogRepository, final ClassLogImageRepository classLogImageRepository,
+    public ClassLogService(final ClassLogRepository classLogRepository,
+                           final ClassLogImageRepository classLogImageRepository,
                            final UserRepository userRepository, final ScheduleRepository scheduleRepository,
                            final RecentLogService recentLogService, final AwsS3Uploader awsS3Uploader) {
         this.classLogRepository = classLogRepository;
@@ -144,11 +144,10 @@ public class ClassLogService {
     }
 
     @Transactional
-    public ClassLogDetailResponseDto getClassLogDetail(Long userId, Long classLogId) {
+    public ClassLogResponse find(final Long userId, final Long classLogId) {
         ClassLog classLog = findByIdAndUserId(classLogId, userId);
-        List<ClassLogImage> classLogImages = classLogImageRepository.findClassLogImagesByClassLogId(classLogId);
         recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
-        return new ClassLogDetailResponseDto(classLog, classLogImages);
+        return ClassLogResponse.from(classLog);
     }
 
     @Transactional
