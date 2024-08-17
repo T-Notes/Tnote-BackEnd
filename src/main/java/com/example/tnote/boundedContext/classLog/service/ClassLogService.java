@@ -106,10 +106,11 @@ public class ClassLogService {
                 .toList();
     }
 
-    public List<ClassLogResponse> findByTitle(String keyword, LocalDate startDate,
-                                              LocalDate endDate, Long userId) {
+    public List<ClassLogResponse> findByTitle(final String keyword, final LocalDate startDate,
+                                              final LocalDate endDate, final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+
         List<ClassLog> logs = classLogRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
