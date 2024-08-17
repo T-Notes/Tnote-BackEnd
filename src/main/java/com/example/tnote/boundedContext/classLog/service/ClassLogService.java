@@ -130,12 +130,11 @@ public class ClassLogService {
                 .toList();
     }
 
-    public List<ClassLogResponse> findByTitleOrPlanOrContents(String keyword,
-                                                              LocalDate startDate,
-                                                              LocalDate endDate,
-                                                              Long userId) {
+    public List<ClassLogResponse> findByTitleOrPlanOrContents(final String keyword, final LocalDate startDate,
+                                                              final LocalDate endDate, final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+
         List<ClassLog> logs = classLogRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
                 startOfDay, endOfDay, userId);
 
