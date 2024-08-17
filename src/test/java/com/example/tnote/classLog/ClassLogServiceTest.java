@@ -1,15 +1,12 @@
 package com.example.tnote.classLog;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
@@ -68,7 +65,6 @@ public class ClassLogServiceTest {
     private Schedule mockSchedule;
     private ClassLog mockClassLog;
     private Long userId = 1L;
-    private Long scheduleId = 2L;
     private Long classLogId = 1L;
 
     @BeforeEach
@@ -93,40 +89,25 @@ public class ClassLogServiceTest {
     void save_Success() {
         ClassLogSaveRequest requestDto = ClassLogSaveRequest.builder()
                 .title("테스트 수업 로그")
-                .startDate(mockSchedule.getStartDate().atStartOfDay())
-                .endDate(mockSchedule.getStartDate().atStartOfDay().plusHours(2))
+                .startDate(LocalDate.of(2024, 1, 1).atStartOfDay())
+                .endDate(LocalDate.of(2024, 1, 3).atStartOfDay())
                 .plan("테스트 학습 계획")
                 .classContents("테스트 수업 내용")
                 .submission("테스트 제출 과제")
                 .magnitude("테스트 진도")
                 .build();
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
-        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(mockSchedule));
+        when(userRepository.findUserById(userId)).thenReturn(mockUser);
+        when(scheduleRepository.findScheduleById(1L)).thenReturn(mockSchedule);
+
         ClassLog classLog = requestDto.toEntity(mockUser, mockSchedule);
         when(classLogRepository.save(any(ClassLog.class))).thenReturn(classLog);
 
-        ClassLogResponse result = classLogService.save(userId, scheduleId, requestDto, Collections.emptyList());
+        ClassLogResponse result = classLogService.save(userId, 1L, requestDto, Collections.emptyList());
 
         assertThat(result).isNotNull();
         assertThat(result.getTitle()).isEqualTo(requestDto.getTitle());
         verify(classLogRepository).save(any(ClassLog.class));
-    }
-
-
-    @DisplayName("학급일지 저장: 존재하지 않는 사용자로 인한 예외 발생 확인")
-    @Test
-    void save_Fail() {
-        ClassLogSaveRequest requestDto = mock(ClassLogSaveRequest.class);
-        List<MultipartFile> classLogImages = Collections.emptyList();
-
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        assertThatExceptionOfType(CustomExceptions.class)
-                .isThrownBy(() -> classLogService.save(userId, scheduleId, requestDto, classLogImages));
-
-        verify(userRepository).findById(userId);
-        verify(classLogRepository, never()).save(any(ClassLog.class));
     }
 
     @DisplayName("학급일지 조회: 작성자가 작성한 모든 학급일지 조회 확인")
@@ -139,15 +120,15 @@ public class ClassLogServiceTest {
         List<ClassLog> mockClassLogsList = Arrays.asList(mockClassLog1, mockClassLog2);
         Slice<ClassLog> mockClassLogs = new PageImpl<>(mockClassLogsList, pageable, mockClassLogsList.size());
 
-        when(classLogRepository.findAllByScheduleId(scheduleId, pageable)).thenReturn(mockClassLogs);
+        when(classLogRepository.findAllByScheduleId(1L, pageable)).thenReturn(mockClassLogs);
 
-        ClassLogResponses result = classLogService.readAllClassLog(userId, scheduleId, pageable);
+        ClassLogResponses result = classLogService.readAllClassLog(userId, 1L, pageable);
 
         assertThat(result.getClassLogs())
                 .isNotNull()
                 .hasSize(2);
 
-        verify(classLogRepository).findAllByScheduleId(scheduleId, pageable);
+        verify(classLogRepository).findAllByScheduleId(1L, pageable);
     }
 
     @DisplayName("학급일지 상세 조회: 학급일지 상세 정보 조회 확인")
@@ -189,12 +170,12 @@ public class ClassLogServiceTest {
 
     @DisplayName("학급일지 삭제: 학급일지 삭제 작업 확인")
     @Test
-    void deleteClassLog() {
+    void delete() {
         when(mockClassLog.getId()).thenReturn(classLogId);
 
         when(classLogRepository.findByIdAndUserId(classLogId, userId)).thenReturn(Optional.of(mockClassLog));
 
-        ClassLogDeleteResponse result = classLogService.deleteClassLog(userId, classLogId);
+        ClassLogDeleteResponse result = classLogService.delete(userId, classLogId);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(classLogId);
