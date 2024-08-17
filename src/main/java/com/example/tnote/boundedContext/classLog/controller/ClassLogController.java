@@ -36,10 +36,10 @@ import org.springframework.web.multipart.MultipartFile;
 public class ClassLogController {
     private final ClassLogService classLogService;
 
-    @PostMapping(value = "/{scheduleId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Result> createClassLog(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                 @PathVariable Long scheduleId,
+    public ResponseEntity<Result> save(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                 @RequestParam Long scheduleId,
                                                  @RequestPart ClassLogRequestDto classLogRequestDto,
                                                  @RequestPart(name = "classLogImages", required = false) List<MultipartFile> classLogImages) {
         ClassLogResponseDto classLogResponseDto = classLogService.save(principalDetails.getId(), scheduleId,
