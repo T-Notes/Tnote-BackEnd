@@ -47,9 +47,9 @@ public class SubjectController {
                     content = {@Content(schema = @Schema(implementation = SubjectResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> saveSubjects(@RequestBody SubjectRequestDto dto,
-                                               @PathVariable("scheduleId") Long scheduleId,
-                                               @AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> saveSubjects(@RequestBody final SubjectRequestDto dto,
+                                               @PathVariable("scheduleId") final Long scheduleId,
+                                               @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
@@ -66,9 +66,9 @@ public class SubjectController {
                     content = {@Content(schema = @Schema(implementation = SubjectResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> updateSubjects(@RequestBody SubjectsUpdateRequestDto dto,
-                                                 @PathVariable("subjectId") Long subjectId,
-                                                 @AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> updateSubjects(@RequestBody final SubjectsUpdateRequestDto dto,
+                                                 @PathVariable("subjectId") final Long subjectId,
+                                                 @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
@@ -84,9 +84,9 @@ public class SubjectController {
                     content = {@Content(schema = @Schema(implementation = SubjectsDeleteResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> deleteSubjects(@PathVariable Long scheduleId,
-                                                 @PathVariable Long subjectId,
-                                                 @AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> deleteSubjects(@PathVariable final Long scheduleId,
+                                                 @PathVariable final Long subjectId,
+                                                 @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
@@ -103,9 +103,9 @@ public class SubjectController {
                     content = @Content(array = @ArraySchema(schema = @Schema(implementation = SubjectResponseDto.class)))),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> findDay(@PathVariable Long scheduleId,
-                                          @PathVariable ClassDay day,
-                                          @AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> findDay(@PathVariable final Long scheduleId,
+                                          @PathVariable final ClassDay day,
+                                          @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
@@ -121,8 +121,8 @@ public class SubjectController {
                     content = {@Content(schema = @Schema(implementation = SubjectDetailResponseDto.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> findSubject(@PathVariable Long scheduleId, @PathVariable Long subjectId,
-                                              @AuthenticationPrincipal PrincipalDetails user) {
+    public ResponseEntity<Result> findSubject(@PathVariable final Long scheduleId, @PathVariable final Long subjectId,
+                                              @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
         SubjectDetailResponseDto response = subjectService.getSubject(scheduleId, subjectId, currentUser.getId());

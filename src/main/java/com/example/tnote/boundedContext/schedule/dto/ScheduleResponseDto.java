@@ -19,7 +19,7 @@ public class ScheduleResponseDto {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    public static ScheduleResponseDto of(Schedule schedules) {
+    public static ScheduleResponseDto from(Schedule schedules) {
 
         List<SubjectResponseDto> subjects = schedules.getSubjectsList().stream()
                 .map(subject -> SubjectResponseDto.builder()
@@ -45,14 +45,14 @@ public class ScheduleResponseDto {
     }
 
 
-    public static List<ScheduleResponseDto> of(List<Schedule> schedules) {
+    public static List<ScheduleResponseDto> from(List<Schedule> schedules) {
         return schedules.stream()
-                .map(ScheduleResponseDto::of)
+                .map(ScheduleResponseDto::from)
                 .toList();
     }
 
 
-    public static ScheduleResponseDto excludeLastDayOf(Schedule schedule) {
+    public static ScheduleResponseDto excludeLastDayFrom(Schedule schedule) {
 
         List<SubjectResponseDto> subjects = schedule.getSubjectsList().stream()
                 .map(subject -> SubjectResponseDto.builder()
@@ -77,9 +77,9 @@ public class ScheduleResponseDto {
                 .build();
     }
 
-    public static List<ScheduleResponseDto> excludeLastDayOf(List<Schedule> schedules) {
+    public static List<ScheduleResponseDto> excludeLastDayFrom(List<Schedule> schedules) {
         return schedules.stream()
-                .map(ScheduleResponseDto::excludeLastDayOf)
+                .map(ScheduleResponseDto::excludeLastDayFrom)
                 .toList();
     }
 }

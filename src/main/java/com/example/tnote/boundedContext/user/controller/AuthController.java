@@ -33,9 +33,9 @@ public class AuthController {
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
     public ResponseEntity<Result> redirect(
-            @PathVariable("registrationId") String registrationId,
-            @RequestParam("code") String code,
-            @RequestParam("state") String state
+            @PathVariable("registrationId") final String registrationId,
+            @RequestParam("code") final String code,
+            @RequestParam("state") final String state
     ) {
 
         JwtResponse jwt = authService.redirect(registrationId, code, state);

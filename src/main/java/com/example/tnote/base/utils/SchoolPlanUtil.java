@@ -22,7 +22,7 @@ import org.springframework.stereotype.Component;
 public class SchoolPlanUtil {
 
     protected URL url;
-
+    private final FindCityUtils findCityUtils;
     private String Type;
     private String path;
     private String pIndex;
@@ -36,8 +36,6 @@ public class SchoolPlanUtil {
 
     @Value("${api.call-back-url}")
     private String callBackUrl;
-
-    private final FindCityUtils findCityUtils;
 
     @Value("${api.career-key-openAPI}")
     private String KEYOpenAPI;

@@ -11,7 +11,7 @@ public class UserMailResponse {
     private Long id;
     private String email;
 
-    public static UserMailResponse of(User user) {
+    public static UserMailResponse from(User user) {
         return UserMailResponse.builder()
                 .id(user.getId())
                 .email(user.getEmail())

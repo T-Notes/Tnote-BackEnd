@@ -45,7 +45,7 @@ public class KakaoRequestService implements RequestService {
     private String TOKEN_URI;
 
     @Override
-    public JwtResponse redirect(String provider, String code, String state) {
+    public JwtResponse redirect(final String provider, final String code, final String state) {
         // 카카오에서 넘겨준 엑세스 토큰
         TokenResponse tokenResponse = getToken(code);
 
@@ -78,7 +78,8 @@ public class KakaoRequestService implements RequestService {
                 tokenResponse.getRefreshToken());
     }
 
-    private JwtResponse getBuild(String accessToken, String refreshToken, User user, String oauthRefreshToken) {
+    private JwtResponse getBuild(final String accessToken, final String refreshToken, final User user,
+                                 final String oauthRefreshToken) {
         return JwtResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
@@ -88,21 +89,21 @@ public class KakaoRequestService implements RequestService {
     }
 
     @Override
-    public TokenResponse getToken(String code) {
+    public TokenResponse getToken(final String code) {
         return kakaoAuthClient.getToken(GRANT_TYPE, CLIENT_ID, REDIRECT_URI, code);
     }
 
     @Override
-    public KakaoUserInfo getUserInfo(String accessToken) {
+    public KakaoUserInfo getUserInfo(final String accessToken) {
         return kakaoInfoClient.getUserInfo("Bearer " + accessToken);
     }
 
     @Override
-    public KakaoUnlinkResponse unLink(String accessToken) {
+    public KakaoUnlinkResponse unLink(final String accessToken) {
         return kakaoInfoClient.unlink("Bearer " + accessToken);
     }
 
-    public OauthRefreshDto refresh(String refreshToken) {
+    public OauthRefreshDto refresh(final String refreshToken) {
         return kakaoAuthClient.refresh("refresh_token", CLIENT_ID, refreshToken);
     }
 
