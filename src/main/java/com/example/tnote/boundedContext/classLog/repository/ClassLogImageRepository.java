@@ -8,7 +8,6 @@ import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 public interface ClassLogImageRepository extends JpaRepository<ClassLogImage, Long> {
-    List<ClassLogImage> findClassLogImagesByClassLogId(Long classLogId);
     @Modifying
     @Query("DELETE FROM ClassLogImage cli WHERE cli.classLog.id = :classLogId")
     void deleteByClassLogId(@Param("classLogId") Long classLogId);
