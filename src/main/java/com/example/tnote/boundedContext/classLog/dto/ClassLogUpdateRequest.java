@@ -13,6 +13,20 @@ public class ClassLogUpdateRequest {
     private String submission;
     private String magnitude;
 
+    public ClassLogUpdateRequest() {
+    }
+
+    public ClassLogUpdateRequest(String title, LocalDateTime startDate, LocalDateTime endDate, String plan,
+                                 String classContents, String submission, String magnitude) {
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.plan = plan;
+        this.classContents = classContents;
+        this.submission = submission;
+        this.magnitude = magnitude;
+    }
+
     public boolean hasTitle() {
         return title != null;
     }
