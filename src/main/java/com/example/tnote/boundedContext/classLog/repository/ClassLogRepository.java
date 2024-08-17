@@ -1,6 +1,8 @@
 package com.example.tnote.boundedContext.classLog.repository;
 
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
+import com.example.tnote.boundedContext.classLog.exception.ClassLogErrorCode;
+import com.example.tnote.boundedContext.classLog.exception.ClassLogException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -12,6 +14,12 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ClassLogRepository extends JpaRepository<ClassLog, Long> {
+
+    default ClassLog findClassLogById(Long id) {
+        return findById(id)
+                .orElseThrow(() -> new ClassLogException(ClassLogErrorCode.CLASS_LOG_NOT_FOUNT));
+    }
+
     @Query("select cl from ClassLog cl where cl.user.id = :userId and cl.schedule.id = :scheduleId")
     List<ClassLog> findAllByUserIdAndScheduleId(Long userId, Long scheduleId);
 
