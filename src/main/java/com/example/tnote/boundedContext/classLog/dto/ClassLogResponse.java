@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ClassLogResponseDto implements LogEntry {
+public class ClassLogResponse implements LogEntry {
     private Long id;
     private String title;
     private LocalDateTime startDate;
@@ -26,8 +26,8 @@ public class ClassLogResponseDto implements LogEntry {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-    public static ClassLogResponseDto of(ClassLog classLog) {
-        return ClassLogResponseDto.builder()
+    public static ClassLogResponse of(ClassLog classLog) {
+        return ClassLogResponse.builder()
                 .id(classLog.getId())
                 .title(classLog.getTitle())
                 .startDate(classLog.getStartDate())
@@ -43,7 +43,7 @@ public class ClassLogResponseDto implements LogEntry {
                 .build();
     }
 
-    public static ClassLog toEntity(ClassLogResponseDto response) {
+    public static ClassLog toEntity(ClassLogResponse response) {
         return ClassLog.builder()
                 .id(response.getId())
                 .title(response.getTitle())

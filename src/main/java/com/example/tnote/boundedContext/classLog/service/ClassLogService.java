@@ -5,7 +5,7 @@ import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
@@ -46,8 +46,8 @@ public class ClassLogService {
     private final RecentLogService recentLogService;
     private final AwsS3Uploader awsS3Uploader;
 
-    public ClassLogResponseDto save(Long userId, Long scheduleId, ClassLogSaveRequest request,
-                                    List<MultipartFile> classLogImages) {
+    public ClassLogResponse save(Long userId, Long scheduleId, ClassLogSaveRequest request,
+                                 List<MultipartFile> classLogImages) {
         User user = findUserById(userId);
         Schedule schedule = findScheduleById(scheduleId);
 
@@ -61,7 +61,7 @@ public class ClassLogService {
             classLog.getClassLogImage().addAll(uploadedImages);
         }
         recentLogService.saveRecentLog(userId, classLog.getId(), scheduleId, "CLASS_LOG");
-        return ClassLogResponseDto.of(classLog);
+        return ClassLogResponse.of(classLog);
     }
 
     public ClassLogDeleteResponseDto deleteClassLog(Long userId, Long classLogId) {
@@ -85,56 +85,56 @@ public class ClassLogService {
     public ClassLogSliceResponseDto readAllClassLog(Long userId, Long scheduleId, Pageable pageable) {
         List<ClassLog> classLogList = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByScheduleId(scheduleId, pageable);
-        List<ClassLogResponseDto> classLogResponseDtos = allClassLogsSlice.getContent().stream()
-                .map(ClassLogResponseDto::of).toList();
+        List<ClassLogResponse> classLogResponseDtos = allClassLogsSlice.getContent().stream()
+                .map(ClassLogResponse::of).toList();
 
         return ClassLogSliceResponseDto.from(classLogResponseDtos, classLogList, allClassLogsSlice);
     }
 
     @Transactional(readOnly = true)
-    public List<ClassLogResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
+    public List<ClassLogResponse> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
         List<ClassLog> logs = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
-                .map(ClassLogResponseDto::of)
+                .map(ClassLogResponse::of)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<ClassLogResponseDto> findByTitle(String keyword, LocalDate startDate,
-                                                                         LocalDate endDate, Long userId) {
+    public List<ClassLogResponse> findByTitle(String keyword, LocalDate startDate,
+                                              LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<ClassLog> logs = classLogRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
-                .map(ClassLogResponseDto::of)
+                .map(ClassLogResponse::of)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<ClassLogResponseDto> findByContents(String keyword, LocalDate startDate,
-                                                         LocalDate endDate, Long userId) {
+    public List<ClassLogResponse> findByContents(String keyword, LocalDate startDate,
+                                                 LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<ClassLog> logs = classLogRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
-                .map(ClassLogResponseDto::of)
+                .map(ClassLogResponse::of)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<ClassLogResponseDto> findByTitleOrPlanOrContents(String keyword,
-                                                                LocalDate startDate,
-                                                                LocalDate endDate,
-                                                                Long userId) {
+    public List<ClassLogResponse> findByTitleOrPlanOrContents(String keyword,
+                                                              LocalDate startDate,
+                                                              LocalDate endDate,
+                                                              Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<ClassLog> logs = classLogRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
                 startOfDay, endOfDay, userId);
 
         return logs.stream()
-                .map(ClassLogResponseDto::of)
+                .map(ClassLogResponse::of)
                 .toList();
     }
 
@@ -145,13 +145,13 @@ public class ClassLogService {
         return new ClassLogDetailResponseDto(classLog, classLogImages);
     }
 
-    public ClassLogResponseDto updateClassLog(Long userId, Long classLogId,
-                                              ClassLogUpdateRequestDto classLogUpdateRequestDto,
-                                              List<MultipartFile> classLogImages) {
+    public ClassLogResponse updateClassLog(Long userId, Long classLogId,
+                                           ClassLogUpdateRequestDto classLogUpdateRequestDto,
+                                           List<MultipartFile> classLogImages) {
         ClassLog classLog = findByIdAndUserId(classLogId, userId);
         updateEachClassLogItem(classLogUpdateRequestDto, classLog, classLogImages);
         recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
-        return ClassLogResponseDto.of(classLog);
+        return ClassLogResponse.of(classLog);
     }
 
     private void updateEachClassLogItem(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog,
@@ -207,14 +207,14 @@ public class ClassLogService {
                 userId, scheduleId,
                 startOfDay, endOfDay, pageable);
 
-        List<ClassLogResponseDto> classLogResponseDtos = allClassLogsSlice.getContent().stream()
-                .map(ClassLogResponseDto::of).toList();
+        List<ClassLogResponse> classLogResponseDtos = allClassLogsSlice.getContent().stream()
+                .map(ClassLogResponse::of).toList();
 
         return ClassLogSliceResponseDto.from(classLogResponseDtos, classLogList, allClassLogsSlice);
     }
 
     @Transactional(readOnly = true)
-    public List<ClassLogResponseDto> readDailyClassLog(Long userId, Long scheduleId, LocalDate date) {
+    public List<ClassLogResponse> readDailyClassLog(Long userId, Long scheduleId, LocalDate date) {
 
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
@@ -223,16 +223,16 @@ public class ClassLogService {
                 startOfDay, endOfDay);
 
         return classLogs.stream()
-                .map(ClassLogResponseDto::of).toList();
+                .map(ClassLogResponse::of).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<ClassLogResponseDto> readMonthlyClassLog(Long userId, Long scheduleId, LocalDate date) {
+    public List<ClassLogResponse> readMonthlyClassLog(Long userId, Long scheduleId, LocalDate date) {
 
         List<ClassLog> classLogs = classLogRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);
 
         return classLogs.stream()
-                .map(ClassLogResponseDto::of).toList();
+                .map(ClassLogResponse::of).toList();
     }
 
 

@@ -10,7 +10,7 @@ import org.springframework.data.domain.Slice;
 @Getter
 @Builder
 public class ClassLogSliceResponseDto {
-    List<ClassLogResponseDto> classLogs;
+    List<ClassLogResponse> classLogs;
 
     private int numberOfClassLog;
 
@@ -18,7 +18,7 @@ public class ClassLogSliceResponseDto {
     @JsonProperty(value = "isLast")
     private Boolean isLast;
 
-    public static ClassLogSliceResponseDto from(List<ClassLogResponseDto> classLogResponseDtos,
+    public static ClassLogSliceResponseDto from(List<ClassLogResponse> classLogResponseDtos,
                                                 List<ClassLog> classLogList,
                                                 Slice<ClassLog> allClassLogsSlice) {
         return ClassLogSliceResponseDto.builder()

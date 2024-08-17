@@ -13,7 +13,7 @@ import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
@@ -106,7 +106,7 @@ public class ClassLogServiceTest {
         ClassLog classLog = requestDto.toEntity(mockUser, mockSchedule);
         when(classLogRepository.save(any(ClassLog.class))).thenReturn(classLog);
 
-        ClassLogResponseDto result = classLogService.save(userId, scheduleId, requestDto, Collections.emptyList());
+        ClassLogResponse result = classLogService.save(userId, scheduleId, requestDto, Collections.emptyList());
 
         assertThat(result).isNotNull();
         assertThat(result.getTitle()).isEqualTo(requestDto.getTitle());
@@ -212,7 +212,7 @@ public class ClassLogServiceTest {
 
         when(classLogRepository.findByIdAndUserId(classLogId, userId)).thenReturn(Optional.of(mockClassLog));
 
-        ClassLogResponseDto result = classLogService.updateClassLog(userId, classLogId, classLogUpdateRequestDto,
+        ClassLogResponse result = classLogService.updateClassLog(userId, classLogId, classLogUpdateRequestDto,
                 classLogImages);
 
         assertThat(result).isNotNull();

@@ -2,11 +2,9 @@ package com.example.tnote.boundedContext.classLog.controller;
 
 
 import com.example.tnote.base.response.Result;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
@@ -51,9 +49,9 @@ public class ClassLogController {
 
     @GetMapping("/all")
     public ResponseEntity<Result> findAll(@AuthenticationPrincipal final PrincipalDetails principalDetails,
-                                                 @RequestParam final Long scheduleId,
-                                                 @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                 @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
+                                          @RequestParam final Long scheduleId,
+                                          @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                          @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
 
         return ResponseEntity.ok(Result.of(classLogService.readAllClassLog(principalDetails.getId(), scheduleId,
@@ -62,7 +60,7 @@ public class ClassLogController {
 
     @DeleteMapping()
     public ResponseEntity<Result> delete(@AuthenticationPrincipal final PrincipalDetails principalDetails,
-                                                 @RequestParam final Long classLogId) {
+                                         @RequestParam final Long classLogId) {
 
         return ResponseEntity.ok(Result.of(classLogService.deleteClassLog(principalDetails.getId(),
                 classLogId)));
@@ -82,7 +80,7 @@ public class ClassLogController {
                                                  @PathVariable Long classLogId,
                                                  @RequestPart ClassLogUpdateRequestDto classLogUpdateRequestDto,
                                                  @RequestPart(name = "classLogImages", required = false) List<MultipartFile> classLogImages) {
-        ClassLogResponseDto classLogResponseDto = classLogService.updateClassLog(principalDetails.getId(), classLogId,
+        ClassLogResponse classLogResponseDto = classLogService.updateClassLog(principalDetails.getId(), classLogId,
                 classLogUpdateRequestDto, classLogImages);
         return ResponseEntity.ok(Result.of(classLogResponseDto));
     }
