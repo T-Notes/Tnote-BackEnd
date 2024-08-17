@@ -75,7 +75,7 @@ public class ClassLogService {
     public ClassLogDeleteResponse delete(final Long userId, final Long classLogId) {
         ClassLog classLog = classLogRepository.findClassLogById(classLogId);
 
-        deleteExistedImageByClassLog(classLog);
+        deleteExistedImage(classLog);
         classLogRepository.delete(classLog);
         recentLogService.deleteRecentLog(classLog.getId(), "CLASS_LOG");
 
@@ -239,24 +239,24 @@ public class ClassLogService {
     }
 
 
-    private List<ClassLogImage> deleteExistedImagesAndUploadNewImages(ClassLog classLog,
-                                                                      List<MultipartFile> classLogImages) {
+    private List<ClassLogImage> deleteExistedImagesAndUploadNewImages(final ClassLog classLog,
+                                                                      final List<MultipartFile> classLogImages) {
         deleteExistedImages(classLog);
         return uploadImages(classLog, classLogImages);
     }
 
-    private void deleteExistedImages(ClassLog classLog) {
+    private void deleteExistedImages(final ClassLog classLog) {
         System.out.println("Deleting existing images for classLog ID: " + classLog.getId());
         deleteS3Images(classLog);
         classLogImageRepository.deleteByClassLogId(classLog.getId());
     }
 
-    private void deleteExistedImageByClassLog(ClassLog classLog) {
+    private void deleteExistedImage(final ClassLog classLog) {
         System.out.println("Deleting existing images for classLog ID: " + classLog.getId());
         deleteS3Images(classLog);
     }
 
-    private void deleteS3Images(ClassLog classLog) {
+    private void deleteS3Images(final ClassLog classLog) {
         System.out.println("Starting to delete images from S3 for classLog ID: " + classLog.getId());
         List<ClassLogImage> classLogImages = classLog.getClassLogImage();
         for (ClassLogImage classLogImage : classLogImages) {
