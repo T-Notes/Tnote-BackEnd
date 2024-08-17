@@ -16,8 +16,9 @@ public class ClassLogUpdateRequest {
     public ClassLogUpdateRequest() {
     }
 
-    public ClassLogUpdateRequest(String title, LocalDateTime startDate, LocalDateTime endDate, String plan,
-                                 String classContents, String submission, String magnitude) {
+    public ClassLogUpdateRequest(final String title, final LocalDateTime startDate, final LocalDateTime endDate,
+                                 final String plan,
+                                 final String classContents, final String submission, final String magnitude) {
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -38,6 +39,7 @@ public class ClassLogUpdateRequest {
     public boolean hasEndDate() {
         return endDate != null;
     }
+
     public boolean hasPlan() {
         return plan != null;
     }
