@@ -23,6 +23,7 @@ import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -85,15 +86,21 @@ public class ClassLogServiceTest {
     @DisplayName("학급일지 저장: 정상적인 경우 성공적으로 저장 확인")
     @Test
     void save_Success() {
-        ClassLogSaveRequest requestDto = ClassLogSaveRequest.builder()
-                .title("테스트 수업 로그")
-                .startDate(LocalDate.of(2024, 1, 1).atStartOfDay())
-                .endDate(LocalDate.of(2024, 1, 3).atStartOfDay())
-                .plan("테스트 학습 계획")
-                .classContents("테스트 수업 내용")
-                .submission("테스트 제출 과제")
-                .magnitude("테스트 진도")
-                .build();
+        LocalDateTime startDate = LocalDate.of(2024, 1, 1).atStartOfDay();
+        LocalDateTime endDate = LocalDate.of(2024, 1, 3).atStartOfDay();
+
+        ClassLogSaveRequest requestDto = new ClassLogSaveRequest(
+                "color",
+                false,
+                "테스트 제출 과제",
+                "테스트 학습 계획",
+                "콘텐츠",
+                "계획",
+                startDate,
+                LocalDateTime.of(2024, 1, 1, 0, 0),
+                "테스트 수업 로그"
+        );
+
 
         when(userRepository.findUserById(userId)).thenReturn(mockUser);
         when(scheduleRepository.findScheduleById(1L)).thenReturn(mockSchedule);

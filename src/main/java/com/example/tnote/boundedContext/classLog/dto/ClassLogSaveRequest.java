@@ -12,7 +12,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
 public class ClassLogSaveRequest {
     private String title;
     private LocalDateTime startDate;
@@ -23,6 +22,21 @@ public class ClassLogSaveRequest {
     private String magnitude;
     private boolean isAllDay;
     private String color;
+
+    public ClassLogSaveRequest(final String color, final boolean isAllDay, final String magnitude,
+                               final String submission, final String classContents,
+                               final String plan, final LocalDateTime endDate,
+                               final LocalDateTime startDate, final String title) {
+        this.color = color;
+        this.isAllDay = isAllDay;
+        this.magnitude = magnitude;
+        this.submission = submission;
+        this.classContents = classContents;
+        this.plan = plan;
+        this.endDate = endDate;
+        this.startDate = startDate;
+        this.title = title;
+    }
 
     public ClassLog toEntity(final User user, final Schedule schedule) {
         validate();
