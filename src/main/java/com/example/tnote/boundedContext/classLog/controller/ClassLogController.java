@@ -73,9 +73,9 @@ public class ClassLogController {
 
     @PatchMapping(consumes = {MediaType.APPLICATION_JSON_VALUE, MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> update(@AuthenticationPrincipal final PrincipalDetails principalDetails,
-                                                 @RequestParam final Long classLogId,
-                                                 @RequestPart final ClassLogUpdateRequest classLogUpdateRequestDto,
-                                                 @RequestPart(name = "classLogImages", required = false) final List<MultipartFile> classLogImages) {
+                                         @RequestParam final Long classLogId,
+                                         @RequestPart final ClassLogUpdateRequest classLogUpdateRequestDto,
+                                         @RequestPart(name = "classLogImages", required = false) final List<MultipartFile> classLogImages) {
 
         return ResponseEntity.ok(Result.of(classLogService.updateClassLog(principalDetails.getId(), classLogId,
                 classLogUpdateRequestDto, classLogImages)));
