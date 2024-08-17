@@ -4,17 +4,15 @@ package com.example.tnote.boundedContext.classLog.controller;
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -41,15 +39,14 @@ public class ClassLogController {
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Result> save(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                       @RequestParam Long scheduleId,
-                                       @RequestPart ClassLogRequestDto classLogRequestDto,
-                                       @RequestPart(name = "classLogImages", required = false) List<MultipartFile> classLogImages) {
-        ClassLogResponseDto classLogResponseDto = classLogService.save(principalDetails.getId(), scheduleId,
-                classLogRequestDto,
-                classLogImages);
+    public ResponseEntity<Result> save(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                       @RequestParam final Long scheduleId,
+                                       @RequestPart final ClassLogSaveRequest classLogRequestDto,
+                                       @RequestPart(name = "classLogImages", required = false) final List<MultipartFile> classLogImages) {
 
-        return ResponseEntity.ok(Result.of(classLogResponseDto));
+        return ResponseEntity.ok(Result.of(classLogService.save(principalDetails.getId(), scheduleId,
+                classLogRequestDto,
+                classLogImages)));
     }
 
     @GetMapping("/{scheduleId}/all")

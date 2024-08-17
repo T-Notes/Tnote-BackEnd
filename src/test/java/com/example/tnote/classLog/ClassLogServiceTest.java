@@ -12,7 +12,7 @@ import static org.mockito.Mockito.when;
 import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
@@ -91,7 +91,7 @@ public class ClassLogServiceTest {
     @DisplayName("학급일지 저장: 정상적인 경우 성공적으로 저장 확인")
     @Test
     void save_Success() {
-        ClassLogRequestDto requestDto = ClassLogRequestDto.builder()
+        ClassLogSaveRequest requestDto = ClassLogSaveRequest.builder()
                 .title("테스트 수업 로그")
                 .startDate(mockSchedule.getStartDate().atStartOfDay())
                 .endDate(mockSchedule.getStartDate().atStartOfDay().plusHours(2))
@@ -117,7 +117,7 @@ public class ClassLogServiceTest {
     @DisplayName("학급일지 저장: 존재하지 않는 사용자로 인한 예외 발생 확인")
     @Test
     void save_Fail() {
-        ClassLogRequestDto requestDto = mock(ClassLogRequestDto.class);
+        ClassLogSaveRequest requestDto = mock(ClassLogSaveRequest.class);
         List<MultipartFile> classLogImages = Collections.emptyList();
 
         when(userRepository.findById(userId)).thenReturn(Optional.empty());

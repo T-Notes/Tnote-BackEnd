@@ -13,7 +13,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ClassLogRequestDto {
+public class ClassLogSaveRequest {
     private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;

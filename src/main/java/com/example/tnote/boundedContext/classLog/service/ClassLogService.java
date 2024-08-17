@@ -4,7 +4,7 @@ import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
@@ -46,7 +46,7 @@ public class ClassLogService {
     private final RecentLogService recentLogService;
     private final AwsS3Uploader awsS3Uploader;
 
-    public ClassLogResponseDto save(Long userId, Long scheduleId, ClassLogRequestDto request,
+    public ClassLogResponseDto save(Long userId, Long scheduleId, ClassLogSaveRequest request,
                                     List<MultipartFile> classLogImages) {
         User user = findUserById(userId);
         Schedule schedule = findScheduleById(scheduleId);
