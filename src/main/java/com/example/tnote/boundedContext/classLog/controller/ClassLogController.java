@@ -61,8 +61,8 @@ public class ClassLogController {
     }
 
     @DeleteMapping()
-    public ResponseEntity<Result> delete(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                 @RequestParam Long classLogId) {
+    public ResponseEntity<Result> delete(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                                 @RequestParam final Long classLogId) {
 
         return ResponseEntity.ok(Result.of(classLogService.deleteClassLog(principalDetails.getId(),
                 classLogId)));
