@@ -266,8 +266,4 @@ public class ClassLogService {
         }
     }
 
-    private ClassLog findByIdAndUserId(Long classLogId, Long userId) {
-        return classLogRepository.findByIdAndUserId(classLogId, userId)
-                .orElseThrow(() -> new ClassLogException(ClassLogErrorCode.CLASS_LOG_NOT_FOUNT));
-    }
 }
