@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 
 @Getter
-public class ClassLogUpdateRequestDto {
+public class ClassLogUpdateRequest {
     private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;

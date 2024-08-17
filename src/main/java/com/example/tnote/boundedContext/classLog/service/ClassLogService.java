@@ -7,7 +7,7 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequest;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.classLog.exception.ClassLogErrorCode;
@@ -146,7 +146,7 @@ public class ClassLogService {
     }
 
     public ClassLogResponse updateClassLog(Long userId, Long classLogId,
-                                           ClassLogUpdateRequestDto classLogUpdateRequestDto,
+                                           ClassLogUpdateRequest classLogUpdateRequestDto,
                                            List<MultipartFile> classLogImages) {
         ClassLog classLog = findByIdAndUserId(classLogId, userId);
         updateEachClassLogItem(classLogUpdateRequestDto, classLog, classLogImages);
@@ -154,7 +154,7 @@ public class ClassLogService {
         return ClassLogResponse.of(classLog);
     }
 
-    private void updateEachClassLogItem(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog,
+    private void updateEachClassLogItem(ClassLogUpdateRequest classLogUpdateRequestDto, ClassLog classLog,
                                         List<MultipartFile> classLogImages) {
         updateClassLogFields(classLogUpdateRequestDto, classLog);
         if (classLogImages == null || classLogImages.isEmpty()) {
@@ -166,7 +166,7 @@ public class ClassLogService {
         }
     }
 
-    private void updateClassLogFields(ClassLogUpdateRequestDto classLogUpdateRequestDto, ClassLog classLog) {
+    private void updateClassLogFields(ClassLogUpdateRequest classLogUpdateRequestDto, ClassLog classLog) {
         classLog.updateTitle(classLogUpdateRequestDto.getTitle());
         classLog.updateStartDate(classLogUpdateRequestDto.getStartDate());
         classLog.updateEndDate(classLogUpdateRequestDto.getEndDate());

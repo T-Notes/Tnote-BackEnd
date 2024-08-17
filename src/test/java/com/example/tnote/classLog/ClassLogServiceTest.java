@@ -15,7 +15,7 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequest;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.classLog.exception.ClassLogException;
@@ -207,7 +207,7 @@ public class ClassLogServiceTest {
     @Test
     void updateClassLog() {
         when(mockClassLog.getSchedule()).thenReturn(mockSchedule);
-        ClassLogUpdateRequestDto classLogUpdateRequestDto = mock(ClassLogUpdateRequestDto.class);
+        ClassLogUpdateRequest classLogUpdateRequestDto = mock(ClassLogUpdateRequest.class);
         List<MultipartFile> classLogImages = Collections.emptyList();
 
         when(classLogRepository.findByIdAndUserId(classLogId, userId)).thenReturn(Optional.of(mockClassLog));
