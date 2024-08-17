@@ -79,5 +79,4 @@ public interface ClassLogRepository extends JpaRepository<ClassLog, Long> {
             @Param("endDate") LocalDateTime endDate,
             @Param("userId") Long userId);
 
-    void deleteAllByUserId(Long userId);
 }
