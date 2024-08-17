@@ -55,16 +55,17 @@ public class ClassLogService {
         this.awsS3Uploader = awsS3Uploader;
     }
 
-    public ClassLogResponse save(Long userId, Long scheduleId, ClassLogSaveRequest request,
-                                 List<MultipartFile> classLogImages) {
-        User user = findUserById(userId);
-        Schedule schedule = findScheduleById(scheduleId);
+    public ClassLogResponse save(final Long userId, final Long scheduleId, final ClassLogSaveRequest request,
+                                 final List<MultipartFile> classLogImages) {
+        User user = userRepository.findUserById(userId);
+        Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
 
-        ClassLog classLog = classLogRepository.save(request.toEntity(user, schedule));
-        if (classLog.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || classLog.getEndDate()
+        if (request.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || request.getEndDate()
                 .toLocalDate().isAfter(schedule.getEndDate())) {
             throw new ClassLogException(ClassLogErrorCode.INVALID_CLASS_LOG_DATE);
         }
+
+        ClassLog classLog = classLogRepository.save(request.toEntity(user, schedule));
         if (classLogImages != null && !classLogImages.isEmpty()) {
             List<ClassLogImage> uploadedImages = uploadClassLogImages(classLog, classLogImages);
             classLog.getClassLogImage().addAll(uploadedImages);
@@ -270,16 +271,6 @@ public class ClassLogService {
             System.out.println("Deleting image from S3: " + imageKey);
             awsS3Uploader.deleteImage(imageKey);
         }
-    }
-
-    private User findUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
-    }
-
-    private Schedule findScheduleById(Long scheduleId) {
-        return scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
     }
 
     private ClassLog findByIdAndUserId(Long classLogId, Long userId) {
