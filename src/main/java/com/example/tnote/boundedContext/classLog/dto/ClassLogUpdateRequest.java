@@ -27,33 +27,4 @@ public class ClassLogUpdateRequest {
         this.submission = submission;
         this.magnitude = magnitude;
     }
-
-    public boolean hasTitle() {
-        return title != null;
-    }
-
-    public boolean hasStartDate() {
-        return startDate != null;
-    }
-
-    public boolean hasEndDate() {
-        return endDate != null;
-    }
-
-    public boolean hasPlan() {
-        return plan != null;
-    }
-
-    public boolean hasClassContents() {
-        return classContents != null;
-    }
-
-    public boolean hasSubmission() {
-        return submission != null;
-    }
-
-    public boolean hasMagnitude() {
-        return magnitude != null;
-    }
-
 }
