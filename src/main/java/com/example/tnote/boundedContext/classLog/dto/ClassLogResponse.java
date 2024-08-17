@@ -47,18 +47,4 @@ public class ClassLogResponse implements LogEntry {
                 .classLogImages(classLog.getClassLogImage())
                 .build();
     }
-
-    public static ClassLog toEntity(ClassLogResponse response) {
-        return ClassLog.builder()
-                .id(response.getId())
-                .title(response.getTitle())
-                .startDate(response.getStartDate())
-                .endDate(response.getEndDate())
-                .plan(response.getPlan())
-                .classContents(response.getClassContents())
-                .submission(response.getSubmission())
-                .magnitude(response.getMagnitude())
-                .color(response.getColor())
-                .build();
-    }
 }
