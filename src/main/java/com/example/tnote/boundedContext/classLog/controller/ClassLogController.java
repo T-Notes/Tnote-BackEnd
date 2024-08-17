@@ -3,7 +3,6 @@ package com.example.tnote.boundedContext.classLog.controller;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequest;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
@@ -59,7 +58,7 @@ public class ClassLogController {
     public ResponseEntity<Result> delete(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                          @RequestParam final Long classLogId) {
 
-        return ResponseEntity.ok(Result.of(classLogService.deleteClassLog(principalDetails.getId(),
+        return ResponseEntity.ok(Result.of(classLogService.delete(principalDetails.getId(),
                 classLogId)));
     }
 

@@ -72,7 +72,7 @@ public class ClassLogService {
     }
 
     @Transactional
-    public ClassLogDeleteResponse deleteClassLog(Long userId, Long classLogId) {
+    public ClassLogDeleteResponse delete(final Long userId, final Long classLogId) {
         ClassLog classLog = findByIdAndUserId(classLogId, userId);
 
         deleteExistedImageByClassLog(classLog);
@@ -85,7 +85,7 @@ public class ClassLogService {
     @Transactional
     public int deleteClassLogs(Long userId, List<Long> classLogIds) {
         classLogIds.forEach(classLogId -> {
-            deleteClassLog(userId, classLogId);
+            delete(userId, classLogId);
         });
         return classLogIds.size();
     }
