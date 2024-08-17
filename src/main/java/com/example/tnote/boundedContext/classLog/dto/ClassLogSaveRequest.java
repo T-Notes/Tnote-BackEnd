@@ -24,21 +24,11 @@ public class ClassLogSaveRequest {
     private boolean isAllDay;
     private String color;
 
-    public ClassLog toEntity(User user, Schedule schedule) {
+하    public ClassLog toEntity(final User user, final Schedule schedule) {
         validate();
-        return ClassLog.builder()
-                .user(user)
-                .title(this.title)
-                .startDate(DateUtils.adjustStartDateTime(this.startDate, this.isAllDay))
-                .endDate(DateUtils.adjustEndDateTime(this.endDate, this.isAllDay))
-                .classContents(this.classContents)
-                .plan(this.plan)
-                .submission(this.submission)
-                .magnitude(this.magnitude)
-                .classLogImage(new ArrayList<>())
-                .schedule(schedule)
-                .color(this.color)
-                .build();
+        return new ClassLog(this.title, this.startDate, this.endDate, this.plan,
+                this.classContents, this.submission, this.magnitude,
+                this.color, user, schedule, new ArrayList<>());
     }
 
     private void validate() {

@@ -53,11 +53,10 @@ public class ClassLog extends BaseTimeEntity {
     public ClassLog() {
     }
 
-    public ClassLog(final Long id, final String title, final LocalDateTime startDate, final LocalDateTime endDate,
+    public ClassLog(final String title, final LocalDateTime startDate, final LocalDateTime endDate,
                     final String plan, final String classContents, final String submission,
                     final String magnitude, final String color, final User user,
                     final Schedule schedule, final List<ClassLogImage> classLogImage) {
-        this.id = id;
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;
