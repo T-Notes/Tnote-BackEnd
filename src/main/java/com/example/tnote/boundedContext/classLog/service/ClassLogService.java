@@ -84,9 +84,7 @@ public class ClassLogService {
 
     @Transactional
     public int deleteClassLogs(final Long userId, final List<Long> classLogIds) {
-        classLogIds.forEach(classLogId -> {
-            delete(userId, classLogId);
-        });
+        classLogIds.forEach(classLogId -> delete(userId, classLogId));
         return classLogIds.size();
     }
 
