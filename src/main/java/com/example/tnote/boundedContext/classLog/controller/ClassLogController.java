@@ -50,7 +50,7 @@ public class ClassLogController {
                                           @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
 
-        return ResponseEntity.ok(Result.of(classLogService.readAllClassLog(principalDetails.getId(), scheduleId,
+        return ResponseEntity.ok(Result.of(classLogService.findAll(principalDetails.getId(), scheduleId,
                 pageRequest)));
     }
 

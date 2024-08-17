@@ -122,7 +122,7 @@ public class ClassLogServiceTest {
 
         when(classLogRepository.findAllByScheduleId(1L, pageable)).thenReturn(mockClassLogs);
 
-        ClassLogResponses result = classLogService.readAllClassLog(userId, 1L, pageable);
+        ClassLogResponses result = classLogService.findAll(userId, 1L, pageable);
 
         assertThat(result.getClassLogs())
                 .isNotNull()

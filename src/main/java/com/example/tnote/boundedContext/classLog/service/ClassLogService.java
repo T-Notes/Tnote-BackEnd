@@ -90,7 +90,7 @@ public class ClassLogService {
         return classLogIds.size();
     }
 
-    public ClassLogResponses readAllClassLog(Long userId, Long scheduleId, Pageable pageable) {
+    public ClassLogResponses findAll(final Long userId, final Long scheduleId, final Pageable pageable) {
         List<ClassLog> classLogList = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByScheduleId(scheduleId, pageable);
         List<ClassLogResponse> classLogResponseDtos = allClassLogsSlice.getContent().stream()
