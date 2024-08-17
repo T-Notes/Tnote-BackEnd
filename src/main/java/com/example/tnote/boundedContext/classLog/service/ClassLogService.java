@@ -202,17 +202,15 @@ public class ClassLogService {
                 .build());
     }
 
-    public ClassLogResponses readClassLogsByDate(Long userId, Long scheduleId, LocalDate startDate,
-                                                 LocalDate endDate, Pageable pageable) {
+    public ClassLogResponses findByDate(final Long userId, final Long scheduleId, final LocalDate startDate,
+                                        final LocalDate endDate, final Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
         List<ClassLog> classLogList = classLogRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId,
-                scheduleId,
-                startOfDay, endOfDay);
+                scheduleId, startOfDay, endOfDay);
         Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByUserIdAndScheduleIdAndCreatedAtBetween(
-                userId, scheduleId,
-                startOfDay, endOfDay, pageable);
+                userId, scheduleId, startOfDay, endOfDay, pageable);
 
         List<ClassLogResponse> classLogResponseDtos = allClassLogsSlice.getContent().stream()
                 .map(ClassLogResponse::from).toList();

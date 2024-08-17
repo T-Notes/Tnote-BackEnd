@@ -123,7 +123,7 @@ public class ArchiveService {
     public ArchiveSliceResponseDto readLogsByDate(Long userId, Long scheduleId, LocalDate startDate, LocalDate endDate,
                                                   LogType logType, Pageable pageable) {
         if (logType == LogType.CLASS_LOG) {
-            ClassLogResponses classLogs = classLogService.readClassLogsByDate(userId, scheduleId, startDate,
+            ClassLogResponses classLogs = classLogService.findByDate(userId, scheduleId, startDate,
                     endDate, pageable);
             return ArchiveSliceResponseDto.builder().classLogs(classLogs).build();
         }
