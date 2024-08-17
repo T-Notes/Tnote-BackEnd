@@ -73,7 +73,7 @@ public class ClassLogService {
 
     @Transactional
     public ClassLogDeleteResponse delete(final Long userId, final Long classLogId) {
-        ClassLog classLog = classLogRepository.findClassLogById(classLogId);
+        ClassLog classLog = findByIdAndUserId(classLogId, userId);
 
         deleteExistedImage(classLog);
         classLogRepository.delete(classLog);
@@ -145,7 +145,7 @@ public class ClassLogService {
 
     @Transactional
     public ClassLogResponse find(final Long userId, final Long classLogId) {
-        ClassLog classLog = classLogRepository.findClassLogById(classLogId);
+        ClassLog classLog = findByIdAndUserId(classLogId, userId);
         recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
         return ClassLogResponse.from(classLog);
     }
@@ -155,7 +155,7 @@ public class ClassLogService {
                                    final ClassLogUpdateRequest classLogUpdateRequestDto,
                                    final List<MultipartFile> classLogImages) {
 
-        ClassLog classLog = classLogRepository.findClassLogById(classLogId);
+        ClassLog classLog = findByIdAndUserId(classLogId, userId);
         updateEachItem(classLogUpdateRequestDto, classLog, classLogImages);
         recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
         return ClassLogResponse.from(classLog);
@@ -266,4 +266,8 @@ public class ClassLogService {
         }
     }
 
+    private ClassLog findByIdAndUserId(final Long id, final Long userId) {
+        return classLogRepository.findByIdAndUserId(id, userId)
+                .orElseThrow(() -> new ClassLogException(ClassLogErrorCode.CLASS_LOG_NOT_FOUNT));
+    }
 }
