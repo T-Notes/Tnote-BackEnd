@@ -1,6 +1,5 @@
 package com.example.tnote.boundedContext.classLog.dto;
 
-import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.exception.ClassLogErrorCode;
 import com.example.tnote.boundedContext.classLog.exception.ClassLogException;
@@ -8,7 +7,6 @@ import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
