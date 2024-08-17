@@ -32,16 +32,19 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @RestController
 @RequestMapping("/tnote/v1/classLog")
-@RequiredArgsConstructor
 public class ClassLogController {
     private final ClassLogService classLogService;
+
+    public ClassLogController(ClassLogService classLogService) {
+        this.classLogService = classLogService;
+    }
 
     @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> save(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                 @RequestParam Long scheduleId,
-                                                 @RequestPart ClassLogRequestDto classLogRequestDto,
-                                                 @RequestPart(name = "classLogImages", required = false) List<MultipartFile> classLogImages) {
+                                       @RequestParam Long scheduleId,
+                                       @RequestPart ClassLogRequestDto classLogRequestDto,
+                                       @RequestPart(name = "classLogImages", required = false) List<MultipartFile> classLogImages) {
         ClassLogResponseDto classLogResponseDto = classLogService.save(principalDetails.getId(), scheduleId,
                 classLogRequestDto,
                 classLogImages);
@@ -51,9 +54,9 @@ public class ClassLogController {
 
     @GetMapping("/{scheduleId}/all")
     public ResponseEntity<Result> getAllClassLog(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                  @PathVariable Long scheduleId,
-                                                  @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                  @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
+                                                 @PathVariable Long scheduleId,
+                                                 @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                 @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         ClassLogSliceResponseDto responseDto = classLogService.readAllClassLog(principalDetails.getId(), scheduleId,
                 pageRequest);
