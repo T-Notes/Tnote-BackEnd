@@ -24,7 +24,7 @@ public class ClassLogSaveRequest {
     private boolean isAllDay;
     private String color;
 
-하    public ClassLog toEntity(final User user, final Schedule schedule) {
+    public ClassLog toEntity(final User user, final Schedule schedule) {
         validate();
         return new ClassLog(this.title, this.startDate, this.endDate, this.plan,
                 this.classContents, this.submission, this.magnitude,
