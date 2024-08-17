@@ -37,7 +37,6 @@ import org.springframework.web.multipart.MultipartFile;
 @Transactional
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class ClassLogService {
     private final ClassLogRepository classLogRepository;
     private final ClassLogImageRepository classLogImageRepository;
@@ -45,6 +44,17 @@ public class ClassLogService {
     private final ScheduleRepository scheduleRepository;
     private final RecentLogService recentLogService;
     private final AwsS3Uploader awsS3Uploader;
+
+    public ClassLogService(final ClassLogRepository classLogRepository, final ClassLogImageRepository classLogImageRepository,
+                           final UserRepository userRepository, final ScheduleRepository scheduleRepository,
+                           final RecentLogService recentLogService, final AwsS3Uploader awsS3Uploader) {
+        this.classLogRepository = classLogRepository;
+        this.classLogImageRepository = classLogImageRepository;
+        this.userRepository = userRepository;
+        this.scheduleRepository = scheduleRepository;
+        this.recentLogService = recentLogService;
+        this.awsS3Uploader = awsS3Uploader;
+    }
 
     public ClassLogResponse save(Long userId, Long scheduleId, ClassLogSaveRequest request,
                                  List<MultipartFile> classLogImages) {
@@ -71,7 +81,7 @@ public class ClassLogService {
         classLogRepository.delete(classLog);
         recentLogService.deleteRecentLog(classLog.getId(), "CLASS_LOG");
 
-        return ClassLogDeleteResponse.of(classLog);
+        return ClassLogDeleteResponse.from(classLog);
     }
 
     public int deleteClassLogs(Long userId, List<Long> classLogIds) {

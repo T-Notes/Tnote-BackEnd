@@ -9,7 +9,7 @@ import lombok.Getter;
 public class ClassLogDeleteResponse {
     private final Long id;
 
-    public static ClassLogDeleteResponse of(ClassLog classLog) {
+    public static ClassLogDeleteResponse from(ClassLog classLog) {
         return ClassLogDeleteResponse.builder()
                 .id(classLog.getId())
                 .build();
