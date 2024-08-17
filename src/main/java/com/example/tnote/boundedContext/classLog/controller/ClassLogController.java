@@ -60,12 +60,12 @@ public class ClassLogController {
                 pageRequest)));
     }
 
-    @DeleteMapping("/{classLogId}")
-    public ResponseEntity<Result> deleteClassLog(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                 @PathVariable Long classLogId) {
-        ClassLogDeleteResponseDto deleteResponseDto = classLogService.deleteClassLog(principalDetails.getId(),
-                classLogId);
-        return ResponseEntity.ok(Result.of(deleteResponseDto));
+    @DeleteMapping()
+    public ResponseEntity<Result> delete(@AuthenticationPrincipal PrincipalDetails principalDetails,
+                                                 @RequestParam Long classLogId) {
+
+        return ResponseEntity.ok(Result.of(classLogService.deleteClassLog(principalDetails.getId(),
+                classLogId)));
     }
 
     @GetMapping("/{classLogId}")
