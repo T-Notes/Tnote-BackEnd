@@ -16,12 +16,8 @@ import com.example.tnote.boundedContext.classLog.repository.ClassLogImageReposit
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
-import com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode;
-import com.example.tnote.boundedContext.schedule.exception.ScheduleException;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
-import com.example.tnote.boundedContext.user.exception.UserErrorCode;
-import com.example.tnote.boundedContext.user.exception.UserException;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -33,7 +29,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-@Transactional
+@Transactional(readOnly = true)
 @Service
 @Slf4j
 public class ClassLogService {
@@ -55,6 +51,7 @@ public class ClassLogService {
         this.awsS3Uploader = awsS3Uploader;
     }
 
+    @Transactional
     public ClassLogResponse save(final Long userId, final Long scheduleId, final ClassLogSaveRequest request,
                                  final List<MultipartFile> classLogImages) {
         User user = userRepository.findUserById(userId);
@@ -74,6 +71,7 @@ public class ClassLogService {
         return ClassLogResponse.from(classLog);
     }
 
+    @Transactional
     public ClassLogDeleteResponse deleteClassLog(Long userId, Long classLogId) {
         ClassLog classLog = findByIdAndUserId(classLogId, userId);
 
@@ -84,6 +82,7 @@ public class ClassLogService {
         return ClassLogDeleteResponse.from(classLog);
     }
 
+    @Transactional
     public int deleteClassLogs(Long userId, List<Long> classLogIds) {
         classLogIds.forEach(classLogId -> {
             deleteClassLog(userId, classLogId);
@@ -91,7 +90,6 @@ public class ClassLogService {
         return classLogIds.size();
     }
 
-    @Transactional(readOnly = true)
     public ClassLogResponses readAllClassLog(Long userId, Long scheduleId, Pageable pageable) {
         List<ClassLog> classLogList = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByScheduleId(scheduleId, pageable);
@@ -101,7 +99,6 @@ public class ClassLogService {
         return ClassLogResponses.of(classLogResponseDtos, classLogList, allClassLogsSlice);
     }
 
-    @Transactional(readOnly = true)
     public List<ClassLogResponse> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
         List<ClassLog> logs = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
@@ -109,7 +106,6 @@ public class ClassLogService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     public List<ClassLogResponse> findByTitle(String keyword, LocalDate startDate,
                                               LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
@@ -121,7 +117,6 @@ public class ClassLogService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     public List<ClassLogResponse> findByContents(String keyword, LocalDate startDate,
                                                  LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
@@ -133,7 +128,6 @@ public class ClassLogService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     public List<ClassLogResponse> findByTitleOrPlanOrContents(String keyword,
                                                               LocalDate startDate,
                                                               LocalDate endDate,
@@ -148,6 +142,7 @@ public class ClassLogService {
                 .toList();
     }
 
+    @Transactional
     public ClassLogDetailResponseDto getClassLogDetail(Long userId, Long classLogId) {
         ClassLog classLog = findByIdAndUserId(classLogId, userId);
         List<ClassLogImage> classLogImages = classLogImageRepository.findClassLogImagesByClassLogId(classLogId);
@@ -155,6 +150,7 @@ public class ClassLogService {
         return new ClassLogDetailResponseDto(classLog, classLogImages);
     }
 
+    @Transactional
     public ClassLogResponse updateClassLog(Long userId, Long classLogId,
                                            ClassLogUpdateRequest classLogUpdateRequestDto,
                                            List<MultipartFile> classLogImages) {
@@ -204,7 +200,6 @@ public class ClassLogService {
                 .build());
     }
 
-    @Transactional(readOnly = true)
     public ClassLogResponses readClassLogsByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                  LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
@@ -223,7 +218,6 @@ public class ClassLogService {
         return ClassLogResponses.of(classLogResponseDtos, classLogList, allClassLogsSlice);
     }
 
-    @Transactional(readOnly = true)
     public List<ClassLogResponse> readDailyClassLog(Long userId, Long scheduleId, LocalDate date) {
 
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
@@ -236,7 +230,6 @@ public class ClassLogService {
                 .map(ClassLogResponse::from).toList();
     }
 
-    @Transactional(readOnly = true)
     public List<ClassLogResponse> readMonthlyClassLog(Long userId, Long scheduleId, LocalDate date) {
 
         List<ClassLog> classLogs = classLogRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);
