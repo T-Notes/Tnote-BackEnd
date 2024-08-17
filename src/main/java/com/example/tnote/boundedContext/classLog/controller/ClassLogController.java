@@ -66,12 +66,12 @@ public class ClassLogController {
                 classLogId)));
     }
 
-    @GetMapping("/{classLogId}")
-    public ResponseEntity<Result> getClassLogDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                    @PathVariable Long classLogId) {
-        ClassLogDetailResponseDto detailResponseDto = classLogService.getClassLogDetail(principalDetails.getId(),
-                classLogId);
-        return ResponseEntity.ok(Result.of(detailResponseDto));
+    @GetMapping()
+    public ResponseEntity<Result> find(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                       @RequestParam final Long classLogId) {
+
+        return ResponseEntity.ok(Result.of(classLogService.getClassLogDetail(principalDetails.getId(),
+                classLogId)));
     }
 
     @PatchMapping(value = "/{classLogId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
