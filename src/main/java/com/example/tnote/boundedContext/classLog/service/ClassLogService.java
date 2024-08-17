@@ -2,7 +2,7 @@ package com.example.tnote.boundedContext.classLog.service;
 
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
@@ -64,14 +64,14 @@ public class ClassLogService {
         return ClassLogResponse.of(classLog);
     }
 
-    public ClassLogDeleteResponseDto deleteClassLog(Long userId, Long classLogId) {
+    public ClassLogDeleteResponse deleteClassLog(Long userId, Long classLogId) {
         ClassLog classLog = findByIdAndUserId(classLogId, userId);
 
         deleteExistedImageByClassLog(classLog);
         classLogRepository.delete(classLog);
         recentLogService.deleteRecentLog(classLog.getId(), "CLASS_LOG");
 
-        return ClassLogDeleteResponseDto.of(classLog);
+        return ClassLogDeleteResponse.of(classLog);
     }
 
     public int deleteClassLogs(Long userId, List<Long> classLogIds) {

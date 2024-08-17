@@ -6,11 +6,11 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ClassLogDeleteResponseDto {
+public class ClassLogDeleteResponse {
     private final Long id;
 
-    public static ClassLogDeleteResponseDto of(ClassLog classLog) {
-        return ClassLogDeleteResponseDto.builder()
+    public static ClassLogDeleteResponse of(ClassLog classLog) {
+        return ClassLogDeleteResponse.builder()
                 .id(classLog.getId())
                 .build();
     }

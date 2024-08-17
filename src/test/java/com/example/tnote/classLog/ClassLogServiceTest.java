@@ -10,7 +10,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.tnote.base.exception.CustomExceptions;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
@@ -194,7 +194,7 @@ public class ClassLogServiceTest {
 
         when(classLogRepository.findByIdAndUserId(classLogId, userId)).thenReturn(Optional.of(mockClassLog));
 
-        ClassLogDeleteResponseDto result = classLogService.deleteClassLog(userId, classLogId);
+        ClassLogDeleteResponse result = classLogService.deleteClassLog(userId, classLogId);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(classLogId);
