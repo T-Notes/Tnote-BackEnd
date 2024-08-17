@@ -152,7 +152,7 @@ public class ArchiveService {
         List<LogEntry> logs = new ArrayList<>();
 
         if (logType == LogType.ALL || logType == LogType.CLASS_LOG) {
-            logs.addAll(classLogService.findLogsByScheduleAndUser(scheduleId, userId));
+            logs.addAll(classLogService.findByScheduleAndUser(scheduleId, userId));
         }
         if (logType == LogType.ALL || logType == LogType.CONSULTATION) {
             logs.addAll(consultationService.findLogsByScheduleAndUser(scheduleId, userId));

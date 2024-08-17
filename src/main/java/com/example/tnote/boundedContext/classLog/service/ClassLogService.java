@@ -99,7 +99,7 @@ public class ClassLogService {
         return ClassLogResponses.of(classLogResponseDtos, classLogList, allClassLogsSlice);
     }
 
-    public List<ClassLogResponse> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
+    public List<ClassLogResponse> findByScheduleAndUser(final Long scheduleId, final Long userId) {
         List<ClassLog> logs = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ClassLogResponse::from)
