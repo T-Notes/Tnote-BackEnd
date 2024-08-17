@@ -2,6 +2,7 @@ package com.example.tnote.boundedContext.plan.controller;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.plan.dto.PlanSaveRequest;
+import com.example.tnote.boundedContext.plan.dto.PlanUpdateRequest;
 import com.example.tnote.boundedContext.plan.service.PlanService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.util.List;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RequestPart;
@@ -60,5 +62,15 @@ public class PlanController {
 
         PageRequest pageRequest = PageRequest.of(page, size);
         return ResponseEntity.ok(Result.of(planService.findAll(principalDetails.getId(), scheduleId, pageRequest)));
+    }
+
+    @PutMapping
+    public ResponseEntity<Result> update(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                         @RequestPart final PlanUpdateRequest planUpdateRequest,
+                                         @RequestPart(name = "planImages", required = false) final List<MultipartFile> planImages,
+                                         @RequestParam final Long planId) {
+
+        return ResponseEntity.ok(
+                Result.of(planService.updatePlan(principalDetails.getId(), planId, planUpdateRequest, planImages)));
     }
 }

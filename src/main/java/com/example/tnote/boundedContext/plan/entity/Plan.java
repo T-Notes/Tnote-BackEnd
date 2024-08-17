@@ -77,4 +77,42 @@ public class Plan extends BaseTimeEntity {
     public void clearImages() {
         this.planImages.clear();
     }
+
+    public void updateFields(String title, LocalDateTime startDate, LocalDateTime endDate, String location,
+                             String contents, String participants) {
+        updateTitle(title);
+        updateStartDate(startDate);
+        updateEndDate(endDate);
+        updateLocation(location);
+        updateContents(contents);
+        updateParticipants(participants);
+    }
+
+    public void updateImages(List<PlanImage> planImages) {
+        this.planImages = planImages;
+    }
+
+    private void updateTitle(String title) {
+        this.title = title;
+    }
+
+    private void updateStartDate(LocalDateTime startDate) {
+        this.startDate = startDate;
+    }
+
+    private void updateEndDate(LocalDateTime endDate) {
+        this.endDate = endDate;
+    }
+
+    private void updateLocation(String location) {
+        this.location = location;
+    }
+
+    private void updateContents(String contents) {
+        this.contents = contents;
+    }
+
+    private void updateParticipants(String participants) {
+        this.participants = participants;
+    }
 }
