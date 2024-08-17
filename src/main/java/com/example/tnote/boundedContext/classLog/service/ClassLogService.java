@@ -218,7 +218,7 @@ public class ClassLogService {
         return ClassLogResponses.of(classLogResponseDtos, classLogList, allClassLogsSlice);
     }
 
-    public List<ClassLogResponse> readDailyClassLog(Long userId, Long scheduleId, LocalDate date) {
+    public List<ClassLogResponse> findDaily(final Long userId, final Long scheduleId, final LocalDate date) {
 
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
@@ -230,7 +230,7 @@ public class ClassLogService {
                 .map(ClassLogResponse::from).toList();
     }
 
-    public List<ClassLogResponse> readMonthlyClassLog(Long userId, Long scheduleId, LocalDate date) {
+    public List<ClassLogResponse> findMonthly(final Long userId, final Long scheduleId, final LocalDate date) {
 
         List<ClassLog> classLogs = classLogRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);
 

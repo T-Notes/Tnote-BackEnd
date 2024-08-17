@@ -236,7 +236,7 @@ public class ArchiveService {
         if (date.isBefore(startDate) || (endDate != null && date.isAfter(endDate))) {
             throw new ScheduleException(ScheduleErrorCode.DATES_NOT_INCLUDED_IN_SEMESTER);
         }
-        List<ClassLogResponse> classLogs = classLogService.readDailyClassLog(userId, scheduleId, date);
+        List<ClassLogResponse> classLogs = classLogService.findDaily(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, scheduleId,
                 date);
         List<ObservationResponseDto> observations = observationService.readDailyObservations(userId, scheduleId, date);
@@ -253,7 +253,7 @@ public class ArchiveService {
     }
 
     public ArchiveResponseDto readMonthlyLogs(Long userId, Long scheduleId, LocalDate date) {
-        List<ClassLogResponse> classLogs = classLogService.readMonthlyClassLog(userId, scheduleId, date);
+        List<ClassLogResponse> classLogs = classLogService.findMonthly(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readMonthlyConsultations(userId, scheduleId,
                 date);
         List<ObservationResponseDto> observations = observationService.readMonthlyObservations(userId, scheduleId,
