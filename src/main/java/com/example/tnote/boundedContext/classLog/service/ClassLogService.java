@@ -6,7 +6,7 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponses;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequest;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
@@ -91,13 +91,13 @@ public class ClassLogService {
     }
 
     @Transactional(readOnly = true)
-    public ClassLogSliceResponseDto readAllClassLog(Long userId, Long scheduleId, Pageable pageable) {
+    public ClassLogResponses readAllClassLog(Long userId, Long scheduleId, Pageable pageable) {
         List<ClassLog> classLogList = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByScheduleId(scheduleId, pageable);
         List<ClassLogResponse> classLogResponseDtos = allClassLogsSlice.getContent().stream()
                 .map(ClassLogResponse::from).toList();
 
-        return ClassLogSliceResponseDto.from(classLogResponseDtos, classLogList, allClassLogsSlice);
+        return ClassLogResponses.of(classLogResponseDtos, classLogList, allClassLogsSlice);
     }
 
     @Transactional(readOnly = true)
@@ -204,8 +204,8 @@ public class ClassLogService {
     }
 
     @Transactional(readOnly = true)
-    public ClassLogSliceResponseDto readClassLogsByDate(Long userId, Long scheduleId, LocalDate startDate,
-                                                        LocalDate endDate, Pageable pageable) {
+    public ClassLogResponses readClassLogsByDate(Long userId, Long scheduleId, LocalDate startDate,
+                                                 LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
@@ -219,7 +219,7 @@ public class ClassLogService {
         List<ClassLogResponse> classLogResponseDtos = allClassLogsSlice.getContent().stream()
                 .map(ClassLogResponse::from).toList();
 
-        return ClassLogSliceResponseDto.from(classLogResponseDtos, classLogList, allClassLogsSlice);
+        return ClassLogResponses.of(classLogResponseDtos, classLogList, allClassLogsSlice);
     }
 
     @Transactional(readOnly = true)

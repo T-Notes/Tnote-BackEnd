@@ -14,7 +14,7 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponses;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequest;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
@@ -141,7 +141,7 @@ public class ClassLogServiceTest {
 
         when(classLogRepository.findAllByScheduleId(scheduleId, pageable)).thenReturn(mockClassLogs);
 
-        ClassLogSliceResponseDto result = classLogService.readAllClassLog(userId, scheduleId, pageable);
+        ClassLogResponses result = classLogService.readAllClassLog(userId, scheduleId, pageable);
 
         assertThat(result.getClassLogs())
                 .isNotNull()

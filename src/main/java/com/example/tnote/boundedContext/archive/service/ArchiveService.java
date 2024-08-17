@@ -13,7 +13,7 @@ import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequestDto;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponseDto;
 import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponses;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.repository.query.ClassLogQueryRepository;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
@@ -123,7 +123,7 @@ public class ArchiveService {
     public ArchiveSliceResponseDto readLogsByDate(Long userId, Long scheduleId, LocalDate startDate, LocalDate endDate,
                                                   LogType logType, Pageable pageable) {
         if (logType == LogType.CLASS_LOG) {
-            ClassLogSliceResponseDto classLogs = classLogService.readClassLogsByDate(userId, scheduleId, startDate,
+            ClassLogResponses classLogs = classLogService.readClassLogsByDate(userId, scheduleId, startDate,
                     endDate, pageable);
             return ArchiveSliceResponseDto.builder().classLogs(classLogs).build();
         }
