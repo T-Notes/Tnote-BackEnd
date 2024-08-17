@@ -29,7 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 public class ClassLogController {
     private final ClassLogService classLogService;
 
-    public ClassLogController(ClassLogService classLogService) {
+    public ClassLogController(final ClassLogService classLogService) {
         this.classLogService = classLogService;
     }
 
