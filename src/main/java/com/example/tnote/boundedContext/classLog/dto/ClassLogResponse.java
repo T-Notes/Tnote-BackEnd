@@ -3,7 +3,9 @@ package com.example.tnote.boundedContext.classLog.dto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.archive.constant.LogType;
 import com.example.tnote.boundedContext.archive.dto.LogEntry;
+import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -22,6 +24,7 @@ public class ClassLogResponse implements LogEntry {
     private LocalDateTime updatedAt;
     private String logType;
     private String color;
+    private List<ClassLogImage> classLogImages;
     @Override
     public LocalDateTime getCreatedAt() {
         return createdAt;
@@ -41,6 +44,7 @@ public class ClassLogResponse implements LogEntry {
                 .updatedAt(classLog.getUpdatedAt())
                 .logType(LogType.CLASS_LOG.name())
                 .color(classLog.getColor())
+                .classLogImages(classLog.getClassLogImage())
                 .build();
     }
 
