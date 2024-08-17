@@ -99,7 +99,7 @@ public class ArchiveService {
         List<ClassLog> classLogs = classLogQueryRepository.findAll(title, scheduleId);
 
         return classLogs.stream()
-                .map(ClassLogResponse::of)
+                .map(ClassLogResponse::from)
                 .toList();
     }
 

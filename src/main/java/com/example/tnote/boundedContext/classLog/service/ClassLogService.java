@@ -26,7 +26,6 @@ import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -71,7 +70,7 @@ public class ClassLogService {
             classLog.getClassLogImage().addAll(uploadedImages);
         }
         recentLogService.saveRecentLog(userId, classLog.getId(), scheduleId, "CLASS_LOG");
-        return ClassLogResponse.of(classLog);
+        return ClassLogResponse.from(classLog);
     }
 
     public ClassLogDeleteResponse deleteClassLog(Long userId, Long classLogId) {
@@ -96,7 +95,7 @@ public class ClassLogService {
         List<ClassLog> classLogList = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<ClassLog> allClassLogsSlice = classLogRepository.findAllByScheduleId(scheduleId, pageable);
         List<ClassLogResponse> classLogResponseDtos = allClassLogsSlice.getContent().stream()
-                .map(ClassLogResponse::of).toList();
+                .map(ClassLogResponse::from).toList();
 
         return ClassLogSliceResponseDto.from(classLogResponseDtos, classLogList, allClassLogsSlice);
     }
@@ -105,7 +104,7 @@ public class ClassLogService {
     public List<ClassLogResponse> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
         List<ClassLog> logs = classLogRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
-                .map(ClassLogResponse::of)
+                .map(ClassLogResponse::from)
                 .toList();
     }
 
@@ -117,7 +116,7 @@ public class ClassLogService {
         List<ClassLog> logs = classLogRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
-                .map(ClassLogResponse::of)
+                .map(ClassLogResponse::from)
                 .toList();
     }
 
@@ -129,7 +128,7 @@ public class ClassLogService {
         List<ClassLog> logs = classLogRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
-                .map(ClassLogResponse::of)
+                .map(ClassLogResponse::from)
                 .toList();
     }
 
@@ -144,7 +143,7 @@ public class ClassLogService {
                 startOfDay, endOfDay, userId);
 
         return logs.stream()
-                .map(ClassLogResponse::of)
+                .map(ClassLogResponse::from)
                 .toList();
     }
 
@@ -161,7 +160,7 @@ public class ClassLogService {
         ClassLog classLog = findByIdAndUserId(classLogId, userId);
         updateEachClassLogItem(classLogUpdateRequestDto, classLog, classLogImages);
         recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
-        return ClassLogResponse.of(classLog);
+        return ClassLogResponse.from(classLog);
     }
 
     private void updateEachClassLogItem(ClassLogUpdateRequest classLogUpdateRequestDto, ClassLog classLog,
@@ -218,7 +217,7 @@ public class ClassLogService {
                 startOfDay, endOfDay, pageable);
 
         List<ClassLogResponse> classLogResponseDtos = allClassLogsSlice.getContent().stream()
-                .map(ClassLogResponse::of).toList();
+                .map(ClassLogResponse::from).toList();
 
         return ClassLogSliceResponseDto.from(classLogResponseDtos, classLogList, allClassLogsSlice);
     }
@@ -233,7 +232,7 @@ public class ClassLogService {
                 startOfDay, endOfDay);
 
         return classLogs.stream()
-                .map(ClassLogResponse::of).toList();
+                .map(ClassLogResponse::from).toList();
     }
 
     @Transactional(readOnly = true)
@@ -242,7 +241,7 @@ public class ClassLogService {
         List<ClassLog> classLogs = classLogRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);
 
         return classLogs.stream()
-                .map(ClassLogResponse::of).toList();
+                .map(ClassLogResponse::from).toList();
     }
 
 

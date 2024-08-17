@@ -26,7 +26,8 @@ public class ClassLogResponse implements LogEntry {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-    public static ClassLogResponse of(ClassLog classLog) {
+
+    public static ClassLogResponse from(final ClassLog classLog) {
         return ClassLogResponse.builder()
                 .id(classLog.getId())
                 .title(classLog.getTitle())
