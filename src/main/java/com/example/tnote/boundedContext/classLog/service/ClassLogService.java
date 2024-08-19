@@ -57,12 +57,9 @@ public class ClassLogService {
         User user = userRepository.findUserById(userId);
         Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
 
-        if (request.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || request.getEndDate()
-                .toLocalDate().isAfter(schedule.getEndDate())) {
-            throw new ClassLogException(ClassLogErrorCode.INVALID_CLASS_LOG_DATE);
-        }
-
+        validateIncorrectTime(request, schedule);
         ClassLog classLog = classLogRepository.save(request.toEntity(user, schedule));
+
         if (classLogImages != null && !classLogImages.isEmpty()) {
             List<ClassLogImage> uploadedImages = uploadImages(classLog, classLogImages);
             classLog.getClassLogImage().addAll(uploadedImages);
@@ -267,5 +264,12 @@ public class ClassLogService {
     private ClassLog findByIdAndUserId(final Long id, final Long userId) {
         return classLogRepository.findByIdAndUserId(id, userId)
                 .orElseThrow(() -> new ClassLogException(ClassLogErrorCode.CLASS_LOG_NOT_FOUNT));
+    }
+
+    private void validateIncorrectTime(final ClassLogSaveRequest request, Schedule schedule) {
+        if (request.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || request.getEndDate()
+                .toLocalDate().isAfter(schedule.getEndDate())) {
+            throw new ClassLogException(ClassLogErrorCode.INVALID_CLASS_LOG_DATE);
+        }
     }
 }
