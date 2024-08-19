@@ -31,32 +31,32 @@ public class PlanController {
         this.planService = planService;
     }
 
-    @PostMapping(consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "{/scheduleId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> save(@AuthenticationPrincipal final PrincipalDetails principalDetails,
-                                       @RequestParam final Long scheduleId,
+                                       @PathVariable final Long scheduleId,
                                        @RequestPart final PlanSaveRequest planSaveRequest,
                                        @RequestPart(name = "planImages", required = false) final List<MultipartFile> planImages) {
         return ResponseEntity.ok(
                 Result.of(planService.save(principalDetails.getId(), scheduleId, planSaveRequest, planImages)));
     }
 
-    @GetMapping
+    @GetMapping("/{planId}")
     public ResponseEntity<Result> find(@AuthenticationPrincipal final PrincipalDetails principalDetails,
-                                       @RequestParam final Long planId) {
+                                       @PathVariable final Long planId) {
 
         return ResponseEntity.ok(Result.of(planService.find(principalDetails.getId(), planId)));
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{planId}")
     public ResponseEntity<Result> delete(@AuthenticationPrincipal final PrincipalDetails principalDetails,
-                                         @RequestParam final Long planId) {
+                                         @PathVariable final Long planId) {
         return ResponseEntity.ok(Result.of(planService.delete(principalDetails.getId(), planId)));
     }
 
-    @GetMapping(value = "/all")
+    @GetMapping(value = "{scheduleId}/all")
     public ResponseEntity<Result> findAll(@AuthenticationPrincipal final PrincipalDetails principalDetails,
-                                          @RequestParam final Long scheduleId,
+                                          @PathVariable final Long scheduleId,
                                           @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                           @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
 
@@ -64,11 +64,11 @@ public class PlanController {
         return ResponseEntity.ok(Result.of(planService.findAll(principalDetails.getId(), scheduleId, pageRequest)));
     }
 
-    @PutMapping
+    @PutMapping("/{planId}")
     public ResponseEntity<Result> update(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                          @RequestPart final PlanUpdateRequest planUpdateRequest,
                                          @RequestPart(name = "planImages", required = false) final List<MultipartFile> planImages,
-                                         @RequestParam final Long planId) {
+                                         @PathVariable final Long planId) {
 
         return ResponseEntity.ok(
                 Result.of(planService.updatePlan(principalDetails.getId(), planId, planUpdateRequest, planImages)));
