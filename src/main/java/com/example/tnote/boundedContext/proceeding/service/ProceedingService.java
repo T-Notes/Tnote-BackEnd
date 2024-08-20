@@ -61,7 +61,7 @@ public class ProceedingService {
         Proceeding proceeding = proceedingRepository.save(request.toEntity(user, schedule));
 
         if (proceedingImages != null && !proceedingImages.isEmpty()) {
-            List<ProceedingImage> uploadedImages = uploadProceedingImages(proceeding, proceedingImages);
+            List<ProceedingImage> uploadedImages = uploadImages(proceeding, proceedingImages);
             proceeding.getProceedingImage().addAll(uploadedImages);
         }
         recentLogService.saveRecentLog(userId, proceeding.getId(), scheduleId, "PROCEEDING");
@@ -108,7 +108,7 @@ public class ProceedingService {
                                      final ProceedingUpdateRequest request,
                                      final List<MultipartFile> proceedingImages) {
         Proceeding proceeding = findByIdAndUserId(proceedingId, userId);
-        updateEachProceedingItem(request, proceeding, proceedingImages);
+        updateEachItem(request, proceeding, proceedingImages);
         recentLogService.saveRecentLog(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
 
         return ProceedingResponse.from(proceeding);
@@ -157,9 +157,9 @@ public class ProceedingService {
                 .toList();
     }
 
-    private void updateEachProceedingItem(final ProceedingUpdateRequest requestDto, final Proceeding proceeding,
-                                          final List<MultipartFile> proceedingImages) {
-        updateProceedingFields(requestDto, proceeding);
+    private void updateEachItem(final ProceedingUpdateRequest requestDto, final Proceeding proceeding,
+                                final List<MultipartFile> proceedingImages) {
+        updateFields(requestDto, proceeding);
         if (proceedingImages == null || proceedingImages.isEmpty()) {
             deleteExistedImages(proceeding);
         }
@@ -169,7 +169,7 @@ public class ProceedingService {
         }
     }
 
-    private void updateProceedingFields(final ProceedingUpdateRequest requestDto, final Proceeding proceeding) {
+    private void updateFields(final ProceedingUpdateRequest requestDto, final Proceeding proceeding) {
         proceeding.updateTitle(requestDto.getTitle());
         proceeding.updateStartDate(requestDto.getStartDate());
         proceeding.updateEndDate(requestDto.getEndDate());
@@ -177,17 +177,17 @@ public class ProceedingService {
         proceeding.updateWorkContents(requestDto.getWorkContents());
     }
 
-    private List<ProceedingImage> uploadProceedingImages(final Proceeding proceeding,
-                                                         final List<MultipartFile> proceedingImages) {
+    private List<ProceedingImage> uploadImages(final Proceeding proceeding,
+                                               final List<MultipartFile> proceedingImages) {
         return proceedingImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "proceeding"))
-                .map(pair -> createProceedingImage(proceeding, pair.getFirst(), pair.getSecond()))
+                .map(pair -> createImage(proceeding, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
 
 
-    private ProceedingImage createProceedingImage(final Proceeding proceeding, final String url,
-                                                  final String originalFileName) {
+    private ProceedingImage createImage(final Proceeding proceeding, final String url,
+                                        final String originalFileName) {
         log.info("url = {}", url);
         proceeding.clearProceedingImages();
 
@@ -239,7 +239,7 @@ public class ProceedingService {
     private List<ProceedingImage> deleteExistedImagesAndUploadNewImages(final Proceeding proceeding,
                                                                         final List<MultipartFile> proceedingImages) {
         deleteExistedImages(proceeding);
-        return uploadProceedingImages(proceeding, proceedingImages);
+        return uploadImages(proceeding, proceedingImages);
     }
 
     private void deleteExistedImages(final Proceeding proceeding) {
