@@ -103,11 +103,12 @@ public class ProceedingService {
         return ProceedingResponse.from(proceeding);
     }
 
-    public ProceedingResponse updateProceeding(Long userId, Long proceedingId,
-                                               ProceedingUpdateRequest updateRequestDto,
-                                               List<MultipartFile> proceedingImages) {
+    @Transactional
+    public ProceedingResponse update(final Long userId, final Long proceedingId,
+                                     final ProceedingUpdateRequest request,
+                                     final List<MultipartFile> proceedingImages) {
         Proceeding proceeding = findByIdAndUserId(proceedingId, userId);
-        updateEachProceedingItem(updateRequestDto, proceeding, proceedingImages);
+        updateEachProceedingItem(request, proceeding, proceedingImages);
         recentLogService.saveRecentLog(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
 
         return ProceedingResponse.from(proceeding);
