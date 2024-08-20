@@ -121,9 +121,8 @@ public class ProceedingService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    public List<ProceedingResponse> findByTitle(String keyword, LocalDate startDate,
-                                                LocalDate endDate, Long userId) {
+    public List<ProceedingResponse> findByTitle(final String keyword, final LocalDate startDate,
+                                                final LocalDate endDate, final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
@@ -133,9 +132,8 @@ public class ProceedingService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    public List<ProceedingResponse> findByContents(String keyword, LocalDate startDate,
-                                                   LocalDate endDate, Long userId) {
+    public List<ProceedingResponse> findByContents(final String keyword, final LocalDate startDate,
+                                                   final LocalDate endDate, final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
@@ -145,11 +143,10 @@ public class ProceedingService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    public List<ProceedingResponse> findByTitleOrPlanOrContents(String keyword,
-                                                                LocalDate startDate,
-                                                                LocalDate endDate,
-                                                                Long userId) {
+    public List<ProceedingResponse> findByTitleOrPlanOrContents(final String keyword,
+                                                                final LocalDate startDate,
+                                                                final LocalDate endDate,
+                                                                final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
@@ -160,8 +157,8 @@ public class ProceedingService {
                 .toList();
     }
 
-    private void updateEachProceedingItem(ProceedingUpdateRequest requestDto, Proceeding proceeding,
-                                          List<MultipartFile> proceedingImages) {
+    private void updateEachProceedingItem(final ProceedingUpdateRequest requestDto, final Proceeding proceeding,
+                                          final List<MultipartFile> proceedingImages) {
         updateProceedingFields(requestDto, proceeding);
         if (proceedingImages == null || proceedingImages.isEmpty()) {
             deleteExistedImages(proceeding);
@@ -172,7 +169,7 @@ public class ProceedingService {
         }
     }
 
-    private void updateProceedingFields(ProceedingUpdateRequest requestDto, Proceeding proceeding) {
+    private void updateProceedingFields(final ProceedingUpdateRequest requestDto, final Proceeding proceeding) {
         proceeding.updateTitle(requestDto.getTitle());
         proceeding.updateStartDate(requestDto.getStartDate());
         proceeding.updateEndDate(requestDto.getEndDate());
