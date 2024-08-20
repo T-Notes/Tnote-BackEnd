@@ -31,7 +31,7 @@ public class PlanController {
         this.planService = planService;
     }
 
-    @PostMapping(value = "{/scheduleId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(value = "/{scheduleId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> save(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                        @PathVariable final Long scheduleId,
@@ -54,7 +54,7 @@ public class PlanController {
         return ResponseEntity.ok(Result.of(planService.delete(principalDetails.getId(), planId)));
     }
 
-    @GetMapping(value = "{scheduleId}/all")
+    @GetMapping(value = "/{scheduleId}/all")
     public ResponseEntity<Result> findAll(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                           @PathVariable final Long scheduleId,
                                           @RequestParam(value = "page", required = false, defaultValue = "0") int page,
