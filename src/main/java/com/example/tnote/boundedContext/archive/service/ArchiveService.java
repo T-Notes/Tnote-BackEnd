@@ -240,7 +240,7 @@ public class ArchiveService {
         List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, scheduleId,
                 date);
         List<ObservationResponseDto> observations = observationService.readDailyObservations(userId, scheduleId, date);
-        List<ProceedingResponse> proceedings = proceedingService.readDaily(userId, scheduleId, date);
+        List<ProceedingResponse> proceedings = proceedingService.findDaily(userId, scheduleId, date);
         List<TodoResponseDto> todos = todoService.readDailyTodos(userId, scheduleId, date);
 
         return ArchiveResponseDto.builder()
@@ -258,7 +258,7 @@ public class ArchiveService {
                 date);
         List<ObservationResponseDto> observations = observationService.readMonthlyObservations(userId, scheduleId,
                 date);
-        List<ProceedingResponse> proceedings = proceedingService.readMonthly(userId, scheduleId, date);
+        List<ProceedingResponse> proceedings = proceedingService.findMonthly(userId, scheduleId, date);
         List<TodoResponseDto> todos = todoService.readMonthlyTodos(userId, scheduleId, date);
 
         return ArchiveResponseDto.builder()

@@ -216,7 +216,7 @@ public class ProceedingService {
         return ProceedingResponses.of(responseDto, proceedings, allProceedingSlice);
     }
 
-    public List<ProceedingResponse> readDaily(final Long userId, final Long scheduleId, final LocalDate date) {
+    public List<ProceedingResponse> findDaily(final Long userId, final Long scheduleId, final LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
@@ -228,7 +228,7 @@ public class ProceedingService {
                 .map(ProceedingResponse::from).toList();
     }
 
-    public List<ProceedingResponse> readMonthly(final Long userId, final Long scheduleId, final LocalDate date) {
+    public List<ProceedingResponse> findMonthly(final Long userId, final Long scheduleId, final LocalDate date) {
         List<Proceeding> proceedings = proceedingRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
                 scheduleId, date);
 

@@ -180,7 +180,7 @@ public class ProceedingServiceTest {
         when(proceedingRepository.findByIdAndUserId(userId, proceedingId)).thenReturn(Optional.of(mockProceeding));
         when(mockProceeding.getSchedule()).thenReturn(mockSchedule);
 
-        ProceedingResponse result = proceedingService.updateProceeding(userId, proceedingId,
+        ProceedingResponse result = proceedingService.update(userId, proceedingId,
                 proceedingUpdateRequestDto,
                 proceedingImages);
 
