@@ -13,7 +13,6 @@ import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponses;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequest;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
-import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
 import com.example.tnote.boundedContext.proceeding.exception.ProceedingException;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingImageRepository;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
@@ -128,18 +127,10 @@ public class ProceedingServiceTest {
     @DisplayName("업무일지 상세 조회: 업무일지 상세 정보 조회 확인")
     @Test
     void getProceedingDetails() {
-        when(mockUser.getId()).thenReturn(userId);
         when(mockProceeding.getId()).thenReturn(proceedingId);
         when(mockProceeding.getSchedule()).thenReturn(mockSchedule);
-        when(mockProceeding.getUser()).thenReturn(mockUser);
-
-        ProceedingImage mockProceedingImage = mock(ProceedingImage.class);
-
-        List<ProceedingImage> mockProceedingImages = List.of(mockProceedingImage);
 
         when(proceedingRepository.findByIdAndUserId(proceedingId, userId)).thenReturn(Optional.of(mockProceeding));
-        when(proceedingImageRepository.findProceedingImageByProceedingId(proceedingId)).thenReturn(
-                mockProceedingImages);
 
         ProceedingResponse result = proceedingService.find(userId, proceedingId);
 
@@ -147,7 +138,6 @@ public class ProceedingServiceTest {
         assertThat(result.getId()).isEqualTo(proceedingId);
 
         verify(proceedingRepository).findByIdAndUserId(proceedingId, userId);
-        verify(proceedingImageRepository).findProceedingImageByProceedingId(proceedingId);
     }
 
     @DisplayName("존재하지 않는 업무일지의 상세정보 조회 시 예외 발생")
