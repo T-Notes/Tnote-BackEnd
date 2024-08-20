@@ -4,7 +4,7 @@ import java.time.LocalDateTime;
 import lombok.Getter;
 
 @Getter
-public class ProceedingUpdateRequestDto {
+public class ProceedingUpdateRequest {
     private String location;
     private String workContents;
     private String title;

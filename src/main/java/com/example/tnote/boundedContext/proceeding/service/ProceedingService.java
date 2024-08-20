@@ -6,7 +6,7 @@ import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponse;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSaveRequest;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponses;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequest;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
 import com.example.tnote.boundedContext.proceeding.exception.ProceedingErrorCode;
@@ -104,7 +104,7 @@ public class ProceedingService {
     }
 
     public ProceedingResponse updateProceeding(Long userId, Long proceedingId,
-                                               ProceedingUpdateRequestDto updateRequestDto,
+                                               ProceedingUpdateRequest updateRequestDto,
                                                List<MultipartFile> proceedingImages) {
         Proceeding proceeding = findByIdAndUserId(proceedingId, userId);
         updateEachProceedingItem(updateRequestDto, proceeding, proceedingImages);
@@ -160,7 +160,7 @@ public class ProceedingService {
                 .toList();
     }
 
-    private void updateEachProceedingItem(ProceedingUpdateRequestDto requestDto, Proceeding proceeding,
+    private void updateEachProceedingItem(ProceedingUpdateRequest requestDto, Proceeding proceeding,
                                           List<MultipartFile> proceedingImages) {
         updateProceedingFields(requestDto, proceeding);
         if (proceedingImages == null || proceedingImages.isEmpty()) {
@@ -172,7 +172,7 @@ public class ProceedingService {
         }
     }
 
-    private void updateProceedingFields(ProceedingUpdateRequestDto requestDto, Proceeding proceeding) {
+    private void updateProceedingFields(ProceedingUpdateRequest requestDto, Proceeding proceeding) {
         proceeding.updateTitle(requestDto.getTitle());
         proceeding.updateStartDate(requestDto.getStartDate());
         proceeding.updateEndDate(requestDto.getEndDate());

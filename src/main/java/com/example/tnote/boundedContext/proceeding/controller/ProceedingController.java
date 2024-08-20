@@ -2,7 +2,7 @@ package com.example.tnote.boundedContext.proceeding.controller;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSaveRequest;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequest;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.util.List;
@@ -74,7 +74,7 @@ public class ProceedingController {
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> update(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                          @PathVariable final Long proceedingId,
-                                         @RequestPart final ProceedingUpdateRequestDto request,
+                                         @RequestPart final ProceedingUpdateRequest request,
                                          @RequestPart(name = "proceedingImages", required = false) final List<MultipartFile> proceedingImages) {
 
         return ResponseEntity.ok(Result.of(proceedingService.updateProceeding(principalDetails.getId(),
