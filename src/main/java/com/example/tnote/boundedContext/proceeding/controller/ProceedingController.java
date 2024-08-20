@@ -50,7 +50,7 @@ public class ProceedingController {
                                           @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
 
-        return ResponseEntity.ok(Result.of(proceedingService.readAllProceeding(principalDetails.getId(),
+        return ResponseEntity.ok(Result.of(proceedingService.findAll(principalDetails.getId(),
                 scheduleId, pageRequest)));
     }
 

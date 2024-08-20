@@ -115,7 +115,7 @@ public class ProceedingServiceTest {
         Slice<Proceeding> mockProceedings = new PageImpl<>(mockProceedingList, pageable, mockProceedingList.size());
 
         when(proceedingRepository.findAllByScheduleId(scheduleId, pageable)).thenReturn(mockProceedings);
-        ProceedingSliceResponseDto result = proceedingService.readAllProceeding(userId, scheduleId, pageable);
+        ProceedingSliceResponseDto result = proceedingService.findAll(userId, scheduleId, pageable);
 
         assertThat(result.getProceedings())
                 .isNotNull()
