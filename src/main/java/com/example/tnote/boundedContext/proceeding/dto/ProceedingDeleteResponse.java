@@ -9,7 +9,7 @@ import lombok.Getter;
 public class ProceedingDeleteResponse {
     private Long id;
 
-    public static ProceedingDeleteResponse of(Proceeding proceeding) {
+    public static ProceedingDeleteResponse from(final Proceeding proceeding) {
         return ProceedingDeleteResponse.builder()
                 .id(proceeding.getId())
                 .build();
