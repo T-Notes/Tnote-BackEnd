@@ -214,8 +214,7 @@ public class ProceedingService {
         return ProceedingResponses.of(responseDto, proceedings, allProceedingSlice);
     }
 
-    @Transactional(readOnly = true)
-    public List<ProceedingResponse> readDailyProceedings(Long userId, Long scheduleId, LocalDate date) {
+    public List<ProceedingResponse> readDaily(final Long userId, final Long scheduleId, final LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
@@ -227,7 +226,7 @@ public class ProceedingService {
                 .map(ProceedingResponse::from).toList();
     }
 
-    public List<ProceedingResponse> readMonthlyProceedings(Long userId, Long scheduleId, LocalDate date) {
+    public List<ProceedingResponse> readMonthly(final Long userId, final Long scheduleId, final LocalDate date) {
         List<Proceeding> proceedings = proceedingRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
                 scheduleId, date);
 
@@ -235,22 +234,22 @@ public class ProceedingService {
                 .map(ProceedingResponse::from).toList();
     }
 
-    private List<ProceedingImage> deleteExistedImagesAndUploadNewImages(Proceeding proceeding,
-                                                                        List<MultipartFile> proceedingImages) {
+    private List<ProceedingImage> deleteExistedImagesAndUploadNewImages(final Proceeding proceeding,
+                                                                        final List<MultipartFile> proceedingImages) {
         deleteExistedImages(proceeding);
         return uploadProceedingImages(proceeding, proceedingImages);
     }
 
-    private void deleteExistedImages(Proceeding proceeding) {
+    private void deleteExistedImages(final Proceeding proceeding) {
         deleteS3Images(proceeding);
         proceedingImageRepository.deleteByProceedingId(proceeding.getId());
     }
 
-    private void deleteExistedImagesByProceeding(Proceeding proceeding) {
+    private void deleteExistedImagesByProceeding(final Proceeding proceeding) {
         deleteS3Images(proceeding);
     }
 
-    private void deleteS3Images(Proceeding proceeding) {
+    private void deleteS3Images(final Proceeding proceeding) {
         List<ProceedingImage> proceedingImages = proceeding.getProceedingImage();
         for (ProceedingImage proceedingImage : proceedingImages) {
             String imageKey = proceedingImage.getProceedingImageUrl().substring(49);
@@ -258,7 +257,7 @@ public class ProceedingService {
         }
     }
 
-    private Proceeding findByIdAndUserId(Long proceedingId, Long userId) {
+    private Proceeding findByIdAndUserId(final Long proceedingId, final Long userId) {
         return proceedingRepository.findByIdAndUserId(proceedingId, userId)
                 .orElseThrow(() -> new ProceedingException(ProceedingErrorCode.PROCEEDING_NOT_FOUNT));
     }
