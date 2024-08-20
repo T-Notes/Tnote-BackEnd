@@ -7,7 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponse;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSaveRequest;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
@@ -164,11 +164,11 @@ public class ProceedingServiceTest {
 
     @DisplayName("업무일지 삭제: 업무일지 삭제 작업 확인")
     @Test
-    void deleteProceeding() {
+    void delete() {
         when(mockProceeding.getId()).thenReturn(proceedingId);
         when(proceedingRepository.findByIdAndUserId(userId, proceedingId)).thenReturn(Optional.of(mockProceeding));
 
-        ProceedingDeleteResponseDto result = proceedingService.deleteProceeding(userId, proceedingId);
+        ProceedingDeleteResponse result = proceedingService.delete(userId, proceedingId);
 
         verify(proceedingRepository).findByIdAndUserId(userId, proceedingId);
         verify(proceedingRepository).delete(mockProceeding);

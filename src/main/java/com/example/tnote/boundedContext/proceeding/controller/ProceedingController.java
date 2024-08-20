@@ -59,7 +59,7 @@ public class ProceedingController {
                                          @PathVariable final Long proceedingId) {
 
         return ResponseEntity.ok(
-                (Result.of(proceedingService.deleteProceeding(principalDetails.getId(), proceedingId))));
+                (Result.of(proceedingService.delete(principalDetails.getId(), proceedingId))));
     }
 
     @GetMapping("/{proceedingId}")
