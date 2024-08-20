@@ -78,13 +78,12 @@ public class ProceedingController {
 
     @PatchMapping(value = "/{proceedingId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Result> updateProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                   @PathVariable Long proceedingId,
-                                                   @RequestPart ProceedingUpdateRequestDto updateRequestDto,
-                                                   @RequestPart(name = "proceedingImages", required = false) List<MultipartFile> proceedingImages) {
-        ProceedingResponseDto proceedingResponseDto = proceedingService.updateProceeding(principalDetails.getId(),
-                proceedingId, updateRequestDto, proceedingImages);
+    public ResponseEntity<Result> update(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                         @PathVariable final Long proceedingId,
+                                         @RequestPart final ProceedingUpdateRequestDto request,
+                                         @RequestPart(name = "proceedingImages", required = false) final List<MultipartFile> proceedingImages) {
 
-        return ResponseEntity.ok(Result.of(proceedingResponseDto));
+        return ResponseEntity.ok(Result.of(proceedingService.updateProceeding(principalDetails.getId(),
+                proceedingId, request, proceedingImages)));
     }
 }
