@@ -69,12 +69,11 @@ public class ProceedingController {
     }
 
     @GetMapping("/{proceedingId}")
-    public ResponseEntity<Result> getProceedingDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                      @PathVariable Long proceedingId) {
-        ProceedingDetailResponseDto proceedingDetailResponseDto = proceedingService.getProceedingDetail(
-                principalDetails.getId(), proceedingId);
+    public ResponseEntity<Result> find(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                       @PathVariable final Long proceedingId) {
 
-        return ResponseEntity.ok(Result.of(proceedingDetailResponseDto));
+        return ResponseEntity.ok(Result.of(proceedingService.getProceedingDetail(
+                principalDetails.getId(), proceedingId)));
     }
 
     @PatchMapping(value = "/{proceedingId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
