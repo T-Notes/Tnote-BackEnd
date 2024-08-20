@@ -30,9 +30,9 @@ public class ProceedingResponses {
         this.isLast = isLast;
     }
 
-    public static ProceedingResponses from(final List<ProceedingResponse> responses,
-                                           final List<Proceeding> proceedingList,
-                                           final Slice<Proceeding> allProceedingSlice) {
+    public static ProceedingResponses of(final List<ProceedingResponse> responses,
+                                         final List<Proceeding> proceedingList,
+                                         final Slice<Proceeding> allProceedingSlice) {
 
         return ProceedingResponses.builder().proceedings(responses)
                 .numberOfProceeding(proceedingList.size())

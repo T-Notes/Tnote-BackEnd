@@ -75,7 +75,7 @@ public class ProceedingService {
         List<ProceedingResponse> responseDto = allProceedingSlice.getContent().stream()
                 .map(ProceedingResponse::from).toList();
 
-        return ProceedingResponses.from(responseDto, proceedings, allProceedingSlice);
+        return ProceedingResponses.of(responseDto, proceedings, allProceedingSlice);
     }
 
     public ProceedingDeleteResponseDto deleteProceeding(Long userId, Long proceedingId) {
@@ -216,7 +216,7 @@ public class ProceedingService {
         List<ProceedingResponse> responseDto = allProceedingSlice.getContent().stream()
                 .map(ProceedingResponse::from).toList();
 
-        return ProceedingResponses.from(responseDto, proceedings, allProceedingSlice);
+        return ProceedingResponses.of(responseDto, proceedings, allProceedingSlice);
     }
 
     @Transactional(readOnly = true)
