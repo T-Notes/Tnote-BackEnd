@@ -196,9 +196,8 @@ public class ProceedingService {
                 .build());
     }
 
-    @Transactional(readOnly = true)
-    public ProceedingResponses readProceedingsByDate(Long userId, Long scheduleId, LocalDate startDate,
-                                                     LocalDate endDate, Pageable pageable) {
+    public ProceedingResponses findByDate(final Long userId, final Long scheduleId, final LocalDate startDate,
+                                          final LocalDate endDate, final Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 

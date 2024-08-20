@@ -140,7 +140,7 @@ public class ArchiveService {
             return ArchiveSliceResponseDto.builder().observations(observations).build();
         }
         if (logType == LogType.PROCEEDING) {
-            ProceedingResponses proceedings = proceedingService.readProceedingsByDate(userId, scheduleId,
+            ProceedingResponses proceedings = proceedingService.findByDate(userId, scheduleId,
                     startDate,
                     endDate, pageable);
             return ArchiveSliceResponseDto.builder().proceedings(proceedings).build();
