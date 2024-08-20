@@ -1,6 +1,5 @@
 package com.example.tnote.boundedContext.classLog.dto;
 
-import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.exception.ClassLogErrorCode;
 import com.example.tnote.boundedContext.classLog.exception.ClassLogException;
@@ -8,12 +7,10 @@ import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
-public class ClassLogRequestDto {
+public class ClassLogSaveRequest {
     private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
@@ -24,21 +21,26 @@ public class ClassLogRequestDto {
     private boolean isAllDay;
     private String color;
 
-    public ClassLog toEntity(User user, Schedule schedule) {
+    public ClassLogSaveRequest(final String color, final boolean isAllDay, final String magnitude,
+                               final String submission, final String classContents,
+                               final String plan, final LocalDateTime endDate,
+                               final LocalDateTime startDate, final String title) {
+        this.color = color;
+        this.isAllDay = isAllDay;
+        this.magnitude = magnitude;
+        this.submission = submission;
+        this.classContents = classContents;
+        this.plan = plan;
+        this.endDate = endDate;
+        this.startDate = startDate;
+        this.title = title;
+    }
+
+    public ClassLog toEntity(final User user, final Schedule schedule) {
         validate();
-        return ClassLog.builder()
-                .user(user)
-                .title(this.title)
-                .startDate(DateUtils.adjustStartDateTime(this.startDate, this.isAllDay))
-                .endDate(DateUtils.adjustEndDateTime(this.endDate, this.isAllDay))
-                .classContents(this.classContents)
-                .plan(this.plan)
-                .submission(this.submission)
-                .magnitude(this.magnitude)
-                .classLogImage(new ArrayList<>())
-                .schedule(schedule)
-                .color(this.color)
-                .build();
+        return new ClassLog(this.title, this.startDate, this.endDate, this.plan,
+                this.classContents, this.submission, this.magnitude,
+                this.color, user, schedule, new ArrayList<>());
     }
 
     private void validate() {

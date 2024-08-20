@@ -18,16 +18,10 @@ import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "CLASS_LOG_TB")
 public class ClassLog extends BaseTimeEntity {
     @Id
@@ -56,39 +50,59 @@ public class ClassLog extends BaseTimeEntity {
     @OneToMany(mappedBy = "classLog", cascade = CascadeType.ALL)
     private List<ClassLogImage> classLogImage = new ArrayList<>();
 
+    public ClassLog() {
+    }
+
+    public ClassLog(final String title, final LocalDateTime startDate, final LocalDateTime endDate,
+                    final String plan, final String classContents, final String submission,
+                    final String magnitude, final String color, final User user,
+                    final Schedule schedule, final List<ClassLogImage> classLogImage) {
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.plan = plan;
+        this.classContents = classContents;
+        this.submission = submission;
+        this.magnitude = magnitude;
+        this.color = color;
+        this.user = user;
+        this.schedule = schedule;
+        this.classLogImage = classLogImage;
+    }
+
     public void clearClassLogImages() {
         this.classLogImage.clear();
     }
 
-    public void updateTitle(String title) {
+    public void updateTitle(final String title) {
         this.title = title;
     }
 
-    public void updateStartDate(LocalDateTime startDate) {
+    public void updateStartDate(final LocalDateTime startDate) {
         this.startDate = startDate;
     }
 
-    public void updateEndDate(LocalDateTime endDate) {
+    public void updateEndDate(final LocalDateTime endDate) {
         this.endDate = endDate;
     }
 
-    public void updatePlan(String plan) {
+    public void updatePlan(final String plan) {
         this.plan = plan;
     }
 
-    public void updateClassContents(String classContents) {
+    public void updateClassContents(final String classContents) {
         this.classContents = classContents;
     }
 
-    public void updateSubmission(String submission) {
+    public void updateSubmission(final String submission) {
         this.submission = submission;
     }
 
-    public void updateMagnitude(String magnitude) {
+    public void updateMagnitude(final String magnitude) {
         this.magnitude = magnitude;
     }
 
-    public void updateClassLogImages(List<ClassLogImage> classLogImages) {
+    public void updateClassLogImages(final List<ClassLogImage> classLogImages) {
         this.classLogImage = classLogImages;
     }
 }

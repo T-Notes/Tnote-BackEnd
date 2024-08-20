@@ -1,7 +1,5 @@
 package com.example.tnote.boundedContext.observation.dto;
 
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;

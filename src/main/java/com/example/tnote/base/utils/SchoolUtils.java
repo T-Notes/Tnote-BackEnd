@@ -17,7 +17,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SchoolUtils {
 
-    protected URL url;
+    private URL url;
 
     private String Type;
     private String path;
