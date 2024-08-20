@@ -22,6 +22,7 @@ import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
@@ -151,14 +152,10 @@ public class TestSyUtils {
     }
 
     public Proceeding createProceeding(String title, LocalDateTime startDate, LocalDateTime endDate,
-                                       String location, String workContents) {
-        Proceeding consultation = Proceeding.builder()
-                .title(title)
-                .startDate(startDate)
-                .endDate(endDate)
-                .location(location)
-                .workContents(workContents)
-                .build();
+                                       String location, String workContents, String color, User user,
+                                       Schedule schedule) {
+        Proceeding consultation = new Proceeding(title, startDate, endDate, location, workContents, color, user,
+                schedule, new ArrayList<>());
 
         return proceedingRepository.save(consultation);
     }

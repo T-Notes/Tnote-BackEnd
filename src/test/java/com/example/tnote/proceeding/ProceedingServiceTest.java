@@ -13,6 +13,8 @@ import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponses;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequest;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
+import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
+import com.example.tnote.boundedContext.proceeding.exception.ProceedingException;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingImageRepository;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
@@ -22,6 +24,7 @@ import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -60,7 +63,7 @@ public class ProceedingServiceTest {
     private Schedule mockSchedule;
     private Proceeding mockProceeding;
     private Long userId = 1L;
-    private Long scheduleId = 2L;
+    private Long scheduleId = 1L;
     private Long proceedingId = 1L;
 
     @BeforeEach
@@ -83,15 +86,16 @@ public class ProceedingServiceTest {
     @DisplayName("업무일지 저장: 정상적인 경우 성공적으로 저장 확인")
     @Test
     void save() {
+        LocalDateTime startDate = LocalDate.of(2024, 1, 2).atStartOfDay();
+        LocalDateTime endDate = LocalDate.of(2024, 1, 3).atStartOfDay();
 
         ProceedingSaveRequest requestDto = new ProceedingSaveRequest("테스트 수업 로그",
-                mockSchedule.getStartDate().atStartOfDay(), mockSchedule.getStartDate().atStartOfDay().plusHours(2),
-                "부산",
-                "사진찍기", false, "red");
+                startDate, endDate, "부산", "사진찍기", false, "red");
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
+        when(userRepository.findUserById(userId)).thenReturn(mockUser);
+        when(scheduleRepository.findScheduleById(1L)).thenReturn(mockSchedule);
+
         Proceeding proceeding = requestDto.toEntity(mockUser, mockSchedule);
-        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(mockSchedule));
         when(proceedingRepository.save(any(Proceeding.class))).thenReturn(proceeding);
 
         ProceedingResponse result = proceedingService.save(userId, scheduleId, requestDto, Collections.emptyList());
@@ -121,43 +125,41 @@ public class ProceedingServiceTest {
         verify(proceedingRepository).findAllByScheduleId(scheduleId, pageable);
     }
 
-//    @DisplayName("업무일지 상세 조회: 업무일지 상세 정보 조회 확인")
-//    @Test
-//    void getProceedingDetails() {
-//        when(mockUser.getId()).thenReturn(userId);
-//        when(mockProceeding.getId()).thenReturn(proceedingId);
-//        when(mockProceeding.getSchedule()).thenReturn(mockSchedule);
-//        when(mockProceeding.getUser()).thenReturn(mockUser);
-//
-//        ProceedingImage mockProceedingImage = mock(ProceedingImage.class);
-//
-//        List<ProceedingImage> mockProceedingImages = List.of(mockProceedingImage);
-//
-//        when(proceedingRepository.findByIdAndUserId(proceedingId, userId)).thenReturn(Optional.of(mockProceeding));
-//        when(proceedingImageRepository.findProceedingImageByProceedingId(proceedingId)).thenReturn(
-//                mockProceedingImages);
-//
-//        ProceedingDetailResponseDto result = proceedingService.getProceedingDetail(userId, proceedingId);
-//
-//        assertThat(result).isNotNull();
-//        assertThat(result.getId()).isEqualTo(proceedingId);
-//        assertThat(result.getUserId()).isEqualTo(userId);
-//        assertThat(result.getProceedingImageUrls()).hasSize(mockProceedingImages.size());
-//
-//        verify(proceedingRepository).findByIdAndUserId(proceedingId, userId);
-//        verify(proceedingImageRepository).findProceedingImageByProceedingId(proceedingId);
-//    }
-//
-//    @DisplayName("존재하지 않는 업무일지의 상세정보 조회 시 예외 발생")
-//    @Test
-//    void getClassLogDetailException() {
-//        Long proceedingId = 100L;
-//
-//        when(proceedingRepository.findByIdAndUserId(proceedingId, userId)).thenReturn(Optional.empty());
-//
-//        assertThatThrownBy(() -> proceedingService.getProceedingDetail(userId, proceedingId))
-//                .isInstanceOf(ProceedingException.class);
-//    }
+    @DisplayName("업무일지 상세 조회: 업무일지 상세 정보 조회 확인")
+    @Test
+    void getProceedingDetails() {
+        when(mockUser.getId()).thenReturn(userId);
+        when(mockProceeding.getId()).thenReturn(proceedingId);
+        when(mockProceeding.getSchedule()).thenReturn(mockSchedule);
+        when(mockProceeding.getUser()).thenReturn(mockUser);
+
+        ProceedingImage mockProceedingImage = mock(ProceedingImage.class);
+
+        List<ProceedingImage> mockProceedingImages = List.of(mockProceedingImage);
+
+        when(proceedingRepository.findByIdAndUserId(proceedingId, userId)).thenReturn(Optional.of(mockProceeding));
+        when(proceedingImageRepository.findProceedingImageByProceedingId(proceedingId)).thenReturn(
+                mockProceedingImages);
+
+        ProceedingResponse result = proceedingService.find(userId, proceedingId);
+
+        assertThat(result).isNotNull();
+        assertThat(result.getId()).isEqualTo(proceedingId);
+
+        verify(proceedingRepository).findByIdAndUserId(proceedingId, userId);
+        verify(proceedingImageRepository).findProceedingImageByProceedingId(proceedingId);
+    }
+
+    @DisplayName("존재하지 않는 업무일지의 상세정보 조회 시 예외 발생")
+    @Test
+    void getClassLogDetailException() {
+        Long proceedingId = 100L;
+
+        when(proceedingRepository.findByIdAndUserId(proceedingId, userId)).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> proceedingService.find(userId, proceedingId))
+                .isInstanceOf(ProceedingException.class);
+    }
 
     @DisplayName("업무일지 삭제: 업무일지 삭제 작업 확인")
     @Test
