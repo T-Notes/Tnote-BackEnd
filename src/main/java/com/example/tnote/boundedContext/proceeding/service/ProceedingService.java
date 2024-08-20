@@ -2,7 +2,7 @@ package com.example.tnote.boundedContext.proceeding.service;
 
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponse;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSaveRequest;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
@@ -78,19 +78,20 @@ public class ProceedingService {
         return ProceedingResponses.of(responseDto, proceedings, allProceedingSlice);
     }
 
-    public ProceedingDeleteResponseDto deleteProceeding(Long userId, Long proceedingId) {
+    @Transactional
+    public ProceedingDeleteResponse delete(final Long userId, final Long proceedingId) {
         Proceeding proceeding = findByIdAndUserId(proceedingId, userId);
 
         deleteExistedImagesByProceeding(proceeding);
         proceedingRepository.delete(proceeding);
         recentLogService.deleteRecentLog(proceeding.getId(), "PROCEEDING");
 
-        return ProceedingDeleteResponseDto.of(proceeding);
+        return ProceedingDeleteResponse.from(proceeding);
     }
 
     public int deleteProceedings(Long userId, List<Long> proceedingIds) {
         proceedingIds.forEach(proceedingId -> {
-            deleteProceeding(userId, proceedingId);
+            delete(userId, proceedingId);
         });
         return proceedingIds.size();
     }
