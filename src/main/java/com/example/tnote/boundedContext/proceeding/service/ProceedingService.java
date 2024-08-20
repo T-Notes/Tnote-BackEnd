@@ -89,20 +89,19 @@ public class ProceedingService {
         return ProceedingDeleteResponse.from(proceeding);
     }
 
-    public int deleteProceedings(Long userId, List<Long> proceedingIds) {
+    public int deleteProceedings(final Long userId, final List<Long> proceedingIds) {
         proceedingIds.forEach(proceedingId -> {
             delete(userId, proceedingId);
         });
         return proceedingIds.size();
     }
 
-    public ProceedingDetailResponseDto getProceedingDetail(Long userId, Long proceedingId) {
+    @Transactional
+    public ProceedingResponse find(final Long userId, final Long proceedingId) {
         Proceeding proceeding = findByIdAndUserId(proceedingId, userId);
-        List<ProceedingImage> proceedingImages = proceedingImageRepository.findProceedingImageByProceedingId(
-                proceedingId);
         recentLogService.saveRecentLog(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
 
-        return new ProceedingDetailResponseDto(proceeding, proceedingImages);
+        return ProceedingResponse.from(proceeding);
     }
 
     public ProceedingResponse updateProceeding(Long userId, Long proceedingId,
