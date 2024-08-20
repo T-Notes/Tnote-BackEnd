@@ -177,7 +177,8 @@ public class ProceedingService {
         proceeding.updateWorkContents(requestDto.getWorkContents());
     }
 
-    private List<ProceedingImage> uploadProceedingImages(final Proceeding proceeding, final List<MultipartFile> proceedingImages) {
+    private List<ProceedingImage> uploadProceedingImages(final Proceeding proceeding,
+                                                         final List<MultipartFile> proceedingImages) {
         return proceedingImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "proceeding"))
                 .map(pair -> createProceedingImage(proceeding, pair.getFirst(), pair.getSecond()))
@@ -185,7 +186,8 @@ public class ProceedingService {
     }
 
 
-    private ProceedingImage createProceedingImage(final Proceeding proceeding, final String url, final String originalFileName) {
+    private ProceedingImage createProceedingImage(final Proceeding proceeding, final String url,
+                                                  final String originalFileName) {
         log.info("url = {}", url);
         proceeding.clearProceedingImages();
 
