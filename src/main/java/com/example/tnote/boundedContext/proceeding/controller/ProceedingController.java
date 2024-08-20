@@ -61,12 +61,11 @@ public class ProceedingController {
     }
 
     @DeleteMapping("/{proceedingId}")
-    public ResponseEntity<Result> deleteProceeding(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                   @PathVariable Long proceedingId) {
-        ProceedingDeleteResponseDto proceedingDeleteResponseDto = proceedingService.deleteProceeding(
-                principalDetails.getId(), proceedingId);
+    public ResponseEntity<Result> delete(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                         @PathVariable final Long proceedingId) {
 
-        return ResponseEntity.ok((Result.of(proceedingDeleteResponseDto)));
+        return ResponseEntity.ok(
+                (Result.of(proceedingService.deleteProceeding(principalDetails.getId(), proceedingId))));
     }
 
     @GetMapping("/{proceedingId}")
