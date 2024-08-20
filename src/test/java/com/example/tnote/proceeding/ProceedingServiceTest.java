@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSaveRequest;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
@@ -97,7 +97,7 @@ public class ProceedingServiceTest {
         when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(mockSchedule));
         when(proceedingRepository.save(any(Proceeding.class))).thenReturn(proceeding);
 
-        ProceedingResponseDto result = proceedingService.save(userId, scheduleId, requestDto, Collections.emptyList());
+        ProceedingResponse result = proceedingService.save(userId, scheduleId, requestDto, Collections.emptyList());
 
         assertThat(result).isNotNull();
         assertThat(result.getTitle()).isEqualTo(requestDto.getTitle());
@@ -183,7 +183,7 @@ public class ProceedingServiceTest {
         when(proceedingRepository.findByIdAndUserId(userId, proceedingId)).thenReturn(Optional.of(mockProceeding));
         when(mockProceeding.getSchedule()).thenReturn(mockSchedule);
 
-        ProceedingResponseDto result = proceedingService.updateProceeding(userId, proceedingId,
+        ProceedingResponse result = proceedingService.updateProceeding(userId, proceedingId,
                 proceedingUpdateRequestDto,
                 proceedingImages);
 

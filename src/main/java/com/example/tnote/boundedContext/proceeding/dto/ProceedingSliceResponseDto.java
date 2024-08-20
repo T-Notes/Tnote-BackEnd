@@ -10,14 +10,14 @@ import org.springframework.data.domain.Slice;
 @Getter
 @Builder
 public class ProceedingSliceResponseDto {
-    List<ProceedingResponseDto> proceedings;
+    List<ProceedingResponse> proceedings;
     private int numberOfProceeding;
 
     private long page;
     @JsonProperty(value = "isLast")
     private Boolean isLast;
 
-    public static ProceedingSliceResponseDto from(List<ProceedingResponseDto> proceedingDtos,
+    public static ProceedingSliceResponseDto from(List<ProceedingResponse> proceedingDtos,
                                                   List<Proceeding> proceedingList,
                                                   Slice<Proceeding> allProceedingSlice) {
         return ProceedingSliceResponseDto.builder().proceedings(proceedingDtos)

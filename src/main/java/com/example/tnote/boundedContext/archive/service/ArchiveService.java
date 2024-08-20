@@ -27,7 +27,7 @@ import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponse
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.repository.query.ObservationQueryRepository;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.repository.query.ProceedingQueryRepository;
@@ -104,14 +104,14 @@ public class ArchiveService {
     }
 
     @Transactional(readOnly = true)
-    public List<ProceedingResponseDto> findAllOfProceeding(String title, Long userId, Long scheduleId) {
+    public List<ProceedingResponse> findAllOfProceeding(String title, Long userId, Long scheduleId) {
 
         findUser(userId);
 
         List<Proceeding> proceedings = proceedingQueryRepository.findAll(title, scheduleId);
 
         return proceedings.stream()
-                .map(ProceedingResponseDto::of)
+                .map(ProceedingResponse::from)
                 .toList();
     }
 
@@ -240,7 +240,7 @@ public class ArchiveService {
         List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, scheduleId,
                 date);
         List<ObservationResponseDto> observations = observationService.readDailyObservations(userId, scheduleId, date);
-        List<ProceedingResponseDto> proceedings = proceedingService.readDailyProceedings(userId, scheduleId, date);
+        List<ProceedingResponse> proceedings = proceedingService.readDailyProceedings(userId, scheduleId, date);
         List<TodoResponseDto> todos = todoService.readDailyTodos(userId, scheduleId, date);
 
         return ArchiveResponseDto.builder()
@@ -258,7 +258,7 @@ public class ArchiveService {
                 date);
         List<ObservationResponseDto> observations = observationService.readMonthlyObservations(userId, scheduleId,
                 date);
-        List<ProceedingResponseDto> proceedings = proceedingService.readMonthlyProceedings(userId, scheduleId, date);
+        List<ProceedingResponse> proceedings = proceedingService.readMonthlyProceedings(userId, scheduleId, date);
         List<TodoResponseDto> todos = todoService.readMonthlyTodos(userId, scheduleId, date);
 
         return ArchiveResponseDto.builder()

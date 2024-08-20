@@ -5,7 +5,7 @@ import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSaveRequest;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
@@ -57,8 +57,8 @@ public class ProceedingService {
     }
 
     @Transactional
-    public ProceedingResponseDto save(final Long userId, final Long scheduleId, final ProceedingSaveRequest requestDto,
-                                      final List<MultipartFile> proceedingImages) {
+    public ProceedingResponse save(final Long userId, final Long scheduleId, final ProceedingSaveRequest requestDto,
+                                   final List<MultipartFile> proceedingImages) {
         User user = findUserById(userId);
         Schedule schedule = findScheduleById(scheduleId);
 
@@ -73,15 +73,15 @@ public class ProceedingService {
             proceeding.getProceedingImage().addAll(uploadedImages);
         }
         recentLogService.saveRecentLog(userId, proceeding.getId(), scheduleId, "PROCEEDING");
-        return ProceedingResponseDto.of(proceeding);
+        return ProceedingResponse.from(proceeding);
     }
 
     @Transactional(readOnly = true)
     public ProceedingSliceResponseDto readAllProceeding(Long userId, Long scheduleId, Pageable pageable) {
         List<Proceeding> proceedings = proceedingRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<Proceeding> allProceedingSlice = proceedingRepository.findAllByScheduleId(scheduleId, pageable);
-        List<ProceedingResponseDto> responseDto = allProceedingSlice.getContent().stream()
-                .map(ProceedingResponseDto::of).toList();
+        List<ProceedingResponse> responseDto = allProceedingSlice.getContent().stream()
+                .map(ProceedingResponse::from).toList();
 
         return ProceedingSliceResponseDto.from(responseDto, proceedings, allProceedingSlice);
     }
@@ -112,60 +112,60 @@ public class ProceedingService {
         return new ProceedingDetailResponseDto(proceeding, proceedingImages);
     }
 
-    public ProceedingResponseDto updateProceeding(Long userId, Long proceedingId,
-                                                  ProceedingUpdateRequestDto updateRequestDto,
-                                                  List<MultipartFile> proceedingImages) {
+    public ProceedingResponse updateProceeding(Long userId, Long proceedingId,
+                                               ProceedingUpdateRequestDto updateRequestDto,
+                                               List<MultipartFile> proceedingImages) {
         Proceeding proceeding = findByIdAndUserId(proceedingId, userId);
         updateEachProceedingItem(updateRequestDto, proceeding, proceedingImages);
         recentLogService.saveRecentLog(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
 
-        return ProceedingResponseDto.of(proceeding);
+        return ProceedingResponse.from(proceeding);
     }
 
     @Transactional(readOnly = true)
-    public List<ProceedingResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
+    public List<ProceedingResponse> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
         List<Proceeding> logs = proceedingRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
-                .map(ProceedingResponseDto::of)
+                .map(ProceedingResponse::from)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<ProceedingResponseDto> findByTitle(String keyword, LocalDate startDate,
-                                                   LocalDate endDate, Long userId) {
+    public List<ProceedingResponse> findByTitle(String keyword, LocalDate startDate,
+                                                LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
-                .map(ProceedingResponseDto::of)
+                .map(ProceedingResponse::from)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<ProceedingResponseDto> findByContents(String keyword, LocalDate startDate,
-                                                      LocalDate endDate, Long userId) {
+    public List<ProceedingResponse> findByContents(String keyword, LocalDate startDate,
+                                                   LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
-                .map(ProceedingResponseDto::of)
+                .map(ProceedingResponse::from)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<ProceedingResponseDto> findByTitleOrPlanOrContents(String keyword,
-                                                                   LocalDate startDate,
-                                                                   LocalDate endDate,
-                                                                   Long userId) {
+    public List<ProceedingResponse> findByTitleOrPlanOrContents(String keyword,
+                                                                LocalDate startDate,
+                                                                LocalDate endDate,
+                                                                Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
                 startOfDay, endOfDay, userId);
 
         return logs.stream()
-                .map(ProceedingResponseDto::of)
+                .map(ProceedingResponse::from)
                 .toList();
     }
 
@@ -221,14 +221,14 @@ public class ProceedingService {
                 userId, scheduleId, startOfDay,
                 endOfDay, pageable);
 
-        List<ProceedingResponseDto> responseDto = allProceedingSlice.getContent().stream()
-                .map(ProceedingResponseDto::of).toList();
+        List<ProceedingResponse> responseDto = allProceedingSlice.getContent().stream()
+                .map(ProceedingResponse::from).toList();
 
         return ProceedingSliceResponseDto.from(responseDto, proceedings, allProceedingSlice);
     }
 
     @Transactional(readOnly = true)
-    public List<ProceedingResponseDto> readDailyProceedings(Long userId, Long scheduleId, LocalDate date) {
+    public List<ProceedingResponse> readDailyProceedings(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
@@ -237,15 +237,15 @@ public class ProceedingService {
                 endOfDay);
 
         return proceedings.stream()
-                .map(ProceedingResponseDto::of).toList();
+                .map(ProceedingResponse::from).toList();
     }
 
-    public List<ProceedingResponseDto> readMonthlyProceedings(Long userId, Long scheduleId, LocalDate date) {
+    public List<ProceedingResponse> readMonthlyProceedings(Long userId, Long scheduleId, LocalDate date) {
         List<Proceeding> proceedings = proceedingRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
                 scheduleId, date);
 
         return proceedings.stream()
-                .map(ProceedingResponseDto::of).toList();
+                .map(ProceedingResponse::from).toList();
     }
 
     private List<ProceedingImage> deleteExistedImagesAndUploadNewImages(Proceeding proceeding,
