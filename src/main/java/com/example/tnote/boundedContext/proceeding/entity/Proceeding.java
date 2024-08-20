@@ -25,8 +25,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
 @Builder
 @Table(name = "PROCEEDING_TB")
 public class Proceeding extends BaseTimeEntity {
@@ -78,6 +76,24 @@ public class Proceeding extends BaseTimeEntity {
     }
 
     public void updateProceedingImage(List<ProceedingImage> proceedingImage) {
+        this.proceedingImage = proceedingImage;
+    }
+
+    public Proceeding() {
+    }
+
+    public Proceeding(final Long id, final String title, final LocalDateTime startDate, final LocalDateTime endDate,
+                      final String location, final String workContents, final String color,
+                      final User user, final Schedule schedule, final List<ProceedingImage> proceedingImage) {
+        this.id = id;
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.location = location;
+        this.workContents = workContents;
+        this.color = color;
+        this.user = user;
+        this.schedule = schedule;
         this.proceedingImage = proceedingImage;
     }
 }
