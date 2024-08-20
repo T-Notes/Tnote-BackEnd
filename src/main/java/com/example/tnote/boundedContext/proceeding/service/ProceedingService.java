@@ -1,12 +1,10 @@
 package com.example.tnote.boundedContext.proceeding.service;
 
-import com.example.tnote.base.exception.CustomExceptions;
-import com.example.tnote.base.exception.ErrorCodes;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingSaveRequest;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
@@ -28,7 +26,6 @@ import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -36,10 +33,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-@Transactional
+@Transactional(readOnly = true)
 @Service
 @Slf4j
-@RequiredArgsConstructor
 public class ProceedingService {
     private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
@@ -48,8 +44,21 @@ public class ProceedingService {
     private final RecentLogService recentLogService;
     private final AwsS3Uploader awsS3Uploader;
 
-    public ProceedingResponseDto save(Long userId, Long scheduleId, ProceedingRequestDto requestDto,
-                                      List<MultipartFile> proceedingImages) {
+    public ProceedingService(final UserRepository userRepository, final ScheduleRepository scheduleRepository,
+                             final ProceedingRepository proceedingRepository,
+                             final ProceedingImageRepository proceedingImageRepository,
+                             final RecentLogService recentLogService, final AwsS3Uploader awsS3Uploader) {
+        this.userRepository = userRepository;
+        this.scheduleRepository = scheduleRepository;
+        this.proceedingRepository = proceedingRepository;
+        this.proceedingImageRepository = proceedingImageRepository;
+        this.recentLogService = recentLogService;
+        this.awsS3Uploader = awsS3Uploader;
+    }
+
+    @Transactional
+    public ProceedingResponseDto save(final Long userId, final Long scheduleId, final ProceedingSaveRequest requestDto,
+                                      final List<MultipartFile> proceedingImages) {
         User user = findUserById(userId);
         Schedule schedule = findScheduleById(scheduleId);
 

@@ -78,10 +78,9 @@ public class Proceeding extends BaseTimeEntity {
     public Proceeding() {
     }
 
-    public Proceeding(final Long id, final String title, final LocalDateTime startDate, final LocalDateTime endDate,
+    public Proceeding(final String title, final LocalDateTime startDate, final LocalDateTime endDate,
                       final String location, final String workContents, final String color,
                       final User user, final Schedule schedule, final List<ProceedingImage> proceedingImage) {
-        this.id = id;
         this.title = title;
         this.startDate = startDate;
         this.endDate = endDate;

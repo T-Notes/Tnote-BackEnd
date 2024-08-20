@@ -9,7 +9,7 @@ import static org.mockito.Mockito.when;
 
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingSaveRequest;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
@@ -87,14 +87,10 @@ public class ProceedingServiceTest {
     @Test
     void save() {
 
-        ProceedingRequestDto requestDto = ProceedingRequestDto.builder()
-                .title("테스트 수업 로그")
-                .startDate(mockSchedule.getStartDate().atStartOfDay())
-                .endDate(mockSchedule.getStartDate().atStartOfDay().plusHours(2))
-                .location("부산")
-                .workContents("사진찍기")
-                .isAllDay(false)
-                .build();
+        ProceedingSaveRequest requestDto = new ProceedingSaveRequest("테스트 수업 로그",
+                mockSchedule.getStartDate().atStartOfDay(), mockSchedule.getStartDate().atStartOfDay().plusHours(2),
+                "부산",
+                "사진찍기", false, "red");
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
         Proceeding proceeding = requestDto.toEntity(mockUser, mockSchedule);

@@ -1,19 +1,13 @@
 package com.example.tnote.boundedContext.proceeding.controller;
 
 import com.example.tnote.base.response.Result;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseDto;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingRequestDto;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingSaveRequest;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -42,7 +36,7 @@ public class ProceedingController {
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> save(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                        @PathVariable final Long scheduleId,
-                                       @RequestPart final ProceedingRequestDto request,
+                                       @RequestPart final ProceedingSaveRequest request,
                                        @RequestPart(name = "proceedingImages", required = false) final List<MultipartFile> proceedingImages) {
 
         return ResponseEntity.ok(Result.of(proceedingService.save(principalDetails.getId(), scheduleId,
