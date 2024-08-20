@@ -12,6 +12,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface ClassLogRepository extends JpaRepository<ClassLog, Long> {
+
     @Query("select cl from ClassLog cl where cl.user.id = :userId and cl.schedule.id = :scheduleId")
     List<ClassLog> findAllByUserIdAndScheduleId(Long userId, Long scheduleId);
 
@@ -78,5 +79,4 @@ public interface ClassLogRepository extends JpaRepository<ClassLog, Long> {
             @Param("endDate") LocalDateTime endDate,
             @Param("userId") Long userId);
 
-    void deleteAllByUserId(Long userId);
 }

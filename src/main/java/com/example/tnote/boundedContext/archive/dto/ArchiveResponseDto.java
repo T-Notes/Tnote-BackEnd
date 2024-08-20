@@ -1,6 +1,6 @@
 package com.example.tnote.boundedContext.archive.dto;
 
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
@@ -12,7 +12,7 @@ import lombok.Getter;
 @Getter
 @Builder
 public class ArchiveResponseDto {
-    private List<ClassLogResponseDto> classLogs;
+    private List<ClassLogResponse> classLogs;
     private List<ConsultationResponseDto> consultations;
     private List<ObservationResponseDto> observations;
     private List<ProceedingResponseDto> proceedings;

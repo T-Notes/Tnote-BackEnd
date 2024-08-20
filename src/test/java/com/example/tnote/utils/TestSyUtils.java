@@ -150,22 +150,6 @@ public class TestSyUtils {
         return consultationRepository.save(consultation);
     }
 
-    public ClassLog createClassLog(String title, LocalDateTime startDate, LocalDateTime endDate,
-                                   String plan, String classContents,
-                                   String submission, String magnitude) {
-        ClassLog consultation = ClassLog.builder()
-                .title(title)
-                .startDate(startDate)
-                .endDate(endDate)
-                .plan(plan)
-                .classContents(classContents)
-                .submission(submission)
-                .magnitude(magnitude)
-                .build();
-
-        return classLogRepository.save(consultation);
-    }
-
     public Proceeding createProceeding(String title, LocalDateTime startDate, LocalDateTime endDate,
                                        String location, String workContents) {
         Proceeding consultation = Proceeding.builder()

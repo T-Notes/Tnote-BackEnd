@@ -4,7 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.tnote.base.exception.CustomExceptions;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
@@ -70,7 +70,6 @@ public class ArchiveServiceTest {
         consultation = testSyUtils.createConsultation("a", date, date, CounselingField.HEALTH, CounselingType.STUDENT,
                 "a", "a");
         observation = testSyUtils.createObservation("a", date, date, "a", "a");
-        classLog = testSyUtils.createClassLog("a", date, date, "a", "a", "a", "a");
         proceeding = testSyUtils.createProceeding("a", date, date, "a", "a");
 
         schedule1 = testSyUtils.createSchedule("2024년 3학년 1학기", "a", user1, LocalDate.now(), LocalDate.now());
@@ -163,7 +162,7 @@ public class ArchiveServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        List<ClassLogResponseDto> response = homeService.findAllOfClassLog(classLog.getTitle(),
+        List<ClassLogResponse> response = homeService.findAllOfClassLog(classLog.getTitle(),
                 user1.getId(), schedule1.getId());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");

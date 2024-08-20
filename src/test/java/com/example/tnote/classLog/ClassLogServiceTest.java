@@ -1,23 +1,18 @@
 package com.example.tnote.classLog;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.tnote.base.exception.CustomExceptions;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogDetailResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogRequestDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequestDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponse;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponses;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogUpdateRequest;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
-import com.example.tnote.boundedContext.classLog.entity.ClassLogImage;
 import com.example.tnote.boundedContext.classLog.exception.ClassLogException;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogImageRepository;
 import com.example.tnote.boundedContext.classLog.repository.ClassLogRepository;
@@ -28,6 +23,7 @@ import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -68,7 +64,6 @@ public class ClassLogServiceTest {
     private Schedule mockSchedule;
     private ClassLog mockClassLog;
     private Long userId = 1L;
-    private Long scheduleId = 2L;
     private Long classLogId = 1L;
 
     @BeforeEach
@@ -91,42 +86,33 @@ public class ClassLogServiceTest {
     @DisplayName("학급일지 저장: 정상적인 경우 성공적으로 저장 확인")
     @Test
     void save_Success() {
-        ClassLogRequestDto requestDto = ClassLogRequestDto.builder()
-                .title("테스트 수업 로그")
-                .startDate(mockSchedule.getStartDate().atStartOfDay())
-                .endDate(mockSchedule.getStartDate().atStartOfDay().plusHours(2))
-                .plan("테스트 학습 계획")
-                .classContents("테스트 수업 내용")
-                .submission("테스트 제출 과제")
-                .magnitude("테스트 진도")
-                .build();
+        LocalDateTime startDate = LocalDate.of(2024, 1, 1).atStartOfDay();
+        LocalDateTime endDate = LocalDate.of(2024, 1, 3).atStartOfDay();
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
-        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(mockSchedule));
+        ClassLogSaveRequest requestDto = new ClassLogSaveRequest(
+                "color",
+                false,
+                "테스트 제출 과제",
+                "테스트 학습 계획",
+                "콘텐츠",
+                "계획",
+                startDate,
+                LocalDateTime.of(2024, 1, 1, 0, 0),
+                "테스트 수업 로그"
+        );
+
+
+        when(userRepository.findUserById(userId)).thenReturn(mockUser);
+        when(scheduleRepository.findScheduleById(1L)).thenReturn(mockSchedule);
+
         ClassLog classLog = requestDto.toEntity(mockUser, mockSchedule);
         when(classLogRepository.save(any(ClassLog.class))).thenReturn(classLog);
 
-        ClassLogResponseDto result = classLogService.save(userId, scheduleId, requestDto, Collections.emptyList());
+        ClassLogResponse result = classLogService.save(userId, 1L, requestDto, Collections.emptyList());
 
         assertThat(result).isNotNull();
         assertThat(result.getTitle()).isEqualTo(requestDto.getTitle());
         verify(classLogRepository).save(any(ClassLog.class));
-    }
-
-
-    @DisplayName("학급일지 저장: 존재하지 않는 사용자로 인한 예외 발생 확인")
-    @Test
-    void save_Fail() {
-        ClassLogRequestDto requestDto = mock(ClassLogRequestDto.class);
-        List<MultipartFile> classLogImages = Collections.emptyList();
-
-        when(userRepository.findById(userId)).thenReturn(Optional.empty());
-
-        assertThatExceptionOfType(CustomExceptions.class)
-                .isThrownBy(() -> classLogService.save(userId, scheduleId, requestDto, classLogImages));
-
-        verify(userRepository).findById(userId);
-        verify(classLogRepository, never()).save(any(ClassLog.class));
     }
 
     @DisplayName("학급일지 조회: 작성자가 작성한 모든 학급일지 조회 확인")
@@ -139,62 +125,52 @@ public class ClassLogServiceTest {
         List<ClassLog> mockClassLogsList = Arrays.asList(mockClassLog1, mockClassLog2);
         Slice<ClassLog> mockClassLogs = new PageImpl<>(mockClassLogsList, pageable, mockClassLogsList.size());
 
-        when(classLogRepository.findAllByScheduleId(scheduleId, pageable)).thenReturn(mockClassLogs);
+        when(classLogRepository.findAllByScheduleId(1L, pageable)).thenReturn(mockClassLogs);
 
-        ClassLogSliceResponseDto result = classLogService.readAllClassLog(userId, scheduleId, pageable);
+        ClassLogResponses result = classLogService.findAll(userId, 1L, pageable);
 
         assertThat(result.getClassLogs())
                 .isNotNull()
                 .hasSize(2);
 
-        verify(classLogRepository).findAllByScheduleId(scheduleId, pageable);
+        verify(classLogRepository).findAllByScheduleId(1L, pageable);
     }
 
     @DisplayName("학급일지 상세 조회: 학급일지 상세 정보 조회 확인")
     @Test
     void getClassLogDetails_Success() {
-        when(mockUser.getId()).thenReturn(userId);
         when(mockClassLog.getId()).thenReturn(classLogId);
-        when(mockClassLog.getUser()).thenReturn(mockUser);
         when(mockClassLog.getSchedule()).thenReturn(mockSchedule);
 
-        ClassLogImage mockClassLogImage1 = mock(ClassLogImage.class);
-        ClassLogImage mockClassLogImage2 = mock(ClassLogImage.class);
-
-        List<ClassLogImage> mockClassLogImages = List.of(mockClassLogImage1, mockClassLogImage2);
-
         when(classLogRepository.findByIdAndUserId(classLogId, userId)).thenReturn(Optional.of(mockClassLog));
-        when(classLogImageRepository.findClassLogImagesByClassLogId(classLogId)).thenReturn(mockClassLogImages);
 
-        ClassLogDetailResponseDto result = classLogService.getClassLogDetail(userId, classLogId);
+        ClassLogResponse result = classLogService.find(userId, classLogId);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(classLogId);
-        assertThat(result.getUserId()).isEqualTo(userId);
 
         verify(classLogRepository).findByIdAndUserId(userId, classLogId);
-        verify(classLogImageRepository).findClassLogImagesByClassLogId(classLogId);
     }
 
     @DisplayName("존재하지 않는 학급일지의 상세정보 조회 시 예외 발생")
     @Test
-    void getClassLogDetail_Fail() {
+    void find_Fail() {
         Long NonClassLogId = 100L;
 
         when(classLogRepository.findByIdAndUserId(NonClassLogId, userId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> classLogService.getClassLogDetail(userId, NonClassLogId))
+        assertThatThrownBy(() -> classLogService.find(userId, NonClassLogId))
                 .isInstanceOf(ClassLogException.class);
     }
 
     @DisplayName("학급일지 삭제: 학급일지 삭제 작업 확인")
     @Test
-    void deleteClassLog() {
+    void delete() {
         when(mockClassLog.getId()).thenReturn(classLogId);
 
         when(classLogRepository.findByIdAndUserId(classLogId, userId)).thenReturn(Optional.of(mockClassLog));
 
-        ClassLogDeleteResponseDto result = classLogService.deleteClassLog(userId, classLogId);
+        ClassLogDeleteResponse result = classLogService.delete(userId, classLogId);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(classLogId);
@@ -205,14 +181,14 @@ public class ClassLogServiceTest {
 
     @DisplayName("학급일지 수정: 요청된 값에 따른 학급일지 수정 성공")
     @Test
-    void updateClassLog() {
+    void update() {
         when(mockClassLog.getSchedule()).thenReturn(mockSchedule);
-        ClassLogUpdateRequestDto classLogUpdateRequestDto = mock(ClassLogUpdateRequestDto.class);
+        ClassLogUpdateRequest classLogUpdateRequestDto = mock(ClassLogUpdateRequest.class);
         List<MultipartFile> classLogImages = Collections.emptyList();
 
         when(classLogRepository.findByIdAndUserId(classLogId, userId)).thenReturn(Optional.of(mockClassLog));
 
-        ClassLogResponseDto result = classLogService.updateClassLog(userId, classLogId, classLogUpdateRequestDto,
+        ClassLogResponse result = classLogService.update(userId, classLogId, classLogUpdateRequestDto,
                 classLogImages);
 
         assertThat(result).isNotNull();

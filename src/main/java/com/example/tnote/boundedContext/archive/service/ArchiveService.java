@@ -12,8 +12,8 @@ import com.example.tnote.boundedContext.archive.dto.LogEntry;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequestDto;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponseDto;
 import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponseDto;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogSliceResponseDto;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
+import com.example.tnote.boundedContext.classLog.dto.ClassLogResponses;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.repository.query.ClassLogQueryRepository;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
@@ -92,14 +92,14 @@ public class ArchiveService {
     }
 
     @Transactional(readOnly = true)
-    public List<ClassLogResponseDto> findAllOfClassLog(String title, Long userId, Long scheduleId) {
+    public List<ClassLogResponse> findAllOfClassLog(String title, Long userId, Long scheduleId) {
 
         findUser(userId);
 
         List<ClassLog> classLogs = classLogQueryRepository.findAll(title, scheduleId);
 
         return classLogs.stream()
-                .map(ClassLogResponseDto::of)
+                .map(ClassLogResponse::from)
                 .toList();
     }
 
@@ -123,7 +123,7 @@ public class ArchiveService {
     public ArchiveSliceResponseDto readLogsByDate(Long userId, Long scheduleId, LocalDate startDate, LocalDate endDate,
                                                   LogType logType, Pageable pageable) {
         if (logType == LogType.CLASS_LOG) {
-            ClassLogSliceResponseDto classLogs = classLogService.readClassLogsByDate(userId, scheduleId, startDate,
+            ClassLogResponses classLogs = classLogService.findByDate(userId, scheduleId, startDate,
                     endDate, pageable);
             return ArchiveSliceResponseDto.builder().classLogs(classLogs).build();
         }
@@ -152,7 +152,7 @@ public class ArchiveService {
         List<LogEntry> logs = new ArrayList<>();
 
         if (logType == LogType.ALL || logType == LogType.CLASS_LOG) {
-            logs.addAll(classLogService.findLogsByScheduleAndUser(scheduleId, userId));
+            logs.addAll(classLogService.findByScheduleAndUser(scheduleId, userId));
         }
         if (logType == LogType.ALL || logType == LogType.CONSULTATION) {
             logs.addAll(consultationService.findLogsByScheduleAndUser(scheduleId, userId));
@@ -236,7 +236,7 @@ public class ArchiveService {
         if (date.isBefore(startDate) || (endDate != null && date.isAfter(endDate))) {
             throw new ScheduleException(ScheduleErrorCode.DATES_NOT_INCLUDED_IN_SEMESTER);
         }
-        List<ClassLogResponseDto> classLogs = classLogService.readDailyClassLog(userId, scheduleId, date);
+        List<ClassLogResponse> classLogs = classLogService.findDaily(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, scheduleId,
                 date);
         List<ObservationResponseDto> observations = observationService.readDailyObservations(userId, scheduleId, date);
@@ -253,7 +253,7 @@ public class ArchiveService {
     }
 
     public ArchiveResponseDto readMonthlyLogs(Long userId, Long scheduleId, LocalDate date) {
-        List<ClassLogResponseDto> classLogs = classLogService.readMonthlyClassLog(userId, scheduleId, date);
+        List<ClassLogResponse> classLogs = classLogService.findMonthly(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readMonthlyConsultations(userId, scheduleId,
                 date);
         List<ObservationResponseDto> observations = observationService.readMonthlyObservations(userId, scheduleId,
