@@ -9,7 +9,7 @@ import org.springframework.data.domain.Slice;
 
 @Getter
 @Builder
-public class ProceedingSliceResponseDto {
+public class ProceedingResponses {
     List<ProceedingResponse> proceedings;
     private int numberOfProceeding;
 
@@ -17,10 +17,10 @@ public class ProceedingSliceResponseDto {
     @JsonProperty(value = "isLast")
     private Boolean isLast;
 
-    public static ProceedingSliceResponseDto from(List<ProceedingResponse> proceedingDtos,
-                                                  List<Proceeding> proceedingList,
-                                                  Slice<Proceeding> allProceedingSlice) {
-        return ProceedingSliceResponseDto.builder().proceedings(proceedingDtos)
+    public static ProceedingResponses from(List<ProceedingResponse> proceedingDtos,
+                                           List<Proceeding> proceedingList,
+                                           Slice<Proceeding> allProceedingSlice) {
+        return ProceedingResponses.builder().proceedings(proceedingDtos)
                 .numberOfProceeding(proceedingList.size())
                 .page(allProceedingSlice.getPageable().getPageNumber())
                 .isLast(allProceedingSlice.isLast()).build();

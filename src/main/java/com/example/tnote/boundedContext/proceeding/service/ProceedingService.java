@@ -6,7 +6,7 @@ import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseD
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSaveRequest;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponses;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
@@ -69,13 +69,13 @@ public class ProceedingService {
         return ProceedingResponse.from(proceeding);
     }
 
-    public ProceedingSliceResponseDto findAll(final Long userId, final Long scheduleId, final Pageable pageable) {
+    public ProceedingResponses findAll(final Long userId, final Long scheduleId, final Pageable pageable) {
         List<Proceeding> proceedings = proceedingRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<Proceeding> allProceedingSlice = proceedingRepository.findAllByScheduleId(scheduleId, pageable);
         List<ProceedingResponse> responseDto = allProceedingSlice.getContent().stream()
                 .map(ProceedingResponse::from).toList();
 
-        return ProceedingSliceResponseDto.from(responseDto, proceedings, allProceedingSlice);
+        return ProceedingResponses.from(responseDto, proceedings, allProceedingSlice);
     }
 
     public ProceedingDeleteResponseDto deleteProceeding(Long userId, Long proceedingId) {
@@ -201,8 +201,8 @@ public class ProceedingService {
     }
 
     @Transactional(readOnly = true)
-    public ProceedingSliceResponseDto readProceedingsByDate(Long userId, Long scheduleId, LocalDate startDate,
-                                                            LocalDate endDate, Pageable pageable) {
+    public ProceedingResponses readProceedingsByDate(Long userId, Long scheduleId, LocalDate startDate,
+                                                     LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
@@ -216,7 +216,7 @@ public class ProceedingService {
         List<ProceedingResponse> responseDto = allProceedingSlice.getContent().stream()
                 .map(ProceedingResponse::from).toList();
 
-        return ProceedingSliceResponseDto.from(responseDto, proceedings, allProceedingSlice);
+        return ProceedingResponses.from(responseDto, proceedings, allProceedingSlice);
     }
 
     @Transactional(readOnly = true)

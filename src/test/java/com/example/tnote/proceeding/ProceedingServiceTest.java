@@ -11,7 +11,7 @@ import com.example.tnote.boundedContext.proceeding.dto.ProceedingDeleteResponseD
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingDetailResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingSaveRequest;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponses;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingUpdateRequestDto;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
@@ -115,7 +115,7 @@ public class ProceedingServiceTest {
         Slice<Proceeding> mockProceedings = new PageImpl<>(mockProceedingList, pageable, mockProceedingList.size());
 
         when(proceedingRepository.findAllByScheduleId(scheduleId, pageable)).thenReturn(mockProceedings);
-        ProceedingSliceResponseDto result = proceedingService.findAll(userId, scheduleId, pageable);
+        ProceedingResponses result = proceedingService.findAll(userId, scheduleId, pageable);
 
         assertThat(result.getProceedings())
                 .isNotNull()

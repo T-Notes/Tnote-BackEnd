@@ -28,7 +28,7 @@ import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.repository.query.ObservationQueryRepository;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingSliceResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponses;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.repository.query.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
@@ -140,7 +140,7 @@ public class ArchiveService {
             return ArchiveSliceResponseDto.builder().observations(observations).build();
         }
         if (logType == LogType.PROCEEDING) {
-            ProceedingSliceResponseDto proceedings = proceedingService.readProceedingsByDate(userId, scheduleId,
+            ProceedingResponses proceedings = proceedingService.readProceedingsByDate(userId, scheduleId,
                     startDate,
                     endDate, pageable);
             return ArchiveSliceResponseDto.builder().proceedings(proceedings).build();
