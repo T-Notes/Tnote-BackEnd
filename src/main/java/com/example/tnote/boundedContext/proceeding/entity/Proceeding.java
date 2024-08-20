@@ -25,7 +25,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
 @Table(name = "PROCEEDING_TB")
 public class Proceeding extends BaseTimeEntity {
     @Id
