@@ -16,12 +16,8 @@ import com.example.tnote.boundedContext.proceeding.repository.ProceedingImageRep
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
-import com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode;
-import com.example.tnote.boundedContext.schedule.exception.ScheduleException;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
-import com.example.tnote.boundedContext.user.exception.UserErrorCode;
-import com.example.tnote.boundedContext.user.exception.UserException;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -57,17 +53,14 @@ public class ProceedingService {
     }
 
     @Transactional
-    public ProceedingResponse save(final Long userId, final Long scheduleId, final ProceedingSaveRequest requestDto,
+    public ProceedingResponse save(final Long userId, final Long scheduleId, final ProceedingSaveRequest request,
                                    final List<MultipartFile> proceedingImages) {
-        User user = findUserById(userId);
-        Schedule schedule = findScheduleById(scheduleId);
+        User user = userRepository.findUserById(userId);
+        Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
 
-        Proceeding proceeding = proceedingRepository.save(requestDto.toEntity(user, schedule));
+        validateIncorrectTime(request, schedule);
+        Proceeding proceeding = proceedingRepository.save(request.toEntity(user, schedule));
 
-        if (proceeding.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || proceeding.getEndDate()
-                .toLocalDate().isAfter(schedule.getEndDate())) {
-            throw new ProceedingException(ProceedingErrorCode.INVALID_PROCEEDING_DATE);
-        }
         if (proceedingImages != null && !proceedingImages.isEmpty()) {
             List<ProceedingImage> uploadedImages = uploadProceedingImages(proceeding, proceedingImages);
             proceeding.getProceedingImage().addAll(uploadedImages);
@@ -271,18 +264,15 @@ public class ProceedingService {
         }
     }
 
-    private User findUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
-    }
-
-    private Schedule findScheduleById(Long scheduleId) {
-        return scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
-    }
-
     private Proceeding findByIdAndUserId(Long proceedingId, Long userId) {
         return proceedingRepository.findByIdAndUserId(proceedingId, userId)
                 .orElseThrow(() -> new ProceedingException(ProceedingErrorCode.PROCEEDING_NOT_FOUNT));
+    }
+
+    private void validateIncorrectTime(final ProceedingSaveRequest request, Schedule schedule) {
+        if (request.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || request.getEndDate()
+                .toLocalDate().isAfter(schedule.getEndDate())) {
+            throw new ProceedingException(ProceedingErrorCode.INVALID_PROCEEDING_DATE);
+        }
     }
 }
