@@ -66,8 +66,7 @@ public class ProceedingController {
     public ResponseEntity<Result> find(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                        @PathVariable final Long proceedingId) {
 
-        return ResponseEntity.ok(Result.of(proceedingService.getProceedingDetail(
-                principalDetails.getId(), proceedingId)));
+        return ResponseEntity.ok(Result.of(proceedingService.find(principalDetails.getId(), proceedingId)));
     }
 
     @PatchMapping(value = "/{proceedingId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
@@ -77,7 +76,7 @@ public class ProceedingController {
                                          @RequestPart final ProceedingUpdateRequest request,
                                          @RequestPart(name = "proceedingImages", required = false) final List<MultipartFile> proceedingImages) {
 
-        return ResponseEntity.ok(Result.of(proceedingService.updateProceeding(principalDetails.getId(),
-                proceedingId, request, proceedingImages)));
+        return ResponseEntity.ok(
+                Result.of(proceedingService.update(principalDetails.getId(), proceedingId, request, proceedingImages)));
     }
 }
