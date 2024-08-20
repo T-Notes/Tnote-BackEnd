@@ -114,8 +114,7 @@ public class ProceedingService {
         return ProceedingResponse.from(proceeding);
     }
 
-    @Transactional(readOnly = true)
-    public List<ProceedingResponse> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
+    public List<ProceedingResponse> findLogsByScheduleAndUser(final Long scheduleId, final Long userId) {
         List<Proceeding> logs = proceedingRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ProceedingResponse::from)
