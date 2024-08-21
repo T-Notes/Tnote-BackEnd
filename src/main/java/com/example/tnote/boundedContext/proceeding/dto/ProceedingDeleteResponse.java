@@ -6,11 +6,11 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ProceedingDeleteResponseDto {
+public class ProceedingDeleteResponse {
     private Long id;
 
-    public static ProceedingDeleteResponseDto of(Proceeding proceeding) {
-        return ProceedingDeleteResponseDto.builder()
+    public static ProceedingDeleteResponse from(final Proceeding proceeding) {
+        return ProceedingDeleteResponse.builder()
                 .id(proceeding.getId())
                 .build();
     }
