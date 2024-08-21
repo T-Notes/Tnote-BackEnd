@@ -3,13 +3,15 @@ package com.example.tnote.boundedContext.proceeding.dto;
 import com.example.tnote.boundedContext.archive.constant.LogType;
 import com.example.tnote.boundedContext.archive.dto.LogEntry;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
+import com.example.tnote.boundedContext.proceeding.entity.ProceedingImage;
 import java.time.LocalDateTime;
+import java.util.List;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
 @Builder
-public class ProceedingResponseDto implements LogEntry {
+public class ProceedingResponse implements LogEntry {
     private Long id;
     private String title;
     private LocalDateTime startDate;
@@ -20,14 +22,15 @@ public class ProceedingResponseDto implements LogEntry {
     private LocalDateTime updatedAt;
     private String logType;
     private String color;
+    private List<ProceedingImage> proceedingImages;
 
     @Override
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
 
-    public static ProceedingResponseDto of(Proceeding proceeding) {
-        return ProceedingResponseDto.builder()
+    public static ProceedingResponse from(final Proceeding proceeding) {
+        return ProceedingResponse.builder()
                 .id(proceeding.getId())
                 .title(proceeding.getTitle())
                 .startDate(proceeding.getStartDate())
@@ -38,6 +41,7 @@ public class ProceedingResponseDto implements LogEntry {
                 .updatedAt(proceeding.getUpdatedAt())
                 .logType(LogType.PROCEEDING.name())
                 .color(proceeding.getColor())
+                .proceedingImages(proceeding.getProceedingImage())
                 .build();
     }
 }

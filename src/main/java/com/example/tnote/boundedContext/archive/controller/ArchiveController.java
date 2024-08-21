@@ -13,7 +13,7 @@ import com.example.tnote.boundedContext.archive.service.ArchiveService;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponseDto;
+import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponseDto;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
@@ -73,7 +73,7 @@ public class ArchiveController {
         List<ObservationResponseDto> observation = archiveService.findAllOfObservation(keyword, currentUser.getId(),
                 scheduleId);
         List<ClassLogResponse> classLog = archiveService.findAllOfClassLog(keyword, currentUser.getId(), scheduleId);
-        List<ProceedingResponseDto> proceeding = archiveService.findAllOfProceeding(keyword, currentUser.getId(),
+        List<ProceedingResponse> proceeding = archiveService.findAllOfProceeding(keyword, currentUser.getId(),
                 scheduleId);
 
         List<Object> response = new ArrayList<>();
