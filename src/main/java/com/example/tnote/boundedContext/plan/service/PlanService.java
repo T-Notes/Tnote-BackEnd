@@ -77,9 +77,11 @@ public class PlanService {
     public PlanDeleteResponse delete(final Long planId, final Long userId) {
         Plan plan = findByIdAndUserId(planId, userId);
         deleteExistedImage(plan);
-        planRepository.delete(plan);
 
-        return new PlanDeleteResponse(plan);
+        planRepository.delete(plan);
+        recentLogService.delete(planId,"PLAN");
+
+        return new PlanDeleteResponse(planId);
     }
 
     public PlanResponse find(final Long userId, final Long planId) {
