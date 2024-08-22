@@ -92,19 +92,20 @@ public class PlanService {
     }
 
     @Transactional
-    public PlanResponse updatePlan(final Long userId, final Long planId, final PlanUpdateRequest updateRequest,
+    public PlanResponse updatePlan(final Long userId, final Long planId, final PlanUpdateRequest request,
                                    final List<MultipartFile> planImages) {
         Plan plan = findByIdAndUserId(planId, userId);
 
         plan.updateFields(
-                updateRequest.getTitle(),
-                updateRequest.getStartDate(),
-                updateRequest.getEndDate(),
-                updateRequest.getLocation(),
-                updateRequest.getContents(),
-                updateRequest.getParticipants()
+                request.getTitle(),
+                request.getStartDate(),
+                request.getEndDate(),
+                request.getLocation(),
+                request.getContents(),
+                request.getParticipants()
         );
         updateImage(plan, planImages);
+        recentLogService.save(userId,planId,plan.getSchedule().getId(),"PLAN");
 
         return PlanResponse.from(plan);
     }
