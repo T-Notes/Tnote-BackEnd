@@ -227,7 +227,7 @@ public class ArchiveService {
         return UnifiedLogResponseDto.from(pageContent, totalLogs);
     }
 
-    public ArchiveResponse readDailyLogs(Long userId, Long scheduleId, LocalDate date) {
+    public ArchiveResponse findDaily(final Long userId, final Long scheduleId, final LocalDate date) {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
         LocalDate startDate = schedule.getStartDate();

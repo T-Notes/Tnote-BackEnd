@@ -129,7 +129,7 @@ public class ArchiveController {
         if (date == null) {
             date = LocalDate.now();
         }
-        return ResponseEntity.ok(Result.of(archiveService.readDailyLogs(principalDetails.getId(), scheduleId, date)));
+        return ResponseEntity.ok(Result.of(archiveService.findDaily(principalDetails.getId(), scheduleId, date)));
     }
 
     @GetMapping("/{scheduleId}/monthlyLogs")
