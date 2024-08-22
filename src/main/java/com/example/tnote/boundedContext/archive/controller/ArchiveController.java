@@ -148,7 +148,7 @@ public class ArchiveController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
         }
 
-        List<RecentLogResponse> response = recentLogService.getRecentLogs(principalDetails.getId(), scheduleId);
+        List<RecentLogResponse> response = recentLogService.find(principalDetails.getId(), scheduleId);
 
         return ResponseEntity.ok(Result.of(response));
     }

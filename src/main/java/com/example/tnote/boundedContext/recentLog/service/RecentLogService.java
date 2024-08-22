@@ -34,7 +34,7 @@ public class RecentLogService {
         recentLogRepository.save(recentLog);
     }
 
-    public List<RecentLogResponse> getRecentLogs(Long userId, Long scheduleId) {
+    public List<RecentLogResponse> find(final Long userId, final Long scheduleId) {
         List<RecentLog> recentLogs = recentLogRepository.findTop4DistinctByUserIdAndScheduleId(userId, scheduleId);
         return recentLogs.stream()
                 .map(log -> new RecentLogResponse(log.getLogId(), log.getLogType(), log.getTimestamp()))
