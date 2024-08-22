@@ -83,7 +83,7 @@ public class ProceedingService {
 
         deleteExistedImagesByProceeding(proceeding);
         proceedingRepository.delete(proceeding);
-        recentLogService.deleteRecentLog(proceeding.getId(), "PROCEEDING");
+        recentLogService.delete(proceeding.getId(), "PROCEEDING");
 
         return ProceedingDeleteResponse.from(proceeding);
     }

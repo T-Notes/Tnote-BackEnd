@@ -1,18 +1,13 @@
 package com.example.tnote.boundedContext.recentLog.service;
 
-import com.example.tnote.base.utils.LogEntryCreator;
 import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponse;
 import com.example.tnote.boundedContext.recentLog.entity.RecentLog;
 import com.example.tnote.boundedContext.recentLog.repository.RecentLogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
-import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Slf4j
@@ -46,7 +41,7 @@ public class RecentLogService {
                 .toList();
     }
 
-    public void deleteRecentLog(Long logId, String logType) {
+    public void delete(final Long logId, final String logType) {
         recentLogRepository.deleteByLogIdAndLogType(logId, logType);
     }
 }

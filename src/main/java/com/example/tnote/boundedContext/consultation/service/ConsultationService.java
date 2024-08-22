@@ -87,7 +87,7 @@ public class ConsultationService {
 
         deleteExistedImagesByConsultation(consultation);
         consultationRepository.delete(consultation);
-        recentLogService.deleteRecentLog(consultation.getId(), "CONSULTATION");
+        recentLogService.delete(consultation.getId(), "CONSULTATION");
 
         return ConsultationDeleteResponseDto.builder()
                 .id(consultation.getId())

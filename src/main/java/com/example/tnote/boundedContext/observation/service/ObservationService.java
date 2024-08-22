@@ -87,7 +87,7 @@ public class ObservationService {
 
         deleteExistedImagesByObservation(observation);
         observationRepository.delete(observation);
-        recentLogService.deleteRecentLog(observation.getId(), "OBSERVATION");
+        recentLogService.delete(observation.getId(), "OBSERVATION");
 
         return ObservationDeleteResponseDto.of(observation.getId());
     }
