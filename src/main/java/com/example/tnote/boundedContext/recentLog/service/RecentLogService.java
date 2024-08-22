@@ -33,61 +33,9 @@ public class RecentLogService {
         this.objectMapper = objectMapper;
     }
 
-    @Scheduled(fixedRate = 60000)
-    public void saveRecentLogsFromRedisToDatabase() {
-        Set<String> keys = redisTemplate.keys(RECENT_LOGS_KEY_PREFIX + "*");
-        if (keys == null || keys.isEmpty()) {
-            return;
-        }
-        keys.forEach(key -> {
-            Set<String> logEntries = redisTemplate.opsForZSet().range(key, 0, -1);
-            if (logEntries != null) {
-                logEntries.forEach(logEntry -> {
-                    try {
-                        RecentLogResponse logDto = objectMapper.readValue(logEntry, RecentLogResponse.class);
-                        RecentLog recentLog = RecentLog.builder()
-                                .userId(Long.parseLong(key.replace(RECENT_LOGS_KEY_PREFIX, ""))) // userId 추출
-                                .logId(logDto.getLogId())
-                                .logType(logDto.getLogType())
-                                .timestamp(Instant.ofEpochMilli(logDto.getTimestamp().toEpochMilli()))
-                                .build();
-                        recentLogRepository.save(recentLog);
-                    } catch (IOException e) {
-                        log.error("Error converting log entry to DTO", e);
-                    }
-                });
-                redisTemplate.delete(key);
-            }
-            log.info("recentLog save complete");
-        });
-    }
-
-    public List<RecentLogResponse> getRecentLogsFromRedis(Long userId) {
-        String key = RECENT_LOGS_KEY_PREFIX + userId;
-        Set<String> logEntries = redisTemplate.opsForZSet().reverseRange(key, 0, -1);
-
-        return logEntries.stream()
-                .map(LogEntryCreator::convertToDto)
-                .filter(Objects::nonNull) // 변환 실패한 항목은 제외
-                .toList();
-    }
-
-//    public List<RecentLogResponseDto> getRecentLogsFromDatabase(Long userId) {
-//        List<RecentLog> recentLogs = recentLogRepository.findTop4DistinctByUserId(userId);
-//
-//        return recentLogs.stream()
-//                .map(log -> new RecentLogResponseDto(log.getLogId(), log.getLogType(), log.getTimestamp()))
-//                .toList();
-//    }
 
     public void save(final Long userId, final Long logId, final Long scheduleId, final String logType) {
-        RecentLog recentLog = RecentLog.builder()
-                .userId(userId)
-                .logId(logId)
-                .logType(logType)
-                .timestamp(Instant.now())
-                .scheduleId(scheduleId)
-                .build();
+        RecentLog recentLog = new RecentLog(userId, logId, logType, Instant.now(), scheduleId);
         recentLogRepository.save(recentLog);
     }
 
