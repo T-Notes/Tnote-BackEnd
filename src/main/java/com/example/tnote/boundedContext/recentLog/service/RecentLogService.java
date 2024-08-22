@@ -1,9 +1,7 @@
 package com.example.tnote.boundedContext.recentLog.service;
 
-import static com.example.tnote.base.utils.LogEntryCreator.createLogEntry;
-
 import com.example.tnote.base.utils.LogEntryCreator;
-import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponseDto;
+import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponse;
 import com.example.tnote.boundedContext.recentLog.entity.RecentLog;
 import com.example.tnote.boundedContext.recentLog.repository.RecentLogRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -39,7 +37,7 @@ public class RecentLogService {
             if (logEntries != null) {
                 logEntries.forEach(logEntry -> {
                     try {
-                        RecentLogResponseDto logDto = objectMapper.readValue(logEntry, RecentLogResponseDto.class);
+                        RecentLogResponse logDto = objectMapper.readValue(logEntry, RecentLogResponse.class);
                         RecentLog recentLog = RecentLog.builder()
                                 .userId(Long.parseLong(key.replace(RECENT_LOGS_KEY_PREFIX, ""))) // userId 추출
                                 .logId(logDto.getLogId())
@@ -57,7 +55,7 @@ public class RecentLogService {
         });
     }
 
-    public List<RecentLogResponseDto> getRecentLogsFromRedis(Long userId) {
+    public List<RecentLogResponse> getRecentLogsFromRedis(Long userId) {
         String key = RECENT_LOGS_KEY_PREFIX + userId;
         Set<String> logEntries = redisTemplate.opsForZSet().reverseRange(key, 0, -1);
 
@@ -86,10 +84,10 @@ public class RecentLogService {
         recentLogRepository.save(recentLog);
     }
 
-    public List<RecentLogResponseDto> getRecentLogs(Long userId, Long scheduleId) {
+    public List<RecentLogResponse> getRecentLogs(Long userId, Long scheduleId) {
         List<RecentLog> recentLogs = recentLogRepository.findTop4DistinctByUserIdAndScheduleId(userId, scheduleId);
         return recentLogs.stream()
-                .map(log -> new RecentLogResponseDto(log.getLogId(), log.getLogType(), log.getTimestamp()))
+                .map(log -> new RecentLogResponse(log.getLogId(), log.getLogType(), log.getTimestamp()))
                 .toList();
     }
 

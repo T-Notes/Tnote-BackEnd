@@ -8,12 +8,12 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class RecentLogResponseDto {
+public class RecentLogResponse {
     private Long logId;
     private String logType;
     private Instant timestamp;
     @JsonCreator
-    public RecentLogResponseDto(
+    public RecentLogResponse(
             @JsonProperty("logId") Long logId,
             @JsonProperty("logType") String logType,
             @JsonProperty("timestamp") Instant timestamp) {

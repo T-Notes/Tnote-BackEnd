@@ -14,7 +14,7 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
-import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponseDto;
+import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponse;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
 import com.example.tnote.boundedContext.schedule.service.ScheduleService;
@@ -148,7 +148,7 @@ public class ArchiveController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
         }
 
-        List<RecentLogResponseDto> response = recentLogService.getRecentLogs(principalDetails.getId(), scheduleId);
+        List<RecentLogResponse> response = recentLogService.getRecentLogs(principalDetails.getId(), scheduleId);
 
         return ResponseEntity.ok(Result.of(response));
     }

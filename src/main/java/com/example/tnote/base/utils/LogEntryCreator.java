@@ -2,9 +2,8 @@ package com.example.tnote.base.utils;
 
 import static com.example.tnote.base.exception.ErrorCodes.NOT_VALID_FIELD;
 
-import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.base.exception.CustomExceptions;
-import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponseDto;
+import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import java.time.Instant;
@@ -32,9 +31,9 @@ public class LogEntryCreator {
         }
     }
 
-    public static RecentLogResponseDto convertToDto(String logEntry) {
+    public static RecentLogResponse convertToDto(String logEntry) {
         try {
-            return objectMapper.readValue(logEntry, RecentLogResponseDto.class);
+            return objectMapper.readValue(logEntry, RecentLogResponse.class);
         } catch (Exception e) {
             throw new CustomExceptions(NOT_VALID_FIELD);
         }
