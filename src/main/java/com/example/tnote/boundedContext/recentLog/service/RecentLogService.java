@@ -18,13 +18,21 @@ import org.springframework.stereotype.Service;
 
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class RecentLogService {
     private static final String RECENT_LOGS_KEY_PREFIX = "recentLogs:";
     private static final int MAX_RECENT_LOGS = 4;
+
     private final RedisTemplate<String, String> redisTemplate;
     private final RecentLogRepository recentLogRepository;
     private final ObjectMapper objectMapper;
+
+    public RecentLogService(final RedisTemplate<String, String> redisTemplate,
+                            final RecentLogRepository recentLogRepository,
+                            final ObjectMapper objectMapper) {
+        this.redisTemplate = redisTemplate;
+        this.recentLogRepository = recentLogRepository;
+        this.objectMapper = objectMapper;
+    }
 
     @Scheduled(fixedRate = 60000)
     public void saveRecentLogsFromRedisToDatabase() {
