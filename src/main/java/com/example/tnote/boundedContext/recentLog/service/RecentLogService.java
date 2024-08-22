@@ -5,10 +5,8 @@ import com.example.tnote.boundedContext.recentLog.entity.RecentLog;
 import com.example.tnote.boundedContext.recentLog.repository.RecentLogRepository;
 import java.time.Instant;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-@Slf4j
 @Service
 public class RecentLogService {
     private final RecentLogRepository recentLogRepository;
