@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.recentLog.service;
 
 import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponse;
+import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponses;
 import com.example.tnote.boundedContext.recentLog.entity.RecentLog;
 import com.example.tnote.boundedContext.recentLog.repository.RecentLogRepository;
 import java.time.Instant;
@@ -21,11 +22,9 @@ public class RecentLogService {
         recentLogRepository.save(recentLog);
     }
 
-    public List<RecentLogResponse> find(final Long userId, final Long scheduleId) {
+    public RecentLogResponses find(final Long userId, final Long scheduleId) {
         List<RecentLog> recentLogs = recentLogRepository.findTop4DistinctByUserIdAndScheduleId(userId, scheduleId);
-        return recentLogs.stream()
-                .map(log -> new RecentLogResponse(log.getLogId(), log.getLogType(), log.getTimestamp()))
-                .toList();
+        return RecentLogResponses.from(recentLogs);
     }
 
     public void delete(final Long logId, final String logType) {

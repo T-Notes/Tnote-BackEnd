@@ -15,6 +15,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponse;
+import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponses;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
 import com.example.tnote.boundedContext.schedule.service.ScheduleService;
@@ -144,13 +145,8 @@ public class ArchiveController {
     @GetMapping("/recentLogs/{scheduleId}")
     public ResponseEntity<Result> getRecentClassLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                      @PathVariable Long scheduleId) {
-        if (principalDetails == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(Result.of("Unauthorized"));
-        }
 
-        List<RecentLogResponse> response = recentLogService.find(principalDetails.getId(), scheduleId);
-
-        return ResponseEntity.ok(Result.of(response));
+        return ResponseEntity.ok(Result.of(recentLogService.find(principalDetails.getId(), scheduleId)));
     }
 
     @GetMapping("/{scheduleId}/LogsByFilter")
