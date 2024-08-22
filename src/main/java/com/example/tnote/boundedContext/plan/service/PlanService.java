@@ -12,6 +12,7 @@ import com.example.tnote.boundedContext.plan.exception.PlanErrorCode;
 import com.example.tnote.boundedContext.plan.exception.PlanException;
 import com.example.tnote.boundedContext.plan.repository.PlanImageRepository;
 import com.example.tnote.boundedContext.plan.repository.PlanRepository;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -31,15 +32,17 @@ public class PlanService {
     private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
     private final AwsS3Uploader awsS3Uploader;
+    private final RecentLogService recentLogService;
 
     public PlanService(final PlanRepository planRepository, final PlanImageRepository planImageRepository,
                        final UserRepository userRepository, final ScheduleRepository scheduleRepository,
-                       final AwsS3Uploader awsS3Uploader) {
+                       final AwsS3Uploader awsS3Uploader,final RecentLogService recentLogService) {
         this.planRepository = planRepository;
         this.planImageRepository = planImageRepository;
         this.userRepository = userRepository;
         this.scheduleRepository = scheduleRepository;
         this.awsS3Uploader = awsS3Uploader;
+        this.recentLogService = recentLogService;
     }
 
     @Transactional
@@ -58,7 +61,7 @@ public class PlanService {
             List<PlanImage> uploadedImages = uploadPlanImages(plan, planImages);
             plan.getPlanImages().addAll(uploadedImages);
         }
-
+        recentLogService.saveRecentLog(userId, plan.getId(), scheduleId,"PLAN");
         return PlanResponse.from(planRepository.save(plan));
     }
 
