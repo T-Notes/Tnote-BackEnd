@@ -64,7 +64,7 @@ public class ProceedingService {
             List<ProceedingImage> uploadedImages = uploadImages(proceeding, proceedingImages);
             proceeding.getProceedingImage().addAll(uploadedImages);
         }
-        recentLogService.saveRecentLog(userId, proceeding.getId(), scheduleId, "PROCEEDING");
+        recentLogService.save(userId, proceeding.getId(), scheduleId, "PROCEEDING");
         return ProceedingResponse.from(proceeding);
     }
 
@@ -98,7 +98,7 @@ public class ProceedingService {
     @Transactional
     public ProceedingResponse find(final Long userId, final Long proceedingId) {
         Proceeding proceeding = findByIdAndUserId(proceedingId, userId);
-        recentLogService.saveRecentLog(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
+        recentLogService.save(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
 
         return ProceedingResponse.from(proceeding);
     }
@@ -109,7 +109,7 @@ public class ProceedingService {
                                      final List<MultipartFile> proceedingImages) {
         Proceeding proceeding = findByIdAndUserId(proceedingId, userId);
         updateEachItem(request, proceeding, proceedingImages);
-        recentLogService.saveRecentLog(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
+        recentLogService.save(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
 
         return ProceedingResponse.from(proceeding);
     }

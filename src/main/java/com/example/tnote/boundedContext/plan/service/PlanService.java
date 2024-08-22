@@ -61,7 +61,7 @@ public class PlanService {
             List<PlanImage> uploadedImages = uploadPlanImages(plan, planImages);
             plan.getPlanImages().addAll(uploadedImages);
         }
-        recentLogService.saveRecentLog(userId, plan.getId(), scheduleId,"PLAN");
+        recentLogService.save(userId, plan.getId(), scheduleId,"PLAN");
         return PlanResponse.from(planRepository.save(plan));
     }
 

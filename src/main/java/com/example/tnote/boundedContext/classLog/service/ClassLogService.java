@@ -64,7 +64,7 @@ public class ClassLogService {
             List<ClassLogImage> uploadedImages = uploadImages(classLog, classLogImages);
             classLog.getClassLogImage().addAll(uploadedImages);
         }
-        recentLogService.saveRecentLog(userId, classLog.getId(), scheduleId, "CLASS_LOG");
+        recentLogService.save(userId, classLog.getId(), scheduleId, "CLASS_LOG");
         return ClassLogResponse.from(classLog);
     }
 
@@ -141,7 +141,7 @@ public class ClassLogService {
     @Transactional
     public ClassLogResponse find(final Long userId, final Long classLogId) {
         ClassLog classLog = findByIdAndUserId(classLogId, userId);
-        recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
+        recentLogService.save(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
         return ClassLogResponse.from(classLog);
     }
 
@@ -152,7 +152,7 @@ public class ClassLogService {
 
         ClassLog classLog = findByIdAndUserId(classLogId, userId);
         updateEachItem(classLogUpdateRequestDto, classLog, classLogImages);
-        recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
+        recentLogService.save(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
         return ClassLogResponse.from(classLog);
     }
 

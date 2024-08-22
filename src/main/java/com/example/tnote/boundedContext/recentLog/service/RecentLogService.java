@@ -10,7 +10,6 @@ import java.time.Instant;
 import java.util.List;
 import java.util.Objects;
 import java.util.Set;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -81,7 +80,7 @@ public class RecentLogService {
 //                .toList();
 //    }
 
-    public void saveRecentLog(Long userId, Long logId, Long scheduleId, String logType) {
+    public void save(final Long userId, final Long logId, final Long scheduleId, final String logType) {
         RecentLog recentLog = RecentLog.builder()
                 .userId(userId)
                 .logId(logId)

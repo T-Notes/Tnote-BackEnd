@@ -61,7 +61,7 @@ public class ConsultationService {
             List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
             consultation.getConsultationImage().addAll(uploadedImages);
         }
-        recentLogService.saveRecentLog(userId, consultation.getId(), scheduleId, "CONSULTATION");
+        recentLogService.save(userId, consultation.getId(), scheduleId, "CONSULTATION");
         return ConsultationResponseDto.of(consultation);
     }
 
@@ -105,7 +105,7 @@ public class ConsultationService {
         Consultation consultation = findConsultationByIdAndUserId(consultationId, userId);
         List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultationId(
                 consultationId);
-        recentLogService.saveRecentLog(userId, consultation.getId(), consultation.getSchedule().getId(),
+        recentLogService.save(userId, consultation.getId(), consultation.getSchedule().getId(),
                 "CONSULTATION");
         return new ConsultationDetailResponseDto(consultation, consultationImages);
     }
@@ -115,7 +115,7 @@ public class ConsultationService {
                                                       List<MultipartFile> consultationImages) {
         Consultation consultation = findConsultationByIdAndUserId(consultationId, userId);
         updateConsultationItem(requestDto, consultation, consultationImages);
-        recentLogService.saveRecentLog(userId, consultation.getId(), consultation.getSchedule().getId(),
+        recentLogService.save(userId, consultation.getId(), consultation.getSchedule().getId(),
                 "CONSULTATION");
         return ConsultationResponseDto.of(consultation);
     }

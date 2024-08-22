@@ -60,7 +60,7 @@ public class ObservationService {
             List<ObservationImage> uploadedImages = uploadObservationImages(observation, observationImages);
             observation.getObservationImage().addAll(uploadedImages);
         }
-        recentLogService.saveRecentLog(userId, observation.getId(), scheduleId, "OBSERVATION");
+        recentLogService.save(userId, observation.getId(), scheduleId, "OBSERVATION");
         return ObservationResponseDto.of(observation);
     }
 
@@ -78,7 +78,7 @@ public class ObservationService {
         Observation observation = findObservationByIdAndUserId(observationId, userId);
         List<ObservationImage> observationImages = observationImageRepository.findObservationImageByObservationId(
                 observationId);
-        recentLogService.saveRecentLog(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
+        recentLogService.save(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
         return new ObservationDetailResponseDto(observation, observationImages);
     }
 
@@ -104,7 +104,7 @@ public class ObservationService {
                                                     List<MultipartFile> observationImages) {
         Observation observation = findObservationByIdAndUserId(observationId, userId);
         updateObservationItem(requestDto, observation, observationImages);
-        recentLogService.saveRecentLog(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
+        recentLogService.save(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
         return ObservationResponseDto.of(observation);
     }
 
