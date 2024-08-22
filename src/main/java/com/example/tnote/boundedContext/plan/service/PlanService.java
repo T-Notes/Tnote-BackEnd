@@ -84,8 +84,10 @@ public class PlanService {
         return new PlanDeleteResponse(planId);
     }
 
+    @Transactional
     public PlanResponse find(final Long userId, final Long planId) {
         Plan plan = findByIdAndUserId(planId, userId);
+        recentLogService.save(userId,planId,plan.getSchedule().getId(),"PLAN");
         return PlanResponse.from(plan);
     }
 
