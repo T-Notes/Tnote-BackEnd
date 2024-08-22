@@ -47,7 +47,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/tnote/archive")
 @Tag(name = "Archive", description = "Archive API")
 public class ArchiveController {
@@ -55,6 +54,13 @@ public class ArchiveController {
     private final ArchiveService archiveService;
     private final ScheduleService scheduleService;
     private final RecentLogService recentLogService;
+
+    public ArchiveController(final ArchiveService archiveService, final ScheduleService scheduleService,
+                             final RecentLogService recentLogService) {
+        this.archiveService = archiveService;
+        this.scheduleService = scheduleService;
+        this.recentLogService = recentLogService;
+    }
 
     // 학생 이름 검색 했을때 나올 내용 - keyword로 통합
     @GetMapping("/searching/{scheduleId}")
