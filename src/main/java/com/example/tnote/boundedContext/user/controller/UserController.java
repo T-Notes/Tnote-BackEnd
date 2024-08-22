@@ -5,7 +5,7 @@ import com.example.tnote.base.utils.SchoolPlanUtil;
 import com.example.tnote.base.utils.SchoolUtils;
 import com.example.tnote.base.utils.TokenUtils;
 import com.example.tnote.boundedContext.user.dto.UserAlarmUpdate;
-import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
+import com.example.tnote.boundedContext.user.dto.UserDeleteResponse;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
 import com.example.tnote.boundedContext.user.dto.UserUpdateRequest;
@@ -205,7 +205,7 @@ public class UserController {
     @Operation(summary = "delete user info api", description = "accessToken로 User 삭제 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "성공",
-                    content = {@Content(schema = @Schema(implementation = UserDeleteResponseDto.class))}),
+                    content = {@Content(schema = @Schema(implementation = UserDeleteResponse.class))}),
             @ApiResponse(responseCode = "404", description = "실패")
     })
     public ResponseEntity<Result> deleteUser(@AuthenticationPrincipal final PrincipalDetails user
@@ -214,7 +214,7 @@ public class UserController {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        UserDeleteResponseDto response = authService.deleteUser(currentUser.getId(), oauthRefreshToken);
+        UserDeleteResponse response = authService.deleteUser(currentUser.getId(), oauthRefreshToken);
 
         return ResponseEntity.ok(Result.of(response));
     }

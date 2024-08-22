@@ -8,7 +8,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class SubjectRequestDto {
+public class SubjectRequest {
 
     private String subjectName;
     private String classTime;

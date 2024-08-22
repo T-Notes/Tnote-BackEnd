@@ -6,11 +6,11 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class TodoDeleteResponseDto {
+public class TodoDeleteResponse {
     private Long id;
 
-    public static TodoDeleteResponseDto from(Todo todo) {
-        return TodoDeleteResponseDto.builder()
+    public static TodoDeleteResponse from(Todo todo) {
+        return TodoDeleteResponse.builder()
                 .id(todo.getId())
                 .build();
     }
