@@ -14,8 +14,6 @@ import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
-import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponse;
-import com.example.tnote.boundedContext.recentLog.dto.RecentLogResponses;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
 import com.example.tnote.boundedContext.schedule.service.ScheduleService;
@@ -30,11 +28,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -127,14 +123,13 @@ public class ArchiveController {
     }
 
     @GetMapping("/{scheduleId}/dailyLogs")
-    public ResponseEntity<Result> readDailyLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                @PathVariable Long scheduleId,
-                                                @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+    public ResponseEntity<Result> findDaily(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                            @PathVariable final Long scheduleId,
+                                            @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         if (date == null) {
             date = LocalDate.now();
         }
-        ArchiveResponseDto response = archiveService.readDailyLogs(principalDetails.getId(), scheduleId, date);
-        return ResponseEntity.ok(Result.of(response));
+        return ResponseEntity.ok(Result.of(archiveService.readDailyLogs(principalDetails.getId(), scheduleId, date)));
     }
 
     @GetMapping("/{scheduleId}/monthlyLogs")
