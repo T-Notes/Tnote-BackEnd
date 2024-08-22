@@ -6,7 +6,7 @@ import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.archive.constant.DateType;
 import com.example.tnote.boundedContext.archive.constant.LogType;
-import com.example.tnote.boundedContext.archive.dto.ArchiveResponseDto;
+import com.example.tnote.boundedContext.archive.dto.ArchiveResponse;
 import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.archive.dto.LogEntry;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequestDto;
@@ -227,7 +227,7 @@ public class ArchiveService {
         return UnifiedLogResponseDto.from(pageContent, totalLogs);
     }
 
-    public ArchiveResponseDto readDailyLogs(Long userId, Long scheduleId, LocalDate date) {
+    public ArchiveResponse readDailyLogs(Long userId, Long scheduleId, LocalDate date) {
         Schedule schedule = scheduleRepository.findById(scheduleId)
                 .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
         LocalDate startDate = schedule.getStartDate();
@@ -243,7 +243,7 @@ public class ArchiveService {
         List<ProceedingResponse> proceedings = proceedingService.findDaily(userId, scheduleId, date);
         List<TodoResponseDto> todos = todoService.readDailyTodos(userId, scheduleId, date);
 
-        return ArchiveResponseDto.builder()
+        return ArchiveResponse.builder()
                 .classLogs(classLogs)
                 .consultations(consultations)
                 .observations(observations)
@@ -252,7 +252,7 @@ public class ArchiveService {
                 .build();
     }
 
-    public ArchiveResponseDto readMonthlyLogs(Long userId, Long scheduleId, LocalDate date) {
+    public ArchiveResponse readMonthlyLogs(Long userId, Long scheduleId, LocalDate date) {
         List<ClassLogResponse> classLogs = classLogService.findMonthly(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readMonthlyConsultations(userId, scheduleId,
                 date);
@@ -261,7 +261,7 @@ public class ArchiveService {
         List<ProceedingResponse> proceedings = proceedingService.findMonthly(userId, scheduleId, date);
         List<TodoResponseDto> todos = todoService.readMonthlyTodos(userId, scheduleId, date);
 
-        return ArchiveResponseDto.builder()
+        return ArchiveResponse.builder()
                 .classLogs(classLogs)
                 .consultations(consultations)
                 .observations(observations)

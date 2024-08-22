@@ -11,7 +11,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ArchiveResponseDto {
+public class ArchiveResponse {
     private List<ClassLogResponse> classLogs;
     private List<ConsultationResponseDto> consultations;
     private List<ObservationResponseDto> observations;

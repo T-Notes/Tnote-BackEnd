@@ -4,7 +4,7 @@ import com.example.tnote.base.response.Result;
 import com.example.tnote.base.utils.TokenUtils;
 import com.example.tnote.boundedContext.archive.constant.DateType;
 import com.example.tnote.boundedContext.archive.constant.LogType;
-import com.example.tnote.boundedContext.archive.dto.ArchiveResponseDto;
+import com.example.tnote.boundedContext.archive.dto.ArchiveResponse;
 import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequestDto;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponseDto;
@@ -139,7 +139,7 @@ public class ArchiveController {
         if (date == null) {
             date = LocalDate.now();
         }
-        ArchiveResponseDto response = archiveService.readMonthlyLogs(principalDetails.getId(), scheduleId, date);
+        ArchiveResponse response = archiveService.readMonthlyLogs(principalDetails.getId(), scheduleId, date);
         return ResponseEntity.ok(Result.of(response));
     }
 
