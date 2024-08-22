@@ -35,10 +35,10 @@ public class PlanController {
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> save(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                        @PathVariable final Long scheduleId,
-                                       @RequestPart final PlanSaveRequest planSaveRequest,
+                                       @RequestPart final PlanSaveRequest request,
                                        @RequestPart(name = "planImages", required = false) final List<MultipartFile> planImages) {
         return ResponseEntity.ok(
-                Result.of(planService.save(principalDetails.getId(), scheduleId, planSaveRequest, planImages)));
+                Result.of(planService.save(principalDetails.getId(), scheduleId, request, planImages)));
     }
 
     @GetMapping("/{planId}")
@@ -66,11 +66,11 @@ public class PlanController {
 
     @PutMapping("/{planId}")
     public ResponseEntity<Result> update(@AuthenticationPrincipal final PrincipalDetails principalDetails,
-                                         @RequestPart final PlanUpdateRequest planUpdateRequest,
+                                         @RequestPart final PlanUpdateRequest request,
                                          @RequestPart(name = "planImages", required = false) final List<MultipartFile> planImages,
                                          @PathVariable final Long planId) {
 
         return ResponseEntity.ok(
-                Result.of(planService.updatePlan(principalDetails.getId(), planId, planUpdateRequest, planImages)));
+                Result.of(planService.updatePlan(principalDetails.getId(), planId, request, planImages)));
     }
 }
