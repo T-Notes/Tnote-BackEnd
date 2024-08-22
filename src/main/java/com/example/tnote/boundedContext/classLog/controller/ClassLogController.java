@@ -37,12 +37,11 @@ public class ClassLogController {
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> save(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                        @PathVariable final Long scheduleId,
-                                       @RequestPart final ClassLogSaveRequest classLogRequestDto,
+                                       @RequestPart final ClassLogSaveRequest request,
                                        @RequestPart(name = "classLogImages", required = false) final List<MultipartFile> classLogImages) {
 
         return ResponseEntity.ok(Result.of(classLogService.save(principalDetails.getId(), scheduleId,
-                classLogRequestDto,
-                classLogImages)));
+                request, classLogImages)));
     }
 
     @GetMapping("/{scheduleId}/all")
@@ -76,11 +75,11 @@ public class ClassLogController {
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> update(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                          @PathVariable final Long classLogId,
-                                         @RequestPart final ClassLogUpdateRequest classLogUpdateRequestDto,
+                                         @RequestPart final ClassLogUpdateRequest request,
                                          @RequestPart(name = "classLogImages", required = false) final List<MultipartFile> classLogImages) {
 
         return ResponseEntity.ok(Result.of(classLogService.update(principalDetails.getId(), classLogId,
-                classLogUpdateRequestDto, classLogImages)));
+                request, classLogImages)));
     }
 
 }
