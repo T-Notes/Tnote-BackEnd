@@ -6,11 +6,11 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ScheduleDeleteResponseDto {
+public class ScheduleDeleteResponse {
     private Long id;
 
-    public static ScheduleDeleteResponseDto from(Schedule schedule) {
-        return ScheduleDeleteResponseDto.builder()
+    public static ScheduleDeleteResponse from(Schedule schedule) {
+        return ScheduleDeleteResponse.builder()
                 .id(schedule.getId())
                 .build();
     }

@@ -1,18 +1,16 @@
 package com.example.tnote.boundedContext.todo.service;
 
 
-import static com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode.SCHEDULE_NOT_FOUND;
-import static com.example.tnote.boundedContext.todo.exception.TodoErrorCode.TODO_NOT_FOUND;
 import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
 
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
-import com.example.tnote.boundedContext.todo.dto.TodoDeleteResponseDto;
-import com.example.tnote.boundedContext.todo.dto.TodoRequestDto;
-import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
-import com.example.tnote.boundedContext.todo.dto.TodoSliceResponseDto;
-import com.example.tnote.boundedContext.todo.dto.TodoUpdateRequestDto;
+import com.example.tnote.boundedContext.todo.dto.TodoDeleteResponse;
+import com.example.tnote.boundedContext.todo.dto.TodoRequest;
+import com.example.tnote.boundedContext.todo.dto.TodoResponse;
+import com.example.tnote.boundedContext.todo.dto.TodoSliceResponse;
+import com.example.tnote.boundedContext.todo.dto.TodoUpdateRequest;
 import com.example.tnote.boundedContext.todo.entity.Todo;
 import com.example.tnote.boundedContext.todo.exception.TodoException;
 import com.example.tnote.boundedContext.todo.repository.TodoQueryRepository;
@@ -41,46 +39,49 @@ public class TodoService {
     private final TodoQueryRepository todoQueryRepository;
 
     @Transactional
-    public TodoResponseDto saveTodo(final TodoRequestDto dto, final Long scheduleId, final Long userId,
-                                    final LocalDate date) {
+    public TodoResponse saveTodo(final TodoRequest dto, final Long scheduleId, final Long userId,
+                                 final LocalDate date) {
 
         matchUserWithSchedule(scheduleId, userId);
-        Todo todo = dto.toEntity(checkCurrentUser(userId), checkSchedule(scheduleId), getLocalDate(date));
 
-        return TodoResponseDto.from(todoRepository.save(todo));
+        User user = userRepository.findUserById(userId);
+        Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
+
+        Todo todo = dto.toEntity(user, schedule, getLocalDate(date));
+
+        return TodoResponse.from(todoRepository.save(todo));
     }
 
     @Transactional
-    public TodoDeleteResponseDto deleteTodo(final Long todoId, final Long scheduleId, final Long userId) {
+    public TodoDeleteResponse deleteTodo(final Long todoId, final Long scheduleId, final Long userId) {
 
         Todo todo = getTodo(scheduleId, todoId, userId);
 
         todoRepository.deleteById(todo.getId());
-        return TodoDeleteResponseDto.from(todo);
+        return TodoDeleteResponse.from(todo);
     }
 
     @Transactional(readOnly = true)
-    public List<TodoResponseDto> findAllTodos(final LocalDate date, final Long scheduleId, final Long userId) {
+    public List<TodoResponse> findAllTodos(final LocalDate date, final Long scheduleId, final Long userId) {
 
-        checkSchedule(scheduleId);
-
-        return TodoResponseDto.from(
-                todoQueryRepository.findAllByUserIdAndDate(userId, scheduleId, getLocalDate(date)));
+        Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
+        return TodoResponse.from(
+                todoQueryRepository.findAllByUserIdAndDate(userId, schedule.getId(), getLocalDate(date)));
     }
 
     @Transactional
-    public TodoResponseDto updateTodos(final TodoUpdateRequestDto dto, final Long scheduleId, final Long todoId,
-                                       final Long userId,
-                                       final LocalDate date) {
+    public TodoResponse updateTodos(final TodoUpdateRequest dto, final Long scheduleId, final Long todoId,
+                                    final Long userId,
+                                    final LocalDate date) {
 
         Todo todos = getTodo(scheduleId, todoId, userId);
 
         updateEachTodosItem(dto, todos, date);
 
-        return TodoResponseDto.from(todos);
+        return TodoResponse.from(todos);
     }
 
-    private void updateEachTodosItem(final TodoUpdateRequestDto dto, final Todo todos, final LocalDate date) {
+    private void updateEachTodosItem(final TodoUpdateRequest dto, final Todo todos, final LocalDate date) {
 
         if (date == null) {
             todos.updateDate(LocalDate.now());
@@ -97,15 +98,15 @@ public class TodoService {
     }
 
     private Todo getTodo(final Long scheduleId, final Long todoId, final Long userId) {
-        User currentUser = checkCurrentUser(userId);
+        User currentUser = userRepository.findUserById(userId);
 
         matchUserWithSchedule(scheduleId, currentUser.getId());
         return authorization(todoId, currentUser);
     }
 
     private void matchUserWithSchedule(final Long scheduleId, final Long userId) {
-        Schedule schedule = checkSchedule(scheduleId);
-        User currentUser = checkCurrentUser(userId);
+        Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
+        User currentUser = userRepository.findUserById(userId);
 
         if (!schedule.getUser().equals(currentUser)) {
             log.warn("학기를 작성한 user와 현 user가 다릅니다");
@@ -113,24 +114,11 @@ public class TodoService {
         }
     }
 
-    private User checkCurrentUser(final Long id) {
-        return userRepository.findById(id)
-                .orElseThrow(() -> new TodoException(USER_NOT_FOUND));
-    }
-
-    private Schedule checkSchedule(final Long id) {
-        return scheduleRepository.findById(id)
-                .orElseThrow(() -> new TodoException(SCHEDULE_NOT_FOUND));
-    }
-
-
     private Todo authorization(final Long id, final User member) {
 
-        Todo todos = todoRepository.findById(id).orElseThrow(
-                () -> new TodoException(TODO_NOT_FOUND));
+        Todo todos = todoRepository.findTodoById(id);
 
         if (!todos.getUser().getId().equals(member.getId())) {
-            log.warn("member doesn't have authentication , user {}", todos.getUser());
             throw new TodoException(USER_NOT_FOUND);
         }
         return todos;
@@ -138,8 +126,8 @@ public class TodoService {
     }
 
     @Transactional
-    public TodoSliceResponseDto readTodosByDate(final Long userId, final Long scheduleId, final LocalDate startDate,
-                                                final LocalDate endDate, Pageable pageable) {
+    public TodoSliceResponse readTodosByDate(final Long userId, final Long scheduleId, final LocalDate startDate,
+                                             final LocalDate endDate, Pageable pageable) {
 
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
@@ -151,9 +139,9 @@ public class TodoService {
                 userId, scheduleId, startOfDay, endOfDay, pageable);
 
         int numberOfTodo = todos.size();
-        List<TodoResponseDto> responseDto = allTodos.getContent().stream().map(TodoResponseDto::from).toList();
+        List<TodoResponse> responseDto = allTodos.getContent().stream().map(TodoResponse::from).toList();
 
-        return TodoSliceResponseDto.builder()
+        return TodoSliceResponse.builder()
                 .todos(responseDto)
                 .numberOfTodo(numberOfTodo)
                 .page(allTodos.getPageable().getPageNumber())
@@ -163,18 +151,18 @@ public class TodoService {
     }
 
     @Transactional(readOnly = true)
-    public List<TodoResponseDto> readDailyTodos(final Long userId, final Long scheduleId, final LocalDate date) {
+    public List<TodoResponse> readDailyTodos(final Long userId, final Long scheduleId, final LocalDate date) {
 
         List<Todo> todos = todoQueryRepository.findByUserIdAndScheduleIdAndDate(userId, scheduleId, date);
 
-        return todos.stream().map(TodoResponseDto::from).toList();
+        return todos.stream().map(TodoResponse::from).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<TodoResponseDto> readMonthlyTodos(final Long userId, final Long scheduleId, final LocalDate date) {
+    public List<TodoResponse> readMonthlyTodos(final Long userId, final Long scheduleId, final LocalDate date) {
         List<Todo> todos = todoQueryRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);
 
-        return todos.stream().map(TodoResponseDto::from).toList();
+        return todos.stream().map(TodoResponse::from).toList();
     }
 
     private LocalDate getLocalDate(LocalDate date) {

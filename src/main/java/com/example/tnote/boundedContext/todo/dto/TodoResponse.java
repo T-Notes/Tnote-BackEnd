@@ -8,16 +8,16 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class TodoResponseDto {
+public class TodoResponse {
 
     private Long id;
     private String content;
     private LocalDate date;
     private Boolean status;
 
-    public static TodoResponseDto from(Todo todo) {
+    public static TodoResponse from(Todo todo) {
 
-        return TodoResponseDto.builder()
+        return TodoResponse.builder()
                 .id(todo.getId())
                 .content(todo.getContent())
                 .date(todo.getDate())
@@ -25,9 +25,9 @@ public class TodoResponseDto {
                 .build();
     }
 
-    public static List<TodoResponseDto> from(List<Todo> todo) {
+    public static List<TodoResponse> from(List<Todo> todo) {
         return todo.stream()
-                .map(TodoResponseDto::from)
+                .map(TodoResponse::from)
                 .toList();
     }
 }

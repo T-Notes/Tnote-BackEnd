@@ -1,7 +1,7 @@
 package com.example.tnote.boundedContext.schedule.dto;
 
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
-import com.example.tnote.boundedContext.subject.dto.SubjectResponseDto;
+import com.example.tnote.boundedContext.subject.dto.SubjectResponse;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.Builder;
@@ -9,20 +9,20 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class ScheduleResponseDto {
+public class ScheduleResponse {
 
     private Long id;
     private String semesterName;
     private String lastClass;
     private String email; // user와 연관관계 때문 ( 중복 안되는 값 필요 )
-    private List<SubjectResponseDto> subjects;
+    private List<SubjectResponse> subjects;
     private LocalDate startDate;
     private LocalDate endDate;
 
-    public static ScheduleResponseDto from(Schedule schedules) {
+    public static ScheduleResponse from(Schedule schedules) {
 
-        List<SubjectResponseDto> subjects = schedules.getSubjectsList().stream()
-                .map(subject -> SubjectResponseDto.builder()
+        List<SubjectResponse> subjects = schedules.getSubjectsList().stream()
+                .map(subject -> SubjectResponse.builder()
                         .id(subject.getId())
                         .subjectName(subject.getSubjectName())
                         .memo(subject.getMemo())
@@ -33,7 +33,7 @@ public class ScheduleResponseDto {
                         .build())
                 .toList();
 
-        return ScheduleResponseDto.builder()
+        return ScheduleResponse.builder()
                 .id(schedules.getId())
                 .semesterName(schedules.getSemesterName())
                 .lastClass(schedules.getLastClass())
@@ -45,17 +45,17 @@ public class ScheduleResponseDto {
     }
 
 
-    public static List<ScheduleResponseDto> from(List<Schedule> schedules) {
+    public static List<ScheduleResponse> from(List<Schedule> schedules) {
         return schedules.stream()
-                .map(ScheduleResponseDto::from)
+                .map(ScheduleResponse::from)
                 .toList();
     }
 
 
-    public static ScheduleResponseDto excludeLastDayFrom(Schedule schedule) {
+    public static ScheduleResponse excludeLastDayFrom(Schedule schedule) {
 
-        List<SubjectResponseDto> subjects = schedule.getSubjectsList().stream()
-                .map(subject -> SubjectResponseDto.builder()
+        List<SubjectResponse> subjects = schedule.getSubjectsList().stream()
+                .map(subject -> SubjectResponse.builder()
                         .id(subject.getId())
                         .subjectName(subject.getSubjectName())
                         .memo(subject.getMemo())
@@ -66,7 +66,7 @@ public class ScheduleResponseDto {
                         .build())
                 .toList();
 
-        return ScheduleResponseDto.builder()
+        return ScheduleResponse.builder()
                 .id(schedule.getId())
                 .email(schedule.getUser().getEmail())
                 .semesterName(schedule.getSemesterName())
@@ -77,9 +77,9 @@ public class ScheduleResponseDto {
                 .build();
     }
 
-    public static List<ScheduleResponseDto> excludeLastDayFrom(List<Schedule> schedules) {
+    public static List<ScheduleResponse> excludeLastDayFrom(List<Schedule> schedules) {
         return schedules.stream()
-                .map(ScheduleResponseDto::excludeLastDayFrom)
+                .map(ScheduleResponse::excludeLastDayFrom)
                 .toList();
     }
 }

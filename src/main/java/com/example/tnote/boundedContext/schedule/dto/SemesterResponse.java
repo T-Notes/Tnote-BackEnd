@@ -7,20 +7,20 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class SemesterNameResponseDto {
+public class SemesterResponse {
     private Long id;
     private String semesterName;
 
-    public static SemesterNameResponseDto from(Schedule schedules) {
-        return SemesterNameResponseDto.builder()
+    public static SemesterResponse from(Schedule schedules) {
+        return SemesterResponse.builder()
                 .id(schedules.getId())
                 .semesterName(schedules.getSemesterName())
                 .build();
     }
 
-    public static List<SemesterNameResponseDto> from(List<Schedule> schedules) {
+    public static List<SemesterResponse> from(List<Schedule> schedules) {
         return schedules.stream()
-                .map(SemesterNameResponseDto::from)
+                .map(SemesterResponse::from)
                 .toList();
     }
 }

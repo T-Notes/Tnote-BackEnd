@@ -2,10 +2,10 @@ package com.example.tnote.boundedContext.todo.controller;
 
 import com.example.tnote.base.response.Result;
 import com.example.tnote.base.utils.TokenUtils;
-import com.example.tnote.boundedContext.todo.dto.TodoDeleteResponseDto;
-import com.example.tnote.boundedContext.todo.dto.TodoRequestDto;
-import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
-import com.example.tnote.boundedContext.todo.dto.TodoUpdateRequestDto;
+import com.example.tnote.boundedContext.todo.dto.TodoDeleteResponse;
+import com.example.tnote.boundedContext.todo.dto.TodoRequest;
+import com.example.tnote.boundedContext.todo.dto.TodoResponse;
+import com.example.tnote.boundedContext.todo.dto.TodoUpdateRequest;
 import com.example.tnote.boundedContext.todo.service.TodoService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -45,17 +45,17 @@ public class TodoController {
     @Operation(summary = "create todo api", description = "accessToken로 Todo 생성 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
-                    content = {@Content(schema = @Schema(implementation = TodoResponseDto.class))}),
+                    content = {@Content(schema = @Schema(implementation = TodoResponse.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> saveTodo(@RequestBody final TodoRequestDto dto,
+    public ResponseEntity<Result> saveTodo(@RequestBody final TodoRequest dto,
                                            @PathVariable("scheduleId") final Long scheduleId,
                                            @RequestParam(value = "date", required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final LocalDate date,
                                            @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        TodoResponseDto response = todoService.saveTodo(dto, scheduleId, currentUser.getId(), date);
+        TodoResponse response = todoService.saveTodo(dto, scheduleId, currentUser.getId(), date);
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -63,10 +63,10 @@ public class TodoController {
     @Operation(summary = "Todo api", description = "accessToken로 Todo 수정 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
-                    content = {@Content(schema = @Schema(implementation = TodoResponseDto.class))}),
+                    content = {@Content(schema = @Schema(implementation = TodoResponse.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> updateSubjects(@RequestBody final TodoUpdateRequestDto dto,
+    public ResponseEntity<Result> updateSubjects(@RequestBody final TodoUpdateRequest dto,
                                                  @PathVariable final Long scheduleId,
                                                  @PathVariable("todoId") final Long todoId,
                                                  @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") final LocalDate date,
@@ -74,7 +74,7 @@ public class TodoController {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        TodoResponseDto response = todoService.updateTodos(dto, scheduleId, todoId, currentUser.getId(), date);
+        TodoResponse response = todoService.updateTodos(dto, scheduleId, todoId, currentUser.getId(), date);
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -83,7 +83,7 @@ public class TodoController {
     @Operation(summary = "delete todo api", description = "accessToken로 Todo 삭제 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
-                    content = {@Content(schema = @Schema(implementation = TodoDeleteResponseDto.class))}),
+                    content = {@Content(schema = @Schema(implementation = TodoDeleteResponse.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
     public ResponseEntity<Result> deleteTodo(@PathVariable("todoId") final Long todoId,
@@ -92,7 +92,7 @@ public class TodoController {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        TodoDeleteResponseDto response = todoService.deleteTodo(todoId, scheduleId, currentUser.getId());
+        TodoDeleteResponse response = todoService.deleteTodo(todoId, scheduleId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -102,7 +102,7 @@ public class TodoController {
     @Operation(summary = "find Todo api", description = "accessToken로 Todo 조회 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = TodoResponseDto.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = TodoResponse.class)))),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
     public ResponseEntity<Result> findTodo(
@@ -112,7 +112,7 @@ public class TodoController {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        List<TodoResponseDto> response = todoService.findAllTodos(date, scheduleId, currentUser.getId());
+        List<TodoResponse> response = todoService.findAllTodos(date, scheduleId, currentUser.getId());
         return ResponseEntity.ok(Result.of(response));
     }
 
