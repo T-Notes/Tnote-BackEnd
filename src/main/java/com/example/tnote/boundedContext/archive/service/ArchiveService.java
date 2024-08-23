@@ -1,15 +1,13 @@
 package com.example.tnote.boundedContext.archive.service;
 
 import static com.example.tnote.base.utils.DateUtils.calculateStartDate;
-import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
 
-import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.archive.constant.DateType;
 import com.example.tnote.boundedContext.archive.constant.LogType;
 import com.example.tnote.boundedContext.archive.dto.ArchiveResponse;
 import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.archive.dto.LogEntry;
-import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequestDto;
+import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequest;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponseDto;
 import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
@@ -258,7 +256,7 @@ public class ArchiveService {
     }
 
     @Transactional
-    public LogsDeleteResponseDto deleteLogs(Long userId, LogsDeleteRequestDto deleteRequest) {
+    public LogsDeleteResponseDto deleteLogs(Long userId, LogsDeleteRequest deleteRequest) {
         int deletedClassLogsCount = 0;
         int deletedProceedingsCount = 0;
         int deletedObservationsCount = 0;
