@@ -53,6 +53,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Slf4j
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ArchiveService {
 
     private final ConsultationQueryRepository consultationQueryRepository;
@@ -68,7 +69,6 @@ public class ArchiveService {
     private final TodoService todoService;
     private final PlanService planService;
 
-    @Transactional(readOnly = true)
     public List<ConsultationResponseDto> findAllOfConsultation(String studentName, Long userId, Long scheduleId) {
 
         userRepository.findById(userId);
@@ -80,7 +80,6 @@ public class ArchiveService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     public List<ObservationResponseDto> findAllOfObservation(String studentName, Long userId, Long scheduleId) {
 
         userRepository.findById(userId);
@@ -92,7 +91,6 @@ public class ArchiveService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     public List<ClassLogResponse> findAllOfClassLog(String title, Long userId, Long scheduleId) {
 
         userRepository.findById(userId);
@@ -104,7 +102,6 @@ public class ArchiveService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     public List<ProceedingResponse> findAllOfProceeding(String title, Long userId, Long scheduleId) {
 
         userRepository.findById(userId);
