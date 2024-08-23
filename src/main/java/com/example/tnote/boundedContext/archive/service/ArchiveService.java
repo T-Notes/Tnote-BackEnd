@@ -233,9 +233,7 @@ public class ArchiveService {
     public ArchiveResponse findDaily(final Long userId, final Long scheduleId, final LocalDate date) {
         Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
 
-        if (date.isBefore(schedule.getStartDate()) || (date.isAfter(schedule.getEndDate()))) {
-            throw new ScheduleException(ScheduleErrorCode.DATES_NOT_INCLUDED_IN_SEMESTER);
-        }
+        validateDateWithinSchedule(date, schedule);
         List<ClassLogResponse> classLogs = classLogService.findDaily(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, scheduleId,
                 date);
@@ -290,5 +288,10 @@ public class ArchiveService {
                 deletedConsultationsCount);
     }
 
+    private void validateDateWithinSchedule(final LocalDate date, final Schedule schedule) {
+        if (date.isBefore(schedule.getStartDate()) || date.isAfter(schedule.getEndDate())) {
+            throw new ScheduleException(ScheduleErrorCode.DATES_NOT_INCLUDED_IN_SEMESTER);
+        }
+    }
 
 }
