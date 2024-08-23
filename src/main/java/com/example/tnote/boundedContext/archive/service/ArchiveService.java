@@ -27,6 +27,8 @@ import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponse
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.repository.query.ObservationQueryRepository;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
+import com.example.tnote.boundedContext.plan.dto.PlanResponse;
+import com.example.tnote.boundedContext.plan.service.PlanService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponses;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
@@ -66,6 +68,7 @@ public class ArchiveService {
     private final ConsultationService consultationService;
     private final ObservationService observationService;
     private final TodoService todoService;
+    private final PlanService planService;
 
     @Transactional(readOnly = true)
     public List<ConsultationResponseDto> findAllOfConsultation(String studentName, Long userId, Long scheduleId) {
@@ -239,14 +242,9 @@ public class ArchiveService {
         List<ObservationResponseDto> observations = observationService.readDailyObservations(userId, scheduleId, date);
         List<ProceedingResponse> proceedings = proceedingService.findDaily(userId, scheduleId, date);
         List<TodoResponseDto> todos = todoService.readDailyTodos(userId, scheduleId, date);
+        List<PlanResponse> plans = planService.findDaily(userId, scheduleId, date);
 
-        return ArchiveResponse.builder()
-                .classLogs(classLogs)
-                .consultations(consultations)
-                .observations(observations)
-                .proceedings(proceedings)
-                .todos(todos)
-                .build();
+        return ArchiveResponse.of(classLogs, consultations, observations, proceedings, todos, plans);
     }
 
     public ArchiveResponse readMonthlyLogs(Long userId, Long scheduleId, LocalDate date) {
