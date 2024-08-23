@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.plan.repository;
 
 import com.example.tnote.boundedContext.plan.entity.Plan;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -28,4 +29,19 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
             Long scheduleId,
             LocalDateTime startOfDay,
             LocalDateTime endOfDay);
+
+    @Query("SELECT p FROM Plan p " +
+            "WHERE p.user.id = :userId " +
+            "AND p.schedule.id = :scheduleId " +
+            "AND ((" +
+            "FUNCTION('YEAR', p.startDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', p.startDate) = FUNCTION('MONTH', :date)"
+            +
+            ") OR (" +
+            "FUNCTION('YEAR', p.endDate) = FUNCTION('YEAR', :date) AND FUNCTION('MONTH', p.endDate) = FUNCTION('MONTH', :date)"
+            +
+            "))")
+    List<Plan> findByUserIdAndScheduleIdAndYearMonth(
+            Long userId,
+            Long scheduleId,
+            LocalDate date);
 }
