@@ -8,7 +8,7 @@ import com.example.tnote.boundedContext.archive.dto.ArchiveResponse;
 import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.archive.dto.LogEntry;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequest;
-import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponseDto;
+import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponse;
 import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponseDto;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponses;
@@ -256,28 +256,32 @@ public class ArchiveService {
     }
 
     @Transactional
-    public LogsDeleteResponseDto deleteLogs(Long userId, LogsDeleteRequest deleteRequest) {
+    public LogsDeleteResponse deleteLogs(final Long userId, final LogsDeleteRequest request) {
         int deletedClassLogsCount = 0;
         int deletedProceedingsCount = 0;
         int deletedObservationsCount = 0;
         int deletedConsultationsCount = 0;
+        int deletedPlanCount = 0;
 
-        if (!deleteRequest.getClassLogIds().isEmpty()) {
-            deletedClassLogsCount = classLogService.deleteClassLogs(userId, deleteRequest.getClassLogIds());
+        if (!request.getClassLogIds().isEmpty()) {
+            deletedClassLogsCount = classLogService.deleteClassLogs(userId, request.getClassLogIds());
         }
-        if (!deleteRequest.getProceedingIds().isEmpty()) {
-            deletedProceedingsCount = proceedingService.deleteProceedings(userId, deleteRequest.getProceedingIds());
+        if (!request.getProceedingIds().isEmpty()) {
+            deletedProceedingsCount = proceedingService.deleteProceedings(userId, request.getProceedingIds());
         }
-        if (!deleteRequest.getObservationIds().isEmpty()) {
-            deletedObservationsCount = observationService.deleteObservations(userId, deleteRequest.getObservationIds());
+        if (!request.getObservationIds().isEmpty()) {
+            deletedObservationsCount = observationService.deleteObservations(userId, request.getObservationIds());
         }
-        if (!deleteRequest.getConsultationIds().isEmpty()) {
+        if (!request.getConsultationIds().isEmpty()) {
             deletedConsultationsCount = consultationService.deleteConsultations(userId,
-                    deleteRequest.getConsultationIds());
+                    request.getConsultationIds());
+        }
+        if (!request.getPlanIds().isEmpty()) {
+            deletedPlanCount = planService.deletePlans(userId, request.getPlanIds());
         }
 
-        return LogsDeleteResponseDto.of(deletedClassLogsCount, deletedProceedingsCount, deletedObservationsCount,
-                deletedConsultationsCount);
+        return LogsDeleteResponse.of(deletedClassLogsCount, deletedProceedingsCount, deletedObservationsCount,
+                deletedConsultationsCount, deletedPlanCount);
     }
 
     private void validateDateWithinSchedule(final LocalDate date, final Schedule schedule) {

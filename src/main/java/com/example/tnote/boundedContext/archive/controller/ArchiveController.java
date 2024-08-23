@@ -7,7 +7,7 @@ import com.example.tnote.boundedContext.archive.constant.LogType;
 import com.example.tnote.boundedContext.archive.dto.ArchiveResponse;
 import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequest;
-import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponseDto;
+import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponse;
 import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponseDto;
 import com.example.tnote.boundedContext.archive.service.ArchiveService;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
@@ -166,7 +166,7 @@ public class ArchiveController {
     @PostMapping("/deleteLogs")
     public ResponseEntity<Result> deleteLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                              @RequestBody LogsDeleteRequest deleteRequest) {
-        LogsDeleteResponseDto response = archiveService.deleteLogs(principalDetails.getId(), deleteRequest);
+        LogsDeleteResponse response = archiveService.deleteLogs(principalDetails.getId(), deleteRequest);
         return ResponseEntity.ok(Result.of(response));
     }
 
