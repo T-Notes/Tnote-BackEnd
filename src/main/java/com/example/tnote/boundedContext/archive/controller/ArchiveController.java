@@ -122,7 +122,7 @@ public class ArchiveController {
         return ResponseEntity.ok(Result.of(response));
     }
 
-    @GetMapping("/{scheduleId}/dailyLogs")
+    @GetMapping("/{scheduleId}/daily")
     public ResponseEntity<Result> findDaily(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                             @PathVariable final Long scheduleId,
                                             @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
@@ -132,14 +132,14 @@ public class ArchiveController {
         return ResponseEntity.ok(Result.of(archiveService.findDaily(principalDetails.getId(), scheduleId, date)));
     }
 
-    @GetMapping("/{scheduleId}/monthlyLogs")
-    public ResponseEntity<Result> readMonthlyLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
+    @GetMapping("/{scheduleId}/monthly")
+    public ResponseEntity<Result> findMonthly(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                   @PathVariable Long scheduleId,
                                                   @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         if (date == null) {
             date = LocalDate.now();
         }
-        ArchiveResponse response = archiveService.readMonthlyLogs(principalDetails.getId(), scheduleId, date);
+        ArchiveResponse response = archiveService.findMonthly(principalDetails.getId(), scheduleId, date);
         return ResponseEntity.ok(Result.of(response));
     }
 
