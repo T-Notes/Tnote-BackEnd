@@ -240,7 +240,7 @@ public class ArchiveService {
         return ArchiveResponse.of(classLogs, consultations, observations, proceedings, todos, plans);
     }
 
-    public ArchiveResponse readMonthlyLogs(Long userId, Long scheduleId, LocalDate date) {
+    public ArchiveResponse readMonthly(final Long userId, final Long scheduleId, final LocalDate date) {
         List<ClassLogResponse> classLogs = classLogService.findMonthly(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readMonthlyConsultations(userId, scheduleId,
                 date);
