@@ -164,9 +164,9 @@ public class ArchiveController {
     }
 
     @PostMapping("/deleteLogs")
-    public ResponseEntity<Result> deleteLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                             @RequestBody LogsDeleteRequest deleteRequest) {
-        LogsDeleteResponse response = archiveService.deleteLogs(principalDetails.getId(), deleteRequest);
+    public ResponseEntity<Result> delete(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                         @RequestBody final LogsDeleteRequest request) {
+        LogsDeleteResponse response = archiveService.deleteLogs(principalDetails.getId(), request);
         return ResponseEntity.ok(Result.of(response));
     }
 
