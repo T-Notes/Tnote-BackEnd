@@ -143,8 +143,8 @@ public class ArchiveController {
     }
 
     @GetMapping("/recentLogs/{scheduleId}")
-    public ResponseEntity<Result> getRecentClassLogs(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @PathVariable Long scheduleId) {
+    public ResponseEntity<Result> findRecentLogs(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                                 @PathVariable final Long scheduleId) {
 
         return ResponseEntity.ok(Result.of(recentLogService.find(principalDetails.getId(), scheduleId)));
     }
