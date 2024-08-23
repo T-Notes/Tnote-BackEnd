@@ -240,7 +240,11 @@ public class ArchiveService {
         return ArchiveResponse.of(classLogs, consultations, observations, proceedings, todos, plans);
     }
 
-    public ArchiveResponse readMonthly(final Long userId, final Long scheduleId, final LocalDate date) {
+    public ArchiveResponse findMonthly(final Long userId, final Long scheduleId, final LocalDate date) {
+        Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
+
+        validateDateWithinSchedule(date, schedule);
+
         List<ClassLogResponse> classLogs = classLogService.findMonthly(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readMonthlyConsultations(userId, scheduleId,
                 date);
@@ -248,14 +252,9 @@ public class ArchiveService {
                 date);
         List<ProceedingResponse> proceedings = proceedingService.findMonthly(userId, scheduleId, date);
         List<TodoResponseDto> todos = todoService.readMonthlyTodos(userId, scheduleId, date);
+        List<PlanResponse> plans = planService.findMonthly(userId, scheduleId, date);
 
-        return ArchiveResponse.builder()
-                .classLogs(classLogs)
-                .consultations(consultations)
-                .observations(observations)
-                .proceedings(proceedings)
-                .todos(todos)
-                .build();
+        return ArchiveResponse.of(classLogs, consultations, observations, proceedings, todos, plans);
     }
 
     @Transactional
