@@ -133,9 +133,9 @@ public class ArchiveController {
     }
 
     @GetMapping("/{scheduleId}/monthly")
-    public ResponseEntity<Result> findMonthly(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                  @PathVariable Long scheduleId,
-                                                  @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
+    public ResponseEntity<Result> findMonthly(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                              @PathVariable final Long scheduleId,
+                                              @RequestParam(required = false) @DateTimeFormat(pattern = "yyyy-MM-dd") LocalDate date) {
         if (date == null) {
             date = LocalDate.now();
         }
