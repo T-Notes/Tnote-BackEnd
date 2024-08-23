@@ -4,6 +4,7 @@ import com.example.tnote.base.entity.BaseTimeEntity;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.observation.entity.Observation;
+import com.example.tnote.boundedContext.plan.entity.Plan;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.example.tnote.boundedContext.todo.entity.Todo;
@@ -80,6 +81,10 @@ public class Schedule extends BaseTimeEntity {
     @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private List<Todo> todoList = new ArrayList<>();
 
+    @Builder.Default
+    @OneToMany(mappedBy = "schedule", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private List<Plan> planList = new ArrayList<>();
+
     public void updateSemesterName(String semesterName) {
         this.semesterName = semesterName;
     }
@@ -96,7 +101,8 @@ public class Schedule extends BaseTimeEntity {
         this.endDate = endDate;
     }
 
-    public Schedule(Long id, String semesterName, String lastClass, LocalDate startDate, LocalDate endDate, User user) {
+    public Schedule(final Long id, final String semesterName, final String lastClass, final LocalDate startDate,
+                    final LocalDate endDate, final User user) {
         this.id = id;
         this.semesterName = semesterName;
         this.lastClass = lastClass;
