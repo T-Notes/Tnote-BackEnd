@@ -39,7 +39,7 @@ public class PlanService {
 
     public PlanService(final PlanRepository planRepository, final PlanImageRepository planImageRepository,
                        final UserRepository userRepository, final ScheduleRepository scheduleRepository,
-                       final AwsS3Uploader awsS3Uploader,final RecentLogService recentLogService) {
+                       final AwsS3Uploader awsS3Uploader, final RecentLogService recentLogService) {
         this.planRepository = planRepository;
         this.planImageRepository = planImageRepository;
         this.userRepository = userRepository;
@@ -64,7 +64,7 @@ public class PlanService {
             List<PlanImage> uploadedImages = uploadPlanImages(plan, planImages);
             plan.getPlanImages().addAll(uploadedImages);
         }
-        recentLogService.save(userId, plan.getId(), scheduleId,"PLAN");
+        recentLogService.save(userId, plan.getId(), scheduleId, "PLAN");
         return PlanResponse.from(planRepository.save(plan));
     }
 
@@ -82,7 +82,7 @@ public class PlanService {
         deleteExistedImage(plan);
 
         planRepository.delete(plan);
-        recentLogService.delete(planId,"PLAN");
+        recentLogService.delete(planId, "PLAN");
 
         return new PlanDeleteResponse(planId);
     }
@@ -90,7 +90,7 @@ public class PlanService {
     @Transactional
     public PlanResponse find(final Long userId, final Long planId) {
         Plan plan = findByIdAndUserId(planId, userId);
-        recentLogService.save(userId,planId,plan.getSchedule().getId(),"PLAN");
+        recentLogService.save(userId, planId, plan.getSchedule().getId(), "PLAN");
         return PlanResponse.from(plan);
     }
 
@@ -108,7 +108,7 @@ public class PlanService {
                 request.getParticipants()
         );
         updateImage(plan, planImages);
-        recentLogService.save(userId,planId,plan.getSchedule().getId(),"PLAN");
+        recentLogService.save(userId, planId, plan.getSchedule().getId(), "PLAN");
 
         return PlanResponse.from(plan);
     }
@@ -120,6 +120,13 @@ public class PlanService {
 
         List<Plan> plans = planRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId,
                 startOfDay, endOfDay);
+
+        return plans.stream()
+                .map(PlanResponse::from).toList();
+    }
+
+    public List<PlanResponse> findMonthly(final Long userId, final Long scheduleId, final LocalDate date) {
+        List<Plan> plans = planRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);
 
         return plans.stream()
                 .map(PlanResponse::from).toList();
