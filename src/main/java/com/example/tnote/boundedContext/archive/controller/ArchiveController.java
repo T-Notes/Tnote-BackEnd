@@ -139,8 +139,7 @@ public class ArchiveController {
         if (date == null) {
             date = LocalDate.now();
         }
-        ArchiveResponse response = archiveService.findMonthly(principalDetails.getId(), scheduleId, date);
-        return ResponseEntity.ok(Result.of(response));
+        return ResponseEntity.ok(Result.of(archiveService.findMonthly(principalDetails.getId(), scheduleId, date)));
     }
 
     @GetMapping("/recentLogs/{scheduleId}")
@@ -166,7 +165,7 @@ public class ArchiveController {
     @PostMapping("/deleteLogs")
     public ResponseEntity<Result> delete(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                          @RequestBody final LogsDeleteRequest request) {
-        
+
         return ResponseEntity.ok(Result.of(archiveService.deleteLogs(principalDetails.getId(), request)));
     }
 
