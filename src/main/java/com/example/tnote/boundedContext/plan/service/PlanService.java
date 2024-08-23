@@ -88,6 +88,12 @@ public class PlanService {
     }
 
     @Transactional
+    public int deletePlans(final Long userId, final List<Long> planIds) {
+        planIds.forEach(planId -> delete(userId, planId));
+        return planIds.size();
+    }
+
+    @Transactional
     public PlanResponse find(final Long userId, final Long planId) {
         Plan plan = findByIdAndUserId(planId, userId);
         recentLogService.save(userId, planId, plan.getSchedule().getId(), "PLAN");
