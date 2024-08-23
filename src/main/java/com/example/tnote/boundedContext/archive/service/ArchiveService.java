@@ -228,12 +228,9 @@ public class ArchiveService {
     }
 
     public ArchiveResponse findDaily(final Long userId, final Long scheduleId, final LocalDate date) {
-        Schedule schedule = scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
-        LocalDate startDate = schedule.getStartDate();
-        LocalDate endDate = schedule.getEndDate();
+        Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
 
-        if (date.isBefore(startDate) || (endDate != null && date.isAfter(endDate))) {
+        if (date.isBefore(schedule.getStartDate()) || (date.isAfter(schedule.getEndDate()))) {
             throw new ScheduleException(ScheduleErrorCode.DATES_NOT_INCLUDED_IN_SEMESTER);
         }
         List<ClassLogResponse> classLogs = classLogService.findDaily(userId, scheduleId, date);
