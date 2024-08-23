@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.plan.service;
 
 import com.example.tnote.base.utils.AwsS3Uploader;
+import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.plan.dto.PlanDeleteResponse;
 import com.example.tnote.boundedContext.plan.dto.PlanResponses;
 import com.example.tnote.boundedContext.plan.dto.PlanSaveRequest;
@@ -17,6 +18,8 @@ import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -108,6 +111,18 @@ public class PlanService {
         recentLogService.save(userId,planId,plan.getSchedule().getId(),"PLAN");
 
         return PlanResponse.from(plan);
+    }
+
+    public List<PlanResponse> findDaily(final Long userId, final Long scheduleId, final LocalDate date) {
+
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
+
+        List<Plan> plans = planRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId,
+                startOfDay, endOfDay);
+
+        return plans.stream()
+                .map(PlanResponse::from).toList();
     }
 
     private void updateImage(Plan plan, List<MultipartFile> planImages) {
