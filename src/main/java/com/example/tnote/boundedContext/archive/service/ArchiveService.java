@@ -73,7 +73,7 @@ public class ArchiveService {
     @Transactional(readOnly = true)
     public List<ConsultationResponseDto> findAllOfConsultation(String studentName, Long userId, Long scheduleId) {
 
-        findUser(userId);
+        userRepository.findById(userId);
 
         List<Consultation> consultations = consultationQueryRepository.findAll(studentName, scheduleId);
 
@@ -85,7 +85,7 @@ public class ArchiveService {
     @Transactional(readOnly = true)
     public List<ObservationResponseDto> findAllOfObservation(String studentName, Long userId, Long scheduleId) {
 
-        findUser(userId);
+        userRepository.findById(userId);
 
         List<Observation> observations = observationQueryRepository.findAll(studentName, scheduleId);
 
@@ -97,7 +97,7 @@ public class ArchiveService {
     @Transactional(readOnly = true)
     public List<ClassLogResponse> findAllOfClassLog(String title, Long userId, Long scheduleId) {
 
-        findUser(userId);
+        userRepository.findById(userId);
 
         List<ClassLog> classLogs = classLogQueryRepository.findAll(title, scheduleId);
 
@@ -109,18 +109,13 @@ public class ArchiveService {
     @Transactional(readOnly = true)
     public List<ProceedingResponse> findAllOfProceeding(String title, Long userId, Long scheduleId) {
 
-        findUser(userId);
+        userRepository.findById(userId);
 
         List<Proceeding> proceedings = proceedingQueryRepository.findAll(title, scheduleId);
 
         return proceedings.stream()
                 .map(ProceedingResponse::from)
                 .toList();
-    }
-
-    private void findUser(Long userId) {
-        userRepository.findById(userId).orElseThrow(
-                () -> new CustomException(USER_NOT_FOUND));
     }
 
     public ArchiveSliceResponseDto readLogsByDate(Long userId, Long scheduleId, LocalDate startDate, LocalDate endDate,
