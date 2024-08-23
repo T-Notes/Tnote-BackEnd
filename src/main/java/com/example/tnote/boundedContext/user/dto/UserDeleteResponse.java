@@ -5,11 +5,11 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class UserDeleteResponseDto {
+public class UserDeleteResponse {
     private Long id;
 
-    public static UserDeleteResponseDto from(KakaoUnlinkResponse unlink) {
-        return UserDeleteResponseDto.builder()
+    public static UserDeleteResponse from(KakaoUnlinkResponse unlink) {
+        return UserDeleteResponse.builder()
                 .id(unlink.getId())
                 .build();
     }

@@ -3,11 +3,11 @@ package com.example.tnote.boundedContext.subject.controller;
 import com.example.tnote.base.response.Result;
 import com.example.tnote.base.utils.TokenUtils;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
-import com.example.tnote.boundedContext.subject.dto.SubjectDetailResponseDto;
-import com.example.tnote.boundedContext.subject.dto.SubjectRequestDto;
-import com.example.tnote.boundedContext.subject.dto.SubjectResponseDto;
-import com.example.tnote.boundedContext.subject.dto.SubjectsDeleteResponseDto;
-import com.example.tnote.boundedContext.subject.dto.SubjectsUpdateRequestDto;
+import com.example.tnote.boundedContext.subject.dto.SubjectDetailResponse;
+import com.example.tnote.boundedContext.subject.dto.SubjectRequest;
+import com.example.tnote.boundedContext.subject.dto.SubjectResponse;
+import com.example.tnote.boundedContext.subject.dto.SubjectsDeleteResponse;
+import com.example.tnote.boundedContext.subject.dto.SubjectsUpdateRequest;
 import com.example.tnote.boundedContext.subject.service.SubjectService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -44,16 +44,16 @@ public class SubjectController {
     @Operation(summary = "create Subject api", description = "accessToken로 Subject 생성 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
-                    content = {@Content(schema = @Schema(implementation = SubjectResponseDto.class))}),
+                    content = {@Content(schema = @Schema(implementation = SubjectResponse.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> saveSubjects(@RequestBody final SubjectRequestDto dto,
+    public ResponseEntity<Result> saveSubjects(@RequestBody final SubjectRequest dto,
                                                @PathVariable("scheduleId") final Long scheduleId,
                                                @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        SubjectResponseDto response = subjectService.addSubjects(dto, scheduleId, currentUser.getId());
+        SubjectResponse response = subjectService.saveSubjects(dto, scheduleId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -63,16 +63,16 @@ public class SubjectController {
     @Operation(summary = "update Subject api", description = "accessToken로 Subject 수정 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
-                    content = {@Content(schema = @Schema(implementation = SubjectResponseDto.class))}),
+                    content = {@Content(schema = @Schema(implementation = SubjectResponse.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
-    public ResponseEntity<Result> updateSubjects(@RequestBody final SubjectsUpdateRequestDto dto,
+    public ResponseEntity<Result> updateSubjects(@RequestBody final SubjectsUpdateRequest dto,
                                                  @PathVariable("subjectId") final Long subjectId,
                                                  @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        SubjectResponseDto response = subjectService.updateSubjects(dto, subjectId, currentUser.getId());
+        SubjectResponse response = subjectService.updateSubjects(dto, subjectId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -81,7 +81,7 @@ public class SubjectController {
     @Operation(summary = "delete Subject api", description = "accessToken로 Subject 삭제 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
-                    content = {@Content(schema = @Schema(implementation = SubjectsDeleteResponseDto.class))}),
+                    content = {@Content(schema = @Schema(implementation = SubjectsDeleteResponse.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
     public ResponseEntity<Result> deleteSubjects(@PathVariable final Long scheduleId,
@@ -90,7 +90,7 @@ public class SubjectController {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        SubjectsDeleteResponseDto response = subjectService.deleteSubjects(scheduleId, subjectId, currentUser.getId());
+        SubjectsDeleteResponse response = subjectService.deleteSubjects(scheduleId, subjectId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -100,7 +100,7 @@ public class SubjectController {
     @Operation(summary = "specific day's Subject api", description = "특정 요일 Subject 조회 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = SubjectResponseDto.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = SubjectResponse.class)))),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
     public ResponseEntity<Result> findDay(@PathVariable final Long scheduleId,
@@ -109,7 +109,7 @@ public class SubjectController {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        List<SubjectResponseDto> response = subjectService.getMyClass(scheduleId, day, currentUser.getId());
+        List<SubjectResponse> response = subjectService.getMyClass(scheduleId, day, currentUser.getId());
         return ResponseEntity.ok(Result.of(response));
     }
 
@@ -118,14 +118,14 @@ public class SubjectController {
     @Operation(summary = "specific Subject api", description = "특정 Subject 조회 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
-                    content = {@Content(schema = @Schema(implementation = SubjectDetailResponseDto.class))}),
+                    content = {@Content(schema = @Schema(implementation = SubjectDetailResponse.class))}),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
     public ResponseEntity<Result> findSubject(@PathVariable final Long scheduleId, @PathVariable final Long subjectId,
                                               @AuthenticationPrincipal final PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
-        SubjectDetailResponseDto response = subjectService.getSubject(scheduleId, subjectId, currentUser.getId());
+        SubjectDetailResponse response = subjectService.getSubject(scheduleId, subjectId, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }

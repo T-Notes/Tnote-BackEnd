@@ -5,9 +5,9 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
-import com.example.tnote.boundedContext.todo.dto.TodoRequestDto;
-import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
-import com.example.tnote.boundedContext.todo.dto.TodoUpdateRequestDto;
+import com.example.tnote.boundedContext.todo.dto.TodoRequest;
+import com.example.tnote.boundedContext.todo.dto.TodoResponse;
+import com.example.tnote.boundedContext.todo.dto.TodoUpdateRequest;
 import com.example.tnote.boundedContext.todo.entity.Todo;
 import com.example.tnote.boundedContext.todo.service.TodoService;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -63,7 +63,7 @@ public class TodoServiceTest {
         testSyUtils.login(principalDetails);
         LocalDate date = LocalDate.parse("2024-01-27");
 
-        TodoRequestDto dto = TodoRequestDto.builder()
+        TodoRequest dto = TodoRequest.builder()
                 .content("test1")
                 .status(false)
                 .build();
@@ -83,7 +83,7 @@ public class TodoServiceTest {
 
         // given
         LocalDate date = LocalDate.parse("2024-01-27");
-        TodoRequestDto dto = TodoRequestDto.builder()
+        TodoRequest dto = TodoRequest.builder()
                 .content("test1")
                 .status(false)
                 .build();
@@ -103,7 +103,7 @@ public class TodoServiceTest {
         testSyUtils.login(principalDetails);
         LocalDate date = LocalDate.parse("2024-01-27");
 
-        TodoRequestDto dto = TodoRequestDto.builder()
+        TodoRequest dto = TodoRequest.builder()
                 .content("test1")
                 .status(false)
                 .build();
@@ -123,7 +123,7 @@ public class TodoServiceTest {
         testSyUtils.login(principalDetails);
         LocalDate date = LocalDate.parse("2024-01-27");
 
-        TodoRequestDto dto = TodoRequestDto.builder()
+        TodoRequest dto = TodoRequest.builder()
                 .content("test1")
                 .status(false)
                 .build();
@@ -201,7 +201,7 @@ public class TodoServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        List<TodoResponseDto> todos = todoService.findAllTodos(LocalDate.parse("2024-01-27"), schedule1.getId(),
+        List<TodoResponse> todos = todoService.findAllTodos(LocalDate.parse("2024-01-27"), schedule1.getId(),
                 user1.getId());
 
         // then/
@@ -249,13 +249,13 @@ public class TodoServiceTest {
 
         // when
 
-        TodoUpdateRequestDto dto = TodoUpdateRequestDto.builder()
+        TodoUpdateRequest dto = TodoUpdateRequest.builder()
                 .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
                 .status(true)
                 .build();
 
-        TodoResponseDto response = todoService.updateTodos(dto, schedule1.getId(), todo1.getId(), user1.getId(), date);
+        TodoResponse response = todoService.updateTodos(dto, schedule1.getId(), todo1.getId(), user1.getId(), date);
 
         // then
         assertThat(response.getContent()).isEqualTo(dto.getContent());
@@ -273,7 +273,7 @@ public class TodoServiceTest {
 
         // when
 
-        TodoUpdateRequestDto dto = TodoUpdateRequestDto.builder()
+        TodoUpdateRequest dto = TodoUpdateRequest.builder()
                 .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
                 .status(true)
@@ -293,7 +293,7 @@ public class TodoServiceTest {
 
         // when
 
-        TodoUpdateRequestDto dto = TodoUpdateRequestDto.builder()
+        TodoUpdateRequest dto = TodoUpdateRequest.builder()
                 .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
                 .status(true)
@@ -314,7 +314,7 @@ public class TodoServiceTest {
 
         // when
 
-        TodoUpdateRequestDto dto = TodoUpdateRequestDto.builder()
+        TodoUpdateRequest dto = TodoUpdateRequest.builder()
                 .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
                 .status(true)
@@ -335,7 +335,7 @@ public class TodoServiceTest {
 
         // when
 
-        TodoUpdateRequestDto dto = TodoUpdateRequestDto.builder()
+        TodoUpdateRequest dto = TodoUpdateRequest.builder()
                 .date(LocalDate.parse("2024-01-27"))
                 .content("test1")
                 .status(true)

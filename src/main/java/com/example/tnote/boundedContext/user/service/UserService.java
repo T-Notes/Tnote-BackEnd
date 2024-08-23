@@ -40,17 +40,12 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public UserResponse getUserInfo(final Long userId) {
-
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
-
-        return UserResponse.from(user);
+        return UserResponse.from(userRepository.findUserById(userId));
     }
 
     @Transactional
     public UserResponse updateAlarmInfo(final Long userId, final UserAlarmUpdate dto) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+        User user = userRepository.findUserById(userId);
 
         user.updateAlarm(dto.isAlarm());
 
@@ -60,8 +55,7 @@ public class UserService {
     @Transactional
     public UserResponse updateExtraInfo(final Long userId, final UserUpdateRequest dto) {
 
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+        User user = userRepository.findUserById(userId);
 
         updateUserItem(dto, user);
 
@@ -88,20 +82,17 @@ public class UserService {
 
     @Transactional
     public void logout(HttpServletRequest request, HttpServletResponse response) {
-
         CookieUtils.deleteCookie(request, response, "AccessToken");
     }
 
     @Transactional(readOnly = true)
     public UserMailResponse getMail(final Long userId) {
-        User currentUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
-        return UserMailResponse.from(currentUser);
+        return UserMailResponse.from(userRepository.findUserById(userId));
     }
 
     @Transactional(readOnly = true)
     public UserResponse findById(final Long userId) {
-        User user = userRepository.findById(userId).orElseThrow(() -> new UserException(USER_NOT_FOUND));
+        User user = userRepository.findUserById(userId);
         if (user.getSchool() == null || user.getSchool().isEmpty()) {
             throw new UserException(USER_NOT_FOUND);
         }

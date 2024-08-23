@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class TodoUpdateRequestDto {
+public class TodoUpdateRequest {
 
     private LocalDate date;
     private String content;

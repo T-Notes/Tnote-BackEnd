@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class OauthRefreshDto {
+public class OauthRefresh {
 
     private String token_type;
     private String access_token;

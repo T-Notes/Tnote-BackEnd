@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ScheduleUpdateRequestDto {
+public class ScheduleUpdateRequest {
     private String semesterName;
     private String lastClass;
     private String email;

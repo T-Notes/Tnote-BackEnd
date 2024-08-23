@@ -7,8 +7,8 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class TodoSliceResponseDto {
-    private List<TodoResponseDto> todos;
+public class TodoSliceResponse {
+    private List<TodoResponse> todos;
     private int numberOfTodo;
 
     private long page;

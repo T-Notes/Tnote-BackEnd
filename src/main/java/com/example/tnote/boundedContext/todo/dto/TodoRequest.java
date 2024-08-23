@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class TodoRequestDto {
+public class TodoRequest {
     private String content;
     private Boolean status;
 

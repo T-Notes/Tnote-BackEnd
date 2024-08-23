@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ScheduleRequestDto {
+public class ScheduleRequest {
 
     private String semesterName;
     private String lastClass;

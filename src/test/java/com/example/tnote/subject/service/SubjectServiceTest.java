@@ -6,10 +6,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import com.example.tnote.base.exception.CustomException;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
-import com.example.tnote.boundedContext.subject.dto.SubjectDetailResponseDto;
-import com.example.tnote.boundedContext.subject.dto.SubjectRequestDto;
-import com.example.tnote.boundedContext.subject.dto.SubjectResponseDto;
-import com.example.tnote.boundedContext.subject.dto.SubjectsUpdateRequestDto;
+import com.example.tnote.boundedContext.subject.dto.SubjectDetailResponse;
+import com.example.tnote.boundedContext.subject.dto.SubjectRequest;
+import com.example.tnote.boundedContext.subject.dto.SubjectResponse;
+import com.example.tnote.boundedContext.subject.dto.SubjectsUpdateRequest;
 import com.example.tnote.boundedContext.subject.entity.Subjects;
 import com.example.tnote.boundedContext.subject.service.SubjectService;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -62,7 +62,7 @@ class SubjectServiceTest {
         // given
         testSyUtils.login(principalDetails);
 
-        SubjectRequestDto dto = SubjectRequestDto.builder()
+        SubjectRequest dto = SubjectRequest.builder()
                 .memo("test1")
                 .classLocation("3반교실")
                 .classTime("9교시")
@@ -91,7 +91,7 @@ class SubjectServiceTest {
 
         // given
 
-        SubjectRequestDto dto = SubjectRequestDto.builder()
+        SubjectRequest dto = SubjectRequest.builder()
                 .memo("test1")
                 .classLocation("3반교실")
                 .classTime("9교시")
@@ -104,7 +104,7 @@ class SubjectServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> subjectService.addSubjects(dto, schedule1.getId(), null))
+        assertThatThrownBy(() -> subjectService.saveSubjects(dto, schedule1.getId(), null))
                 .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
@@ -115,7 +115,7 @@ class SubjectServiceTest {
         // given
         testSyUtils.login(principalDetails);
 
-        SubjectsUpdateRequestDto dto = SubjectsUpdateRequestDto.builder()
+        SubjectsUpdateRequest dto = SubjectsUpdateRequest.builder()
                 .memo("test1")
                 .classLocation("3반교실")
                 .classTime("9교시")
@@ -126,7 +126,7 @@ class SubjectServiceTest {
                 .build();
 
         // when
-        SubjectResponseDto response = subjectService.updateSubjects(dto, subjects.getId(), user1.getId());
+        SubjectResponse response = subjectService.updateSubjects(dto, subjects.getId(), user1.getId());
 
         // then
         assertThat(response.getSubjectName()).isEqualTo("물리");
@@ -143,7 +143,7 @@ class SubjectServiceTest {
     void notLoginUpdateSubjects() {
 
         // given
-        SubjectsUpdateRequestDto dto = SubjectsUpdateRequestDto.builder()
+        SubjectsUpdateRequest dto = SubjectsUpdateRequest.builder()
                 .memo("test1")
                 .classLocation("3반교실")
                 .classTime("9교시")
@@ -167,7 +167,7 @@ class SubjectServiceTest {
         // given
         testSyUtils.login(principalDetails);
 
-        SubjectsUpdateRequestDto dto = SubjectsUpdateRequestDto.builder()
+        SubjectsUpdateRequest dto = SubjectsUpdateRequest.builder()
                 .memo("test1")
                 .classLocation("3반교실")
                 .classTime("9교시")
@@ -191,7 +191,7 @@ class SubjectServiceTest {
         // given
         testSyUtils.login(principalDetails);
 
-        SubjectsUpdateRequestDto dto = SubjectsUpdateRequestDto.builder()
+        SubjectsUpdateRequest dto = SubjectsUpdateRequest.builder()
                 .memo("test1")
                 .classLocation("3반교실")
                 .classTime("9교시")
@@ -270,7 +270,7 @@ class SubjectServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        List<SubjectResponseDto> response = subjectService.getMyClass(schedule1.getId(), ClassDay.WEDNESDAY,
+        List<SubjectResponse> response = subjectService.getMyClass(schedule1.getId(), ClassDay.WEDNESDAY,
                 user1.getId());
 
         // then
@@ -316,7 +316,7 @@ class SubjectServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        SubjectDetailResponseDto response = subjectService.getSubject(schedule1.getId(), subjects.getId(),
+        SubjectDetailResponse response = subjectService.getSubject(schedule1.getId(), subjects.getId(),
                 user1.getId());
 
         // then

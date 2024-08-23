@@ -6,7 +6,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class SubjectDetailResponseDto {
+public class SubjectDetailResponse {
     private Long id;
     private String subjectName;
     private String classTime;
@@ -15,9 +15,9 @@ public class SubjectDetailResponseDto {
     private String memo;
     private String color;
 
-    public static SubjectDetailResponseDto from(Subjects subject) {
+    public static SubjectDetailResponse from(Subjects subject) {
 
-        return SubjectDetailResponseDto.builder()
+        return SubjectDetailResponse.builder()
                 .id(subject.getId())
                 .subjectName(subject.getSubjectName())
                 .classTime(subject.getClassTime())
