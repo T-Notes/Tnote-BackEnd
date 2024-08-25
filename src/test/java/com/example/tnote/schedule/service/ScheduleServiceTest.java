@@ -4,10 +4,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.tnote.base.exception.CustomException;
-import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
-import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
-import com.example.tnote.boundedContext.schedule.dto.ScheduleUpdateRequestDto;
-import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
+import com.example.tnote.boundedContext.schedule.dto.ScheduleRequest;
+import com.example.tnote.boundedContext.schedule.dto.ScheduleResponse;
+import com.example.tnote.boundedContext.schedule.dto.ScheduleUpdateRequest;
+import com.example.tnote.boundedContext.schedule.dto.SemesterResponse;
 import com.example.tnote.boundedContext.schedule.entity.ClassDay;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.service.ScheduleService;
@@ -88,7 +88,7 @@ class ScheduleServiceTest {
         // given
         testSyUtils.login(principalDetails);
 
-        ScheduleRequestDto dto = ScheduleRequestDto.builder()
+        ScheduleRequest dto = ScheduleRequest.builder()
                 .semesterName("test1")
                 .lastClass("9교시")
                 .email(user1.getEmail())
@@ -113,7 +113,7 @@ class ScheduleServiceTest {
 
         // given
 
-        ScheduleRequestDto dto = ScheduleRequestDto.builder()
+        ScheduleRequest dto = ScheduleRequest.builder()
                 .semesterName("test1")
                 .lastClass("9교시")
                 .email(user1.getEmail())
@@ -124,7 +124,7 @@ class ScheduleServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> scheduleService.addSchedule(dto, null))
+        assertThatThrownBy(() -> scheduleService.saveSchedule(dto, null))
                 .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
@@ -137,7 +137,7 @@ class ScheduleServiceTest {
 
         // when
 
-        ScheduleUpdateRequestDto dto = ScheduleUpdateRequestDto.builder()
+        ScheduleUpdateRequest dto = ScheduleUpdateRequest.builder()
                 .semesterName("test1")
                 .lastClass("9교시")
                 .email(user1.getEmail())
@@ -145,7 +145,7 @@ class ScheduleServiceTest {
                 .endDate(LocalDate.parse("2024-06-01"))
                 .build();
 
-        ScheduleResponseDto response = scheduleService.updateSchedule(dto, schedule1.getId(), user1.getId());
+        ScheduleResponse response = scheduleService.updateSchedule(dto, schedule1.getId(), user1.getId());
 
         // then
         assertThat(response.getSemesterName()).isEqualTo(dto.getSemesterName());
@@ -164,7 +164,7 @@ class ScheduleServiceTest {
 
         // when
 
-        ScheduleUpdateRequestDto dto = ScheduleUpdateRequestDto.builder()
+        ScheduleUpdateRequest dto = ScheduleUpdateRequest.builder()
                 .semesterName("test1")
                 .lastClass("9교시")
                 .email(user1.getEmail())
@@ -186,7 +186,7 @@ class ScheduleServiceTest {
 
         // when
 
-        ScheduleUpdateRequestDto dto = ScheduleUpdateRequestDto.builder()
+        ScheduleUpdateRequest dto = ScheduleUpdateRequest.builder()
                 .semesterName("test1")
                 .lastClass("9교시")
                 .email(user1.getEmail())
@@ -207,7 +207,7 @@ class ScheduleServiceTest {
 
         // when
 
-        ScheduleUpdateRequestDto dto = ScheduleUpdateRequestDto.builder()
+        ScheduleUpdateRequest dto = ScheduleUpdateRequest.builder()
                 .semesterName("test1")
                 .lastClass("9교시")
                 .email(user1.getEmail())
@@ -278,7 +278,6 @@ class ScheduleServiceTest {
     @Test
     @DisplayName("학기 남은 날짜 계산")
     void countLeftDays() {
-
         // given
         testSyUtils.login(principalDetails);
 
@@ -297,7 +296,7 @@ class ScheduleServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        List<ScheduleResponseDto> all = scheduleService.getAllSubjectsInfoBySchedule(schedule1.getId(), user1.getId());
+        List<ScheduleResponse> all = scheduleService.getAllSubjectsBySchedule(schedule1.getId(), user1.getId());
 
         // then
         assertThat(all.get(0).getSemesterName()).isEqualTo(schedule1.getSemesterName());
@@ -317,7 +316,7 @@ class ScheduleServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> scheduleService.getAllSubjectsInfoBySchedule(222L, user1.getId()))
+        assertThatThrownBy(() -> scheduleService.getAllSubjectsBySchedule(222L, user1.getId()))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -331,7 +330,7 @@ class ScheduleServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> scheduleService.getAllSubjectsInfoBySchedule(schedule1.getId(), 222L))
+        assertThatThrownBy(() -> scheduleService.getAllSubjectsBySchedule(schedule1.getId(), 222L))
                 .isInstanceOf(CustomException.class);
     }
 
@@ -344,7 +343,7 @@ class ScheduleServiceTest {
         // when
 
         // then
-        assertThatThrownBy(() -> scheduleService.getAllSubjectsInfoBySchedule(schedule1.getId(), null))
+        assertThatThrownBy(() -> scheduleService.getAllSubjectsBySchedule(schedule1.getId(), null))
                 .isInstanceOf(InvalidDataAccessApiUsageException.class);
     }
 
@@ -356,7 +355,7 @@ class ScheduleServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        List<SemesterNameResponseDto> scheduleList = scheduleService.findScheduleList(user1.getId());
+        List<SemesterResponse> scheduleList = scheduleService.findScheduleList(user1.getId());
 
         // then
         assertThat(scheduleList.get(0).getSemesterName()).isEqualTo("test1");
@@ -383,7 +382,7 @@ class ScheduleServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        List<ScheduleResponseDto> schedule = scheduleService.findSchedule(schedule1.getId(), user1.getId());
+        List<ScheduleResponse> schedule = scheduleService.findSchedule(schedule1.getId(), user1.getId());
 
         // then
         assertThat(schedule.get(0).getSemesterName()).isEqualTo(schedule1.getSemesterName());

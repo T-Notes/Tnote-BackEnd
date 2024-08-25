@@ -1,7 +1,6 @@
 package com.example.tnote.boundedContext.schedule.service;
 
 
-import static com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode.SCHEDULE_NOT_FOUND;
 import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
 
 import com.example.tnote.boundedContext.classLog.repository.query.ClassLogQueryRepository;
@@ -9,11 +8,11 @@ import com.example.tnote.boundedContext.consultation.repository.query.Consultati
 import com.example.tnote.boundedContext.observation.repository.query.ObservationQueryRepository;
 import com.example.tnote.boundedContext.proceeding.repository.query.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.recentLog.repository.RecentLogRepository;
-import com.example.tnote.boundedContext.schedule.dto.ScheduleDeleteResponseDto;
-import com.example.tnote.boundedContext.schedule.dto.ScheduleRequestDto;
-import com.example.tnote.boundedContext.schedule.dto.ScheduleResponseDto;
-import com.example.tnote.boundedContext.schedule.dto.ScheduleUpdateRequestDto;
-import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
+import com.example.tnote.boundedContext.schedule.dto.ScheduleDeleteResponse;
+import com.example.tnote.boundedContext.schedule.dto.ScheduleRequest;
+import com.example.tnote.boundedContext.schedule.dto.ScheduleResponse;
+import com.example.tnote.boundedContext.schedule.dto.ScheduleUpdateRequest;
+import com.example.tnote.boundedContext.schedule.dto.SemesterResponse;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.exception.ScheduleException;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleQueryRepository;
@@ -45,29 +44,25 @@ public class ScheduleService {
     private final RecentLogRepository recentLogRepository;
 
     @Transactional
-    public ScheduleResponseDto addSchedule(final ScheduleRequestDto dto, final Long userId) {
+    public ScheduleResponse saveSchedule(final ScheduleRequest dto, final Long userId) {
 
-        User currentUser = userRepository.findById(userId).orElseThrow(
-                () -> new ScheduleException(USER_NOT_FOUND));
+        Schedule schedule = dto.toEntity(userRepository.findUserById(userId));
 
-        Schedule schedule = dto.toEntity(currentUser);
-
-        return ScheduleResponseDto.from(scheduleRepository.save(schedule));
+        return ScheduleResponse.from(scheduleRepository.save(schedule));
     }
 
     @Transactional
-    public ScheduleResponseDto updateSchedule(final ScheduleUpdateRequestDto dto, final Long scheduleId,
-                                              final Long userId) {
+    public ScheduleResponse updateSchedule(final ScheduleUpdateRequest dto, final Long scheduleId,
+                                           final Long userId) {
 
-        User currentUser = checkCurrentUser(userId);
-        Schedule schedule = authorizationWriter(scheduleId, currentUser);
+        Schedule schedule = authorizationWriter(scheduleId, userRepository.findUserById(userId));
 
         updateEachScheduleItem(dto, schedule);
 
-        return ScheduleResponseDto.from(schedule);
+        return ScheduleResponse.from(schedule);
     }
 
-    private void updateEachScheduleItem(final ScheduleUpdateRequestDto dto, final Schedule schedule) {
+    private void updateEachScheduleItem(final ScheduleUpdateRequest dto, final Schedule schedule) {
         if (dto.hasSemesterName()) {
             schedule.updateSemesterName(dto.getSemesterName());
         }
@@ -83,10 +78,10 @@ public class ScheduleService {
     }
 
     @Transactional
-    public ScheduleDeleteResponseDto deleteSchedule(final Long scheduleId, final Long userId) {
+    public ScheduleDeleteResponse deleteSchedule(final Long scheduleId, final Long userId) {
 
-        User currentUser = checkCurrentUser(userId);
-        Schedule own = authorizationWriter(scheduleId, currentUser);
+        User user = userRepository.findUserById(userId);
+        Schedule own = authorizationWriter(scheduleId, user);
 
         scheduleRepository.deleteById(own.getId());
 
@@ -96,17 +91,17 @@ public class ScheduleService {
         observationQueryRepository.deleteAllByScheduleIdAndUserId(scheduleId, userId);
         recentLogRepository.deleteAllByUserIdAndScheduleId(userId, scheduleId);
 
-        if (currentUser.getLastScheduleId() == scheduleId) {
-            currentUser.updateLastScheduleName(null);
-            currentUser.updateLastScheduleId(0);
+        if (user.getLastScheduleId() == scheduleId) {
+            user.updateLastScheduleName(null);
+            user.updateLastScheduleId(0);
         }
 
-        return ScheduleDeleteResponseDto.from(own);
+        return ScheduleDeleteResponse.from(own);
     }
 
-    private Schedule authorizationWriter(final Long id, final User member) {
+    private Schedule authorizationWriter(final Long scheduleId, final User member) {
 
-        Schedule schedule = getSchedule(id);
+        Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
 
         matchUserWithSchedule(schedule.getId(), member.getId());
 
@@ -119,11 +114,11 @@ public class ScheduleService {
     @Transactional(readOnly = true)
     public long countLeftDays(final LocalDate date, final Long scheduleId, final Long userId) {
 
-        Schedule schedule = getSchedule(scheduleId);
+        Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
 
         LocalDate CurrentDate = getLocalDate(date);
 
-        compareScheduleWithUser(userId, schedule);
+        matchUserWithSchedule(schedule.getId(), userId);
 
         return ChronoUnit.DAYS.between(CurrentDate, schedule.getEndDate()) <= 0 ? 0
                 : ChronoUnit.DAYS.between(CurrentDate, schedule.getEndDate());
@@ -131,38 +126,34 @@ public class ScheduleService {
     }
 
     @Transactional(readOnly = true)
-    public List<ScheduleResponseDto> getAllSubjectsInfoBySchedule(final Long scheduleId, final Long userId) {
+    public List<ScheduleResponse> getAllSubjectsBySchedule(final Long scheduleId, final Long userId) {
 
         matchUserWithSchedule(scheduleId, userId);
 
-        return ScheduleResponseDto.from(scheduleQueryRepository.findAllById(scheduleId));
+        return ScheduleResponse.from(scheduleQueryRepository.findAllById(scheduleId));
     }
 
     @Transactional(readOnly = true)
-    public List<SemesterNameResponseDto> searchSemester(final String semesterName, final Long userId) {
-
-        checkUser(userId);
+    public List<SemesterResponse> searchSemester(final String semesterName, final Long userId) {
 
         List<Schedule> schedules = scheduleQueryRepository.findAllBySemesterNameAndUserId(semesterName, userId);
 
         return schedules.stream()
-                .map(SemesterNameResponseDto::from)
+                .map(SemesterResponse::from)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<ScheduleResponseDto> findSchedule(final Long scheduleId, final Long userId) {
+    public List<ScheduleResponse> findSchedule(final Long scheduleId, final Long userId) {
 
         matchUserWithSchedule(scheduleId, userId);
 
-        return ScheduleResponseDto.excludeLastDayFrom(scheduleRepository.findAllById(scheduleId));
+        return ScheduleResponse.excludeLastDayFrom(scheduleRepository.findAllById(scheduleId));
     }
 
     @Transactional(readOnly = true)
-    public List<SemesterNameResponseDto> findScheduleList(final Long userId) {
-        User currentUser = checkCurrentUser(userId);
-
-        return SemesterNameResponseDto.from(scheduleQueryRepository.findAllByUserId(currentUser.getId()));
+    public List<SemesterResponse> findScheduleList(final Long userId) {
+        return SemesterResponse.from(scheduleQueryRepository.findAllByUserId(userId));
     }
 
     @Transactional
@@ -178,7 +169,7 @@ public class ScheduleService {
         map.put("SATURDAY", 0);
         map.put("SUNDAY", 0);
 
-        Schedule schedule = getSchedule(scheduleId);
+        Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
 
         for (LocalDate currentDate = date; !currentDate.isAfter(schedule.getEndDate());
              currentDate = currentDate.plusDays(1)) {
@@ -187,7 +178,7 @@ public class ScheduleService {
             map.put(dayOfWeek, map.get(dayOfWeek) + 1);
         }
 
-        compareScheduleWithUser(userId, schedule);
+        matchUserWithSchedule(schedule.getId(), userId);
 
         for (Subjects s : schedule.getSubjectsList()) {
 
@@ -199,35 +190,11 @@ public class ScheduleService {
         return totalCnt;
     }
 
-    private Schedule getSchedule(final Long scheduleId) {
-        return scheduleRepository.findById(scheduleId).orElseThrow(
-                () -> new ScheduleException(SCHEDULE_NOT_FOUND));
-    }
-
-    private User checkCurrentUser(final Long id) {
-        return userRepository.findById(id).orElseThrow(
-                () -> new ScheduleException(USER_NOT_FOUND));
-    }
-
     private void matchUserWithSchedule(final Long scheduleId, final Long userId) {
-        User currentUser = checkCurrentUser(userId);
-        Schedule schedule = getSchedule(scheduleId);
+        User currentUser = userRepository.findUserById(userId);
+        Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
 
         if (!schedule.getUser().equals(currentUser)) {
-            log.warn("스케쥴 작성자와 현재 유저가 다른 유저입니다.");
-            throw new ScheduleException(USER_NOT_FOUND);
-        }
-    }
-
-    private void checkUser(final Long userId) {
-        if (userId == null) {
-            log.warn("없는 user 입니다");
-            throw new ScheduleException(USER_NOT_FOUND);
-        }
-    }
-
-    private void compareScheduleWithUser(final Long userId, final Schedule schedule) {
-        if (!schedule.getUser().getId().equals(userId)) {
             throw new ScheduleException(USER_NOT_FOUND);
         }
     }

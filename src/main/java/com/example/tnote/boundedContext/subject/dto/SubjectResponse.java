@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class SubjectResponseDto {
+public class SubjectResponse {
 
     private Long id;
     private String subjectName;
@@ -18,9 +18,9 @@ public class SubjectResponseDto {
     private String color;
     private String semesterName;  // 연관관계를 위함.
 
-    public static SubjectResponseDto from(Subjects subject) {
+    public static SubjectResponse from(Subjects subject) {
 
-        return SubjectResponseDto.builder()
+        return SubjectResponse.builder()
                 .id(subject.getId())
                 .subjectName(subject.getSubjectName())
                 .classTime(subject.getClassTime())
@@ -32,9 +32,9 @@ public class SubjectResponseDto {
                 .build();
     }
 
-    public static List<SubjectResponseDto> from(List<Subjects> subject) {
+    public static List<SubjectResponse> from(List<Subjects> subject) {
         return subject.stream()
-                .map(SubjectResponseDto::from)
+                .map(SubjectResponse::from)
                 .toList();
     }
 

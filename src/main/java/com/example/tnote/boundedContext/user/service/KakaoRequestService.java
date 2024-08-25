@@ -8,7 +8,7 @@ import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepo
 import com.example.tnote.boundedContext.user.dto.JwtResponse;
 import com.example.tnote.boundedContext.user.dto.KakaoUnlinkResponse;
 import com.example.tnote.boundedContext.user.dto.KakaoUserInfo;
-import com.example.tnote.boundedContext.user.dto.OauthRefreshDto;
+import com.example.tnote.boundedContext.user.dto.OauthRefresh;
 import com.example.tnote.boundedContext.user.dto.Token;
 import com.example.tnote.boundedContext.user.dto.TokenResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
@@ -103,7 +103,7 @@ public class KakaoRequestService implements RequestService {
         return kakaoInfoClient.unlink("Bearer " + accessToken);
     }
 
-    public OauthRefreshDto refresh(final String refreshToken) {
+    public OauthRefresh refresh(final String refreshToken) {
         return kakaoAuthClient.refresh("refresh_token", CLIENT_ID, refreshToken);
     }
 

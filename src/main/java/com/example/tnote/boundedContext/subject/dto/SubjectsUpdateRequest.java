@@ -7,7 +7,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class SubjectsUpdateRequestDto {
+public class SubjectsUpdateRequest {
 
     private String subjectName;
     private String classTime;

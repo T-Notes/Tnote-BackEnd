@@ -1,7 +1,7 @@
 package com.example.tnote.boundedContext.user.service.feign;
 
 
-import com.example.tnote.boundedContext.user.dto.OauthRefreshDto;
+import com.example.tnote.boundedContext.user.dto.OauthRefresh;
 import com.example.tnote.boundedContext.user.dto.TokenResponse;
 import feign.Headers;
 import org.springframework.cloud.openfeign.FeignClient;
@@ -20,7 +20,7 @@ public interface KakaoAuthClient {
 
     @PostMapping("/oauth/token")
     @Headers("Content-type: application/x-www-form-urlencoded;charset=utf-8")
-    OauthRefreshDto refresh(@RequestParam("grant_type") String grantType,
-                            @RequestParam("client_id") String clientId,
-                            @RequestParam("refresh_token") String refreshToken);
+    OauthRefresh refresh(@RequestParam("grant_type") String grantType,
+                         @RequestParam("client_id") String clientId,
+                         @RequestParam("refresh_token") String refreshToken);
 }

@@ -15,7 +15,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
-import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
+import com.example.tnote.boundedContext.schedule.dto.SemesterResponse;
 import com.example.tnote.boundedContext.schedule.service.ScheduleService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import io.swagger.v3.oas.annotations.Operation;
@@ -93,7 +93,7 @@ public class ArchiveController {
     @Operation(summary = "search archive name api", description = "아카이브명 검색 API")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
-                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = SemesterNameResponseDto.class)))),
+                    content = @Content(array = @ArraySchema(schema = @Schema(implementation = SemesterResponse.class)))),
             @ApiResponse(responseCode = "404", description = "로그인 실패")
     })
     public ResponseEntity<Result> findSemester(
@@ -101,7 +101,7 @@ public class ArchiveController {
             @AuthenticationPrincipal PrincipalDetails user) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
-        List<SemesterNameResponseDto> response = scheduleService.searchSemester(semesterName, currentUser.getId());
+        List<SemesterResponse> response = scheduleService.searchSemester(semesterName, currentUser.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }

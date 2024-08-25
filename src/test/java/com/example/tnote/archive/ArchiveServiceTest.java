@@ -4,18 +4,18 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import com.example.tnote.base.exception.CustomExceptions;
+import com.example.tnote.boundedContext.archive.service.ArchiveService;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
-import com.example.tnote.boundedContext.archive.service.ArchiveService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
-import com.example.tnote.boundedContext.schedule.dto.SemesterNameResponseDto;
+import com.example.tnote.boundedContext.schedule.dto.SemesterResponse;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.service.ScheduleService;
 import com.example.tnote.boundedContext.user.entity.User;
@@ -70,7 +70,7 @@ public class ArchiveServiceTest {
         consultation = testSyUtils.createConsultation("a", date, date, CounselingField.HEALTH, CounselingType.STUDENT,
                 "a", "a");
         observation = testSyUtils.createObservation("a", date, date, "a", "a");
-        proceeding = testSyUtils.createProceeding("a", date, date, "a", "a","red",user1,schedule1);
+        proceeding = testSyUtils.createProceeding("a", date, date, "a", "a", "red", user1, schedule1);
 
         schedule1 = testSyUtils.createSchedule("2024년 3학년 1학기", "a", user1, LocalDate.now(), LocalDate.now());
         schedule2 = testSyUtils.createSchedule("2024년 3학년 2학기", "a", user1, LocalDate.now(), LocalDate.now());
@@ -238,7 +238,7 @@ public class ArchiveServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        List<SemesterNameResponseDto> response = scheduleService.searchSemester("2024년 3학년 1학기",
+        List<SemesterResponse> response = scheduleService.searchSemester("2024년 3학년 1학기",
                 user1.getId());
 
         // then

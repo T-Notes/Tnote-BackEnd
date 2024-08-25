@@ -1,7 +1,6 @@
 package com.example.tnote.boundedContext.user.service;
 
 import static com.example.tnote.boundedContext.RefreshToken.exception.RefreshTokenErrorCode.EXPIRED_REFRESH_TOKEN;
-import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER_NOT_FOUND;
 
 import com.example.tnote.base.utils.JwtTokenProvider;
 import com.example.tnote.boundedContext.RefreshToken.entity.RefreshToken;
@@ -10,11 +9,10 @@ import com.example.tnote.boundedContext.RefreshToken.repository.RefreshTokenRepo
 import com.example.tnote.boundedContext.RefreshToken.service.RefreshTokenService;
 import com.example.tnote.boundedContext.user.dto.JwtResponse;
 import com.example.tnote.boundedContext.user.dto.KakaoUnlinkResponse;
-import com.example.tnote.boundedContext.user.dto.OauthRefreshDto;
+import com.example.tnote.boundedContext.user.dto.OauthRefresh;
 import com.example.tnote.boundedContext.user.dto.Token;
-import com.example.tnote.boundedContext.user.dto.UserDeleteResponseDto;
+import com.example.tnote.boundedContext.user.dto.UserDeleteResponse;
 import com.example.tnote.boundedContext.user.entity.User;
-import com.example.tnote.boundedContext.user.exception.UserException;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -48,16 +46,11 @@ public class AuthService {
 
         RefreshToken refreshTokenObj = refreshTokenService.findByRefreshToken(refreshToken);
 
-        User user = getUserFromRefreshToken(refreshTokenObj);
+        User user = userRepository.findUserByEmail(refreshTokenObj.getKeyEmail());
 
         Token newToken = jwtTokenProvider.createAccessToken(user.getEmail());
 
         return buildSignInResponse(newToken.getAccessToken(), refreshToken, user.getId());
-    }
-
-    private User getUserFromRefreshToken(final RefreshToken refreshToken) {
-        return userRepository.findByEmail(refreshToken.getKeyEmail())
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
     }
 
     private JwtResponse buildSignInResponse(final String accessToken, final String refreshToken, final Long userId) {
@@ -69,18 +62,17 @@ public class AuthService {
     }
 
     @Transactional
-    public UserDeleteResponseDto deleteUser(final Long userId, final String oauthRefreshToken) {
+    public UserDeleteResponse deleteUser(final Long userId, final String oauthRefreshToken) {
 
-        User currentUser = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(USER_NOT_FOUND));
+        User currentUser = userRepository.findUserById(userId);
 
         deleteAll(currentUser);
 
-        OauthRefreshDto dto = kakaoRequestService.refresh(oauthRefreshToken);
+        OauthRefresh dto = kakaoRequestService.refresh(oauthRefreshToken);
 
         KakaoUnlinkResponse unlink = kakaoRequestService.unLink(dto.getAccess_token());
 
-        return UserDeleteResponseDto.from(unlink);
+        return UserDeleteResponse.from(unlink);
     }
 
     // 연관키로 묶여 있음

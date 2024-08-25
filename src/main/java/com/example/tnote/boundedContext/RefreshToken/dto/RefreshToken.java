@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class RefreshTokenDto {
+public class RefreshToken {
     private String registrationId;
     private String refreshToken;
 }
