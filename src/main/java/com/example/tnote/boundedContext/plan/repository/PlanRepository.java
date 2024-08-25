@@ -44,4 +44,7 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
             Long userId,
             Long scheduleId,
             LocalDate date);
+
+    @Query("select p from Plan p where p.user.id = :userId and p.schedule.id = :scheduleId")
+    List<Plan> findAllByUserIdAndScheduleId(Long userId, Long scheduleId);
 }
