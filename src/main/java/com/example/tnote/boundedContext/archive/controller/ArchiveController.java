@@ -6,7 +6,7 @@ import com.example.tnote.boundedContext.archive.constant.DateType;
 import com.example.tnote.boundedContext.archive.constant.LogType;
 import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequest;
-import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponseDto;
+import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponse;
 import com.example.tnote.boundedContext.archive.service.ArchiveService;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
@@ -155,7 +155,7 @@ public class ArchiveController {
                                                    @RequestParam(value = "logType", required = false, defaultValue = "ALL") LogType logType) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        UnifiedLogResponseDto response = archiveService.findByLogType(principalDetails.getId(), scheduleId, logType,
+        UnifiedLogResponse response = archiveService.findByLogType(principalDetails.getId(), scheduleId, logType,
                 pageRequest);
         return ResponseEntity.ok(Result.of(response));
     }
@@ -176,7 +176,7 @@ public class ArchiveController {
                                                      @RequestParam(value = "size", required = false, defaultValue = "8") int size) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        UnifiedLogResponseDto response = archiveService.searchLogsByFilter(principalDetails.getId(), dateType,
+        UnifiedLogResponse response = archiveService.searchLogsByFilter(principalDetails.getId(), dateType,
                 searchType, keyword, pageRequest);
 
         return ResponseEntity.ok(Result.of(response));

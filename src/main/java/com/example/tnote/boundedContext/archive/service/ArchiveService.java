@@ -9,7 +9,7 @@ import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.archive.dto.LogEntry;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequest;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponse;
-import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponseDto;
+import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponses;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
@@ -141,8 +141,8 @@ public class ArchiveService {
         return null;
     }
 
-    public UnifiedLogResponseDto findByLogType(final Long userId, final Long scheduleId, final LogType logType,
-                                               final Pageable pageable) {
+    public UnifiedLogResponse findByLogType(final Long userId, final Long scheduleId, final LogType logType,
+                                            final Pageable pageable) {
         List<LogEntry> logs = new ArrayList<>();
 
         if (logType == LogType.ALL || logType == LogType.CLASS_LOG) {
@@ -157,6 +157,9 @@ public class ArchiveService {
         if (logType == LogType.ALL || logType == LogType.PROCEEDING) {
             logs.addAll(proceedingService.findByScheduleAndUser(scheduleId, userId));
         }
+        if (logType == LogType.ALL || logType == LogType.PLAN){
+            logs.addAll(planService.findByScheduleAndUser(scheduleId,userId));
+        }
 
         int totalLogs = logs.size();
         System.out.println("Total logs fetched: " + totalLogs);
@@ -165,18 +168,18 @@ public class ArchiveService {
         int start = (int) pageable.getOffset();
         if (start >= totalLogs) {
             System.out.println("Start index exceeds the log list size.");
-            return UnifiedLogResponseDto.from(Collections.emptyList(), totalLogs);
+            return UnifiedLogResponse.from(Collections.emptyList(), totalLogs);
         }
 
         int end = Math.min((start + pageable.getPageSize()), totalLogs);
         System.out.println("Returning logs from index " + start + " to " + end);
         List<LogEntry> pageContent = logs.subList(start, end);
 
-        return UnifiedLogResponseDto.from(pageContent, totalLogs);
+        return UnifiedLogResponse.from(pageContent, totalLogs);
     }
 
-    public UnifiedLogResponseDto searchLogsByFilter(Long userId, DateType dateType,
-                                                    String searchType, String keyword, Pageable pageable) {
+    public UnifiedLogResponse searchLogsByFilter(Long userId, DateType dateType,
+                                                 String searchType, String keyword, Pageable pageable) {
         List<LogEntry> logs = new ArrayList<>();
         LocalDate startDate = calculateStartDate(dateType);
         LocalDate endDate = LocalDate.now();
@@ -211,14 +214,14 @@ public class ArchiveService {
         int start = (int) pageable.getOffset();
         if (start >= totalLogs) {
             System.out.println("Start index exceeds the log list size.");
-            return UnifiedLogResponseDto.from(Collections.emptyList(), totalLogs);
+            return UnifiedLogResponse.from(Collections.emptyList(), totalLogs);
         }
 
         int end = Math.min((start + pageable.getPageSize()), totalLogs);
         System.out.println("Returning logs from index " + start + " to " + end);
         List<LogEntry> pageContent = logs.subList(start, end);
 
-        return UnifiedLogResponseDto.from(pageContent, totalLogs);
+        return UnifiedLogResponse.from(pageContent, totalLogs);
     }
 
     public ArchiveResponse findDaily(final Long userId, final Long scheduleId, final LocalDate date) {
