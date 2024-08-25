@@ -117,7 +117,23 @@ public class ObservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> findByTitle(String keyword, LocalDate startDate,
+    public List<ObservationResponseDto> findByFilter(final Long userId, final LocalDate startDate,
+                                                     final LocalDate endDate,
+                                                     final String searchType, final String keyword) {
+        if ("title".equals(searchType)) {
+            return findByTitle(keyword, startDate, endDate, userId);
+        }
+        if ("content".equals((searchType))) {
+            return findByContents(keyword, startDate, endDate, userId);
+        }
+        if ("titleAndContent".equals(searchType)) {
+            return findByTitleOrPlanOrContents(keyword, startDate, endDate, userId);
+        }
+        return null;
+    }
+
+    @Transactional(readOnly = true)
+    private List<ObservationResponseDto> findByTitle(String keyword, LocalDate startDate,
                                                     LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
@@ -129,7 +145,7 @@ public class ObservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> findByContents(String keyword, LocalDate startDate,
+    private List<ObservationResponseDto> findByContents(String keyword, LocalDate startDate,
                                                        LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
@@ -141,7 +157,7 @@ public class ObservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> findByTitleOrPlanOrContents(String keyword,
+    private List<ObservationResponseDto> findByTitleOrPlanOrContents(String keyword,
                                                                     LocalDate startDate,
                                                                     LocalDate endDate,
                                                                     Long userId) {
