@@ -168,14 +168,14 @@ public class ArchiveService {
         int start = (int) pageable.getOffset();
         if (start >= totalLogs) {
             System.out.println("Start index exceeds the log list size.");
-            return UnifiedLogResponse.from(Collections.emptyList(), totalLogs);
+            return UnifiedLogResponse.of(Collections.emptyList(), totalLogs);
         }
 
         int end = Math.min((start + pageable.getPageSize()), totalLogs);
         System.out.println("Returning logs from index " + start + " to " + end);
         List<LogEntry> pageContent = logs.subList(start, end);
 
-        return UnifiedLogResponse.from(pageContent, totalLogs);
+        return UnifiedLogResponse.of(pageContent, totalLogs);
     }
 
     public UnifiedLogResponse searchLogsByFilter(Long userId, DateType dateType,
@@ -214,14 +214,14 @@ public class ArchiveService {
         int start = (int) pageable.getOffset();
         if (start >= totalLogs) {
             System.out.println("Start index exceeds the log list size.");
-            return UnifiedLogResponse.from(Collections.emptyList(), totalLogs);
+            return UnifiedLogResponse.of(Collections.emptyList(), totalLogs);
         }
 
         int end = Math.min((start + pageable.getPageSize()), totalLogs);
         System.out.println("Returning logs from index " + start + " to " + end);
         List<LogEntry> pageContent = logs.subList(start, end);
 
-        return UnifiedLogResponse.from(pageContent, totalLogs);
+        return UnifiedLogResponse.of(pageContent, totalLogs);
     }
 
     public ArchiveResponse findDaily(final Long userId, final Long scheduleId, final LocalDate date) {

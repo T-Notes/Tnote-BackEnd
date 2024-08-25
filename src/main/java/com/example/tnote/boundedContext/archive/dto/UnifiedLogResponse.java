@@ -10,7 +10,7 @@ public class UnifiedLogResponse {
     private List<LogEntry> logs;
     private int totalLog;
 
-    public static UnifiedLogResponse from(List<LogEntry> logs, int totalLog) {
+    public static UnifiedLogResponse of(final List<LogEntry> logs, final int totalLog) {
         return UnifiedLogResponse.builder()
                 .logs(logs)
                 .totalLog(totalLog)
