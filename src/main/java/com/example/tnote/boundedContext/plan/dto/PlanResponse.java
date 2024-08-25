@@ -1,5 +1,6 @@
 package com.example.tnote.boundedContext.plan.dto;
 
+import com.example.tnote.boundedContext.archive.dto.LogEntry;
 import com.example.tnote.boundedContext.plan.entity.Plan;
 import com.example.tnote.boundedContext.plan.entity.PlanImage;
 import java.time.LocalDateTime;
@@ -9,7 +10,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class PlanResponse {
+public class PlanResponse implements LogEntry {
     private Long id;
     private String title;
     private LocalDateTime startDate;
@@ -18,6 +19,7 @@ public class PlanResponse {
     private String contents;
     private String participants;
     private String color;
+    private LocalDateTime createAt;
     private List<PlanImage> planImageList;
 
     public static PlanResponse from(final Plan plan) {
@@ -30,7 +32,13 @@ public class PlanResponse {
                 .contents(plan.getContents())
                 .participants(plan.getParticipants())
                 .color(plan.getColor())
+                .createAt(plan.getCreatedAt())
                 .planImageList(plan.getPlanImages())
                 .build();
+    }
+
+    @Override
+    public LocalDateTime getCreatedAt() {
+        return createAt;
     }
 }
