@@ -41,7 +41,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
 @RestController
-@RequestMapping("/tnote/archive")
+@RequestMapping("/tnote/v1/archive")
 @Tag(name = "Archive", description = "Archive API")
 public class ArchiveController {
 
