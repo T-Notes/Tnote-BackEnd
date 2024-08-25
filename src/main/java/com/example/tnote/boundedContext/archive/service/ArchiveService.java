@@ -164,34 +164,18 @@ public class ArchiveService {
         return processLogs(logs, pageable);
     }
 
-    public UnifiedLogResponse searchLogsByFilter(Long userId, DateType dateType,
-                                                 String searchType, String keyword, Pageable pageable) {
+    public UnifiedLogResponse searchLogsByFilter(final Long userId, final DateType dateType,
+                                                 final String searchType, final String keyword,
+                                                 final Pageable pageable) {
         List<LogEntry> logs = new ArrayList<>();
         LocalDate startDate = calculateStartDate(dateType);
         LocalDate endDate = LocalDate.now();
 
-        if ("title".equals(searchType)) {
-            logs.addAll(classLogService.findByTitle(keyword, startDate, endDate, userId));
-            logs.addAll(consultationService.findByTitle(keyword, startDate, endDate, userId));
-            logs.addAll(proceedingService.findByTitle(keyword, startDate, endDate, userId));
-            logs.addAll(observationService.findByTitle(keyword, startDate, endDate, userId));
-        }
-        if ("content".equals((searchType))) {
-            logs.addAll(classLogService.findByContents(keyword, startDate, endDate, userId));
-            logs.addAll(consultationService.findByContents(keyword, startDate, endDate, userId));
-            logs.addAll(proceedingService.findByContents(keyword, startDate, endDate, userId));
-            logs.addAll(observationService.findByContents(keyword, startDate, endDate, userId));
-        }
-        if ("titleAndContent".equals(searchType)) {
-            logs.addAll(classLogService.findByTitleOrPlanOrContents(keyword, startDate,
-                    endDate, userId));
-            logs.addAll(consultationService.findByTitleOrPlanOrContents(keyword, startDate,
-                    endDate, userId));
-            logs.addAll(proceedingService.findByTitleOrPlanOrContents(keyword, startDate,
-                    endDate, userId));
-            logs.addAll(observationService.findByTitleOrPlanOrContents(keyword, startDate,
-                    endDate, userId));
-        }
+        logs.addAll(classLogService.findByFilter(userId,startDate,endDate,searchType,keyword));
+        logs.addAll(consultationService.findByFilter(userId,startDate,endDate,searchType,keyword));
+        logs.addAll(observationService.findByFilter(userId,startDate,endDate,searchType,keyword));
+        logs.addAll(proceedingService.findByFilter(userId,startDate,endDate,searchType,keyword));
+
 
         return processLogs(logs, pageable);
     }
