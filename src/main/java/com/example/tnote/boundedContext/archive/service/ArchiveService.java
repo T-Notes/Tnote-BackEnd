@@ -164,18 +164,18 @@ public class ArchiveService {
         return processLogs(logs, pageable);
     }
 
-    public UnifiedLogResponse searchLogsByFilter(final Long userId, final DateType dateType,
-                                                 final String searchType, final String keyword,
-                                                 final Pageable pageable) {
+    public UnifiedLogResponse searchByFilter(final Long userId, final DateType dateType,
+                                             final String searchType, final String keyword,
+                                             final Pageable pageable) {
         List<LogEntry> logs = new ArrayList<>();
         LocalDate startDate = calculateStartDate(dateType);
         LocalDate endDate = LocalDate.now();
 
-        logs.addAll(classLogService.findByFilter(userId,startDate,endDate,searchType,keyword));
-        logs.addAll(consultationService.findByFilter(userId,startDate,endDate,searchType,keyword));
-        logs.addAll(observationService.findByFilter(userId,startDate,endDate,searchType,keyword));
-        logs.addAll(proceedingService.findByFilter(userId,startDate,endDate,searchType,keyword));
-
+        logs.addAll(classLogService.findByFilter(userId, startDate, endDate, searchType, keyword));
+        logs.addAll(consultationService.findByFilter(userId, startDate, endDate, searchType, keyword));
+        logs.addAll(observationService.findByFilter(userId, startDate, endDate, searchType, keyword));
+        logs.addAll(proceedingService.findByFilter(userId, startDate, endDate, searchType, keyword));
+        logs.addAll(planService.findByFilter(userId, startDate, endDate, searchType, keyword));
 
         return processLogs(logs, pageable);
     }

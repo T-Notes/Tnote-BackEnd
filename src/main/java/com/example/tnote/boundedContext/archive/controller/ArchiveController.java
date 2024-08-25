@@ -175,7 +175,7 @@ public class ArchiveController {
                                                      @RequestParam(value = "size", required = false, defaultValue = "8") int size) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        UnifiedLogResponse response = archiveService.searchLogsByFilter(principalDetails.getId(), dateType,
+        UnifiedLogResponse response = archiveService.searchByFilter(principalDetails.getId(), dateType,
                 searchType, keyword, pageRequest);
 
         return ResponseEntity.ok(Result.of(response));
