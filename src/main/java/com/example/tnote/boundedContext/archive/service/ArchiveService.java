@@ -141,7 +141,8 @@ public class ArchiveService {
         return null;
     }
 
-    public UnifiedLogResponseDto readLogByFilter(Long userId, Long scheduleId, LogType logType, Pageable pageable) {
+    public UnifiedLogResponseDto findByLogType(final Long userId, final Long scheduleId, final LogType logType,
+                                               final Pageable pageable) {
         List<LogEntry> logs = new ArrayList<>();
 
         if (logType == LogType.ALL || logType == LogType.CLASS_LOG) {

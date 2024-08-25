@@ -4,10 +4,8 @@ import com.example.tnote.base.response.Result;
 import com.example.tnote.base.utils.TokenUtils;
 import com.example.tnote.boundedContext.archive.constant.DateType;
 import com.example.tnote.boundedContext.archive.constant.LogType;
-import com.example.tnote.boundedContext.archive.dto.ArchiveResponse;
 import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequest;
-import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponse;
 import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponseDto;
 import com.example.tnote.boundedContext.archive.service.ArchiveService;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
@@ -157,7 +155,7 @@ public class ArchiveController {
                                                    @RequestParam(value = "logType", required = false, defaultValue = "ALL") LogType logType) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        UnifiedLogResponseDto response = archiveService.readLogByFilter(principalDetails.getId(), scheduleId, logType,
+        UnifiedLogResponseDto response = archiveService.findByLogType(principalDetails.getId(), scheduleId, logType,
                 pageRequest);
         return ResponseEntity.ok(Result.of(response));
     }
