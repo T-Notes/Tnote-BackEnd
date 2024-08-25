@@ -167,17 +167,16 @@ public class ArchiveController {
     }
 
     @GetMapping("/searching/log")
-    public ResponseEntity<Result> searchLogsByFilter(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @RequestParam(value = "dateType", required = false, defaultValue = "ALL") DateType dateType,
-                                                     @RequestParam(value = "searchType", required = false, defaultValue = "title") String searchType,
-                                                     @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
-                                                     @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                     @RequestParam(value = "size", required = false, defaultValue = "8") int size) {
+    public ResponseEntity<Result> search(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                         @RequestParam(value = "dateType", required = false, defaultValue = "ALL") final DateType dateType,
+                                         @RequestParam(value = "searchType", required = false, defaultValue = "title") final String searchType,
+                                         @RequestParam(value = "keyword", required = false, defaultValue = "") final String keyword,
+                                         @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                         @RequestParam(value = "size", required = false, defaultValue = "8") int size) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        UnifiedLogResponse response = archiveService.searchByFilter(principalDetails.getId(), dateType,
-                searchType, keyword, pageRequest);
 
-        return ResponseEntity.ok(Result.of(response));
+        return ResponseEntity.ok(Result.of(archiveService.searchByFilter(principalDetails.getId(), dateType,
+                searchType, keyword, pageRequest)));
     }
 }
