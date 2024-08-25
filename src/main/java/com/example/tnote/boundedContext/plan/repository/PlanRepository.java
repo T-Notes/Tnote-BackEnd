@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface PlanRepository extends JpaRepository<Plan, Long> {
 
@@ -47,4 +48,25 @@ public interface PlanRepository extends JpaRepository<Plan, Long> {
 
     @Query("select p from Plan p where p.user.id = :userId and p.schedule.id = :scheduleId")
     List<Plan> findAllByUserIdAndScheduleId(Long userId, Long scheduleId);
+
+    @Query("SELECT p FROM Plan p WHERE p.user.id = :userId AND p.title LIKE %:keyword% AND p.startDate >= :startDate AND p.endDate <= :endDate")
+    List<Plan> findByTitleContaining(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("userId") Long userId);
+
+    @Query("SELECT p FROM Plan p WHERE p.user.id = :userId AND (p.title LIKE %:keyword% OR p.contents LIKE %:keyword%) AND p.startDate >= :startDate AND p.endDate <= :endDate")
+    List<Plan> findByTitleOrPlanOrClassContentsContaining(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("userId") Long userId);
+
+    @Query("SELECT p FROM Plan p WHERE p.user.id = :userId AND p.contents LIKE %:keyword% AND p.startDate >= :startDate AND p.endDate <= :endDate")
+    List<Plan> findByContentsContaining(
+            @Param("keyword") String keyword,
+            @Param("startDate") LocalDateTime startDate,
+            @Param("endDate") LocalDateTime endDate,
+            @Param("userId") Long userId);
 }
