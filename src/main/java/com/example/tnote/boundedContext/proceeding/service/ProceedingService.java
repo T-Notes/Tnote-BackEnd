@@ -114,7 +114,7 @@ public class ProceedingService {
         return ProceedingResponse.from(proceeding);
     }
 
-    public List<ProceedingResponse> findLogsByScheduleAndUser(final Long scheduleId, final Long userId) {
+    public List<ProceedingResponse> findByScheduleAndUser(final Long scheduleId, final Long userId) {
         List<Proceeding> logs = proceedingRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ProceedingResponse::from)

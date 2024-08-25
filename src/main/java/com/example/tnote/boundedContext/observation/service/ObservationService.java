@@ -109,7 +109,7 @@ public class ObservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
+    public List<ObservationResponseDto> findByScheduleAndUser(Long scheduleId, Long userId) {
         List<Observation> logs = observationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ObservationResponseDto::of)

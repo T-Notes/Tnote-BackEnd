@@ -148,13 +148,13 @@ public class ArchiveService {
             logs.addAll(classLogService.findByScheduleAndUser(scheduleId, userId));
         }
         if (logType == LogType.ALL || logType == LogType.CONSULTATION) {
-            logs.addAll(consultationService.findLogsByScheduleAndUser(scheduleId, userId));
+            logs.addAll(consultationService.findByScheduleAndUser(scheduleId, userId));
         }
         if (logType == LogType.ALL || logType == LogType.OBSERVATION) {
-            logs.addAll(observationService.findLogsByScheduleAndUser(scheduleId, userId));
+            logs.addAll(observationService.findByScheduleAndUser(scheduleId, userId));
         }
         if (logType == LogType.ALL || logType == LogType.PROCEEDING) {
-            logs.addAll(proceedingService.findLogsByScheduleAndUser(scheduleId, userId));
+            logs.addAll(proceedingService.findByScheduleAndUser(scheduleId, userId));
         }
 
         int totalLogs = logs.size();

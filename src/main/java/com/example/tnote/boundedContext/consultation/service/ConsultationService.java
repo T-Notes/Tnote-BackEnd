@@ -121,7 +121,7 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
+    public List<ConsultationResponseDto> findByScheduleAndUser(Long scheduleId, Long userId) {
         List<Consultation> logs = consultationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ConsultationResponseDto::of)
