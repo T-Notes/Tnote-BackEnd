@@ -147,6 +147,56 @@ public class PlanService {
                 .toList();
     }
 
+    public List<PlanResponse> findByFilter(final Long userId, final LocalDate startDate, final LocalDate endDate,
+                                           final String searchType, final String keyword) {
+        if ("title".equals(searchType)) {
+            return findByTitle(keyword, startDate, endDate, userId);
+        }
+        if ("content".equals((searchType))) {
+            return findByContents(keyword, startDate, endDate, userId);
+        }
+        if ("titleAndContent".equals(searchType)) {
+            return findByTitleOrPlanOrContents(keyword, startDate, endDate, userId);
+        }
+        return null;
+    }
+
+    private List<PlanResponse> findByTitle(final String keyword, final LocalDate startDate,
+                                           final LocalDate endDate, final Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Plan> logs = planRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(PlanResponse::from)
+                .toList();
+    }
+
+    private List<PlanResponse> findByContents(final String keyword, final LocalDate startDate,
+                                              final LocalDate endDate, final Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Plan> logs = planRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(PlanResponse::from)
+                .toList();
+    }
+
+    private List<PlanResponse> findByTitleOrPlanOrContents(final String keyword,
+                                                           final LocalDate startDate,
+                                                           final LocalDate endDate,
+                                                           final Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Plan> logs = planRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
+                startOfDay, endOfDay, userId);
+
+        return logs.stream()
+                .map(PlanResponse::from)
+                .toList();
+    }
+
     private void updateImage(Plan plan, List<MultipartFile> planImages) {
         if (planImages == null || planImages.isEmpty()) {
             deleteExistedImages(plan);
