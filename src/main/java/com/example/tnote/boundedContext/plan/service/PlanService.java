@@ -13,8 +13,6 @@ import com.example.tnote.boundedContext.plan.exception.PlanErrorCode;
 import com.example.tnote.boundedContext.plan.exception.PlanException;
 import com.example.tnote.boundedContext.plan.repository.PlanImageRepository;
 import com.example.tnote.boundedContext.plan.repository.PlanRepository;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
-import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
