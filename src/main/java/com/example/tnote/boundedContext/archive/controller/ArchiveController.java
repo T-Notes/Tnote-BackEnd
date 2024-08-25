@@ -148,16 +148,15 @@ public class ArchiveController {
     }
 
     @GetMapping("/{scheduleId}/LogsByFilter")
-    public ResponseEntity<Result> readLogsByFilter(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                   @PathVariable Long scheduleId,
-                                                   @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                   @RequestParam(value = "size", required = false, defaultValue = "8") int size,
-                                                   @RequestParam(value = "logType", required = false, defaultValue = "ALL") LogType logType) {
+    public ResponseEntity<Result> findByLogType(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                                @PathVariable final Long scheduleId,
+                                                @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                @RequestParam(value = "size", required = false, defaultValue = "8") int size,
+                                                @RequestParam(value = "logType", required = false, defaultValue = "ALL") LogType logType) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        UnifiedLogResponse response = archiveService.findByLogType(principalDetails.getId(), scheduleId, logType,
-                pageRequest);
-        return ResponseEntity.ok(Result.of(response));
+        return ResponseEntity.ok(Result.of(archiveService.findByLogType(principalDetails.getId(), scheduleId, logType,
+                pageRequest)));
     }
 
     @PostMapping("/deleteLogs")
