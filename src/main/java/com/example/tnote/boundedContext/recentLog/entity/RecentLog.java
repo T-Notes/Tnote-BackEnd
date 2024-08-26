@@ -13,9 +13,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 public class RecentLog {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -30,4 +27,16 @@ public class RecentLog {
 
     private Instant timestamp; // 로그가 기록된 시간
     private Long scheduleId;
+
+    public RecentLog() {
+    }
+
+    public RecentLog(final Long userId, final Long logId, final String logType, final Instant timestamp,
+                     final Long scheduleId) {
+        this.userId = userId;
+        this.logId = logId;
+        this.logType = logType;
+        this.timestamp = timestamp;
+        this.scheduleId = scheduleId;
+    }
 }

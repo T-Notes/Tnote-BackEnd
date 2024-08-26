@@ -2,6 +2,7 @@ package com.example.tnote.boundedContext.classLog.service;
 
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
+import com.example.tnote.boundedContext.archive.constant.DateType;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogDeleteResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogSaveRequest;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
@@ -64,7 +65,7 @@ public class ClassLogService {
             List<ClassLogImage> uploadedImages = uploadImages(classLog, classLogImages);
             classLog.getClassLogImage().addAll(uploadedImages);
         }
-        recentLogService.saveRecentLog(userId, classLog.getId(), scheduleId, "CLASS_LOG");
+        recentLogService.save(userId, classLog.getId(), scheduleId, "CLASS_LOG");
         return ClassLogResponse.from(classLog);
     }
 
@@ -74,7 +75,7 @@ public class ClassLogService {
 
         deleteExistedImage(classLog);
         classLogRepository.delete(classLog);
-        recentLogService.deleteRecentLog(classLog.getId(), "CLASS_LOG");
+        recentLogService.delete(classLog.getId(), "CLASS_LOG");
 
         return ClassLogDeleteResponse.from(classLog);
     }
@@ -101,7 +102,21 @@ public class ClassLogService {
                 .toList();
     }
 
-    public List<ClassLogResponse> findByTitle(final String keyword, final LocalDate startDate,
+    public List<ClassLogResponse> findByFilter(final Long userId, final LocalDate startDate, final LocalDate endDate,
+                                               final String searchType, final String keyword) {
+        if ("title".equals(searchType)) {
+            return findByTitle(keyword, startDate, endDate, userId);
+        }
+        if ("content".equals((searchType))) {
+            return findByContents(keyword, startDate, endDate, userId);
+        }
+        if ("titleAndContent".equals(searchType)){
+            return findByTitleOrPlanOrContents(keyword, startDate, endDate, userId);
+        }
+        return null;
+    }
+
+    private List<ClassLogResponse> findByTitle(final String keyword, final LocalDate startDate,
                                               final LocalDate endDate, final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
@@ -113,7 +128,7 @@ public class ClassLogService {
                 .toList();
     }
 
-    public List<ClassLogResponse> findByContents(final String keyword, final LocalDate startDate,
+    private List<ClassLogResponse> findByContents(final String keyword, final LocalDate startDate,
                                                  final LocalDate endDate, final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
@@ -125,7 +140,7 @@ public class ClassLogService {
                 .toList();
     }
 
-    public List<ClassLogResponse> findByTitleOrPlanOrContents(final String keyword, final LocalDate startDate,
+    private List<ClassLogResponse> findByTitleOrPlanOrContents(final String keyword, final LocalDate startDate,
                                                               final LocalDate endDate, final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
@@ -141,7 +156,7 @@ public class ClassLogService {
     @Transactional
     public ClassLogResponse find(final Long userId, final Long classLogId) {
         ClassLog classLog = findByIdAndUserId(classLogId, userId);
-        recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
+        recentLogService.save(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
         return ClassLogResponse.from(classLog);
     }
 
@@ -152,7 +167,7 @@ public class ClassLogService {
 
         ClassLog classLog = findByIdAndUserId(classLogId, userId);
         updateEachItem(classLogUpdateRequestDto, classLog, classLogImages);
-        recentLogService.saveRecentLog(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
+        recentLogService.save(userId, classLog.getId(), classLog.getSchedule().getId(), "CLASS_LOG");
         return ClassLogResponse.from(classLog);
     }
 

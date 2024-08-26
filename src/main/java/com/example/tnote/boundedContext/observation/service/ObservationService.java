@@ -60,7 +60,7 @@ public class ObservationService {
             List<ObservationImage> uploadedImages = uploadObservationImages(observation, observationImages);
             observation.getObservationImage().addAll(uploadedImages);
         }
-        recentLogService.saveRecentLog(userId, observation.getId(), scheduleId, "OBSERVATION");
+        recentLogService.save(userId, observation.getId(), scheduleId, "OBSERVATION");
         return ObservationResponseDto.of(observation);
     }
 
@@ -78,7 +78,7 @@ public class ObservationService {
         Observation observation = findObservationByIdAndUserId(observationId, userId);
         List<ObservationImage> observationImages = observationImageRepository.findObservationImageByObservationId(
                 observationId);
-        recentLogService.saveRecentLog(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
+        recentLogService.save(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
         return new ObservationDetailResponseDto(observation, observationImages);
     }
 
@@ -87,7 +87,7 @@ public class ObservationService {
 
         deleteExistedImagesByObservation(observation);
         observationRepository.delete(observation);
-        recentLogService.deleteRecentLog(observation.getId(), "OBSERVATION");
+        recentLogService.delete(observation.getId(), "OBSERVATION");
 
         return ObservationDeleteResponseDto.of(observation.getId());
     }
@@ -104,12 +104,12 @@ public class ObservationService {
                                                     List<MultipartFile> observationImages) {
         Observation observation = findObservationByIdAndUserId(observationId, userId);
         updateObservationItem(requestDto, observation, observationImages);
-        recentLogService.saveRecentLog(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
+        recentLogService.save(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
         return ObservationResponseDto.of(observation);
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
+    public List<ObservationResponseDto> findByScheduleAndUser(Long scheduleId, Long userId) {
         List<Observation> logs = observationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ObservationResponseDto::of)
@@ -117,7 +117,23 @@ public class ObservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> findByTitle(String keyword, LocalDate startDate,
+    public List<ObservationResponseDto> findByFilter(final Long userId, final LocalDate startDate,
+                                                     final LocalDate endDate,
+                                                     final String searchType, final String keyword) {
+        if ("title".equals(searchType)) {
+            return findByTitle(keyword, startDate, endDate, userId);
+        }
+        if ("content".equals((searchType))) {
+            return findByContents(keyword, startDate, endDate, userId);
+        }
+        if ("titleAndContent".equals(searchType)) {
+            return findByTitleOrPlanOrContents(keyword, startDate, endDate, userId);
+        }
+        return null;
+    }
+
+    @Transactional(readOnly = true)
+    private List<ObservationResponseDto> findByTitle(String keyword, LocalDate startDate,
                                                     LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
@@ -129,7 +145,7 @@ public class ObservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> findByContents(String keyword, LocalDate startDate,
+    private List<ObservationResponseDto> findByContents(String keyword, LocalDate startDate,
                                                        LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
@@ -141,7 +157,7 @@ public class ObservationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> findByTitleOrPlanOrContents(String keyword,
+    private List<ObservationResponseDto> findByTitleOrPlanOrContents(String keyword,
                                                                     LocalDate startDate,
                                                                     LocalDate endDate,
                                                                     Long userId) {

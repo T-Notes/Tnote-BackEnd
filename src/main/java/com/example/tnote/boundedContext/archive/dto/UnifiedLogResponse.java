@@ -6,12 +6,12 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class UnifiedLogResponseDto {
+public class UnifiedLogResponse {
     private List<LogEntry> logs;
     private int totalLog;
 
-    public static UnifiedLogResponseDto from(List<LogEntry> logs, int totalLog) {
-        return UnifiedLogResponseDto.builder()
+    public static UnifiedLogResponse of(final List<LogEntry> logs, final int totalLog) {
+        return UnifiedLogResponse.builder()
                 .logs(logs)
                 .totalLog(totalLog)
                 .build();

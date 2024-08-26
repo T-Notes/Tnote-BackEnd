@@ -61,7 +61,7 @@ public class ConsultationService {
             List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
             consultation.getConsultationImage().addAll(uploadedImages);
         }
-        recentLogService.saveRecentLog(userId, consultation.getId(), scheduleId, "CONSULTATION");
+        recentLogService.save(userId, consultation.getId(), scheduleId, "CONSULTATION");
         return ConsultationResponseDto.of(consultation);
     }
 
@@ -87,7 +87,7 @@ public class ConsultationService {
 
         deleteExistedImagesByConsultation(consultation);
         consultationRepository.delete(consultation);
-        recentLogService.deleteRecentLog(consultation.getId(), "CONSULTATION");
+        recentLogService.delete(consultation.getId(), "CONSULTATION");
 
         return ConsultationDeleteResponseDto.builder()
                 .id(consultation.getId())
@@ -105,7 +105,7 @@ public class ConsultationService {
         Consultation consultation = findConsultationByIdAndUserId(consultationId, userId);
         List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultationId(
                 consultationId);
-        recentLogService.saveRecentLog(userId, consultation.getId(), consultation.getSchedule().getId(),
+        recentLogService.save(userId, consultation.getId(), consultation.getSchedule().getId(),
                 "CONSULTATION");
         return new ConsultationDetailResponseDto(consultation, consultationImages);
     }
@@ -115,13 +115,13 @@ public class ConsultationService {
                                                       List<MultipartFile> consultationImages) {
         Consultation consultation = findConsultationByIdAndUserId(consultationId, userId);
         updateConsultationItem(requestDto, consultation, consultationImages);
-        recentLogService.saveRecentLog(userId, consultation.getId(), consultation.getSchedule().getId(),
+        recentLogService.save(userId, consultation.getId(), consultation.getSchedule().getId(),
                 "CONSULTATION");
         return ConsultationResponseDto.of(consultation);
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
+    public List<ConsultationResponseDto> findByScheduleAndUser(Long scheduleId, Long userId) {
         List<Consultation> logs = consultationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ConsultationResponseDto::of)
@@ -129,8 +129,24 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findByTitle(String keyword, LocalDate startDate,
-                                                               LocalDate endDate, Long userId) {
+    public List<ConsultationResponseDto> findByFilter(final Long userId, final LocalDate startDate,
+                                                      final LocalDate endDate,
+                                                      final String searchType, final String keyword) {
+        if ("title".equals(searchType)) {
+            return findByTitle(keyword, startDate, endDate, userId);
+        }
+        if ("content".equals((searchType))) {
+            return findByContents(keyword, startDate, endDate, userId);
+        }
+        if ("titleAndContent".equals(searchType)) {
+            return findByTitleOrPlanOrContents(keyword, startDate, endDate, userId);
+        }
+        return null;
+    }
+
+    @Transactional(readOnly = true)
+    private List<ConsultationResponseDto> findByTitle(String keyword, LocalDate startDate,
+                                                      LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Consultation> logs = consultationRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
@@ -141,8 +157,8 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findByContents(String keyword, LocalDate startDate,
-                                                                  LocalDate endDate, Long userId) {
+    private List<ConsultationResponseDto> findByContents(String keyword, LocalDate startDate,
+                                                         LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Consultation> logs = consultationRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
@@ -153,10 +169,10 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findByTitleOrPlanOrContents(String keyword,
-                                                                          LocalDate startDate,
-                                                                          LocalDate endDate,
-                                                                          Long userId) {
+    private List<ConsultationResponseDto> findByTitleOrPlanOrContents(String keyword,
+                                                                      LocalDate startDate,
+                                                                      LocalDate endDate,
+                                                                      Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Consultation> logs = consultationRepository.findByTitleOrPlanOrClassContentsContaining(keyword,

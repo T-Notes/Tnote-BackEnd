@@ -64,7 +64,7 @@ public class ProceedingService {
             List<ProceedingImage> uploadedImages = uploadImages(proceeding, proceedingImages);
             proceeding.getProceedingImage().addAll(uploadedImages);
         }
-        recentLogService.saveRecentLog(userId, proceeding.getId(), scheduleId, "PROCEEDING");
+        recentLogService.save(userId, proceeding.getId(), scheduleId, "PROCEEDING");
         return ProceedingResponse.from(proceeding);
     }
 
@@ -83,7 +83,7 @@ public class ProceedingService {
 
         deleteExistedImagesByProceeding(proceeding);
         proceedingRepository.delete(proceeding);
-        recentLogService.deleteRecentLog(proceeding.getId(), "PROCEEDING");
+        recentLogService.delete(proceeding.getId(), "PROCEEDING");
 
         return ProceedingDeleteResponse.from(proceeding);
     }
@@ -98,7 +98,7 @@ public class ProceedingService {
     @Transactional
     public ProceedingResponse find(final Long userId, final Long proceedingId) {
         Proceeding proceeding = findByIdAndUserId(proceedingId, userId);
-        recentLogService.saveRecentLog(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
+        recentLogService.save(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
 
         return ProceedingResponse.from(proceeding);
     }
@@ -109,20 +109,34 @@ public class ProceedingService {
                                      final List<MultipartFile> proceedingImages) {
         Proceeding proceeding = findByIdAndUserId(proceedingId, userId);
         updateEachItem(request, proceeding, proceedingImages);
-        recentLogService.saveRecentLog(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
+        recentLogService.save(userId, proceeding.getId(), proceeding.getSchedule().getId(), "PROCEEDING");
 
         return ProceedingResponse.from(proceeding);
     }
 
-    public List<ProceedingResponse> findLogsByScheduleAndUser(final Long scheduleId, final Long userId) {
+    public List<ProceedingResponse> findByScheduleAndUser(final Long scheduleId, final Long userId) {
         List<Proceeding> logs = proceedingRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ProceedingResponse::from)
                 .toList();
     }
 
-    public List<ProceedingResponse> findByTitle(final String keyword, final LocalDate startDate,
-                                                final LocalDate endDate, final Long userId) {
+    public List<ProceedingResponse> findByFilter(final Long userId, final LocalDate startDate, final LocalDate endDate,
+                                                 final String searchType, final String keyword) {
+        if ("title".equals(searchType)) {
+            return findByTitle(keyword, startDate, endDate, userId);
+        }
+        if ("content".equals((searchType))) {
+            return findByContents(keyword, startDate, endDate, userId);
+        }
+        if ("titleAndContent".equals(searchType)) {
+            return findByTitleOrPlanOrContents(keyword, startDate, endDate, userId);
+        }
+        return null;
+    }
+
+    private List<ProceedingResponse> findByTitle(final String keyword, final LocalDate startDate,
+                                                 final LocalDate endDate, final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
@@ -132,8 +146,8 @@ public class ProceedingService {
                 .toList();
     }
 
-    public List<ProceedingResponse> findByContents(final String keyword, final LocalDate startDate,
-                                                   final LocalDate endDate, final Long userId) {
+    private List<ProceedingResponse> findByContents(final String keyword, final LocalDate startDate,
+                                                    final LocalDate endDate, final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
@@ -143,10 +157,10 @@ public class ProceedingService {
                 .toList();
     }
 
-    public List<ProceedingResponse> findByTitleOrPlanOrContents(final String keyword,
-                                                                final LocalDate startDate,
-                                                                final LocalDate endDate,
-                                                                final Long userId) {
+    private List<ProceedingResponse> findByTitleOrPlanOrContents(final String keyword,
+                                                                 final LocalDate startDate,
+                                                                 final LocalDate endDate,
+                                                                 final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Proceeding> logs = proceedingRepository.findByTitleOrPlanOrClassContentsContaining(keyword,

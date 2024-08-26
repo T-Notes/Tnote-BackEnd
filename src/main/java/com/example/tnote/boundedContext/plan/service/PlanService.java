@@ -1,6 +1,7 @@
 package com.example.tnote.boundedContext.plan.service;
 
 import com.example.tnote.base.utils.AwsS3Uploader;
+import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.plan.dto.PlanDeleteResponse;
 import com.example.tnote.boundedContext.plan.dto.PlanResponses;
 import com.example.tnote.boundedContext.plan.dto.PlanSaveRequest;
@@ -12,10 +13,13 @@ import com.example.tnote.boundedContext.plan.exception.PlanErrorCode;
 import com.example.tnote.boundedContext.plan.exception.PlanException;
 import com.example.tnote.boundedContext.plan.repository.PlanImageRepository;
 import com.example.tnote.boundedContext.plan.repository.PlanRepository;
+import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -31,15 +35,17 @@ public class PlanService {
     private final UserRepository userRepository;
     private final ScheduleRepository scheduleRepository;
     private final AwsS3Uploader awsS3Uploader;
+    private final RecentLogService recentLogService;
 
     public PlanService(final PlanRepository planRepository, final PlanImageRepository planImageRepository,
                        final UserRepository userRepository, final ScheduleRepository scheduleRepository,
-                       final AwsS3Uploader awsS3Uploader) {
+                       final AwsS3Uploader awsS3Uploader, final RecentLogService recentLogService) {
         this.planRepository = planRepository;
         this.planImageRepository = planImageRepository;
         this.userRepository = userRepository;
         this.scheduleRepository = scheduleRepository;
         this.awsS3Uploader = awsS3Uploader;
+        this.recentLogService = recentLogService;
     }
 
     @Transactional
@@ -58,7 +64,7 @@ public class PlanService {
             List<PlanImage> uploadedImages = uploadPlanImages(plan, planImages);
             plan.getPlanImages().addAll(uploadedImages);
         }
-
+        recentLogService.save(userId, plan.getId(), scheduleId, "PLAN");
         return PlanResponse.from(planRepository.save(plan));
     }
 
@@ -74,32 +80,119 @@ public class PlanService {
     public PlanDeleteResponse delete(final Long planId, final Long userId) {
         Plan plan = findByIdAndUserId(planId, userId);
         deleteExistedImage(plan);
-        planRepository.delete(plan);
 
-        return new PlanDeleteResponse(plan);
+        planRepository.delete(plan);
+        recentLogService.delete(planId, "PLAN");
+
+        return new PlanDeleteResponse(planId);
     }
 
+    @Transactional
+    public int deletePlans(final Long userId, final List<Long> planIds) {
+        planIds.forEach(planId -> delete(userId, planId));
+        return planIds.size();
+    }
+
+    @Transactional
     public PlanResponse find(final Long userId, final Long planId) {
         Plan plan = findByIdAndUserId(planId, userId);
+        recentLogService.save(userId, planId, plan.getSchedule().getId(), "PLAN");
         return PlanResponse.from(plan);
     }
 
     @Transactional
-    public PlanResponse updatePlan(final Long userId, final Long planId, final PlanUpdateRequest updateRequest,
+    public PlanResponse updatePlan(final Long userId, final Long planId, final PlanUpdateRequest request,
                                    final List<MultipartFile> planImages) {
         Plan plan = findByIdAndUserId(planId, userId);
 
         plan.updateFields(
-                updateRequest.getTitle(),
-                updateRequest.getStartDate(),
-                updateRequest.getEndDate(),
-                updateRequest.getLocation(),
-                updateRequest.getContents(),
-                updateRequest.getParticipants()
+                request.getTitle(),
+                request.getStartDate(),
+                request.getEndDate(),
+                request.getLocation(),
+                request.getContents(),
+                request.getParticipants()
         );
         updateImage(plan, planImages);
+        recentLogService.save(userId, planId, plan.getSchedule().getId(), "PLAN");
 
         return PlanResponse.from(plan);
+    }
+
+    public List<PlanResponse> findDaily(final Long userId, final Long scheduleId, final LocalDate date) {
+
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
+
+        List<Plan> plans = planRepository.findByUserIdAndScheduleIdAndStartDateBetween(userId, scheduleId,
+                startOfDay, endOfDay);
+
+        return plans.stream()
+                .map(PlanResponse::from).toList();
+    }
+
+    public List<PlanResponse> findMonthly(final Long userId, final Long scheduleId, final LocalDate date) {
+        List<Plan> plans = planRepository.findByUserIdAndScheduleIdAndYearMonth(userId, scheduleId, date);
+
+        return plans.stream()
+                .map(PlanResponse::from).toList();
+    }
+
+    public List<PlanResponse> findByScheduleAndUser(final Long scheduleId, final Long userId) {
+        List<Plan> logs = planRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
+        return logs.stream()
+                .map(PlanResponse::from)
+                .toList();
+    }
+
+    public List<PlanResponse> findByFilter(final Long userId, final LocalDate startDate, final LocalDate endDate,
+                                           final String searchType, final String keyword) {
+        if ("title".equals(searchType)) {
+            return findByTitle(keyword, startDate, endDate, userId);
+        }
+        if ("content".equals((searchType))) {
+            return findByContents(keyword, startDate, endDate, userId);
+        }
+        if ("titleAndContent".equals(searchType)) {
+            return findByTitleOrPlanOrContents(keyword, startDate, endDate, userId);
+        }
+        return null;
+    }
+
+    private List<PlanResponse> findByTitle(final String keyword, final LocalDate startDate,
+                                           final LocalDate endDate, final Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Plan> logs = planRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(PlanResponse::from)
+                .toList();
+    }
+
+    private List<PlanResponse> findByContents(final String keyword, final LocalDate startDate,
+                                              final LocalDate endDate, final Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Plan> logs = planRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
+                userId);
+        return logs.stream()
+                .map(PlanResponse::from)
+                .toList();
+    }
+
+    private List<PlanResponse> findByTitleOrPlanOrContents(final String keyword,
+                                                           final LocalDate startDate,
+                                                           final LocalDate endDate,
+                                                           final Long userId) {
+        LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
+        LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
+        List<Plan> logs = planRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
+                startOfDay, endOfDay, userId);
+
+        return logs.stream()
+                .map(PlanResponse::from)
+                .toList();
     }
 
     private void updateImage(Plan plan, List<MultipartFile> planImages) {
