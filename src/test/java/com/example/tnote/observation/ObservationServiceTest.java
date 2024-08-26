@@ -11,7 +11,7 @@ import com.example.tnote.boundedContext.observation.dto.ObservationDeleteRespons
 import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponses;
-import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequest;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.entity.ObservationImage;
 import com.example.tnote.boundedContext.observation.exception.ObservationException;
@@ -172,7 +172,7 @@ public class ObservationServiceTest {
     @DisplayName("관찰일지 수정: 요청된 값에 따른 관찰일지 수정 확인")
     @Test
     void update() {
-        ObservationUpdateRequestDto observationUpdateRequestDto = mock(ObservationUpdateRequestDto.class);
+        ObservationUpdateRequest observationUpdateRequestDto = mock(ObservationUpdateRequest.class);
         List<MultipartFile> observationImages = Collections.emptyList();
 
         when(observationRepository.findByIdAndUserId(observationId, userId)).thenReturn(Optional.of(mockObservation));

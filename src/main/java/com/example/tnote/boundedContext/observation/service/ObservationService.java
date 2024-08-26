@@ -6,7 +6,7 @@ import com.example.tnote.boundedContext.observation.dto.ObservationDeleteRespons
 import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponses;
-import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequest;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.entity.ObservationImage;
 import com.example.tnote.boundedContext.observation.exception.ObservationErrorCode;
@@ -105,7 +105,7 @@ public class ObservationService {
 
     @Transactional
     public ObservationResponse update(final Long userId, final Long observationId,
-                                      final ObservationUpdateRequestDto request,
+                                      final ObservationUpdateRequest request,
                                       final List<MultipartFile> observationImages) {
         Observation observation = findObservationByIdAndUserId(observationId, userId);
         updateObservationItem(request, observation, observationImages);
@@ -171,7 +171,7 @@ public class ObservationService {
                 .toList();
     }
 
-    private void updateObservationItem(ObservationUpdateRequestDto requestDto, Observation observation,
+    private void updateObservationItem(ObservationUpdateRequest requestDto, Observation observation,
                                        List<MultipartFile> observationImages) {
         updateObservationFields(requestDto, observation);
         if (observationImages == null || observationImages.isEmpty()) {
@@ -184,7 +184,7 @@ public class ObservationService {
         }
     }
 
-    private void updateObservationFields(ObservationUpdateRequestDto requestDto, Observation observation) {
+    private void updateObservationFields(ObservationUpdateRequest requestDto, Observation observation) {
         observation.updateStudentName(requestDto.getTitle());
         observation.updateStartDate(requestDto.getStartDate());
         observation.updateEndDate(requestDto.getEndDate());

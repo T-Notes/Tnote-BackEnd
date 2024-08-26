@@ -5,7 +5,7 @@ import com.example.tnote.boundedContext.observation.dto.ObservationDeleteRespons
 import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponses;
-import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequest;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.util.List;
@@ -78,7 +78,7 @@ public class ObservationController {
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> updateObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @PathVariable Long observationId,
-                                                    @RequestPart ObservationUpdateRequestDto observationUpdateRequestDto,
+                                                    @RequestPart ObservationUpdateRequest observationUpdateRequestDto,
                                                     @RequestPart(name = "observationImages", required = false) List<MultipartFile> observationImages) {
         ObservationResponse responseDto = observationService.update(principalDetails.getId(),
                 observationId, observationUpdateRequestDto, observationImages);
