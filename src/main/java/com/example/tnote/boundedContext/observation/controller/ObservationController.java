@@ -36,10 +36,10 @@ public class ObservationController {
 
     @PostMapping(value = "/{scheduleId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Result> createObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                    @PathVariable Long scheduleId,
-                                                    @RequestPart ObservationRequestDto observationRequestDto,
-                                                    @RequestPart(name = "observationImages", required = false) List<MultipartFile> observationImages) {
+    public ResponseEntity<Result> save(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                       @PathVariable final Long scheduleId,
+                                       @RequestPart final ObservationRequestDto observationRequestDto,
+                                       @RequestPart(name = "observationImages", required = false) final List<MultipartFile> observationImages) {
         ObservationResponseDto observationResponseDto = observationService.save(principalDetails.getId(), scheduleId,
                 observationRequestDto,
                 observationImages);
