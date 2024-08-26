@@ -1,6 +1,5 @@
 package com.example.tnote.boundedContext.observation.dto;
 
-import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.user.entity.User;

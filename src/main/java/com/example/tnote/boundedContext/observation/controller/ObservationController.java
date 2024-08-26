@@ -1,10 +1,7 @@
 package com.example.tnote.boundedContext.observation.controller;
 
 import com.example.tnote.base.response.Result;
-import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
-import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
-import com.example.tnote.boundedContext.observation.dto.ObservationResponses;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequest;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
