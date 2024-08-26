@@ -68,26 +68,9 @@ public class UserService {
 
         if (scheduleList.isEmpty()) {
             LocalDate currentDate = LocalDate.now();
+            int date = currentDate.getMonthValue() <= 6 ? 1 : 2;
 
-            int currentMonth = currentDate.getMonthValue();
-
-            int date = currentMonth <= 6 ? 1 : 2;
-
-            LocalDate startDate = currentMonth <= 6
-                    ? LocalDate.of(currentDate.getYear(), Month.JANUARY, 1)
-                    : LocalDate.of(currentDate.getYear(), Month.JULY, 1);
-
-            LocalDate endDate = currentMonth <= 6
-                    ? LocalDate.of(currentDate.getYear(), Month.JUNE, 30)
-                    : LocalDate.of(currentDate.getYear(), Month.DECEMBER, 31);
-
-            Schedule schedule = Schedule.builder()
-                    .semesterName(currentDate.getYear() + "년 " + date + "학기")
-                    .lastClass("9교시")
-                    .startDate(startDate)
-                    .endDate(endDate)
-                    .user(user)
-                    .build();
+            Schedule schedule = getBuild(currentDate, date, user);
 
             scheduleRepository.save(schedule);
 
@@ -98,6 +81,28 @@ public class UserService {
         updateUserItem(dto, user);
 
         return UserResponse.from(user);
+    }
+
+    private Schedule getBuild(LocalDate currentDate, int date, User user) {
+        return Schedule.builder()
+                .semesterName(currentDate.getYear() + "년 " + date + "학기")
+                .lastClass("9교시")
+                .startDate(getStartDate(currentDate.getMonthValue(), currentDate))
+                .endDate(getEndDate(currentDate.getMonthValue(), currentDate))
+                .user(user)
+                .build();
+    }
+
+    private LocalDate getStartDate(int currentMonth, LocalDate currentDate) {
+        return currentMonth <= 6
+                ? LocalDate.of(currentDate.getYear(), Month.JANUARY, 1)
+                : LocalDate.of(currentDate.getYear(), Month.JULY, 1);
+    }
+
+    private LocalDate getEndDate(int currentMonth, LocalDate currentDate) {
+        return currentMonth <= 6
+                ? LocalDate.of(currentDate.getYear(), Month.JUNE, 30)
+                : LocalDate.of(currentDate.getYear(), Month.DECEMBER, 31);
     }
 
     private void updateUserItem(final UserUpdateRequest dto, final User user) {
