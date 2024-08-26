@@ -69,7 +69,7 @@ public class ObservationController {
     @DeleteMapping("/{observationId}")
     public ResponseEntity<Result> deleteObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @PathVariable Long observationId) {
-        ObservationDeleteResponse responseDto = observationService.deleteObservation(principalDetails.getId(),
+        ObservationDeleteResponse responseDto = observationService.delete(principalDetails.getId(),
                 observationId);
         return ResponseEntity.ok(Result.of(responseDto));
     }

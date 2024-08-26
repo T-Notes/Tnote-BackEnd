@@ -85,7 +85,7 @@ public class ObservationService {
     }
 
     @Transactional
-    public ObservationDeleteResponse deleteObservation(Long userId, Long observationId) {
+    public ObservationDeleteResponse delete(final Long userId, final Long observationId) {
         Observation observation = findObservationByIdAndUserId(observationId, userId);
 
         deleteExistedImagesByObservation(observation);
@@ -98,7 +98,7 @@ public class ObservationService {
     @Transactional
     public int deleteObservations(Long userId, List<Long> observationIds) {
         observationIds.forEach(observationId -> {
-            deleteObservation(userId, observationId);
+            delete(userId, observationId);
         });
         return observationIds.size();
     }

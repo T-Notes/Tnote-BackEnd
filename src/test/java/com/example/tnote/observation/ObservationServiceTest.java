@@ -163,7 +163,7 @@ public class ObservationServiceTest {
         when(mockObservation.getId()).thenReturn(observationId);
         when(observationRepository.findByIdAndUserId(observationId, userId)).thenReturn(Optional.of(mockObservation));
 
-        ObservationDeleteResponse result = observationService.deleteObservation(userId, observationId);
+        ObservationDeleteResponse result = observationService.delete(userId, observationId);
 
         verify(observationRepository).findByIdAndUserId(observationId, userId);
         verify(observationRepository).delete(mockObservation);
