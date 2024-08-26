@@ -7,7 +7,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponses;
@@ -163,7 +163,7 @@ public class ObservationServiceTest {
         when(mockObservation.getId()).thenReturn(observationId);
         when(observationRepository.findByIdAndUserId(observationId, userId)).thenReturn(Optional.of(mockObservation));
 
-        ObservationDeleteResponseDto result = observationService.deleteObservation(userId, observationId);
+        ObservationDeleteResponse result = observationService.deleteObservation(userId, observationId);
 
         verify(observationRepository).findByIdAndUserId(observationId, userId);
         verify(observationRepository).delete(mockObservation);

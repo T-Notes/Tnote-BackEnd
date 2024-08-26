@@ -1,7 +1,7 @@
 package com.example.tnote.boundedContext.observation.controller;
 
 import com.example.tnote.base.response.Result;
-import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponses;
@@ -69,7 +69,7 @@ public class ObservationController {
     @DeleteMapping("/{observationId}")
     public ResponseEntity<Result> deleteObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @PathVariable Long observationId) {
-        ObservationDeleteResponseDto responseDto = observationService.deleteObservation(principalDetails.getId(),
+        ObservationDeleteResponse responseDto = observationService.deleteObservation(principalDetails.getId(),
                 observationId);
         return ResponseEntity.ok(Result.of(responseDto));
     }

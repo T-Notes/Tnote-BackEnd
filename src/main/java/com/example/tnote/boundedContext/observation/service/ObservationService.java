@@ -2,7 +2,7 @@ package com.example.tnote.boundedContext.observation.service;
 
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
-import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponses;
@@ -85,14 +85,14 @@ public class ObservationService {
     }
 
     @Transactional
-    public ObservationDeleteResponseDto deleteObservation(Long userId, Long observationId) {
+    public ObservationDeleteResponse deleteObservation(Long userId, Long observationId) {
         Observation observation = findObservationByIdAndUserId(observationId, userId);
 
         deleteExistedImagesByObservation(observation);
         observationRepository.delete(observation);
         recentLogService.delete(observation.getId(), "OBSERVATION");
 
-        return ObservationDeleteResponseDto.of(observation.getId());
+        return ObservationDeleteResponse.from(observation.getId());
     }
 
     @Transactional
