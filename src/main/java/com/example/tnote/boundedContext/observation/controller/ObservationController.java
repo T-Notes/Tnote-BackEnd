@@ -3,7 +3,7 @@ package com.example.tnote.boundedContext.observation.controller;
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
-import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
@@ -38,10 +38,10 @@ public class ObservationController {
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> save(@AuthenticationPrincipal final PrincipalDetails principalDetails,
                                        @PathVariable final Long scheduleId,
-                                       @RequestPart final ObservationRequestDto observationRequestDto,
+                                       @RequestPart final ObservationSaveRequest request,
                                        @RequestPart(name = "observationImages", required = false) final List<MultipartFile> observationImages) {
         ObservationResponseDto observationResponseDto = observationService.save(principalDetails.getId(), scheduleId,
-                observationRequestDto,
+                request,
                 observationImages);
         return ResponseEntity.ok(Result.of(observationResponseDto));
     }

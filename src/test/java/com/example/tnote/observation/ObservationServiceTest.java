@@ -1,19 +1,15 @@
 package com.example.tnote.observation;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.AssertionsForClassTypes.assertThatExceptionOfType;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.tnote.base.exception.CustomExceptions;
-import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
-import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
@@ -29,8 +25,6 @@ import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -86,7 +80,7 @@ public class ObservationServiceTest {
     @DisplayName("관찰일지 저장: 정상적인 경우 성공적으로 저장 확인")
     @Test
     void save() {
-        ObservationRequestDto requestDto = ObservationRequestDto.builder()
+        ObservationSaveRequest requestDto = ObservationSaveRequest.builder()
                 .title("김태환")
                 .startDate(mockSchedule.getStartDate().atStartOfDay())
                 .endDate(mockSchedule.getStartDate().atStartOfDay().plusHours(2))

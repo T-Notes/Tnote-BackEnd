@@ -11,7 +11,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ObservationRequestDto {
+public class ObservationSaveRequest {
     private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;

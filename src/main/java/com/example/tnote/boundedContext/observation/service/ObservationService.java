@@ -4,7 +4,7 @@ import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
-import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
@@ -46,7 +46,7 @@ public class ObservationService {
     private final RecentLogService recentLogService;
     private final AwsS3Uploader awsS3Uploader;
 
-    public ObservationResponseDto save(Long userId, Long scheduleId, ObservationRequestDto requestDto,
+    public ObservationResponseDto save(Long userId, Long scheduleId, ObservationSaveRequest requestDto,
                                        List<MultipartFile> observationImages) {
         User user = findUserById(userId);
         Schedule schedule = findScheduleById(scheduleId);
