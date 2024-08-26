@@ -162,8 +162,7 @@ public class UserController {
     public ResponseEntity<Result> updateExtraInfo(@AuthenticationPrincipal final PrincipalDetails user,
                                                   @RequestBody final UserUpdateRequest dto) {
 
-        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
-        UserResponse response = userService.updateExtraInfo(currentUser.getId(), dto);
+        UserResponse response = userService.updateExtraInfo(user.getId(), dto);
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -178,8 +177,7 @@ public class UserController {
     public ResponseEntity<Result> updateAlarmInfo(@AuthenticationPrincipal final PrincipalDetails user,
                                                   @RequestBody final UserAlarmUpdate dto) {
 
-        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
-        UserResponse response = userService.updateAlarmInfo(currentUser.getId(), dto);
+        UserResponse response = userService.updateAlarmInfo(user.getId(), dto);
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -212,9 +210,7 @@ public class UserController {
             , HttpServletRequest request) {
         String oauthRefreshToken = request.getHeader("oauthRefreshToken");
 
-        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
-
-        UserDeleteResponse response = authService.deleteUser(currentUser.getId(), oauthRefreshToken);
+        UserDeleteResponse response = authService.deleteUser(user.getId(), oauthRefreshToken);
 
         return ResponseEntity.ok(Result.of(response));
     }
@@ -229,9 +225,7 @@ public class UserController {
     })
     public ResponseEntity<Result> getMail(@AuthenticationPrincipal final PrincipalDetails user) {
 
-        PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
-
-        UserMailResponse response = userService.getMail(currentUser.getId());
+        UserMailResponse response = userService.getMail(user.getId());
 
         return ResponseEntity.ok(Result.of(response));
     }

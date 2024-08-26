@@ -21,7 +21,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class SchoolPlanUtil {
 
-    private URL url;
+    protected URL url;
     private final FindCityUtils findCityUtils;
     private String Type;
     private String path;
