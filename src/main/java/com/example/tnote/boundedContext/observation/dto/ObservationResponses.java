@@ -9,18 +9,18 @@ import org.springframework.data.domain.Slice;
 
 @Getter
 @Builder
-public class ObservationSliceResponseDto {
-    List<ObservationResponse> observations;
+public class ObservationResponses {
+    private List<ObservationResponse> observations;
     private int numberOfObservation;
 
     private long page;
     @JsonProperty(value = "isLast")
     private Boolean isLast;
 
-    public static ObservationSliceResponseDto from(List<ObservationResponse> observationResponseDto,
-                                                   List<Observation> observations,
-                                                   Slice<Observation> allAbservationsSlice) {
-        return ObservationSliceResponseDto.builder()
+    public static ObservationResponses of(final List<ObservationResponse> observationResponseDto,
+                                          final List<Observation> observations,
+                                          final Slice<Observation> allAbservationsSlice) {
+        return ObservationResponses.builder()
                 .observations(observationResponseDto)
                 .numberOfObservation(observations.size())
                 .page(allAbservationsSlice.getPageable().getPageNumber())
