@@ -36,7 +36,7 @@ import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode;
 import com.example.tnote.boundedContext.schedule.exception.ScheduleException;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
-import com.example.tnote.boundedContext.todo.dto.TodoResponseDto;
+import com.example.tnote.boundedContext.todo.dto.TodoResponse;
 import com.example.tnote.boundedContext.todo.service.TodoService;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
@@ -189,7 +189,7 @@ public class ArchiveService {
                 date);
         List<ObservationResponseDto> observations = observationService.readDailyObservations(userId, scheduleId, date);
         List<ProceedingResponse> proceedings = proceedingService.findDaily(userId, scheduleId, date);
-        List<TodoResponseDto> todos = todoService.readDailyTodos(userId, scheduleId, date);
+        List<TodoResponse> todos = todoService.readDailyTodos(userId, scheduleId, date);
         List<PlanResponse> plans = planService.findDaily(userId, scheduleId, date);
 
         return ArchiveResponse.of(classLogs, consultations, observations, proceedings, todos, plans);
@@ -206,7 +206,7 @@ public class ArchiveService {
         List<ObservationResponseDto> observations = observationService.readMonthlyObservations(userId, scheduleId,
                 date);
         List<ProceedingResponse> proceedings = proceedingService.findMonthly(userId, scheduleId, date);
-        List<TodoResponseDto> todos = todoService.readMonthlyTodos(userId, scheduleId, date);
+        List<TodoResponse> todos = todoService.readMonthlyTodos(userId, scheduleId, date);
         List<PlanResponse> plans = planService.findMonthly(userId, scheduleId, date);
 
         return ArchiveResponse.of(classLogs, consultations, observations, proceedings, todos, plans);

@@ -18,7 +18,6 @@ import org.springframework.stereotype.Component;
 public class SchoolUtils {
 
     private URL url;
-
     private String Type;
     private String path;
     private String pIndex;
@@ -34,14 +33,7 @@ public class SchoolUtils {
     @Value("${api.call-back-url}")
     private String callBackUrl;
 
-    /**
-     * make URL with variable in class
-     */
     private URL makeURL() throws IOException {
-
-        log.info("makeURL 안, SCHUL_NM : {},SCHUL_KND_SC_NM : {} ", SCHUL_NM, SCHUL_KND_SC_NM);
-
-        /*URL*/
         callBackUrl += "/" + path + "?KEY=" + KEY;
         callBackUrl += "&Type=" + this.Type;
         callBackUrl += "&pIndex=" + this.pIndex;
@@ -57,9 +49,7 @@ public class SchoolUtils {
         return new URL(callBackUrl);
     }
 
-    /**
-     * make URL with arguments
-     */
+
     public URL makeURL(String path, String KEY, String Type, String pIndex, String pSize, String ATPT_OFCDC_SC_CODE,
                        String SCHUL_NM, String SCHUL_KND_SC_NM) throws IOException {
         this.path = path;
@@ -77,9 +67,6 @@ public class SchoolUtils {
         return this.url;
     }
 
-    /**
-     * call Neis API
-     */
     public String schoolInfo(String path, String ATPT_OFCDC_SC_CODE, String SCHUL_NM, String SCHUL_KND_SC_NM)
             throws IOException {
 

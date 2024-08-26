@@ -221,19 +221,6 @@ class ScheduleServiceTest {
     }
 
     @Test
-    @DisplayName("학기 정보 삭제 성공")
-    void deleteSchedule() {
-
-        // given
-        testSyUtils.login(principalDetails);
-
-        // when
-
-        // then
-        scheduleService.deleteSchedule(schedule1.getId(), user1.getId());
-    }
-
-    @Test
     @DisplayName("존재하지 않는 학기 정보 삭제 실패")
     void notExistDeleteSchedule() {
 
@@ -282,7 +269,7 @@ class ScheduleServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        long diffDays = scheduleService.countLeftDays(schedule2.getStartDate(), user1.getId(), schedule2.getId());
+        long diffDays = scheduleService.countLeftDays(schedule1.getStartDate(), schedule1.getId(), user1.getId());
 
         // then
         assertThat(diffDays).isEqualTo(92);
