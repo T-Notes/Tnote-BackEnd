@@ -1,7 +1,5 @@
 package com.example.tnote.boundedContext.proceeding.repository;
 
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
-import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

@@ -121,7 +121,7 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findLogsByScheduleAndUser(Long scheduleId, Long userId) {
+    public List<ConsultationResponseDto> findByScheduleAndUser(Long scheduleId, Long userId) {
         List<Consultation> logs = consultationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ConsultationResponseDto::of)
@@ -129,8 +129,24 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findByTitle(String keyword, LocalDate startDate,
-                                                               LocalDate endDate, Long userId) {
+    public List<ConsultationResponseDto> findByFilter(final Long userId, final LocalDate startDate,
+                                                      final LocalDate endDate,
+                                                      final String searchType, final String keyword) {
+        if ("title".equals(searchType)) {
+            return findByTitle(keyword, startDate, endDate, userId);
+        }
+        if ("content".equals((searchType))) {
+            return findByContents(keyword, startDate, endDate, userId);
+        }
+        if ("titleAndContent".equals(searchType)) {
+            return findByTitleOrPlanOrContents(keyword, startDate, endDate, userId);
+        }
+        return null;
+    }
+
+    @Transactional(readOnly = true)
+    private List<ConsultationResponseDto> findByTitle(String keyword, LocalDate startDate,
+                                                      LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Consultation> logs = consultationRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
@@ -141,8 +157,8 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findByContents(String keyword, LocalDate startDate,
-                                                                  LocalDate endDate, Long userId) {
+    private List<ConsultationResponseDto> findByContents(String keyword, LocalDate startDate,
+                                                         LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Consultation> logs = consultationRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
@@ -153,10 +169,10 @@ public class ConsultationService {
     }
 
     @Transactional(readOnly = true)
-    public List<ConsultationResponseDto> findByTitleOrPlanOrContents(String keyword,
-                                                                          LocalDate startDate,
-                                                                          LocalDate endDate,
-                                                                          Long userId) {
+    private List<ConsultationResponseDto> findByTitleOrPlanOrContents(String keyword,
+                                                                      LocalDate startDate,
+                                                                      LocalDate endDate,
+                                                                      Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Consultation> logs = consultationRepository.findByTitleOrPlanOrClassContentsContaining(keyword,

@@ -4,11 +4,8 @@ import com.example.tnote.base.response.Result;
 import com.example.tnote.base.utils.TokenUtils;
 import com.example.tnote.boundedContext.archive.constant.DateType;
 import com.example.tnote.boundedContext.archive.constant.LogType;
-import com.example.tnote.boundedContext.archive.dto.ArchiveResponse;
 import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequest;
-import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponse;
-import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponseDto;
 import com.example.tnote.boundedContext.archive.service.ArchiveService;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
@@ -41,9 +38,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-@Slf4j
 @RestController
-@RequestMapping("/tnote/archive")
+@RequestMapping("/tnote/v1/archive")
 @Tag(name = "Archive", description = "Archive API")
 public class ArchiveController {
 
@@ -150,16 +146,15 @@ public class ArchiveController {
     }
 
     @GetMapping("/{scheduleId}/LogsByFilter")
-    public ResponseEntity<Result> readLogsByFilter(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                   @PathVariable Long scheduleId,
-                                                   @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                   @RequestParam(value = "size", required = false, defaultValue = "8") int size,
-                                                   @RequestParam(value = "logType", required = false, defaultValue = "ALL") LogType logType) {
+    public ResponseEntity<Result> findByLogType(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                                @PathVariable final Long scheduleId,
+                                                @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                @RequestParam(value = "size", required = false, defaultValue = "8") int size,
+                                                @RequestParam(value = "logType", required = false, defaultValue = "ALL") LogType logType) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        UnifiedLogResponseDto response = archiveService.readLogByFilter(principalDetails.getId(), scheduleId, logType,
-                pageRequest);
-        return ResponseEntity.ok(Result.of(response));
+        return ResponseEntity.ok(Result.of(archiveService.findByLogType(principalDetails.getId(), scheduleId, logType,
+                pageRequest)));
     }
 
     @PostMapping("/deleteLogs")
@@ -170,17 +165,16 @@ public class ArchiveController {
     }
 
     @GetMapping("/searching/log")
-    public ResponseEntity<Result> searchLogsByFilter(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @RequestParam(value = "dateType", required = false, defaultValue = "ALL") DateType dateType,
-                                                     @RequestParam(value = "searchType", required = false, defaultValue = "title") String searchType,
-                                                     @RequestParam(value = "keyword", required = false, defaultValue = "") String keyword,
-                                                     @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                     @RequestParam(value = "size", required = false, defaultValue = "8") int size) {
+    public ResponseEntity<Result> search(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                         @RequestParam(value = "dateType", required = false, defaultValue = "ALL") final DateType dateType,
+                                         @RequestParam(value = "searchType", required = false, defaultValue = "title") final String searchType,
+                                         @RequestParam(value = "keyword", required = false, defaultValue = "") final String keyword,
+                                         @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                         @RequestParam(value = "size", required = false, defaultValue = "8") int size) {
 
         PageRequest pageRequest = PageRequest.of(page, size);
-        UnifiedLogResponseDto response = archiveService.searchLogsByFilter(principalDetails.getId(), dateType,
-                searchType, keyword, pageRequest);
 
-        return ResponseEntity.ok(Result.of(response));
+        return ResponseEntity.ok(Result.of(archiveService.searchByFilter(principalDetails.getId(), dateType,
+                searchType, keyword, pageRequest)));
     }
 }
