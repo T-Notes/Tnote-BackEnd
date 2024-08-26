@@ -4,7 +4,7 @@ import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
-import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
@@ -40,7 +40,7 @@ public class ObservationController {
                                        @PathVariable final Long scheduleId,
                                        @RequestPart final ObservationSaveRequest request,
                                        @RequestPart(name = "observationImages", required = false) final List<MultipartFile> observationImages) {
-        ObservationResponseDto observationResponseDto = observationService.save(principalDetails.getId(), scheduleId,
+        ObservationResponse observationResponseDto = observationService.save(principalDetails.getId(), scheduleId,
                 request,
                 observationImages);
         return ResponseEntity.ok(Result.of(observationResponseDto));
@@ -81,7 +81,7 @@ public class ObservationController {
                                                     @PathVariable Long observationId,
                                                     @RequestPart ObservationUpdateRequestDto observationUpdateRequestDto,
                                                     @RequestPart(name = "observationImages", required = false) List<MultipartFile> observationImages) {
-        ObservationResponseDto responseDto = observationService.updateObservation(principalDetails.getId(),
+        ObservationResponse responseDto = observationService.updateObservation(principalDetails.getId(),
                 observationId, observationUpdateRequestDto, observationImages);
         return ResponseEntity.ok(Result.of(responseDto));
     }

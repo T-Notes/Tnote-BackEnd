@@ -11,7 +11,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
-import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
@@ -123,7 +123,7 @@ public class ArchiveServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        List<ObservationResponseDto> response = homeService.findAllOfObservation(observation.getTitle(),
+        List<ObservationResponse> response = homeService.findAllOfObservation(observation.getTitle(),
                 user1.getId(), schedule1.getId());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");

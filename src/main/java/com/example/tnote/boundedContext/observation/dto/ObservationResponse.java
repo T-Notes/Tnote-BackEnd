@@ -9,7 +9,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ObservationResponseDto implements LogEntry {
+public class ObservationResponse implements LogEntry {
     private Long id;
     private String title;
     private LocalDateTime startDate;
@@ -24,8 +24,8 @@ public class ObservationResponseDto implements LogEntry {
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-    public static ObservationResponseDto of(Observation observation) {
-        return ObservationResponseDto.builder()
+    public static ObservationResponse of(Observation observation) {
+        return ObservationResponse.builder()
                 .id(observation.getId())
                 .title(observation.getTitle())
                 .startDate(observation.getStartDate())

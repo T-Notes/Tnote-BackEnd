@@ -5,7 +5,7 @@ import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
-import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
@@ -46,8 +46,8 @@ public class ObservationService {
     private final RecentLogService recentLogService;
     private final AwsS3Uploader awsS3Uploader;
 
-    public ObservationResponseDto save(Long userId, Long scheduleId, ObservationSaveRequest requestDto,
-                                       List<MultipartFile> observationImages) {
+    public ObservationResponse save(Long userId, Long scheduleId, ObservationSaveRequest requestDto,
+                                    List<MultipartFile> observationImages) {
         User user = findUserById(userId);
         Schedule schedule = findScheduleById(scheduleId);
         Observation observation = observationRepository.save(requestDto.toEntity(user, schedule));
@@ -61,15 +61,15 @@ public class ObservationService {
             observation.getObservationImage().addAll(uploadedImages);
         }
         recentLogService.save(userId, observation.getId(), scheduleId, "OBSERVATION");
-        return ObservationResponseDto.of(observation);
+        return ObservationResponse.of(observation);
     }
 
     @Transactional(readOnly = true)
     public ObservationSliceResponseDto readAllObservation(Long userId, Long scheduleId, Pageable pageable) {
         List<Observation> observations = observationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<Observation> allObservationSlice = observationRepository.findAllByScheduleId(scheduleId, pageable);
-        List<ObservationResponseDto> responseDto = allObservationSlice.getContent().stream()
-                .map(ObservationResponseDto::of).toList();
+        List<ObservationResponse> responseDto = allObservationSlice.getContent().stream()
+                .map(ObservationResponse::of).toList();
 
         return ObservationSliceResponseDto.from(responseDto, observations, allObservationSlice);
     }
@@ -99,27 +99,27 @@ public class ObservationService {
         return observationIds.size();
     }
 
-    public ObservationResponseDto updateObservation(Long userId, Long observationId,
-                                                    ObservationUpdateRequestDto requestDto,
-                                                    List<MultipartFile> observationImages) {
+    public ObservationResponse updateObservation(Long userId, Long observationId,
+                                                 ObservationUpdateRequestDto requestDto,
+                                                 List<MultipartFile> observationImages) {
         Observation observation = findObservationByIdAndUserId(observationId, userId);
         updateObservationItem(requestDto, observation, observationImages);
         recentLogService.save(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
-        return ObservationResponseDto.of(observation);
+        return ObservationResponse.of(observation);
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> findByScheduleAndUser(Long scheduleId, Long userId) {
+    public List<ObservationResponse> findByScheduleAndUser(Long scheduleId, Long userId) {
         List<Observation> logs = observationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
-                .map(ObservationResponseDto::of)
+                .map(ObservationResponse::of)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> findByFilter(final Long userId, final LocalDate startDate,
-                                                     final LocalDate endDate,
-                                                     final String searchType, final String keyword) {
+    public List<ObservationResponse> findByFilter(final Long userId, final LocalDate startDate,
+                                                  final LocalDate endDate,
+                                                  final String searchType, final String keyword) {
         if ("title".equals(searchType)) {
             return findByTitle(keyword, startDate, endDate, userId);
         }
@@ -133,41 +133,41 @@ public class ObservationService {
     }
 
     @Transactional(readOnly = true)
-    private List<ObservationResponseDto> findByTitle(String keyword, LocalDate startDate,
-                                                    LocalDate endDate, Long userId) {
+    private List<ObservationResponse> findByTitle(String keyword, LocalDate startDate,
+                                                  LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Observation> logs = observationRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
-                .map(ObservationResponseDto::of)
+                .map(ObservationResponse::of)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    private List<ObservationResponseDto> findByContents(String keyword, LocalDate startDate,
-                                                       LocalDate endDate, Long userId) {
+    private List<ObservationResponse> findByContents(String keyword, LocalDate startDate,
+                                                     LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Observation> logs = observationRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
-                .map(ObservationResponseDto::of)
+                .map(ObservationResponse::of)
                 .toList();
     }
 
     @Transactional(readOnly = true)
-    private List<ObservationResponseDto> findByTitleOrPlanOrContents(String keyword,
-                                                                    LocalDate startDate,
-                                                                    LocalDate endDate,
-                                                                    Long userId) {
+    private List<ObservationResponse> findByTitleOrPlanOrContents(String keyword,
+                                                                  LocalDate startDate,
+                                                                  LocalDate endDate,
+                                                                  Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Observation> logs = observationRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
                 startOfDay, endOfDay, userId);
 
         return logs.stream()
-                .map(ObservationResponseDto::of)
+                .map(ObservationResponse::of)
                 .toList();
     }
 
@@ -224,14 +224,14 @@ public class ObservationService {
                 userId, scheduleId, startOfDay,
                 endOfDay, pageable);
 
-        List<ObservationResponseDto> responseDto = allObservationSlice.getContent().stream()
-                .map(ObservationResponseDto::of).toList();
+        List<ObservationResponse> responseDto = allObservationSlice.getContent().stream()
+                .map(ObservationResponse::of).toList();
 
         return ObservationSliceResponseDto.from(responseDto, observations, allObservationSlice);
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> readDailyObservations(Long userId, Long scheduleId, LocalDate date) {
+    public List<ObservationResponse> readDailyObservations(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
@@ -240,16 +240,16 @@ public class ObservationService {
                 endOfDay);
 
         return observations.stream()
-                .map(ObservationResponseDto::of).toList();
+                .map(ObservationResponse::of).toList();
     }
 
     @Transactional(readOnly = true)
-    public List<ObservationResponseDto> readMonthlyObservations(Long userId, Long scheduleId, LocalDate date) {
+    public List<ObservationResponse> readMonthlyObservations(Long userId, Long scheduleId, LocalDate date) {
         List<Observation> observations = observationRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
                 scheduleId, date);
 
         return observations.stream()
-                .map(ObservationResponseDto::of).toList();
+                .map(ObservationResponse::of).toList();
     }
 
     private List<ObservationImage> deleteExistedImagesAndUploadNewImages(Observation observation,

@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
-import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
@@ -90,7 +90,7 @@ public class ObservationServiceTest {
         when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(mockSchedule));
         when(observationRepository.save(any(Observation.class))).thenReturn(observation);
 
-        ObservationResponseDto result = observationService.save(userId, scheduleId, requestDto,
+        ObservationResponse result = observationService.save(userId, scheduleId, requestDto,
                 Collections.emptyList());
 
         assertThat(result).isNotNull();
@@ -181,7 +181,7 @@ public class ObservationServiceTest {
         when(observationRepository.findByIdAndUserId(observationId, userId)).thenReturn(Optional.of(mockObservation));
         when(mockObservation.getSchedule()).thenReturn(mockSchedule);
 
-        ObservationResponseDto result = observationService.updateObservation(userId, observationId,
+        ObservationResponse result = observationService.updateObservation(userId, observationId,
                 observationUpdateRequestDto,
                 observationImages);
 
