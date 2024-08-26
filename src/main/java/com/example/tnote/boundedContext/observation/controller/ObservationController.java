@@ -10,8 +10,6 @@ import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequest
 import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -27,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-@Slf4j
 @RestController
 @RequestMapping("/tnote/v1/observation")
 public class ObservationController {
