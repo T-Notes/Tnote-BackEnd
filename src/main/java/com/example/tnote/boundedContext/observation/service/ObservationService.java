@@ -59,6 +59,7 @@ public class ObservationService {
         Observation observation = request.toEntity(user, schedule);
 
         validateIncorrectTime(request,schedule);
+        observation = observationRepository.save(observation);
 
         if (observationImages != null && !observationImages.isEmpty()) {
             List<ObservationImage> uploadedImages = uploadObservationImages(observation, observationImages);
