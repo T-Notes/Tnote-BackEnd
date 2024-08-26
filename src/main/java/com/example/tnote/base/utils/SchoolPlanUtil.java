@@ -9,7 +9,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -49,10 +48,8 @@ public class SchoolPlanUtil {
         callBackUrl += "&Type=" + this.Type;
         callBackUrl += "&pIndex=" + this.pIndex;
         callBackUrl += "&pSize=" + this.pSize;
-        callBackUrl += "&" + URLEncoder.encode("ATPT_OFCDC_SC_CODE", StandardCharsets.UTF_8) + "=" + URLEncoder.encode(
-                this.ATPT_OFCDC_SC_CODE, StandardCharsets.UTF_8);
-        callBackUrl += "&" + URLEncoder.encode("SD_SCHUL_CODE", StandardCharsets.UTF_8) + "=" + URLEncoder.encode(
-                this.SD_SCHUL_CODE, StandardCharsets.UTF_8);
+        callBackUrl += "&ATPT_OFCDC_SC_CODE=" + URLEncoder.encode(this.ATPT_OFCDC_SC_CODE, "UTF-8");
+        callBackUrl += "&SD_SCHUL_CODE=" + URLEncoder.encode(this.SD_SCHUL_CODE, "UTF-8");
 
         return new URL(callBackUrl);
     }
