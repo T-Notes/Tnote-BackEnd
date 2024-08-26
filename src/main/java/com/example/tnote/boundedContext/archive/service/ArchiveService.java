@@ -187,7 +187,7 @@ public class ArchiveService {
         List<ClassLogResponse> classLogs = classLogService.findDaily(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, scheduleId,
                 date);
-        List<ObservationResponse> observations = observationService.readDailyObservations(userId, scheduleId, date);
+        List<ObservationResponse> observations = observationService.findDaily(userId, scheduleId, date);
         List<ProceedingResponse> proceedings = proceedingService.findDaily(userId, scheduleId, date);
         List<TodoResponse> todos = todoService.readDailyTodos(userId, scheduleId, date);
         List<PlanResponse> plans = planService.findDaily(userId, scheduleId, date);
@@ -203,7 +203,7 @@ public class ArchiveService {
         List<ClassLogResponse> classLogs = classLogService.findMonthly(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readMonthlyConsultations(userId, scheduleId,
                 date);
-        List<ObservationResponse> observations = observationService.readMonthlyObservations(userId, scheduleId,
+        List<ObservationResponse> observations = observationService.findMonthly(userId, scheduleId,
                 date);
         List<ProceedingResponse> proceedings = proceedingService.findMonthly(userId, scheduleId, date);
         List<TodoResponse> todos = todoService.readMonthlyTodos(userId, scheduleId, date);

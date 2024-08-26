@@ -230,7 +230,7 @@ public class ObservationService {
         return ObservationResponses.of(responseDto, observations, allObservationSlice);
     }
 
-    public List<ObservationResponse> readDailyObservations(Long userId, Long scheduleId, LocalDate date) {
+    public List<ObservationResponse> findDaily(final Long userId, final Long scheduleId, final LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
@@ -242,7 +242,7 @@ public class ObservationService {
                 .map(ObservationResponse::from).toList();
     }
 
-    public List<ObservationResponse> readMonthlyObservations(Long userId, Long scheduleId, LocalDate date) {
+    public List<ObservationResponse> findMonthly(final Long userId, final Long scheduleId, final LocalDate date) {
         List<Observation> observations = observationRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
                 scheduleId, date);
 
