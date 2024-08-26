@@ -16,12 +16,8 @@ import com.example.tnote.boundedContext.observation.repository.ObservationImageR
 import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
-import com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode;
-import com.example.tnote.boundedContext.schedule.exception.ScheduleException;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
-import com.example.tnote.boundedContext.user.exception.UserErrorCode;
-import com.example.tnote.boundedContext.user.exception.UserException;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -36,7 +32,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Transactional(readOnly = true)
 @Service
-@Slf4j
 @RequiredArgsConstructor
 public class ObservationService {
     private final ObservationRepository observationRepository;
@@ -49,8 +44,8 @@ public class ObservationService {
     @Transactional
     public ObservationResponse save(Long userId, Long scheduleId, ObservationSaveRequest requestDto,
                                     List<MultipartFile> observationImages) {
-        User user = findUserById(userId);
-        Schedule schedule = findScheduleById(scheduleId);
+        User user = userRepository.findUserById(userId);
+        Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
         Observation observation = observationRepository.save(requestDto.toEntity(user, schedule));
 
         if (observation.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || observation.getEndDate()
@@ -200,7 +195,6 @@ public class ObservationService {
     }
 
     private ObservationImage createObservationImage(Observation observation, String url, String originalFileName) {
-        log.info("url = {}", url);
         observation.clearObservationImages();
 
         return observationImageRepository.save(ObservationImage.builder()
@@ -270,16 +264,6 @@ public class ObservationService {
             String imageKey = observationImage.getObservationImageUrl().substring(49);
             awsS3Uploader.deleteImage(imageKey);
         }
-    }
-
-    private User findUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
-    }
-
-    private Schedule findScheduleById(Long scheduleId) {
-        return scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
     }
 
     private Observation findObservationByIdAndUserId(Long observationId, Long userId) {
