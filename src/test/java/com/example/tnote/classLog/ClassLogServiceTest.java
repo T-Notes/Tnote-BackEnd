@@ -72,13 +72,7 @@ public class ClassLogServiceTest {
         mockSchedule = new Schedule(1L, "1학기", null,
                 LocalDate.of(2024, 1, 1),
                 LocalDate.of(2024, 3, 28),
-                mockUser,
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>(),
-                new ArrayList<>());
+                mockUser);
 
         mockClassLog = mock(ClassLog.class);
     }
