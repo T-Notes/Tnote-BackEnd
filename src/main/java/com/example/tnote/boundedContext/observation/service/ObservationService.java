@@ -22,8 +22,6 @@ import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -54,16 +52,14 @@ public class ObservationService {
     }
 
     @Transactional
-    public ObservationResponse save(Long userId, Long scheduleId, ObservationSaveRequest requestDto,
-                                    List<MultipartFile> observationImages) {
+    public ObservationResponse save(final Long userId, final Long scheduleId, final ObservationSaveRequest request,
+                                    final List<MultipartFile> observationImages) {
         User user = userRepository.findUserById(userId);
         Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
-        Observation observation = observationRepository.save(requestDto.toEntity(user, schedule));
+        Observation observation = request.toEntity(user, schedule);
 
-        if (observation.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || observation.getEndDate()
-                .toLocalDate().isAfter(schedule.getEndDate())) {
-            throw new ObservationException(ObservationErrorCode.INVALID_OBSERVATION_DATE);
-        }
+        validateIncorrectTime(request,schedule);
+
         if (observationImages != null && !observationImages.isEmpty()) {
             List<ObservationImage> uploadedImages = uploadObservationImages(observation, observationImages);
             observation.getObservationImage().addAll(uploadedImages);
@@ -281,5 +277,12 @@ public class ObservationService {
     private Observation findObservationByIdAndUserId(Long observationId, Long userId) {
         return observationRepository.findByIdAndUserId(observationId, userId)
                 .orElseThrow(() -> new ObservationException(ObservationErrorCode.OBSERVATION_NOT_FOUNT));
+    }
+
+    private void validateIncorrectTime(final ObservationSaveRequest request, final Schedule schedule) {
+        if (request.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || request.getEndDate()
+                .toLocalDate().isAfter(schedule.getEndDate())) {
+            throw new ObservationException(ObservationErrorCode.INVALID_OBSERVATION_DATE);
+        }
     }
 }
