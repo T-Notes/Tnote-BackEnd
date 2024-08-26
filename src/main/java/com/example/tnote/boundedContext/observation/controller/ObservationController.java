@@ -80,7 +80,7 @@ public class ObservationController {
                                                     @PathVariable Long observationId,
                                                     @RequestPart ObservationUpdateRequestDto observationUpdateRequestDto,
                                                     @RequestPart(name = "observationImages", required = false) List<MultipartFile> observationImages) {
-        ObservationResponse responseDto = observationService.updateObservation(principalDetails.getId(),
+        ObservationResponse responseDto = observationService.update(principalDetails.getId(),
                 observationId, observationUpdateRequestDto, observationImages);
         return ResponseEntity.ok(Result.of(responseDto));
     }

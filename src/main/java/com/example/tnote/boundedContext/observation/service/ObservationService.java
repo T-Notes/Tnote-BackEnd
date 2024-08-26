@@ -57,7 +57,7 @@ public class ObservationService {
         Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
         Observation observation = request.toEntity(user, schedule);
 
-        validateIncorrectTime(request,schedule);
+        validateIncorrectTime(request, schedule);
         observation = observationRepository.save(observation);
 
         if (observationImages != null && !observationImages.isEmpty()) {
@@ -104,11 +104,11 @@ public class ObservationService {
     }
 
     @Transactional
-    public ObservationResponse updateObservation(Long userId, Long observationId,
-                                                 ObservationUpdateRequestDto requestDto,
-                                                 List<MultipartFile> observationImages) {
+    public ObservationResponse update(final Long userId, final Long observationId,
+                                      final ObservationUpdateRequestDto request,
+                                      final List<MultipartFile> observationImages) {
         Observation observation = findObservationByIdAndUserId(observationId, userId);
-        updateObservationItem(requestDto, observation, observationImages);
+        updateObservationItem(request, observation, observationImages);
         recentLogService.save(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
         return ObservationResponse.from(observation);
     }

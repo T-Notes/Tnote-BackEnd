@@ -178,7 +178,7 @@ public class ObservationServiceTest {
         when(observationRepository.findByIdAndUserId(observationId, userId)).thenReturn(Optional.of(mockObservation));
         when(mockObservation.getSchedule()).thenReturn(mockSchedule);
 
-        ObservationResponse result = observationService.updateObservation(userId, observationId,
+        ObservationResponse result = observationService.update(userId, observationId,
                 observationUpdateRequestDto,
                 observationImages);
 
