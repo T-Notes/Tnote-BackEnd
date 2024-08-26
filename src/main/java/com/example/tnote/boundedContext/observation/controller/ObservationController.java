@@ -64,11 +64,10 @@ public class ObservationController {
     }
 
     @DeleteMapping("/{observationId}")
-    public ResponseEntity<Result> deleteObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                    @PathVariable Long observationId) {
-        ObservationDeleteResponse responseDto = observationService.delete(principalDetails.getId(),
-                observationId);
-        return ResponseEntity.ok(Result.of(responseDto));
+    public ResponseEntity<Result> delete(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                         @PathVariable final Long observationId) {
+
+        return ResponseEntity.ok(Result.of(observationService.delete(principalDetails.getId(), observationId)));
     }
 
     @PatchMapping(value = "/{observationId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
