@@ -1,5 +1,6 @@
 package com.example.tnote.boundedContext.plan.dto;
 
+import com.example.tnote.boundedContext.archive.constant.LogType;
 import com.example.tnote.boundedContext.archive.dto.LogEntry;
 import com.example.tnote.boundedContext.plan.entity.Plan;
 import com.example.tnote.boundedContext.plan.entity.PlanImage;
@@ -19,6 +20,7 @@ public class PlanResponse implements LogEntry {
     private String contents;
     private String participants;
     private String color;
+    private String logType;
     private LocalDateTime createAt;
     private List<PlanImage> planImageList;
 
@@ -33,6 +35,7 @@ public class PlanResponse implements LogEntry {
                 .participants(plan.getParticipants())
                 .color(plan.getColor())
                 .createAt(plan.getCreatedAt())
+                .logType(LogType.PLAN.name())
                 .planImageList(plan.getPlanImages())
                 .build();
     }
