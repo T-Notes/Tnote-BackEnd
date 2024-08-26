@@ -96,7 +96,7 @@ public class ObservationService {
     }
 
     @Transactional
-    public int deleteObservations(Long userId, List<Long> observationIds) {
+    public int deleteObservations(final Long userId, final List<Long> observationIds) {
         observationIds.forEach(observationId -> {
             delete(userId, observationId);
         });
