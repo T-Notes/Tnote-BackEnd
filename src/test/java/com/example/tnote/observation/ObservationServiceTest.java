@@ -13,7 +13,6 @@ import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponses;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequest;
 import com.example.tnote.boundedContext.observation.entity.Observation;
-import com.example.tnote.boundedContext.observation.entity.ObservationImage;
 import com.example.tnote.boundedContext.observation.exception.ObservationException;
 import com.example.tnote.boundedContext.observation.repository.ObservationImageRepository;
 import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
@@ -24,6 +23,7 @@ import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -68,7 +68,7 @@ public class ObservationServiceTest {
     @BeforeEach
     void setUp() {
         mockUser = mock(User.class);
-        mockSchedule = new Schedule(1L, "1학기", null,
+        mockSchedule = new Schedule(2L, "1학기", null,
                 LocalDate.of(2024, 1, 1),
                 LocalDate.of(2024, 3, 28),
                 mockUser);
@@ -79,14 +79,14 @@ public class ObservationServiceTest {
     @DisplayName("관찰일지 저장: 정상적인 경우 성공적으로 저장 확인")
     @Test
     void save() {
+        LocalDateTime startDate = LocalDate.of(2024, 1, 1).atStartOfDay();
+        LocalDateTime endDate = LocalDate.of(2024, 1, 3).atStartOfDay();
         ObservationSaveRequest requestDto = new ObservationSaveRequest("김태환",
-                mockSchedule.getStartDate().atStartOfDay(), mockSchedule.getStartDate().atStartOfDay().plusHours(2),
-                "컨텐츠", "지도", true, "red");
+                startDate, endDate, "컨텐츠", "지도", true, "red");
 
-
-        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
+        when(userRepository.findUserById(userId)).thenReturn(mockUser);
+        when(scheduleRepository.findScheduleById(2L)).thenReturn(mockSchedule);
         Observation observation = requestDto.toEntity(mockUser, mockSchedule);
-        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(mockSchedule));
         when(observationRepository.save(any(Observation.class))).thenReturn(observation);
 
         ObservationResponse result = observationService.save(userId, scheduleId, requestDto,
@@ -123,18 +123,9 @@ public class ObservationServiceTest {
     @DisplayName("관찰일지 상세 조회: 관찰일지 상세 정보 조회 확인")
     @Test
     void getDetails() {
-        when(mockUser.getId()).thenReturn(userId);
         when(mockObservation.getId()).thenReturn(observationId);
-        when(mockObservation.getUser()).thenReturn(mockUser);
         when(mockObservation.getSchedule()).thenReturn(mockSchedule);
-
-        ObservationImage mockObservationImage = mock(ObservationImage.class);
-
-        List<ObservationImage> mockObservationImages = List.of(mockObservationImage);
-
         when(observationRepository.findByIdAndUserId(userId, observationId)).thenReturn(Optional.of(mockObservation));
-        when(observationImageRepository.findObservationImageByObservationId(observationId)).thenReturn(
-                mockObservationImages);
 
         ObservationResponse result = observationService.find(userId, observationId);
 
@@ -142,7 +133,6 @@ public class ObservationServiceTest {
         assertThat(result.getId()).isEqualTo(observationId);
 
         verify(observationRepository).findByIdAndUserId(userId, observationId);
-        verify(observationImageRepository).findObservationImageByObservationId(observationId);
     }
 
     @DisplayName("존재하지 않는 관찰일지의 상세정보 조회 시 예외 발생")
