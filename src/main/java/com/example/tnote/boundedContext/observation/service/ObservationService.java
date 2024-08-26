@@ -135,8 +135,8 @@ public class ObservationService {
         return null;
     }
 
-    private List<ObservationResponse> findByTitle(String keyword, LocalDate startDate,
-                                                  LocalDate endDate, Long userId) {
+    private List<ObservationResponse> findByTitle(final String keyword, final LocalDate startDate,
+                                                  final LocalDate endDate, final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Observation> logs = observationRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
@@ -146,8 +146,8 @@ public class ObservationService {
                 .toList();
     }
 
-    private List<ObservationResponse> findByContents(String keyword, LocalDate startDate,
-                                                     LocalDate endDate, Long userId) {
+    private List<ObservationResponse> findByContents(final String keyword, final LocalDate startDate,
+                                                     final LocalDate endDate, final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Observation> logs = observationRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
@@ -157,10 +157,10 @@ public class ObservationService {
                 .toList();
     }
 
-    private List<ObservationResponse> findByTitleOrPlanOrContents(String keyword,
-                                                                  LocalDate startDate,
-                                                                  LocalDate endDate,
-                                                                  Long userId) {
+    private List<ObservationResponse> findByTitleOrPlanOrContents(final String keyword,
+                                                                  final LocalDate startDate,
+                                                                  final LocalDate endDate,
+                                                                  final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Observation> logs = observationRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
@@ -200,7 +200,8 @@ public class ObservationService {
                 .toList();
     }
 
-    private ObservationImage createObservationImage(final Observation observation, final String url, final String originalFileName) {
+    private ObservationImage createObservationImage(final Observation observation, final String url,
+                                                    final String originalFileName) {
         observation.clearObservationImages();
 
         return observationImageRepository.save(ObservationImage.builder()
