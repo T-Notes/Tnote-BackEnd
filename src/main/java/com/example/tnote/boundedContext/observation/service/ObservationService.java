@@ -32,7 +32,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Transactional(readOnly = true)
 @Service
-@RequiredArgsConstructor
 public class ObservationService {
     private final ObservationRepository observationRepository;
     private final ObservationImageRepository observationImageRepository;
@@ -40,6 +39,19 @@ public class ObservationService {
     private final ScheduleRepository scheduleRepository;
     private final RecentLogService recentLogService;
     private final AwsS3Uploader awsS3Uploader;
+
+    public ObservationService(final ObservationRepository observationRepository,
+                              final ObservationImageRepository observationImageRepository,
+                              final UserRepository userRepository,
+                              final ScheduleRepository scheduleRepository, final RecentLogService recentLogService,
+                              final AwsS3Uploader awsS3Uploader) {
+        this.observationRepository = observationRepository;
+        this.observationImageRepository = observationImageRepository;
+        this.userRepository = userRepository;
+        this.scheduleRepository = scheduleRepository;
+        this.recentLogService = recentLogService;
+        this.awsS3Uploader = awsS3Uploader;
+    }
 
     @Transactional
     public ObservationResponse save(Long userId, Long scheduleId, ObservationSaveRequest requestDto,
