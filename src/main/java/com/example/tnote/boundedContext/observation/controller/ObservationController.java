@@ -39,23 +39,20 @@ public class ObservationController {
                                        @PathVariable final Long scheduleId,
                                        @RequestPart final ObservationSaveRequest request,
                                        @RequestPart(name = "observationImages", required = false) final List<MultipartFile> observationImages) {
-        ObservationResponse observationResponseDto = observationService.save(principalDetails.getId(), scheduleId,
-                request,
-                observationImages);
-        return ResponseEntity.ok(Result.of(observationResponseDto));
+
+        return ResponseEntity.ok(Result.of(observationService.save(principalDetails.getId(), scheduleId,
+                request, observationImages)));
     }
 
     @GetMapping("/{scheduleId}/all")
-    public ResponseEntity<Result> getAllObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                    @PathVariable Long scheduleId,
-                                                    @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                    @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
+    public ResponseEntity<Result> findAll(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                          @PathVariable final Long scheduleId,
+                                          @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                          @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        ObservationResponses responseDto = observationService.findAll(principalDetails.getId(),
-                scheduleId,
-                pageRequest);
 
-        return ResponseEntity.ok(Result.of(responseDto));
+        return ResponseEntity.ok(Result.of(observationService.findAll(principalDetails.getId(),
+                scheduleId, pageRequest)));
     }
 
     @GetMapping("/{observationId}")
