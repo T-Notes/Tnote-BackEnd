@@ -273,7 +273,7 @@ public class ObservationService {
         }
     }
 
-    private Observation findObservationByIdAndUserId(Long observationId, Long userId) {
+    private Observation findObservationByIdAndUserId(final Long observationId, final Long userId) {
         return observationRepository.findByIdAndUserId(observationId, userId)
                 .orElseThrow(() -> new ObservationException(ObservationErrorCode.OBSERVATION_NOT_FOUNT));
     }
