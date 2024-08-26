@@ -72,12 +72,12 @@ public class ObservationController {
 
     @PatchMapping(value = "/{observationId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Result> updateObservation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                    @PathVariable Long observationId,
-                                                    @RequestPart ObservationUpdateRequest observationUpdateRequestDto,
-                                                    @RequestPart(name = "observationImages", required = false) List<MultipartFile> observationImages) {
-        ObservationResponse responseDto = observationService.update(principalDetails.getId(),
-                observationId, observationUpdateRequestDto, observationImages);
-        return ResponseEntity.ok(Result.of(responseDto));
+    public ResponseEntity<Result> update(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                                    @PathVariable final Long observationId,
+                                                    @RequestPart final ObservationUpdateRequest request,
+                                                    @RequestPart(name = "observationImages", required = false) final List<MultipartFile> observationImages) {
+
+        return ResponseEntity.ok(Result.of(observationService.update(principalDetails.getId(),
+                observationId, request, observationImages)));
     }
 }
