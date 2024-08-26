@@ -79,7 +79,7 @@ public class ObservationService {
     }
 
     @Transactional
-    public ObservationDetailResponseDto readObservationDetail(Long userId, Long observationId) {
+    public ObservationDetailResponseDto find(final Long userId, final Long observationId) {
         Observation observation = findObservationByIdAndUserId(observationId, userId);
         List<ObservationImage> observationImages = observationImageRepository.findObservationImageByObservationId(
                 observationId);

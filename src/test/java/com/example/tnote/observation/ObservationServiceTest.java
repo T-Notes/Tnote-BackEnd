@@ -137,7 +137,7 @@ public class ObservationServiceTest {
         when(observationImageRepository.findObservationImageByObservationId(observationId)).thenReturn(
                 mockObservationImages);
 
-        ObservationDetailResponseDto result = observationService.readObservationDetail(userId, observationId);
+        ObservationDetailResponseDto result = observationService.find(userId, observationId);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(observationId);
@@ -156,7 +156,7 @@ public class ObservationServiceTest {
 
         when(observationRepository.findByIdAndUserId(observationId, userId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> observationService.readObservationDetail(userId, observationId))
+        assertThatThrownBy(() -> observationService.find(userId, observationId))
                 .isInstanceOf(ObservationException.class);
     }
 
