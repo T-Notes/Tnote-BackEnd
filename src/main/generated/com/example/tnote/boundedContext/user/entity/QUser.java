@@ -37,7 +37,7 @@ public class QUser extends EntityPathBase<User> {
 
     public final NumberPath<Long> id = createNumber("id", Long.class);
 
-    public final NumberPath<Integer> lastScheduleId = createNumber("lastScheduleId", Integer.class);
+    public final NumberPath<Long> lastScheduleId = createNumber("lastScheduleId", Long.class);
 
     public final StringPath lastScheduleName = createString("lastScheduleName");
 

@@ -5,6 +5,9 @@ import static com.example.tnote.boundedContext.user.exception.UserErrorCode.USER
 
 import com.example.tnote.base.utils.CookieUtils;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
+import com.example.tnote.boundedContext.schedule.entity.Schedule;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleQueryRepository;
+import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.dto.UserAlarmUpdate;
 import com.example.tnote.boundedContext.user.dto.UserMailResponse;
 import com.example.tnote.boundedContext.user.dto.UserResponse;
@@ -14,6 +17,9 @@ import com.example.tnote.boundedContext.user.exception.UserException;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import java.time.LocalDate;
+import java.time.Month;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -25,7 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final ScheduleRepository scheduleRepository;
     protected final ConsultationRepository consultationRepository;
+    private final ScheduleQueryRepository scheduleQueryRepository;
 
     @Transactional
     public UserResponse signUp(final String email, final String name) {
@@ -56,6 +64,36 @@ public class UserService {
     public UserResponse updateExtraInfo(final Long userId, final UserUpdateRequest dto) {
 
         User user = userRepository.findUserById(userId);
+        List<Schedule> scheduleList = scheduleQueryRepository.findAllByUserId(userId);
+
+        if (scheduleList.isEmpty()) {
+            LocalDate currentDate = LocalDate.now();
+
+            int currentMonth = currentDate.getMonthValue();
+
+            int date = currentMonth <= 6 ? 1 : 2;
+
+            LocalDate startDate = currentMonth <= 6
+                    ? LocalDate.of(currentDate.getYear(), Month.JANUARY, 1)
+                    : LocalDate.of(currentDate.getYear(), Month.JULY, 1);
+
+            LocalDate endDate = currentMonth <= 6
+                    ? LocalDate.of(currentDate.getYear(), Month.JUNE, 30)
+                    : LocalDate.of(currentDate.getYear(), Month.DECEMBER, 31);
+
+            Schedule schedule = Schedule.builder()
+                    .semesterName(currentDate.getYear() + "년 " + date + "학기")
+                    .lastClass("9교시")
+                    .startDate(startDate)
+                    .endDate(endDate)
+                    .user(user)
+                    .build();
+
+            scheduleRepository.save(schedule);
+
+            user.updateLastScheduleId(schedule.getId());
+            user.updateLastScheduleName(schedule.getSemesterName());
+        }
 
         updateUserItem(dto, user);
 
