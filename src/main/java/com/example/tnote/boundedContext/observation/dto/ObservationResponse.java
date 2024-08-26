@@ -20,11 +20,13 @@ public class ObservationResponse implements LogEntry {
     private LocalDateTime updatedAt;
     private String logType;
     private String color;
+
     @Override
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }
-    public static ObservationResponse of(Observation observation) {
+
+    public static ObservationResponse from(final Observation observation) {
         return ObservationResponse.builder()
                 .id(observation.getId())
                 .title(observation.getTitle())

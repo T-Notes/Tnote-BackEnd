@@ -61,7 +61,7 @@ public class ObservationService {
             observation.getObservationImage().addAll(uploadedImages);
         }
         recentLogService.save(userId, observation.getId(), scheduleId, "OBSERVATION");
-        return ObservationResponse.of(observation);
+        return ObservationResponse.from(observation);
     }
 
     @Transactional(readOnly = true)
@@ -69,7 +69,7 @@ public class ObservationService {
         List<Observation> observations = observationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<Observation> allObservationSlice = observationRepository.findAllByScheduleId(scheduleId, pageable);
         List<ObservationResponse> responseDto = allObservationSlice.getContent().stream()
-                .map(ObservationResponse::of).toList();
+                .map(ObservationResponse::from).toList();
 
         return ObservationSliceResponseDto.from(responseDto, observations, allObservationSlice);
     }
@@ -105,14 +105,14 @@ public class ObservationService {
         Observation observation = findObservationByIdAndUserId(observationId, userId);
         updateObservationItem(requestDto, observation, observationImages);
         recentLogService.save(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
-        return ObservationResponse.of(observation);
+        return ObservationResponse.from(observation);
     }
 
     @Transactional(readOnly = true)
     public List<ObservationResponse> findByScheduleAndUser(Long scheduleId, Long userId) {
         List<Observation> logs = observationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
-                .map(ObservationResponse::of)
+                .map(ObservationResponse::from)
                 .toList();
     }
 
@@ -140,7 +140,7 @@ public class ObservationService {
         List<Observation> logs = observationRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
-                .map(ObservationResponse::of)
+                .map(ObservationResponse::from)
                 .toList();
     }
 
@@ -152,7 +152,7 @@ public class ObservationService {
         List<Observation> logs = observationRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
-                .map(ObservationResponse::of)
+                .map(ObservationResponse::from)
                 .toList();
     }
 
@@ -167,7 +167,7 @@ public class ObservationService {
                 startOfDay, endOfDay, userId);
 
         return logs.stream()
-                .map(ObservationResponse::of)
+                .map(ObservationResponse::from)
                 .toList();
     }
 
@@ -225,7 +225,7 @@ public class ObservationService {
                 endOfDay, pageable);
 
         List<ObservationResponse> responseDto = allObservationSlice.getContent().stream()
-                .map(ObservationResponse::of).toList();
+                .map(ObservationResponse::from).toList();
 
         return ObservationSliceResponseDto.from(responseDto, observations, allObservationSlice);
     }
@@ -240,7 +240,7 @@ public class ObservationService {
                 endOfDay);
 
         return observations.stream()
-                .map(ObservationResponse::of).toList();
+                .map(ObservationResponse::from).toList();
     }
 
     @Transactional(readOnly = true)
@@ -249,7 +249,7 @@ public class ObservationService {
                 scheduleId, date);
 
         return observations.stream()
-                .map(ObservationResponse::of).toList();
+                .map(ObservationResponse::from).toList();
     }
 
     private List<ObservationImage> deleteExistedImagesAndUploadNewImages(Observation observation,

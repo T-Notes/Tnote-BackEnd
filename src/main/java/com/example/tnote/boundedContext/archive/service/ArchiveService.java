@@ -87,7 +87,7 @@ public class ArchiveService {
         List<Observation> observations = observationQueryRepository.findAll(studentName, scheduleId);
 
         return observations.stream()
-                .map(ObservationResponse::of)
+                .map(ObservationResponse::from)
                 .toList();
     }
 
