@@ -192,15 +192,15 @@ public class ObservationService {
         observation.updateGuidance(request.getGuidance());
     }
 
-    private List<ObservationImage> uploadObservationImages(Observation observation,
-                                                           List<MultipartFile> observationImages) {
+    private List<ObservationImage> uploadObservationImages(final Observation observation,
+                                                           final List<MultipartFile> observationImages) {
         return observationImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "observation"))
                 .map(pair -> createObservationImage(observation, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
 
-    private ObservationImage createObservationImage(Observation observation, String url, String originalFileName) {
+    private ObservationImage createObservationImage(final Observation observation, final String url, final String originalFileName) {
         observation.clearObservationImages();
 
         return observationImageRepository.save(ObservationImage.builder()
@@ -249,22 +249,22 @@ public class ObservationService {
                 .map(ObservationResponse::from).toList();
     }
 
-    private List<ObservationImage> deleteExistedImagesAndUploadNewImages(Observation observation,
-                                                                         List<MultipartFile> observationImages) {
+    private List<ObservationImage> deleteExistedImagesAndUploadNewImages(final Observation observation,
+                                                                         final List<MultipartFile> observationImages) {
         deleteExistedImages(observation);
         return uploadObservationImages(observation, observationImages);
     }
 
-    private void deleteExistedImages(Observation observation) {
+    private void deleteExistedImages(final Observation observation) {
         deleteS3Images(observation);
         observationImageRepository.deleteByObservationId(observation.getId());
     }
 
-    private void deleteExistedImagesByObservation(Observation observation) {
+    private void deleteExistedImagesByObservation(final Observation observation) {
         deleteS3Images(observation);
     }
 
-    private void deleteS3Images(Observation observation) {
+    private void deleteS3Images(final Observation observation) {
         List<ObservationImage> observationImages = observation.getObservationImage();
         for (ObservationImage observationImage : observationImages) {
             String imageKey = observationImage.getObservationImageUrl().substring(49);
