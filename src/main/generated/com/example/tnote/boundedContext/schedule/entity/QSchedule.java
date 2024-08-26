@@ -39,6 +39,8 @@ public class QSchedule extends EntityPathBase<Schedule> {
 
     public final ListPath<com.example.tnote.boundedContext.observation.entity.Observation, com.example.tnote.boundedContext.observation.entity.QObservation> observationList = this.<com.example.tnote.boundedContext.observation.entity.Observation, com.example.tnote.boundedContext.observation.entity.QObservation>createList("observationList", com.example.tnote.boundedContext.observation.entity.Observation.class, com.example.tnote.boundedContext.observation.entity.QObservation.class, PathInits.DIRECT2);
 
+    public final ListPath<com.example.tnote.boundedContext.plan.entity.Plan, com.example.tnote.boundedContext.plan.entity.QPlan> planList = this.<com.example.tnote.boundedContext.plan.entity.Plan, com.example.tnote.boundedContext.plan.entity.QPlan>createList("planList", com.example.tnote.boundedContext.plan.entity.Plan.class, com.example.tnote.boundedContext.plan.entity.QPlan.class, PathInits.DIRECT2);
+
     public final ListPath<com.example.tnote.boundedContext.proceeding.entity.Proceeding, com.example.tnote.boundedContext.proceeding.entity.QProceeding> proceedingList = this.<com.example.tnote.boundedContext.proceeding.entity.Proceeding, com.example.tnote.boundedContext.proceeding.entity.QProceeding>createList("proceedingList", com.example.tnote.boundedContext.proceeding.entity.Proceeding.class, com.example.tnote.boundedContext.proceeding.entity.QProceeding.class, PathInits.DIRECT2);
 
     public final StringPath semesterName = createString("semesterName");
