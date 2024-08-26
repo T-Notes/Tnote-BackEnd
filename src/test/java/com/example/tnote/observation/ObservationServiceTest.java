@@ -11,7 +11,7 @@ import com.example.tnote.boundedContext.observation.dto.ObservationDeleteRespons
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
-import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponses;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.entity.ObservationImage;
@@ -112,7 +112,7 @@ public class ObservationServiceTest {
         Slice<Observation> mockObservations = new PageImpl<>(mockObservationList, pageable, mockObservationList.size());
 
         when(observationRepository.findAllByScheduleId(scheduleId, pageable)).thenReturn(mockObservations);
-        ObservationSliceResponseDto result = observationService.readAllObservation(userId, scheduleId, pageable);
+        ObservationResponses result = observationService.findAll(userId, scheduleId, pageable);
 
         assertThat(result.getObservations())
                 .isNotNull()

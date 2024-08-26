@@ -5,7 +5,7 @@ import com.example.tnote.boundedContext.observation.dto.ObservationDeleteRespons
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
-import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponses;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
@@ -52,7 +52,7 @@ public class ObservationController {
                                                     @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                     @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        ObservationSliceResponseDto responseDto = observationService.readAllObservation(principalDetails.getId(),
+        ObservationResponses responseDto = observationService.findAll(principalDetails.getId(),
                 scheduleId,
                 pageRequest);
 

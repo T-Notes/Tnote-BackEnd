@@ -6,7 +6,7 @@ import com.example.tnote.boundedContext.observation.dto.ObservationDeleteRespons
 import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
-import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponses;
 import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.entity.ObservationImage;
@@ -69,13 +69,13 @@ public class ObservationService {
         return ObservationResponse.from(observation);
     }
 
-    public ObservationSliceResponseDto readAllObservation(Long userId, Long scheduleId, Pageable pageable) {
+    public ObservationResponses findAll(final Long userId, final Long scheduleId, final Pageable pageable) {
         List<Observation> observations = observationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<Observation> allObservationSlice = observationRepository.findAllByScheduleId(scheduleId, pageable);
         List<ObservationResponse> responseDto = allObservationSlice.getContent().stream()
                 .map(ObservationResponse::from).toList();
 
-        return ObservationSliceResponseDto.from(responseDto, observations, allObservationSlice);
+        return ObservationResponses.of(responseDto, observations, allObservationSlice);
     }
 
     @Transactional
@@ -214,8 +214,8 @@ public class ObservationService {
     }
 
     @Transactional(readOnly = true)
-    public ObservationSliceResponseDto readObservationsByDate(Long userId, Long scheduleId, LocalDate startDate,
-                                                              LocalDate endDate, Pageable pageable) {
+    public ObservationResponses readObservationsByDate(Long userId, Long scheduleId, LocalDate startDate,
+                                                       LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
@@ -229,7 +229,7 @@ public class ObservationService {
         List<ObservationResponse> responseDto = allObservationSlice.getContent().stream()
                 .map(ObservationResponse::from).toList();
 
-        return ObservationSliceResponseDto.from(responseDto, observations, allObservationSlice);
+        return ObservationResponses.of(responseDto, observations, allObservationSlice);
     }
 
     public List<ObservationResponse> readDailyObservations(Long userId, Long scheduleId, LocalDate date) {
