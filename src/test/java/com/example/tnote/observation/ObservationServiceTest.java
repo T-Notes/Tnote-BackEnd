@@ -8,7 +8,6 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
-import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
 import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponses;
@@ -137,12 +136,10 @@ public class ObservationServiceTest {
         when(observationImageRepository.findObservationImageByObservationId(observationId)).thenReturn(
                 mockObservationImages);
 
-        ObservationDetailResponseDto result = observationService.find(userId, observationId);
+        ObservationResponse result = observationService.find(userId, observationId);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(observationId);
-        assertThat(result.getUserId()).isEqualTo(userId);
-        assertThat(result.getObservationImageUrls()).hasSize(mockObservationImages.size());
 
         verify(observationRepository).findByIdAndUserId(userId, observationId);
         verify(observationImageRepository).findObservationImageByObservationId(observationId);
