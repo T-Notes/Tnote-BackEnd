@@ -56,8 +56,8 @@ public class ObservationController {
     }
 
     @GetMapping("/{observationId}")
-    public ResponseEntity<Result> getObservationDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                       @PathVariable Long observationId) {
+    public ResponseEntity<Result> find(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                       @PathVariable final Long observationId) {
 
         return ResponseEntity.ok(Result.of(observationService.find(principalDetails.getId(),
                 observationId)));
