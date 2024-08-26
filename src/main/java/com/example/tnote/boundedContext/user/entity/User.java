@@ -42,7 +42,7 @@ public class User extends BaseTimeEntity {
     private String subject;
     private int career;
     private boolean alarm; // 마이페이지 > 설정 > 알림 받기
-    private int lastScheduleId;
+    private long lastScheduleId;
     private String lastScheduleName;
 
     @Builder.Default
@@ -92,7 +92,7 @@ public class User extends BaseTimeEntity {
         this.school = school;
     }
 
-    public void updateLastScheduleId(int lastScheduleId) {
+    public void updateLastScheduleId(long lastScheduleId) {
         this.lastScheduleId = lastScheduleId;
     }
 
