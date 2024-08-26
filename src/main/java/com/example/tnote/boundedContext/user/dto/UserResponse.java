@@ -16,7 +16,7 @@ public class UserResponse {
     private String subject;
     private int career;
     private boolean alarm;
-    private int scheduleId;
+    private long scheduleId;
     private String semesterName;
 
     public static UserResponse from(User user) {

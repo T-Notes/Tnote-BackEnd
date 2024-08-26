@@ -32,7 +32,7 @@ public class SecurityConfig {
     private final String[] COMMON_WHITE_LIST = new String[]
             {
                     "/favicon.ico/**", "/login/**", "/error/**", "/swagger-ui/**", "/v3/api-docs/**",
-                    "/tnote/v1/user/school", "/tnote/v1/user/school/plan", "/tnote/v1/refresh"
+                    "/tnote/v1/user/school/**", "/tnote/v1/refresh"
             };
 
     @Bean

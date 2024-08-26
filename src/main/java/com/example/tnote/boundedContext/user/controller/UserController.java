@@ -57,13 +57,12 @@ public class UserController {
     private final SchoolPlanUtil schoolPlanUtil;
 
     @GetMapping("/school")
-    @Operation(summary = "search school info API", description = "학교 기본 정보 검색 API")
+    @Operation(summary = "search school info API", description = "학교 목록 검색 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그인 성공"),
-            @ApiResponse(responseCode = "404", description = "로그인 실패")
+            @ApiResponse(responseCode = "200", description = "학교 목록 검색 성공"),
+            @ApiResponse(responseCode = "404", description = "학교 목록 검색 실패")
     })
     public ResponseEntity<Result> findSchool(@RequestParam("region") final String region,
-                                             @RequestParam("code") final String code,
                                              @RequestParam("schoolType") final String schoolType,
                                              @RequestParam("schoolName") final String schoolName)
             throws IOException, net.minidev.json.parser.ParseException {
@@ -78,12 +77,26 @@ public class UserController {
 
         ArrayList<Object> schoolList = new ArrayList<>();
 
-        // 데이터 출력하기
-        JSONObject tmp;
         for (int i = 0; i < content.size(); i++) {
-            tmp = (JSONObject) content.get(i);
+            JSONObject tmp = (JSONObject) content.get(i);
             schoolList.add(Arrays.asList(tmp.get("schoolName"), tmp.get("adres")));
         }
+
+        return ResponseEntity.ok(Result.of(schoolList));
+    }
+
+    @GetMapping("/school/info")
+    @Operation(summary = "search school info API", description = "학교 정보 검색 API")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "학교 정보 검색 성공"),
+            @ApiResponse(responseCode = "404", description = "학교 정보 검색 실패")
+    })
+    public ResponseEntity<Result> findSchoolInfo(@RequestParam("code") final String code,
+                                                 @RequestParam("schoolType") final String schoolType,
+                                                 @RequestParam("schoolName") final String schoolName)
+            throws IOException {
+
+        ArrayList<Object> schoolList = new ArrayList<>();
 
         String info = schoolUtils.schoolInfo("schoolInfo", code, schoolName, schoolType);
 
@@ -95,8 +108,8 @@ public class UserController {
     @GetMapping("/school/plan")
     @Operation(summary = "search school plan info API", description = "학사 일정 정보 검색 API")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "로그인 성공"),
-            @ApiResponse(responseCode = "404", description = "로그인 실패")
+            @ApiResponse(responseCode = "200", description = "학사 일정 정보 검색 성공"),
+            @ApiResponse(responseCode = "404", description = "학사 일정 정보 검색 실패")
     })
     public ResponseEntity<Result> findSchoolPlan(@RequestParam("code") final String code,
                                                  @RequestParam("scheduleCode") final String scheduleCode)
