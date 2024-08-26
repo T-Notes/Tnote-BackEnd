@@ -25,9 +25,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
 @Table(name = "OBSERVATION_TB")
 public class Observation extends BaseTimeEntity {
     @Id
@@ -80,5 +77,23 @@ public class Observation extends BaseTimeEntity {
 
     public void updateObservationImage(List<ObservationImage> observationImages) {
         this.observationImage = observationImages;
+    }
+
+    public Observation() {
+    }
+
+    public Observation(final String title, final LocalDateTime startDate, final LocalDateTime endDate,
+                       final String observationContents,
+                       final String guidance, final String color, final User user, final Schedule schedule,
+                       final List<ObservationImage> observationImage) {
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.observationContents = observationContents;
+        this.guidance = guidance;
+        this.color = color;
+        this.user = user;
+        this.schedule = schedule;
+        this.observationImage = observationImage;
     }
 }

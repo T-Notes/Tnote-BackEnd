@@ -6,11 +6,9 @@ import com.example.tnote.boundedContext.schedule.entity.Schedule;
 import com.example.tnote.boundedContext.user.entity.User;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
 public class ObservationSaveRequest {
     private String title;
     private LocalDateTime startDate;
@@ -20,17 +18,23 @@ public class ObservationSaveRequest {
     private boolean isAllDay;
     private String color;
 
-    public Observation toEntity(User user, Schedule schedule) {
-        return Observation.builder()
-                .user(user)
-                .title(this.title)
-                .startDate(DateUtils.adjustStartDateTime(this.startDate, this.isAllDay))
-                .endDate(DateUtils.adjustEndDateTime(this.endDate, this.isAllDay))
-                .observationContents(this.observationContents)
-                .guidance(this.guidance)
-                .observationImage(new ArrayList<>())
-                .schedule(schedule)
-                .color(this.color)
-                .build();
+    public Observation toEntity(final User user, final Schedule schedule) {
+        return new Observation(this.title, this.startDate, this.endDate, this.observationContents, this.guidance,
+                this.color, user, schedule, new ArrayList<>());
+    }
+
+    public ObservationSaveRequest() {
+    }
+
+    public ObservationSaveRequest(String title, LocalDateTime startDate, LocalDateTime endDate,
+                                  String observationContents,
+                                  String guidance, boolean isAllDay, String color) {
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.observationContents = observationContents;
+        this.guidance = guidance;
+        this.isAllDay = isAllDay;
+        this.color = color;
     }
 }

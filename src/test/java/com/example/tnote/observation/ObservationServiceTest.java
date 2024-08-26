@@ -80,14 +80,10 @@ public class ObservationServiceTest {
     @DisplayName("관찰일지 저장: 정상적인 경우 성공적으로 저장 확인")
     @Test
     void save() {
-        ObservationSaveRequest requestDto = ObservationSaveRequest.builder()
-                .title("김태환")
-                .startDate(mockSchedule.getStartDate().atStartOfDay())
-                .endDate(mockSchedule.getStartDate().atStartOfDay().plusHours(2))
-                .guidance("지도")
-                .observationContents("관찰했음")
-                .isAllDay(false)
-                .build();
+        ObservationSaveRequest requestDto = new ObservationSaveRequest("김태환",
+                mockSchedule.getStartDate().atStartOfDay(), mockSchedule.getStartDate().atStartOfDay().plusHours(2),
+                "컨텐츠", "지도", true, "red");
+
 
         when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
         Observation observation = requestDto.toEntity(mockUser, mockSchedule);
