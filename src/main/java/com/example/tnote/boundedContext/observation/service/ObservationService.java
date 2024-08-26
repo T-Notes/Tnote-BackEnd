@@ -171,9 +171,9 @@ public class ObservationService {
                 .toList();
     }
 
-    private void updateObservationItem(ObservationUpdateRequest requestDto, Observation observation,
-                                       List<MultipartFile> observationImages) {
-        updateObservationFields(requestDto, observation);
+    private void updateObservationItem(final ObservationUpdateRequest request, final Observation observation,
+                                       final List<MultipartFile> observationImages) {
+        updateObservationFields(request, observation);
         if (observationImages == null || observationImages.isEmpty()) {
             deleteExistedImages(observation);
         }
@@ -184,12 +184,12 @@ public class ObservationService {
         }
     }
 
-    private void updateObservationFields(ObservationUpdateRequest requestDto, Observation observation) {
-        observation.updateStudentName(requestDto.getTitle());
-        observation.updateStartDate(requestDto.getStartDate());
-        observation.updateEndDate(requestDto.getEndDate());
-        observation.updateObservationContents(requestDto.getObservationContents());
-        observation.updateGuidance(requestDto.getGuidance());
+    private void updateObservationFields(final ObservationUpdateRequest request, final Observation observation) {
+        observation.updateStudentName(request.getTitle());
+        observation.updateStartDate(request.getStartDate());
+        observation.updateEndDate(request.getEndDate());
+        observation.updateObservationContents(request.getObservationContents());
+        observation.updateGuidance(request.getGuidance());
     }
 
     private List<ObservationImage> uploadObservationImages(Observation observation,
