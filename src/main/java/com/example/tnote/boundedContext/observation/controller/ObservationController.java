@@ -30,9 +30,12 @@ import org.springframework.web.multipart.MultipartFile;
 @Slf4j
 @RestController
 @RequestMapping("/tnote/v1/observation")
-@RequiredArgsConstructor
 public class ObservationController {
     private final ObservationService observationService;
+
+    public ObservationController(final ObservationService observationService) {
+        this.observationService = observationService;
+    }
 
     @PostMapping(value = "/{scheduleId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
