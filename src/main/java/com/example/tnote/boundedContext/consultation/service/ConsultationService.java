@@ -3,7 +3,6 @@ package com.example.tnote.boundedContext.consultation.service;
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponse;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationSaveRequest;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponses;
@@ -86,7 +85,7 @@ public class ConsultationService {
     }
 
     @Transactional
-    public int deleteConsultations(Long userId, List<Long> consultationIds) {
+    public int deleteConsultations(final Long userId, final List<Long> consultationIds) {
         consultationIds.forEach(consultationId -> {
             delete(userId, consultationId);
         });
@@ -94,13 +93,11 @@ public class ConsultationService {
     }
 
     @Transactional
-    public ConsultationDetailResponseDto getConsultationDetail(Long userId, Long consultationId) {
+    public ConsultationResponse find(final Long userId, final Long consultationId) {
         Consultation consultation = findConsultationByIdAndUserId(consultationId, userId);
-        List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultationId(
-                consultationId);
         recentLogService.save(userId, consultation.getId(), consultation.getSchedule().getId(),
                 "CONSULTATION");
-        return new ConsultationDetailResponseDto(consultation, consultationImages);
+        return ConsultationResponse.from(consultation);
     }
 
     @Transactional

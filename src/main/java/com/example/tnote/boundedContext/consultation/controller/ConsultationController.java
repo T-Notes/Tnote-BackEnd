@@ -1,8 +1,7 @@
 package com.example.tnote.boundedContext.consultation.controller;
 
 import com.example.tnote.base.response.Result;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationSaveRequest;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponses;
@@ -66,7 +65,7 @@ public class ConsultationController {
                                                       @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                       @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        ConsultationResponses responseDto = consultationService.readAllConsultation(principalDetails.getId(),
+        ConsultationResponses responseDto = consultationService.findAll(principalDetails.getId(),
                 scheduleId,
                 pageRequest);
 
@@ -76,7 +75,7 @@ public class ConsultationController {
     @DeleteMapping("/{consultationId}")
     public ResponseEntity<Result> deleteConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                      @PathVariable Long consultationId) {
-        ConsultationDeleteResponseDto deleteResponseDto = consultationService.deleteConsultation(principalDetails.getId(),
+        ConsultationDeleteResponse deleteResponseDto = consultationService.delete(principalDetails.getId(),
                 consultationId);
         return ResponseEntity.ok(Result.of(deleteResponseDto));
     }
@@ -84,7 +83,7 @@ public class ConsultationController {
     @GetMapping("/{consultationId}")
     public ResponseEntity<Result> getClassLogDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                     @PathVariable Long consultationId) {
-        ConsultationDetailResponseDto detailResponseDto = consultationService.getConsultationDetail(
+        ConsultationResponse detailResponseDto = consultationService.find(
                 principalDetails.getId(),
                 consultationId);
         return ResponseEntity.ok(Result.of(detailResponseDto));
