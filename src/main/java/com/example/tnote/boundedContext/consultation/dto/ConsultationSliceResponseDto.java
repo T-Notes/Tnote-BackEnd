@@ -9,7 +9,7 @@ import lombok.Getter;
 @Builder
 public class ConsultationSliceResponseDto {
 
-    List<ConsultationResponseDto> consultations;
+    List<ConsultationResponse> consultations;
     private int numberOfConsultation;
 
     private long page;

@@ -4,8 +4,8 @@ import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationSaveRequest;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
@@ -16,12 +16,8 @@ import com.example.tnote.boundedContext.consultation.repository.ConsultationImag
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
-import com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode;
-import com.example.tnote.boundedContext.schedule.exception.ScheduleException;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
-import com.example.tnote.boundedContext.user.exception.UserErrorCode;
-import com.example.tnote.boundedContext.user.exception.UserException;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -43,7 +39,7 @@ public class ConsultationService {
     private final AwsS3Uploader awsS3Uploader;
 
     public ConsultationService(final ConsultationRepository consultationRepository,
-                               final ConsultationImageRepository consultationImageRepository, UserRepository userRepository,
+                               final ConsultationImageRepository consultationImageRepository, final UserRepository userRepository,
                                final ScheduleRepository scheduleRepository, final RecentLogService recentLogService,
                                final AwsS3Uploader awsS3Uploader) {
         this.consultationRepository = consultationRepository;
@@ -55,31 +51,25 @@ public class ConsultationService {
     }
 
     @Transactional
-    public ConsultationResponseDto save(Long userId, Long scheduleId, ConsultationRequestDto requestDto,
-                                        List<MultipartFile> consultationImages) {
-        requestDto.validateEnums();
-        User user = findUserById(userId);
-        Schedule schedule = findScheduleById(scheduleId);
+    public ConsultationResponse save(final Long userId, final Long scheduleId, final ConsultationSaveRequest request,
+                                     final List<MultipartFile> consultationImages) {
+        User user = userRepository.findUserById(userId);
+        Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
+        Consultation consultation = consultationRepository.save(request.toEntity(user, schedule));
 
-        Consultation consultation = consultationRepository.save(requestDto.toEntity(user, schedule));
-        if (consultation.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || consultation.getEndDate()
-                .toLocalDate().isAfter(schedule.getEndDate())) {
-            throw new ConsultationException(ConsultationErrorCode.INVALID_CONSULTATION_DATE);
-        }
-        if (consultationImages != null && !consultationImages.isEmpty()) {
-            List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
-            consultation.getConsultationImage().addAll(uploadedImages);
-        }
+        validateIncorrectTime(request,schedule);
+        validateHasImages(consultation,consultationImages);
+
         recentLogService.save(userId, consultation.getId(), scheduleId, "CONSULTATION");
-        return ConsultationResponseDto.of(consultation);
+        return ConsultationResponse.from(consultation);
     }
 
     public ConsultationSliceResponseDto readAllConsultation(Long userId, Long scheduleId, Pageable pageable) {
         List<Consultation> consultations = consultationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<Consultation> allConsultations = consultationRepository.findAllByScheduleId(scheduleId, pageable);
         int numberOfConsultation = consultations.size();
-        List<ConsultationResponseDto> responseDtos = allConsultations.getContent().stream()
-                .map(ConsultationResponseDto::of).toList();
+        List<ConsultationResponse> responseDtos = allConsultations.getContent().stream()
+                .map(ConsultationResponse::from).toList();
 
         return ConsultationSliceResponseDto.builder()
                 .consultations(responseDtos)
@@ -122,26 +112,26 @@ public class ConsultationService {
     }
 
     @Transactional
-    public ConsultationResponseDto updateConsultation(Long userId, Long consultationId,
-                                                      ConsultationUpdateRequestDto requestDto,
-                                                      List<MultipartFile> consultationImages) {
+    public ConsultationResponse updateConsultation(Long userId, Long consultationId,
+                                                   ConsultationUpdateRequestDto requestDto,
+                                                   List<MultipartFile> consultationImages) {
         Consultation consultation = findConsultationByIdAndUserId(consultationId, userId);
         updateConsultationItem(requestDto, consultation, consultationImages);
         recentLogService.save(userId, consultation.getId(), consultation.getSchedule().getId(),
                 "CONSULTATION");
-        return ConsultationResponseDto.of(consultation);
+        return ConsultationResponse.from(consultation);
     }
 
-    public List<ConsultationResponseDto> findByScheduleAndUser(Long scheduleId, Long userId) {
+    public List<ConsultationResponse> findByScheduleAndUser(Long scheduleId, Long userId) {
         List<Consultation> logs = consultationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
-                .map(ConsultationResponseDto::of)
+                .map(ConsultationResponse::from)
                 .toList();
     }
 
-    public List<ConsultationResponseDto> findByFilter(final Long userId, final LocalDate startDate,
-                                                      final LocalDate endDate,
-                                                      final String searchType, final String keyword) {
+    public List<ConsultationResponse> findByFilter(final Long userId, final LocalDate startDate,
+                                                   final LocalDate endDate,
+                                                   final String searchType, final String keyword) {
         if ("title".equals(searchType)) {
             return findByTitle(keyword, startDate, endDate, userId);
         }
@@ -154,39 +144,39 @@ public class ConsultationService {
         return null;
     }
 
-    private List<ConsultationResponseDto> findByTitle(String keyword, LocalDate startDate,
-                                                      LocalDate endDate, Long userId) {
+    private List<ConsultationResponse> findByTitle(String keyword, LocalDate startDate,
+                                                   LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Consultation> logs = consultationRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
-                .map(ConsultationResponseDto::of)
+                .map(ConsultationResponse::from)
                 .toList();
     }
 
-    private List<ConsultationResponseDto> findByContents(String keyword, LocalDate startDate,
-                                                         LocalDate endDate, Long userId) {
+    private List<ConsultationResponse> findByContents(String keyword, LocalDate startDate,
+                                                      LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Consultation> logs = consultationRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
-                .map(ConsultationResponseDto::of)
+                .map(ConsultationResponse::from)
                 .toList();
     }
 
-    private List<ConsultationResponseDto> findByTitleOrPlanOrContents(String keyword,
-                                                                      LocalDate startDate,
-                                                                      LocalDate endDate,
-                                                                      Long userId) {
+    private List<ConsultationResponse> findByTitleOrPlanOrContents(String keyword,
+                                                                   LocalDate startDate,
+                                                                   LocalDate endDate,
+                                                                   Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Consultation> logs = consultationRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
                 startOfDay, endOfDay, userId);
 
         return logs.stream()
-                .map(ConsultationResponseDto::of)
+                .map(ConsultationResponse::from)
                 .toList();
     }
 
@@ -246,8 +236,8 @@ public class ConsultationService {
                 endOfDay, pageable);
 
         int numberOfConsultation = consultations.size();
-        List<ConsultationResponseDto> responseDtos = allConsultations.getContent().stream()
-                .map(ConsultationResponseDto::of).toList();
+        List<ConsultationResponse> responseDtos = allConsultations.getContent().stream()
+                .map(ConsultationResponse::from).toList();
 
         return ConsultationSliceResponseDto.builder()
                 .consultations(responseDtos)
@@ -257,7 +247,7 @@ public class ConsultationService {
                 .build();
     }
 
-    public List<ConsultationResponseDto> readDailyConsultations(Long userId, Long scheduleId, LocalDate date) {
+    public List<ConsultationResponse> readDailyConsultations(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
@@ -266,15 +256,15 @@ public class ConsultationService {
                 endOfDay);
 
         return consultations.stream()
-                .map(ConsultationResponseDto::of).toList();
+                .map(ConsultationResponse::from).toList();
     }
 
-    public List<ConsultationResponseDto> readMonthlyConsultations(Long userId, Long scheduleId, LocalDate date) {
+    public List<ConsultationResponse> readMonthlyConsultations(Long userId, Long scheduleId, LocalDate date) {
         List<Consultation> consultations = consultationRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
                 scheduleId, date);
 
         return consultations.stream()
-                .map(ConsultationResponseDto::of).toList();
+                .map(ConsultationResponse::from).toList();
     }
 
     private List<ConsultationImage> deleteExistedImagesAndUploadNewImages(Consultation consultation,
@@ -300,18 +290,22 @@ public class ConsultationService {
         }
     }
 
-    private User findUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
-    }
-
-    private Schedule findScheduleById(Long scheduleId) {
-        return scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
-    }
-
     private Consultation findConsultationByIdAndUserId(Long consultationId, Long userId) {
         return consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> new ConsultationException(ConsultationErrorCode.CONSULTATION_NOT_FOUNT));
+    }
+
+    private void validateIncorrectTime(final ConsultationSaveRequest request,final Schedule schedule) {
+        if (request.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || request.getEndDate()
+                .toLocalDate().isAfter(schedule.getEndDate())) {
+            throw new ConsultationException(ConsultationErrorCode.INVALID_CONSULTATION_DATE);
+        }
+    }
+
+    private void validateHasImages(final Consultation consultation, final List<MultipartFile> consultationImages) {
+        if (consultationImages != null && !consultationImages.isEmpty()) {
+            List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
+            consultation.getConsultationImage().addAll(uploadedImages);
+        }
     }
 }

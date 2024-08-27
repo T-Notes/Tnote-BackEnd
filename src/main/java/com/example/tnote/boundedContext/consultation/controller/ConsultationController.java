@@ -3,8 +3,8 @@ package com.example.tnote.boundedContext.consultation.controller;
 import com.example.tnote.base.response.Result;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationSaveRequest;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
@@ -53,9 +53,9 @@ public class ConsultationController {
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> createConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                      @PathVariable Long scheduleId,
-                                                     @RequestPart ConsultationRequestDto requestDto,
+                                                     @RequestPart ConsultationSaveRequest requestDto,
                                                      @RequestPart(name = "consultationImages", required = false) List<MultipartFile> consultationImages) {
-        ConsultationResponseDto consultationResponseDto = consultationService.save(principalDetails.getId(), scheduleId,
+        ConsultationResponse consultationResponseDto = consultationService.save(principalDetails.getId(), scheduleId,
                 requestDto, consultationImages);
         return ResponseEntity.ok(Result.of(consultationResponseDto));
     }
@@ -96,7 +96,7 @@ public class ConsultationController {
                                                      @PathVariable Long consultationId,
                                                      @RequestPart ConsultationUpdateRequestDto requestDto,
                                                      @RequestPart(name = "consultationImages", required = false) List<MultipartFile> consultationImages) {
-        ConsultationResponseDto responseDto = consultationService.updateConsultation(principalDetails.getId(),
+        ConsultationResponse responseDto = consultationService.updateConsultation(principalDetails.getId(),
                 consultationId, requestDto, consultationImages);
         return ResponseEntity.ok(Result.of(responseDto));
     }
