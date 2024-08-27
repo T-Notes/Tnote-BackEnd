@@ -133,7 +133,7 @@ public class ConsultationService {
     }
 
     private List<ConsultationResponse> findByTitle(final String keyword, final LocalDate startDate,
-                                                   final LocalDate endDate,final Long userId) {
+                                                   final LocalDate endDate, final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Consultation> logs = consultationRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
@@ -181,7 +181,7 @@ public class ConsultationService {
         }
     }
 
-    private void updateFields(final ConsultationUpdateRequest request,final Consultation consultation) {
+    private void updateFields(final ConsultationUpdateRequest request, final Consultation consultation) {
         consultation.updateStudentName(request.getTitle());
         consultation.updateStartDate(request.getStartDate());
         consultation.updateEndDate(request.getEndDate());
@@ -193,14 +193,16 @@ public class ConsultationService {
         consultation.updateCounselingType(request.getCounselingType());
     }
 
-    private List<ConsultationImage> uploadImages(final Consultation consultation, final List<MultipartFile> consultationImages) {
+    private List<ConsultationImage> uploadImages(final Consultation consultation,
+                                                 final List<MultipartFile> consultationImages) {
         return consultationImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "consultation"))
                 .map(pair -> createImage(consultation, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
 
-    private ConsultationImage createImage(final Consultation consultation,final String url, final String originalFileName) {
+    private ConsultationImage createImage(final Consultation consultation, final String url,
+                                          final String originalFileName) {
         consultation.clearConsultationImages();
 
         return consultationImageRepository.save(ConsultationImage.builder()
@@ -228,7 +230,7 @@ public class ConsultationService {
         return ConsultationResponses.of(responseDtos, consultations, allConsultations);
     }
 
-    public List<ConsultationResponse> readDailyConsultations(Long userId, Long scheduleId, LocalDate date) {
+    public List<ConsultationResponse> findDaily(final Long userId, final Long scheduleId, final LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
@@ -240,7 +242,7 @@ public class ConsultationService {
                 .map(ConsultationResponse::from).toList();
     }
 
-    public List<ConsultationResponse> readMonthlyConsultations(Long userId, Long scheduleId, LocalDate date) {
+    public List<ConsultationResponse> findMonthly(final Long userId, final Long scheduleId, final LocalDate date) {
         List<Consultation> consultations = consultationRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
                 scheduleId, date);
 
@@ -248,22 +250,22 @@ public class ConsultationService {
                 .map(ConsultationResponse::from).toList();
     }
 
-    private List<ConsultationImage> deleteExistedImagesAndUploadNewImages(Consultation consultation,
-                                                                          List<MultipartFile> consultationImages) {
+    private List<ConsultationImage> deleteExistedImagesAndUploadNewImages(final Consultation consultation,
+                                                                          final List<MultipartFile> consultationImages) {
         deleteExistedImages(consultation);
         return uploadImages(consultation, consultationImages);
     }
 
-    private void deleteExistedImages(Consultation consultation) {
+    private void deleteExistedImages(final Consultation consultation) {
         deleteS3Images(consultation);
         consultationImageRepository.deleteByConsultationId(consultation.getId());
     }
 
-    private void deleteExistedImagesByConsultation(Consultation consultation) {
+    private void deleteExistedImagesByConsultation(final Consultation consultation) {
         deleteS3Images(consultation);
     }
 
-    private void deleteS3Images(Consultation consultation) {
+    private void deleteS3Images(final Consultation consultation) {
         List<ConsultationImage> consultationImages = consultation.getConsultationImage();
         for (ConsultationImage consultationImage : consultationImages) {
             String imageKey = consultationImage.getConsultationImageUrl().substring(49);
@@ -271,7 +273,7 @@ public class ConsultationService {
         }
     }
 
-    private Consultation findConsultationByIdAndUserId(Long consultationId, Long userId) {
+    private Consultation findConsultationByIdAndUserId(final Long consultationId, final Long userId) {
         return consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> new ConsultationException(ConsultationErrorCode.CONSULTATION_NOT_FOUNT));
     }

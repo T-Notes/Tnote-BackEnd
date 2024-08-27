@@ -185,7 +185,7 @@ public class ArchiveService {
 
         validateDateWithinSchedule(date, schedule);
         List<ClassLogResponse> classLogs = classLogService.findDaily(userId, scheduleId, date);
-        List<ConsultationResponse> consultations = consultationService.readDailyConsultations(userId, scheduleId,
+        List<ConsultationResponse> consultations = consultationService.findDaily(userId, scheduleId,
                 date);
         List<ObservationResponse> observations = observationService.findDaily(userId, scheduleId, date);
         List<ProceedingResponse> proceedings = proceedingService.findDaily(userId, scheduleId, date);
@@ -201,7 +201,7 @@ public class ArchiveService {
         validateDateWithinSchedule(date, schedule);
 
         List<ClassLogResponse> classLogs = classLogService.findMonthly(userId, scheduleId, date);
-        List<ConsultationResponse> consultations = consultationService.readMonthlyConsultations(userId, scheduleId,
+        List<ConsultationResponse> consultations = consultationService.findMonthly(userId, scheduleId,
                 date);
         List<ObservationResponse> observations = observationService.findMonthly(userId, scheduleId,
                 date);
