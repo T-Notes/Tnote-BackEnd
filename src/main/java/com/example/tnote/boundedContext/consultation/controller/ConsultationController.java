@@ -1,10 +1,7 @@
 package com.example.tnote.boundedContext.consultation.controller;
 
 import com.example.tnote.base.response.Result;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationSaveRequest;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationResponses;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequest;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
@@ -12,8 +9,6 @@ import com.example.tnote.boundedContext.consultation.service.ConsultationService
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.util.Arrays;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -60,43 +55,38 @@ public class ConsultationController {
     }
 
     @GetMapping("/{scheduleId}/all")
-    public ResponseEntity<Result> getAllConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @PathVariable Long scheduleId,
-                                                     @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                     @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
+    public ResponseEntity<Result> findAll(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                          @PathVariable final Long scheduleId,
+                                          @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                          @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        ConsultationResponses responseDto = consultationService.findAll(principalDetails.getId(),
-                scheduleId,
-                pageRequest);
 
-        return ResponseEntity.ok(Result.of(responseDto));
+        return ResponseEntity.ok(Result.of(consultationService.findAll(principalDetails.getId(),
+                scheduleId, pageRequest)));
     }
 
     @DeleteMapping("/{consultationId}")
-    public ResponseEntity<Result> deleteConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @PathVariable Long consultationId) {
-        ConsultationDeleteResponse deleteResponseDto = consultationService.delete(principalDetails.getId(),
-                consultationId);
-        return ResponseEntity.ok(Result.of(deleteResponseDto));
+    public ResponseEntity<Result> delete(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                         @PathVariable final Long consultationId) {
+
+        return ResponseEntity.ok(Result.of(consultationService.delete(principalDetails.getId(), consultationId)));
     }
 
     @GetMapping("/{consultationId}")
-    public ResponseEntity<Result> getClassLogDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                    @PathVariable Long consultationId) {
-        ConsultationResponse detailResponseDto = consultationService.find(
-                principalDetails.getId(),
-                consultationId);
-        return ResponseEntity.ok(Result.of(detailResponseDto));
+    public ResponseEntity<Result> find(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                       @PathVariable final Long consultationId) {
+
+        return ResponseEntity.ok(Result.of(consultationService.find(principalDetails.getId(), consultationId)));
     }
 
     @PatchMapping(value = "/{consultationId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Result> updateConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @PathVariable Long consultationId,
-                                                     @RequestPart ConsultationUpdateRequest requestDto,
-                                                     @RequestPart(name = "consultationImages", required = false) List<MultipartFile> consultationImages) {
-        ConsultationResponse responseDto = consultationService.update(principalDetails.getId(),
-                consultationId, requestDto, consultationImages);
-        return ResponseEntity.ok(Result.of(responseDto));
+    public ResponseEntity<Result> update(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                         @PathVariable final Long consultationId,
+                                         @RequestPart final ConsultationUpdateRequest request,
+                                         @RequestPart(name = "consultationImages", required = false) final List<MultipartFile> consultationImages) {
+
+        return ResponseEntity.ok(Result.of(consultationService.update(principalDetails.getId(),
+                consultationId, request, consultationImages)));
     }
 }
