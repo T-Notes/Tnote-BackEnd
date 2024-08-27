@@ -25,9 +25,6 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
 @Table(name = "CONSULTATION_TB")
 public class Consultation extends BaseTimeEntity {
 
@@ -90,5 +87,27 @@ public class Consultation extends BaseTimeEntity {
 
     public void updateConsultationImages(List<ConsultationImage> consultationImages) {
         this.consultationImage = consultationImages;
+    }
+
+    public Consultation() {
+    }
+
+    public Consultation(final String title, final LocalDateTime startDate, final LocalDateTime endDate,
+                        final CounselingField counselingField,
+                        final CounselingType counselingType, final String consultationContents,
+                        final String consultationResult,
+                        final String color, final List<ConsultationImage> consultationImage, final User user,
+                        final Schedule schedule) {
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.counselingField = counselingField;
+        this.counselingType = counselingType;
+        this.consultationContents = consultationContents;
+        this.consultationResult = consultationResult;
+        this.color = color;
+        this.consultationImage = consultationImage;
+        this.user = user;
+        this.schedule = schedule;
     }
 }
