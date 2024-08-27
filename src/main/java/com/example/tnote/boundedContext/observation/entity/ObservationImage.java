@@ -1,8 +1,6 @@
 package com.example.tnote.boundedContext.observation.entity;
 
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

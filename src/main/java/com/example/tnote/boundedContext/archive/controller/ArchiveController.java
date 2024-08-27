@@ -9,7 +9,7 @@ import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequest;
 import com.example.tnote.boundedContext.archive.service.ArchiveService;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
-import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.dto.SemesterResponse;
@@ -25,7 +25,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
@@ -69,7 +68,7 @@ public class ArchiveController {
 
         List<ConsultationResponseDto> consultation = archiveService.findAllOfConsultation(keyword, currentUser.getId(),
                 scheduleId);
-        List<ObservationResponseDto> observation = archiveService.findAllOfObservation(keyword, currentUser.getId(),
+        List<ObservationResponse> observation = archiveService.findAllOfObservation(keyword, currentUser.getId(),
                 scheduleId);
         List<ClassLogResponse> classLog = archiveService.findAllOfClassLog(keyword, currentUser.getId(), scheduleId);
         List<ProceedingResponse> proceeding = archiveService.findAllOfProceeding(keyword, currentUser.getId(),
