@@ -26,8 +26,6 @@ import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
@@ -36,8 +34,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Transactional(readOnly = true)
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class ConsultationService {
     private final ConsultationRepository consultationRepository;
     private final ConsultationImageRepository consultationImageRepository;
@@ -45,6 +41,18 @@ public class ConsultationService {
     private final ScheduleRepository scheduleRepository;
     private final RecentLogService recentLogService;
     private final AwsS3Uploader awsS3Uploader;
+
+    public ConsultationService(final ConsultationRepository consultationRepository,
+                               final ConsultationImageRepository consultationImageRepository, UserRepository userRepository,
+                               final ScheduleRepository scheduleRepository, final RecentLogService recentLogService,
+                               final AwsS3Uploader awsS3Uploader) {
+        this.consultationRepository = consultationRepository;
+        this.consultationImageRepository = consultationImageRepository;
+        this.userRepository = userRepository;
+        this.scheduleRepository = scheduleRepository;
+        this.recentLogService = recentLogService;
+        this.awsS3Uploader = awsS3Uploader;
+    }
 
     @Transactional
     public ConsultationResponseDto save(Long userId, Long scheduleId, ConsultationRequestDto requestDto,
@@ -216,7 +224,6 @@ public class ConsultationService {
     }
 
     private ConsultationImage createConsultationImage(Consultation consultation, String url, String originalFileName) {
-        log.info("url = {}", url);
         consultation.clearConsultationImages();
 
         return consultationImageRepository.save(ConsultationImage.builder()
