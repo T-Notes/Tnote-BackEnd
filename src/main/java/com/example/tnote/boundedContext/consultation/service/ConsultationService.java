@@ -110,7 +110,7 @@ public class ConsultationService {
         return ConsultationResponse.from(consultation);
     }
 
-    public List<ConsultationResponse> findByScheduleAndUser(Long scheduleId, Long userId) {
+    public List<ConsultationResponse> findByScheduleAndUser(final Long scheduleId, final Long userId) {
         List<Consultation> logs = consultationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
                 .map(ConsultationResponse::from)
@@ -132,8 +132,8 @@ public class ConsultationService {
         return null;
     }
 
-    private List<ConsultationResponse> findByTitle(String keyword, LocalDate startDate,
-                                                   LocalDate endDate, Long userId) {
+    private List<ConsultationResponse> findByTitle(final String keyword, final LocalDate startDate,
+                                                   final LocalDate endDate,final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Consultation> logs = consultationRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
@@ -143,8 +143,8 @@ public class ConsultationService {
                 .toList();
     }
 
-    private List<ConsultationResponse> findByContents(String keyword, LocalDate startDate,
-                                                      LocalDate endDate, Long userId) {
+    private List<ConsultationResponse> findByContents(final String keyword, final LocalDate startDate,
+                                                      final LocalDate endDate, final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Consultation> logs = consultationRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
@@ -154,10 +154,10 @@ public class ConsultationService {
                 .toList();
     }
 
-    private List<ConsultationResponse> findByTitleOrPlanOrContents(String keyword,
-                                                                   LocalDate startDate,
-                                                                   LocalDate endDate,
-                                                                   Long userId) {
+    private List<ConsultationResponse> findByTitleOrPlanOrContents(final String keyword,
+                                                                   final LocalDate startDate,
+                                                                   final LocalDate endDate,
+                                                                   final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Consultation> logs = consultationRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
