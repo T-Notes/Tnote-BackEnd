@@ -39,7 +39,8 @@ public class ConsultationService {
     private final AwsS3Uploader awsS3Uploader;
 
     public ConsultationService(final ConsultationRepository consultationRepository,
-                               final ConsultationImageRepository consultationImageRepository, final UserRepository userRepository,
+                               final ConsultationImageRepository consultationImageRepository,
+                               final UserRepository userRepository,
                                final ScheduleRepository scheduleRepository, final RecentLogService recentLogService,
                                final AwsS3Uploader awsS3Uploader) {
         this.consultationRepository = consultationRepository;
@@ -57,8 +58,8 @@ public class ConsultationService {
         Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
         Consultation consultation = consultationRepository.save(request.toEntity(user, schedule));
 
-        validateIncorrectTime(request,schedule);
-        validateHasImages(consultation,consultationImages);
+        validateIncorrectTime(request, schedule);
+        validateHasImages(consultation, consultationImages);
 
         recentLogService.save(userId, consultation.getId(), scheduleId, "CONSULTATION");
         return ConsultationResponse.from(consultation);
@@ -67,16 +68,10 @@ public class ConsultationService {
     public ConsultationResponses readAllConsultation(Long userId, Long scheduleId, Pageable pageable) {
         List<Consultation> consultations = consultationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<Consultation> allConsultations = consultationRepository.findAllByScheduleId(scheduleId, pageable);
-        int numberOfConsultation = consultations.size();
         List<ConsultationResponse> responseDtos = allConsultations.getContent().stream()
                 .map(ConsultationResponse::from).toList();
 
-        return ConsultationResponses.builder()
-                .consultations(responseDtos)
-                .numberOfConsultation(numberOfConsultation)
-                .page(allConsultations.getPageable().getPageNumber())
-                .isLast(allConsultations.isLast())
-                .build();
+        return ConsultationResponses.of(responseDtos, consultations, allConsultations);
     }
 
     @Transactional
@@ -235,16 +230,10 @@ public class ConsultationService {
                 userId, scheduleId, startOfDay,
                 endOfDay, pageable);
 
-        int numberOfConsultation = consultations.size();
         List<ConsultationResponse> responseDtos = allConsultations.getContent().stream()
                 .map(ConsultationResponse::from).toList();
 
-        return ConsultationResponses.builder()
-                .consultations(responseDtos)
-                .numberOfConsultation(numberOfConsultation)
-                .page(allConsultations.getPageable().getPageNumber())
-                .isLast(allConsultations.isLast())
-                .build();
+        return ConsultationResponses.of(responseDtos, consultations, allConsultations);
     }
 
     public List<ConsultationResponse> readDailyConsultations(Long userId, Long scheduleId, LocalDate date) {
@@ -295,7 +284,7 @@ public class ConsultationService {
                 .orElseThrow(() -> new ConsultationException(ConsultationErrorCode.CONSULTATION_NOT_FOUNT));
     }
 
-    private void validateIncorrectTime(final ConsultationSaveRequest request,final Schedule schedule) {
+    private void validateIncorrectTime(final ConsultationSaveRequest request, final Schedule schedule) {
         if (request.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || request.getEndDate()
                 .toLocalDate().isAfter(schedule.getEndDate())) {
             throw new ConsultationException(ConsultationErrorCode.INVALID_CONSULTATION_DATE);
