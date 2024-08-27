@@ -2,7 +2,7 @@ package com.example.tnote.boundedContext.consultation.service;
 
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationSaveRequest;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
@@ -65,33 +65,30 @@ public class ConsultationService {
         return ConsultationResponse.from(consultation);
     }
 
-    public ConsultationResponses readAllConsultation(Long userId, Long scheduleId, Pageable pageable) {
+    public ConsultationResponses findAll(final Long userId, final Long scheduleId, final Pageable pageable) {
         List<Consultation> consultations = consultationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<Consultation> allConsultations = consultationRepository.findAllByScheduleId(scheduleId, pageable);
-        List<ConsultationResponse> responseDtos = allConsultations.getContent().stream()
+        List<ConsultationResponse> responses = allConsultations.getContent().stream()
                 .map(ConsultationResponse::from).toList();
 
-        return ConsultationResponses.of(responseDtos, consultations, allConsultations);
+        return ConsultationResponses.of(responses, consultations, allConsultations);
     }
 
     @Transactional
-    public ConsultationDeleteResponseDto deleteConsultation(Long userId, Long consultationId) {
-        Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
-                .orElseThrow(() -> new ConsultationException(ConsultationErrorCode.CONSULTATION_NOT_FOUNT));
+    public ConsultationDeleteResponse delete(final Long userId, final Long consultationId) {
+        Consultation consultation = findConsultationByIdAndUserId(consultationId, userId);
 
         deleteExistedImagesByConsultation(consultation);
         consultationRepository.delete(consultation);
         recentLogService.delete(consultation.getId(), "CONSULTATION");
 
-        return ConsultationDeleteResponseDto.builder()
-                .id(consultation.getId())
-                .build();
+        return ConsultationDeleteResponse.from(consultation);
     }
 
     @Transactional
     public int deleteConsultations(Long userId, List<Long> consultationIds) {
         consultationIds.forEach(consultationId -> {
-            deleteConsultation(userId, consultationId);
+            delete(userId, consultationId);
         });
         return consultationIds.size();
     }
