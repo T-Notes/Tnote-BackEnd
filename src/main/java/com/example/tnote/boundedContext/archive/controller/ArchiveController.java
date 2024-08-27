@@ -8,7 +8,7 @@ import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequest;
 import com.example.tnote.boundedContext.archive.service.ArchiveService;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
@@ -66,7 +66,7 @@ public class ArchiveController {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
 
-        List<ConsultationResponseDto> consultation = archiveService.findAllOfConsultation(keyword, currentUser.getId(),
+        List<ConsultationResponse> consultation = archiveService.findAllOfConsultation(keyword, currentUser.getId(),
                 scheduleId);
         List<ObservationResponse> observation = archiveService.findAllOfObservation(keyword, currentUser.getId(),
                 scheduleId);

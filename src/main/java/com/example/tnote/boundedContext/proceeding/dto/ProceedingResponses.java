@@ -8,7 +8,6 @@ import lombok.Getter;
 import org.springframework.data.domain.Slice;
 
 @Getter
-@Builder
 public class ProceedingResponses {
     private List<ProceedingResponse> proceedings;
 
@@ -34,9 +33,7 @@ public class ProceedingResponses {
                                          final List<Proceeding> proceedingList,
                                          final Slice<Proceeding> allProceedingSlice) {
 
-        return ProceedingResponses.builder().proceedings(responses)
-                .numberOfProceeding(proceedingList.size())
-                .page(allProceedingSlice.getPageable().getPageNumber())
-                .isLast(allProceedingSlice.isLast()).build();
+        return new ProceedingResponses(responses, proceedingList.size(),
+                allProceedingSlice.getPageable().getPageNumber(), allProceedingSlice.isLast());
     }
 }
