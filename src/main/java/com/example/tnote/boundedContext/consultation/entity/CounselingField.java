@@ -1,5 +1,8 @@
 package com.example.tnote.boundedContext.consultation.entity;
 
+import lombok.Getter;
+
+@Getter
 public enum CounselingField {
     FRIENDSHIP("교우관계"),
     GRADE("성적"),
@@ -13,7 +16,4 @@ public enum CounselingField {
         this.fieldName = fieldName;
     }
 
-    public String getFieldName() {
-        return fieldName;
-    }
 }
