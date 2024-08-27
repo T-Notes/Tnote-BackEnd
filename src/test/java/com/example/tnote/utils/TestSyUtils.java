@@ -138,16 +138,10 @@ public class TestSyUtils {
 
     public Consultation createConsultation(String studentName, LocalDateTime startDate, LocalDateTime endDate,
                                            CounselingField counselingField, CounselingType counselingType,
-                                           String consultationContents, String consultationResult) {
-        Consultation consultation = Consultation.builder()
-                .title(studentName)
-                .startDate(startDate)
-                .endDate(endDate)
-                .counselingField(counselingField)
-                .counselingType(counselingType)
-                .consultationContents(consultationContents)
-                .consultationResult(consultationResult)
-                .build();
+                                           String consultationContents, String consultationResult, String color,
+                                           User user, Schedule schedule) {
+        Consultation consultation = new Consultation(studentName, startDate, endDate, counselingField, counselingType,
+                consultationContents, consultationResult, color,new ArrayList<>() ,user,schedule);
 
         return consultationRepository.save(consultation);
     }
@@ -164,7 +158,8 @@ public class TestSyUtils {
     public Observation createObservation(String studentName, LocalDateTime startDate, LocalDateTime endDate,
                                          String observationContents, String guidance, String color, User user,
                                          Schedule schedule) {
-        Observation consultation = new Observation(studentName, startDate, endDate, observationContents, guidance, color, user,
+        Observation consultation = new Observation(studentName, startDate, endDate, observationContents, guidance,
+                color, user,
                 schedule, new ArrayList<>());
         return observationRepository.save(consultation);
     }

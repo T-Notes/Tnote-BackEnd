@@ -68,8 +68,8 @@ public class ArchiveServiceTest {
         LocalDateTime date = LocalDateTime.parse("2024-03-01 13:47:13.248", formatter);
 
         consultation = testSyUtils.createConsultation("a", date, date, CounselingField.HEALTH, CounselingType.STUDENT,
-                "a", "a");
-        observation = testSyUtils.createObservation("a", date, date, "a", "a","red",user1,schedule1);
+                "a", "a", "red", user1, schedule1);
+        observation = testSyUtils.createObservation("a", date, date, "a", "a", "red", user1, schedule1);
         proceeding = testSyUtils.createProceeding("a", date, date, "a", "a", "red", user1, schedule1);
 
         schedule1 = testSyUtils.createSchedule("2024년 3학년 1학기", "a", user1, LocalDate.now(), LocalDate.now());
