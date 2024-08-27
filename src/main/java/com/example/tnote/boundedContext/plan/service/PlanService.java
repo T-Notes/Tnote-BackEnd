@@ -77,7 +77,7 @@ public class PlanService {
     }
 
     @Transactional
-    public PlanDeleteResponse delete(final Long planId, final Long userId) {
+    public PlanDeleteResponse delete(final Long userId, final Long planId) {
         Plan plan = findByIdAndUserId(planId, userId);
         deleteExistedImage(plan);
 
@@ -89,7 +89,7 @@ public class PlanService {
 
     @Transactional
     public int deletePlans(final Long userId, final List<Long> planIds) {
-        planIds.forEach(planId -> delete(userId, planId));
+        planIds.forEach(planId -> delete(planId, userId));
         return planIds.size();
     }
 
