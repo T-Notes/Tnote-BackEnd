@@ -2,12 +2,11 @@ package com.example.tnote.boundedContext.observation.service;
 
 import com.example.tnote.base.utils.AwsS3Uploader;
 import com.example.tnote.base.utils.DateUtils;
-import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponseDto;
-import com.example.tnote.boundedContext.observation.dto.ObservationDetailResponseDto;
-import com.example.tnote.boundedContext.observation.dto.ObservationRequestDto;
-import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
-import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
-import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequestDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationDeleteResponse;
+import com.example.tnote.boundedContext.observation.dto.ObservationSaveRequest;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponses;
+import com.example.tnote.boundedContext.observation.dto.ObservationUpdateRequest;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.entity.ObservationImage;
 import com.example.tnote.boundedContext.observation.exception.ObservationErrorCode;
@@ -16,28 +15,20 @@ import com.example.tnote.boundedContext.observation.repository.ObservationImageR
 import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
-import com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode;
-import com.example.tnote.boundedContext.schedule.exception.ScheduleException;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.user.entity.User;
-import com.example.tnote.boundedContext.user.exception.UserErrorCode;
-import com.example.tnote.boundedContext.user.exception.UserException;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-@Transactional
+@Transactional(readOnly = true)
 @Service
-@Slf4j
-@RequiredArgsConstructor
 public class ObservationService {
     private final ObservationRepository observationRepository;
     private final ObservationImageRepository observationImageRepository;
@@ -46,80 +37,92 @@ public class ObservationService {
     private final RecentLogService recentLogService;
     private final AwsS3Uploader awsS3Uploader;
 
-    public ObservationResponseDto save(Long userId, Long scheduleId, ObservationRequestDto requestDto,
-                                       List<MultipartFile> observationImages) {
-        User user = findUserById(userId);
-        Schedule schedule = findScheduleById(scheduleId);
-        Observation observation = observationRepository.save(requestDto.toEntity(user, schedule));
+    public ObservationService(final ObservationRepository observationRepository,
+                              final ObservationImageRepository observationImageRepository,
+                              final UserRepository userRepository,
+                              final ScheduleRepository scheduleRepository, final RecentLogService recentLogService,
+                              final AwsS3Uploader awsS3Uploader) {
+        this.observationRepository = observationRepository;
+        this.observationImageRepository = observationImageRepository;
+        this.userRepository = userRepository;
+        this.scheduleRepository = scheduleRepository;
+        this.recentLogService = recentLogService;
+        this.awsS3Uploader = awsS3Uploader;
+    }
 
-        if (observation.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || observation.getEndDate()
-                .toLocalDate().isAfter(schedule.getEndDate())) {
-            throw new ObservationException(ObservationErrorCode.INVALID_OBSERVATION_DATE);
-        }
+    @Transactional
+    public ObservationResponse save(final Long userId, final Long scheduleId, final ObservationSaveRequest request,
+                                    final List<MultipartFile> observationImages) {
+        User user = userRepository.findUserById(userId);
+        Schedule schedule = scheduleRepository.findScheduleById(scheduleId);
+        Observation observation = request.toEntity(user, schedule);
+
+        validateIncorrectTime(request, schedule);
+        observation = observationRepository.save(observation);
+
         if (observationImages != null && !observationImages.isEmpty()) {
             List<ObservationImage> uploadedImages = uploadObservationImages(observation, observationImages);
             observation.getObservationImage().addAll(uploadedImages);
         }
         recentLogService.save(userId, observation.getId(), scheduleId, "OBSERVATION");
-        return ObservationResponseDto.of(observation);
+        return ObservationResponse.from(observation);
     }
 
-    @Transactional(readOnly = true)
-    public ObservationSliceResponseDto readAllObservation(Long userId, Long scheduleId, Pageable pageable) {
+    public ObservationResponses findAll(final Long userId, final Long scheduleId, final Pageable pageable) {
         List<Observation> observations = observationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<Observation> allObservationSlice = observationRepository.findAllByScheduleId(scheduleId, pageable);
-        List<ObservationResponseDto> responseDto = allObservationSlice.getContent().stream()
-                .map(ObservationResponseDto::of).toList();
+        List<ObservationResponse> responseDto = allObservationSlice.getContent().stream()
+                .map(ObservationResponse::from).toList();
 
-        return ObservationSliceResponseDto.from(responseDto, observations, allObservationSlice);
+        return ObservationResponses.of(responseDto, observations, allObservationSlice);
     }
 
-    public ObservationDetailResponseDto readObservationDetail(Long userId, Long observationId) {
+    @Transactional
+    public ObservationResponse find(final Long userId, final Long observationId) {
         Observation observation = findObservationByIdAndUserId(observationId, userId);
-        List<ObservationImage> observationImages = observationImageRepository.findObservationImageByObservationId(
-                observationId);
         recentLogService.save(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
-        return new ObservationDetailResponseDto(observation, observationImages);
+        return ObservationResponse.from(observation);
     }
 
-    public ObservationDeleteResponseDto deleteObservation(Long userId, Long observationId) {
+    @Transactional
+    public ObservationDeleteResponse delete(final Long userId, final Long observationId) {
         Observation observation = findObservationByIdAndUserId(observationId, userId);
 
         deleteExistedImagesByObservation(observation);
         observationRepository.delete(observation);
         recentLogService.delete(observation.getId(), "OBSERVATION");
 
-        return ObservationDeleteResponseDto.of(observation.getId());
+        return ObservationDeleteResponse.from(observation.getId());
     }
 
-    public int deleteObservations(Long userId, List<Long> observationIds) {
+    @Transactional
+    public int deleteObservations(final Long userId, final List<Long> observationIds) {
         observationIds.forEach(observationId -> {
-            deleteObservation(userId, observationId);
+            delete(userId, observationId);
         });
         return observationIds.size();
     }
 
-    public ObservationResponseDto updateObservation(Long userId, Long observationId,
-                                                    ObservationUpdateRequestDto requestDto,
-                                                    List<MultipartFile> observationImages) {
+    @Transactional
+    public ObservationResponse update(final Long userId, final Long observationId,
+                                      final ObservationUpdateRequest request,
+                                      final List<MultipartFile> observationImages) {
         Observation observation = findObservationByIdAndUserId(observationId, userId);
-        updateObservationItem(requestDto, observation, observationImages);
+        updateObservationItem(request, observation, observationImages);
         recentLogService.save(userId, observation.getId(), observation.getSchedule().getId(), "OBSERVATION");
-        return ObservationResponseDto.of(observation);
+        return ObservationResponse.from(observation);
     }
 
-    @Transactional(readOnly = true)
-    public List<ObservationResponseDto> findByScheduleAndUser(Long scheduleId, Long userId) {
+    public List<ObservationResponse> findByScheduleAndUser(Long scheduleId, Long userId) {
         List<Observation> logs = observationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
-                .map(ObservationResponseDto::of)
+                .map(ObservationResponse::from)
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    public List<ObservationResponseDto> findByFilter(final Long userId, final LocalDate startDate,
-                                                     final LocalDate endDate,
-                                                     final String searchType, final String keyword) {
+    public List<ObservationResponse> findByFilter(final Long userId, final LocalDate startDate,
+                                                  final LocalDate endDate,
+                                                  final String searchType, final String keyword) {
         if ("title".equals(searchType)) {
             return findByTitle(keyword, startDate, endDate, userId);
         }
@@ -132,48 +135,45 @@ public class ObservationService {
         return null;
     }
 
-    @Transactional(readOnly = true)
-    private List<ObservationResponseDto> findByTitle(String keyword, LocalDate startDate,
-                                                    LocalDate endDate, Long userId) {
+    private List<ObservationResponse> findByTitle(final String keyword, final LocalDate startDate,
+                                                  final LocalDate endDate, final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Observation> logs = observationRepository.findByTitleContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
-                .map(ObservationResponseDto::of)
+                .map(ObservationResponse::from)
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    private List<ObservationResponseDto> findByContents(String keyword, LocalDate startDate,
-                                                       LocalDate endDate, Long userId) {
+    private List<ObservationResponse> findByContents(final String keyword, final LocalDate startDate,
+                                                     final LocalDate endDate, final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Observation> logs = observationRepository.findByContentsContaining(keyword, startOfDay, endOfDay,
                 userId);
         return logs.stream()
-                .map(ObservationResponseDto::of)
+                .map(ObservationResponse::from)
                 .toList();
     }
 
-    @Transactional(readOnly = true)
-    private List<ObservationResponseDto> findByTitleOrPlanOrContents(String keyword,
-                                                                    LocalDate startDate,
-                                                                    LocalDate endDate,
-                                                                    Long userId) {
+    private List<ObservationResponse> findByTitleOrPlanOrContents(final String keyword,
+                                                                  final LocalDate startDate,
+                                                                  final LocalDate endDate,
+                                                                  final Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
         List<Observation> logs = observationRepository.findByTitleOrPlanOrClassContentsContaining(keyword,
                 startOfDay, endOfDay, userId);
 
         return logs.stream()
-                .map(ObservationResponseDto::of)
+                .map(ObservationResponse::from)
                 .toList();
     }
 
-    private void updateObservationItem(ObservationUpdateRequestDto requestDto, Observation observation,
-                                       List<MultipartFile> observationImages) {
-        updateObservationFields(requestDto, observation);
+    private void updateObservationItem(final ObservationUpdateRequest request, final Observation observation,
+                                       final List<MultipartFile> observationImages) {
+        updateObservationFields(request, observation);
         if (observationImages == null || observationImages.isEmpty()) {
             deleteExistedImages(observation);
         }
@@ -184,24 +184,24 @@ public class ObservationService {
         }
     }
 
-    private void updateObservationFields(ObservationUpdateRequestDto requestDto, Observation observation) {
-        observation.updateStudentName(requestDto.getTitle());
-        observation.updateStartDate(requestDto.getStartDate());
-        observation.updateEndDate(requestDto.getEndDate());
-        observation.updateObservationContents(requestDto.getObservationContents());
-        observation.updateGuidance(requestDto.getGuidance());
+    private void updateObservationFields(final ObservationUpdateRequest request, final Observation observation) {
+        observation.updateStudentName(request.getTitle());
+        observation.updateStartDate(request.getStartDate());
+        observation.updateEndDate(request.getEndDate());
+        observation.updateObservationContents(request.getObservationContents());
+        observation.updateGuidance(request.getGuidance());
     }
 
-    private List<ObservationImage> uploadObservationImages(Observation observation,
-                                                           List<MultipartFile> observationImages) {
+    private List<ObservationImage> uploadObservationImages(final Observation observation,
+                                                           final List<MultipartFile> observationImages) {
         return observationImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "observation"))
                 .map(pair -> createObservationImage(observation, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
 
-    private ObservationImage createObservationImage(Observation observation, String url, String originalFileName) {
-        log.info("url = {}", url);
+    private ObservationImage createObservationImage(final Observation observation, final String url,
+                                                    final String originalFileName) {
         observation.clearObservationImages();
 
         return observationImageRepository.save(ObservationImage.builder()
@@ -212,8 +212,8 @@ public class ObservationService {
     }
 
     @Transactional(readOnly = true)
-    public ObservationSliceResponseDto readObservationsByDate(Long userId, Long scheduleId, LocalDate startDate,
-                                                              LocalDate endDate, Pageable pageable) {
+    public ObservationResponses readObservationsByDate(Long userId, Long scheduleId, LocalDate startDate,
+                                                       LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
@@ -224,14 +224,13 @@ public class ObservationService {
                 userId, scheduleId, startOfDay,
                 endOfDay, pageable);
 
-        List<ObservationResponseDto> responseDto = allObservationSlice.getContent().stream()
-                .map(ObservationResponseDto::of).toList();
+        List<ObservationResponse> responseDto = allObservationSlice.getContent().stream()
+                .map(ObservationResponse::from).toList();
 
-        return ObservationSliceResponseDto.from(responseDto, observations, allObservationSlice);
+        return ObservationResponses.of(responseDto, observations, allObservationSlice);
     }
 
-    @Transactional(readOnly = true)
-    public List<ObservationResponseDto> readDailyObservations(Long userId, Long scheduleId, LocalDate date) {
+    public List<ObservationResponse> findDaily(final Long userId, final Long scheduleId, final LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
 
@@ -240,34 +239,33 @@ public class ObservationService {
                 endOfDay);
 
         return observations.stream()
-                .map(ObservationResponseDto::of).toList();
+                .map(ObservationResponse::from).toList();
     }
 
-    @Transactional(readOnly = true)
-    public List<ObservationResponseDto> readMonthlyObservations(Long userId, Long scheduleId, LocalDate date) {
+    public List<ObservationResponse> findMonthly(final Long userId, final Long scheduleId, final LocalDate date) {
         List<Observation> observations = observationRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
                 scheduleId, date);
 
         return observations.stream()
-                .map(ObservationResponseDto::of).toList();
+                .map(ObservationResponse::from).toList();
     }
 
-    private List<ObservationImage> deleteExistedImagesAndUploadNewImages(Observation observation,
-                                                                         List<MultipartFile> observationImages) {
+    private List<ObservationImage> deleteExistedImagesAndUploadNewImages(final Observation observation,
+                                                                         final List<MultipartFile> observationImages) {
         deleteExistedImages(observation);
         return uploadObservationImages(observation, observationImages);
     }
 
-    private void deleteExistedImages(Observation observation) {
+    private void deleteExistedImages(final Observation observation) {
         deleteS3Images(observation);
         observationImageRepository.deleteByObservationId(observation.getId());
     }
 
-    private void deleteExistedImagesByObservation(Observation observation) {
+    private void deleteExistedImagesByObservation(final Observation observation) {
         deleteS3Images(observation);
     }
 
-    private void deleteS3Images(Observation observation) {
+    private void deleteS3Images(final Observation observation) {
         List<ObservationImage> observationImages = observation.getObservationImage();
         for (ObservationImage observationImage : observationImages) {
             String imageKey = observationImage.getObservationImageUrl().substring(49);
@@ -275,18 +273,15 @@ public class ObservationService {
         }
     }
 
-    private User findUserById(Long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.USER_NOT_FOUND));
-    }
-
-    private Schedule findScheduleById(Long scheduleId) {
-        return scheduleRepository.findById(scheduleId)
-                .orElseThrow(() -> new ScheduleException(ScheduleErrorCode.SCHEDULE_NOT_FOUND));
-    }
-
-    private Observation findObservationByIdAndUserId(Long observationId, Long userId) {
+    private Observation findObservationByIdAndUserId(final Long observationId, final Long userId) {
         return observationRepository.findByIdAndUserId(observationId, userId)
                 .orElseThrow(() -> new ObservationException(ObservationErrorCode.OBSERVATION_NOT_FOUNT));
+    }
+
+    private void validateIncorrectTime(final ObservationSaveRequest request, final Schedule schedule) {
+        if (request.getStartDate().toLocalDate().isBefore(schedule.getStartDate()) || request.getEndDate()
+                .toLocalDate().isAfter(schedule.getEndDate())) {
+            throw new ObservationException(ObservationErrorCode.INVALID_OBSERVATION_DATE);
+        }
     }
 }

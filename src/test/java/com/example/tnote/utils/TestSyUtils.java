@@ -7,6 +7,7 @@ import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
 import com.example.tnote.boundedContext.consultation.repository.ConsultationRepository;
 import com.example.tnote.boundedContext.observation.entity.Observation;
+import com.example.tnote.boundedContext.observation.entity.ObservationImage;
 import com.example.tnote.boundedContext.observation.repository.ObservationRepository;
 import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.repository.ProceedingRepository;
@@ -161,15 +162,10 @@ public class TestSyUtils {
     }
 
     public Observation createObservation(String studentName, LocalDateTime startDate, LocalDateTime endDate,
-                                         String observationContents, String guidance) {
-        Observation consultation = Observation.builder()
-                .title(studentName)
-                .startDate(startDate)
-                .endDate(endDate)
-                .observationContents(observationContents)
-                .guidance(guidance)
-                .build();
-
+                                         String observationContents, String guidance, String color, User user,
+                                         Schedule schedule) {
+        Observation consultation = new Observation(studentName, startDate, endDate, observationContents, guidance, color, user,
+                schedule, new ArrayList<>());
         return observationRepository.save(consultation);
     }
 }

@@ -20,8 +20,8 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceRespon
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.repository.query.ConsultationQueryRepository;
 import com.example.tnote.boundedContext.consultation.service.ConsultationService;
-import com.example.tnote.boundedContext.observation.dto.ObservationResponseDto;
-import com.example.tnote.boundedContext.observation.dto.ObservationSliceResponseDto;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
+import com.example.tnote.boundedContext.observation.dto.ObservationResponses;
 import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.repository.query.ObservationQueryRepository;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
@@ -80,14 +80,14 @@ public class ArchiveService {
                 .toList();
     }
 
-    public List<ObservationResponseDto> findAllOfObservation(String studentName, Long userId, Long scheduleId) {
+    public List<ObservationResponse> findAllOfObservation(String studentName, Long userId, Long scheduleId) {
 
         userRepository.findById(userId);
 
         List<Observation> observations = observationQueryRepository.findAll(studentName, scheduleId);
 
         return observations.stream()
-                .map(ObservationResponseDto::of)
+                .map(ObservationResponse::from)
                 .toList();
     }
 
@@ -127,7 +127,7 @@ public class ArchiveService {
             return ArchiveSliceResponseDto.builder().consultations(consultations).build();
         }
         if (logType == LogType.OBSERVATION) {
-            ObservationSliceResponseDto observations = observationService.readObservationsByDate(userId, scheduleId,
+            ObservationResponses observations = observationService.readObservationsByDate(userId, scheduleId,
                     startDate,
                     endDate, pageable);
             return ArchiveSliceResponseDto.builder().observations(observations).build();
@@ -187,7 +187,7 @@ public class ArchiveService {
         List<ClassLogResponse> classLogs = classLogService.findDaily(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readDailyConsultations(userId, scheduleId,
                 date);
-        List<ObservationResponseDto> observations = observationService.readDailyObservations(userId, scheduleId, date);
+        List<ObservationResponse> observations = observationService.findDaily(userId, scheduleId, date);
         List<ProceedingResponse> proceedings = proceedingService.findDaily(userId, scheduleId, date);
         List<TodoResponse> todos = todoService.readDailyTodos(userId, scheduleId, date);
         List<PlanResponse> plans = planService.findDaily(userId, scheduleId, date);
@@ -203,7 +203,7 @@ public class ArchiveService {
         List<ClassLogResponse> classLogs = classLogService.findMonthly(userId, scheduleId, date);
         List<ConsultationResponseDto> consultations = consultationService.readMonthlyConsultations(userId, scheduleId,
                 date);
-        List<ObservationResponseDto> observations = observationService.readMonthlyObservations(userId, scheduleId,
+        List<ObservationResponse> observations = observationService.findMonthly(userId, scheduleId,
                 date);
         List<ProceedingResponse> proceedings = proceedingService.findMonthly(userId, scheduleId, date);
         List<TodoResponse> todos = todoService.readMonthlyTodos(userId, scheduleId, date);
