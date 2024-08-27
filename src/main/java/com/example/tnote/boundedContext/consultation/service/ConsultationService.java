@@ -34,7 +34,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-@Transactional
+@Transactional(readOnly = true)
 @Service
 @Slf4j
 @RequiredArgsConstructor
@@ -46,6 +46,7 @@ public class ConsultationService {
     private final RecentLogService recentLogService;
     private final AwsS3Uploader awsS3Uploader;
 
+    @Transactional
     public ConsultationResponseDto save(Long userId, Long scheduleId, ConsultationRequestDto requestDto,
                                         List<MultipartFile> consultationImages) {
         requestDto.validateEnums();
@@ -65,7 +66,6 @@ public class ConsultationService {
         return ConsultationResponseDto.of(consultation);
     }
 
-    @Transactional(readOnly = true)
     public ConsultationSliceResponseDto readAllConsultation(Long userId, Long scheduleId, Pageable pageable) {
         List<Consultation> consultations = consultationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<Consultation> allConsultations = consultationRepository.findAllByScheduleId(scheduleId, pageable);
@@ -81,6 +81,7 @@ public class ConsultationService {
                 .build();
     }
 
+    @Transactional
     public ConsultationDeleteResponseDto deleteConsultation(Long userId, Long consultationId) {
         Consultation consultation = consultationRepository.findByIdAndUserId(consultationId, userId)
                 .orElseThrow(() -> new ConsultationException(ConsultationErrorCode.CONSULTATION_NOT_FOUNT));
@@ -94,6 +95,7 @@ public class ConsultationService {
                 .build();
     }
 
+    @Transactional
     public int deleteConsultations(Long userId, List<Long> consultationIds) {
         consultationIds.forEach(consultationId -> {
             deleteConsultation(userId, consultationId);
@@ -101,6 +103,7 @@ public class ConsultationService {
         return consultationIds.size();
     }
 
+    @Transactional
     public ConsultationDetailResponseDto getConsultationDetail(Long userId, Long consultationId) {
         Consultation consultation = findConsultationByIdAndUserId(consultationId, userId);
         List<ConsultationImage> consultationImages = consultationImageRepository.findConsultationImageByConsultationId(
@@ -110,6 +113,7 @@ public class ConsultationService {
         return new ConsultationDetailResponseDto(consultation, consultationImages);
     }
 
+    @Transactional
     public ConsultationResponseDto updateConsultation(Long userId, Long consultationId,
                                                       ConsultationUpdateRequestDto requestDto,
                                                       List<MultipartFile> consultationImages) {
@@ -120,7 +124,6 @@ public class ConsultationService {
         return ConsultationResponseDto.of(consultation);
     }
 
-    @Transactional(readOnly = true)
     public List<ConsultationResponseDto> findByScheduleAndUser(Long scheduleId, Long userId) {
         List<Consultation> logs = consultationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         return logs.stream()
@@ -128,7 +131,6 @@ public class ConsultationService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     public List<ConsultationResponseDto> findByFilter(final Long userId, final LocalDate startDate,
                                                       final LocalDate endDate,
                                                       final String searchType, final String keyword) {
@@ -144,7 +146,6 @@ public class ConsultationService {
         return null;
     }
 
-    @Transactional(readOnly = true)
     private List<ConsultationResponseDto> findByTitle(String keyword, LocalDate startDate,
                                                       LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
@@ -156,7 +157,6 @@ public class ConsultationService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     private List<ConsultationResponseDto> findByContents(String keyword, LocalDate startDate,
                                                          LocalDate endDate, Long userId) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
@@ -168,7 +168,6 @@ public class ConsultationService {
                 .toList();
     }
 
-    @Transactional(readOnly = true)
     private List<ConsultationResponseDto> findByTitleOrPlanOrContents(String keyword,
                                                                       LocalDate startDate,
                                                                       LocalDate endDate,
@@ -227,7 +226,6 @@ public class ConsultationService {
                 .build());
     }
 
-    @Transactional(readOnly = true)
     public ConsultationSliceResponseDto readConsultationsByDate(Long userId, Long scheduleId, LocalDate startDate,
                                                                 LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
@@ -252,7 +250,6 @@ public class ConsultationService {
                 .build();
     }
 
-    @Transactional(readOnly = true)
     public List<ConsultationResponseDto> readDailyConsultations(Long userId, Long scheduleId, LocalDate date) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(date);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(date);
@@ -265,7 +262,6 @@ public class ConsultationService {
                 .map(ConsultationResponseDto::of).toList();
     }
 
-    @Transactional(readOnly = true)
     public List<ConsultationResponseDto> readMonthlyConsultations(Long userId, Long scheduleId, LocalDate date) {
         List<Consultation> consultations = consultationRepository.findByUserIdAndScheduleIdAndYearMonth(userId,
                 scheduleId, date);
