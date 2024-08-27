@@ -5,7 +5,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteRespo
 import com.example.tnote.boundedContext.consultation.dto.ConsultationSaveRequest;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponses;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequest;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
 import com.example.tnote.boundedContext.consultation.service.ConsultationService;
@@ -93,9 +93,9 @@ public class ConsultationController {
             MediaType.MULTIPART_FORM_DATA_VALUE})
     public ResponseEntity<Result> updateConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
                                                      @PathVariable Long consultationId,
-                                                     @RequestPart ConsultationUpdateRequestDto requestDto,
+                                                     @RequestPart ConsultationUpdateRequest requestDto,
                                                      @RequestPart(name = "consultationImages", required = false) List<MultipartFile> consultationImages) {
-        ConsultationResponse responseDto = consultationService.updateConsultation(principalDetails.getId(),
+        ConsultationResponse responseDto = consultationService.update(principalDetails.getId(),
                 consultationId, requestDto, consultationImages);
         return ResponseEntity.ok(Result.of(responseDto));
     }

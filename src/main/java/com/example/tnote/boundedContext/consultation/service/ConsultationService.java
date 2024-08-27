@@ -6,7 +6,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteRespo
 import com.example.tnote.boundedContext.consultation.dto.ConsultationSaveRequest;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponses;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequest;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
 import com.example.tnote.boundedContext.consultation.exception.ConsultationErrorCode;
@@ -95,19 +95,18 @@ public class ConsultationService {
     @Transactional
     public ConsultationResponse find(final Long userId, final Long consultationId) {
         Consultation consultation = findConsultationByIdAndUserId(consultationId, userId);
-        recentLogService.save(userId, consultation.getId(), consultation.getSchedule().getId(),
-                "CONSULTATION");
+        recentLogService.save(userId, consultation.getId(), consultation.getSchedule().getId(), "CONSULTATION");
         return ConsultationResponse.from(consultation);
     }
 
     @Transactional
-    public ConsultationResponse updateConsultation(Long userId, Long consultationId,
-                                                   ConsultationUpdateRequestDto requestDto,
-                                                   List<MultipartFile> consultationImages) {
+    public ConsultationResponse update(final Long userId, final Long consultationId,
+                                       final ConsultationUpdateRequest request,
+                                       final List<MultipartFile> consultationImages) {
         Consultation consultation = findConsultationByIdAndUserId(consultationId, userId);
-        updateConsultationItem(requestDto, consultation, consultationImages);
-        recentLogService.save(userId, consultation.getId(), consultation.getSchedule().getId(),
-                "CONSULTATION");
+        updateEachItem(request, consultation, consultationImages);
+        recentLogService.save(userId, consultation.getId(), consultation.getSchedule().getId(), "CONSULTATION");
+
         return ConsultationResponse.from(consultation);
     }
 
@@ -169,9 +168,9 @@ public class ConsultationService {
                 .toList();
     }
 
-    private void updateConsultationItem(ConsultationUpdateRequestDto requestDto, Consultation consultation,
-                                        List<MultipartFile> consultationImages) {
-        updateConsultationFields(requestDto, consultation);
+    private void updateEachItem(final ConsultationUpdateRequest request, final Consultation consultation,
+                                final List<MultipartFile> consultationImages) {
+        updateFields(request, consultation);
         if (consultationImages == null || consultationImages.isEmpty()) {
             deleteExistedImages(consultation);
         }
@@ -182,27 +181,26 @@ public class ConsultationService {
         }
     }
 
-    private void updateConsultationFields(ConsultationUpdateRequestDto requestDto, Consultation consultation) {
-        consultation.updateStudentName(requestDto.getTitle());
-        consultation.updateStartDate(requestDto.getStartDate());
-        consultation.updateEndDate(requestDto.getEndDate());
-        consultation.updateConsultationContents(requestDto.getConsultationContents());
-        consultation.updateConsultationResult(requestDto.getConsultationResult());
-        requestDto.validateEnums();
-        consultation.updateCounselingField(requestDto.getCounselingField());
-        requestDto.validateEnums();
-        consultation.updateCounselingType(requestDto.getCounselingType());
+    private void updateFields(final ConsultationUpdateRequest request,final Consultation consultation) {
+        consultation.updateStudentName(request.getTitle());
+        consultation.updateStartDate(request.getStartDate());
+        consultation.updateEndDate(request.getEndDate());
+        consultation.updateConsultationContents(request.getConsultationContents());
+        consultation.updateConsultationResult(request.getConsultationResult());
+        request.validateEnums();
+        consultation.updateCounselingField(request.getCounselingField());
+        request.validateEnums();
+        consultation.updateCounselingType(request.getCounselingType());
     }
 
-    private List<ConsultationImage> uploadConsultationImages(Consultation consultation,
-                                                             List<MultipartFile> consultationImages) {
+    private List<ConsultationImage> uploadImages(final Consultation consultation, final List<MultipartFile> consultationImages) {
         return consultationImages.stream()
                 .map(file -> awsS3Uploader.upload(file, "consultation"))
-                .map(pair -> createConsultationImage(consultation, pair.getFirst(), pair.getSecond()))
+                .map(pair -> createImage(consultation, pair.getFirst(), pair.getSecond()))
                 .toList();
     }
 
-    private ConsultationImage createConsultationImage(Consultation consultation, String url, String originalFileName) {
+    private ConsultationImage createImage(final Consultation consultation,final String url, final String originalFileName) {
         consultation.clearConsultationImages();
 
         return consultationImageRepository.save(ConsultationImage.builder()
@@ -253,7 +251,7 @@ public class ConsultationService {
     private List<ConsultationImage> deleteExistedImagesAndUploadNewImages(Consultation consultation,
                                                                           List<MultipartFile> consultationImages) {
         deleteExistedImages(consultation);
-        return uploadConsultationImages(consultation, consultationImages);
+        return uploadImages(consultation, consultationImages);
     }
 
     private void deleteExistedImages(Consultation consultation) {
@@ -287,7 +285,7 @@ public class ConsultationService {
 
     private void validateHasImages(final Consultation consultation, final List<MultipartFile> consultationImages) {
         if (consultationImages != null && !consultationImages.isEmpty()) {
-            List<ConsultationImage> uploadedImages = uploadConsultationImages(consultation, consultationImages);
+            List<ConsultationImage> uploadedImages = uploadImages(consultation, consultationImages);
             consultation.getConsultationImage().addAll(uploadedImages);
         }
     }

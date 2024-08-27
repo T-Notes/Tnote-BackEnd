@@ -1,6 +1,5 @@
 package com.example.tnote.boundedContext.consultation.dto;
 
-import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
 import com.example.tnote.boundedContext.consultation.exception.ConsultationErrorCode;
@@ -10,7 +9,7 @@ import java.util.EnumSet;
 import lombok.Getter;
 
 @Getter
-public class ConsultationUpdateRequestDto {
+public class ConsultationUpdateRequest {
     private String title;
     private LocalDateTime startDate;
     private LocalDateTime endDate;
