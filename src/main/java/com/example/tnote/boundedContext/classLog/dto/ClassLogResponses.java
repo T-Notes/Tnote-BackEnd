@@ -3,12 +3,10 @@ package com.example.tnote.boundedContext.classLog.dto;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.List;
-import lombok.Builder;
 import lombok.Getter;
 import org.springframework.data.domain.Slice;
 
 @Getter
-@Builder
 public class ClassLogResponses {
     private List<ClassLogResponse> classLogs;
 
@@ -29,14 +27,10 @@ public class ClassLogResponses {
         this.isLast = isLast;
     }
 
-    public static ClassLogResponses of(final List<ClassLogResponse> classLogResponses,
+    public static ClassLogResponses of(final List<ClassLogResponse> responses,
                                        final List<ClassLog> classLogList,
                                        final Slice<ClassLog> allClassLogsSlice) {
-        return ClassLogResponses.builder()
-                .classLogs(classLogResponses)
-                .numberOfClassLog(classLogList.size())
-                .page(allClassLogsSlice.getPageable().getPageNumber())
-                .isLast(allClassLogsSlice.isLast())
-                .build();
+        return new ClassLogResponses(responses, classLogList.size(),
+                allClassLogsSlice.getPageable().getPageNumber(), allClassLogsSlice.isLast());
     }
 }

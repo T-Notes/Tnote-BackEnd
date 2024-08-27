@@ -7,7 +7,7 @@ import com.example.tnote.base.exception.CustomExceptions;
 import com.example.tnote.boundedContext.archive.service.ArchiveService;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.classLog.entity.ClassLog;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
@@ -68,8 +68,8 @@ public class ArchiveServiceTest {
         LocalDateTime date = LocalDateTime.parse("2024-03-01 13:47:13.248", formatter);
 
         consultation = testSyUtils.createConsultation("a", date, date, CounselingField.HEALTH, CounselingType.STUDENT,
-                "a", "a");
-        observation = testSyUtils.createObservation("a", date, date, "a", "a","red",user1,schedule1);
+                "a", "a", "red", user1, schedule1);
+        observation = testSyUtils.createObservation("a", date, date, "a", "a", "red", user1, schedule1);
         proceeding = testSyUtils.createProceeding("a", date, date, "a", "a", "red", user1, schedule1);
 
         schedule1 = testSyUtils.createSchedule("2024년 3학년 1학기", "a", user1, LocalDate.now(), LocalDate.now());
@@ -84,7 +84,7 @@ public class ArchiveServiceTest {
         testSyUtils.login(principalDetails);
 
         // when
-        List<ConsultationResponseDto> response = homeService.findAllOfConsultation(consultation.getTitle(),
+        List<ConsultationResponse> response = homeService.findAllOfConsultation(consultation.getTitle(),
                 user1.getId(), schedule1.getId());
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SSS");

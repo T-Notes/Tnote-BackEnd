@@ -1,20 +1,14 @@
 package com.example.tnote.boundedContext.consultation.controller;
 
 import com.example.tnote.base.response.Result;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationSaveRequest;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequest;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
 import com.example.tnote.boundedContext.consultation.service.ConsultationService;
 import com.example.tnote.boundedContext.user.entity.auth.PrincipalDetails;
 import java.util.Arrays;
 import java.util.List;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -30,74 +24,69 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-@Slf4j
 @RestController
 @RequestMapping("/tnote/v1/consultation")
-@RequiredArgsConstructor
 public class ConsultationController {
     private final ConsultationService consultationService;
 
+    public ConsultationController(final ConsultationService consultationService) {
+        this.consultationService = consultationService;
+    }
+
     @GetMapping("/field")
-    public ResponseEntity<Result> getCounselingField() {
-        List<CounselingField> response = Arrays.asList(CounselingField.values());
-        return ResponseEntity.ok(Result.of(response));
+    public ResponseEntity<Result> findCounselingField() {
+        return ResponseEntity.ok(Result.of(Arrays.asList(CounselingField.values())));
     }
 
     @GetMapping("/type")
-    public ResponseEntity<Result> getCounselingType() {
-        List<CounselingType> response = Arrays.asList(CounselingType.values());
-        return ResponseEntity.ok(Result.of(response));
+    public ResponseEntity<Result> findCounselingType() {
+        return ResponseEntity.ok(Result.of(Arrays.asList(CounselingType.values())));
     }
 
     @PostMapping(value = "/{scheduleId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Result> createConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @PathVariable Long scheduleId,
-                                                     @RequestPart ConsultationRequestDto requestDto,
-                                                     @RequestPart(name = "consultationImages", required = false) List<MultipartFile> consultationImages) {
-        ConsultationResponseDto consultationResponseDto = consultationService.save(principalDetails.getId(), scheduleId,
-                requestDto, consultationImages);
-        return ResponseEntity.ok(Result.of(consultationResponseDto));
+    public ResponseEntity<Result> save(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                       @PathVariable final Long scheduleId,
+                                       @RequestPart final ConsultationSaveRequest request,
+                                       @RequestPart(name = "consultationImages", required = false) final List<MultipartFile> consultationImages) {
+
+        return ResponseEntity.ok(Result.of(consultationService.save(principalDetails.getId(), scheduleId,
+                request, consultationImages)));
     }
 
     @GetMapping("/{scheduleId}/all")
-    public ResponseEntity<Result> getAllConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                      @PathVariable Long scheduleId,
-                                                      @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                      @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
+    public ResponseEntity<Result> findAll(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                          @PathVariable final Long scheduleId,
+                                          @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                          @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        ConsultationSliceResponseDto responseDto = consultationService.readAllConsultation(principalDetails.getId(),
-                scheduleId,
-                pageRequest);
 
-        return ResponseEntity.ok(Result.of(responseDto));
+        return ResponseEntity.ok(Result.of(consultationService.findAll(principalDetails.getId(),
+                scheduleId, pageRequest)));
     }
 
     @DeleteMapping("/{consultationId}")
-    public ResponseEntity<Result> deleteConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @PathVariable Long consultationId) {
-        ConsultationDeleteResponseDto deleteResponseDto = consultationService.deleteConsultation(principalDetails.getId(),
-                consultationId);
-        return ResponseEntity.ok(Result.of(deleteResponseDto));
+    public ResponseEntity<Result> delete(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                         @PathVariable final Long consultationId) {
+
+        return ResponseEntity.ok(Result.of(consultationService.delete(principalDetails.getId(), consultationId)));
     }
 
     @GetMapping("/{consultationId}")
-    public ResponseEntity<Result> getClassLogDetail(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                    @PathVariable Long consultationId) {
-        ConsultationDetailResponseDto detailResponseDto = consultationService.getConsultationDetail(
-                principalDetails.getId(),
-                consultationId);
-        return ResponseEntity.ok(Result.of(detailResponseDto));
+    public ResponseEntity<Result> find(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                       @PathVariable final Long consultationId) {
+
+        return ResponseEntity.ok(Result.of(consultationService.find(principalDetails.getId(), consultationId)));
     }
 
     @PatchMapping(value = "/{consultationId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Result> updateConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @PathVariable Long consultationId,
-                                                     @RequestPart ConsultationUpdateRequestDto requestDto,
-                                                     @RequestPart(name = "consultationImages", required = false) List<MultipartFile> consultationImages) {
-        ConsultationResponseDto responseDto = consultationService.updateConsultation(principalDetails.getId(),
-                consultationId, requestDto, consultationImages);
-        return ResponseEntity.ok(Result.of(responseDto));
+    public ResponseEntity<Result> update(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                         @PathVariable final Long consultationId,
+                                         @RequestPart final ConsultationUpdateRequest request,
+                                         @RequestPart(name = "consultationImages", required = false) final List<MultipartFile> consultationImages) {
+
+        return ResponseEntity.ok(Result.of(consultationService.update(principalDetails.getId(),
+                consultationId, request, consultationImages)));
     }
 }

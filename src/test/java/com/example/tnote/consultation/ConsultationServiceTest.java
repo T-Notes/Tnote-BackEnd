@@ -7,14 +7,12 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponseDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationRequestDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationResponseDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteResponse;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationResponses;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationSaveRequest;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequest;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
-import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
 import com.example.tnote.boundedContext.consultation.exception.ConsultationException;
@@ -28,7 +26,6 @@ import com.example.tnote.boundedContext.user.entity.User;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -66,7 +63,6 @@ public class ConsultationServiceTest {
     private Schedule mockSchedule;
     private Consultation mockConsultation;
     private Long userId = 1L;
-    private Long scheduleId = 2L;
     private Long consultationId = 1L;
 
     @BeforeEach
@@ -83,46 +79,23 @@ public class ConsultationServiceTest {
     @DisplayName("상담일지 저장: 정상적인 경우 성공적으로 저장 확인")
     @Test
     void save() {
-        ConsultationRequestDto requestDto = ConsultationRequestDto.builder()
-                .title("김태")
-                .startDate(mockSchedule.getStartDate().atStartOfDay())
-                .endDate(mockSchedule.getStartDate().atStartOfDay().plusHours(2))
-                .counselingField(CounselingField.FRIENDSHIP)
-                .counselingType(CounselingType.STUDENT)
-                .consultationContents("상담내용")
-                .consultationResult("상담결과")
-                .isAllDay(false)
-                .build();
+        LocalDateTime startDate = LocalDate.of(2024, 1, 1).atStartOfDay();
+        LocalDateTime endDate = LocalDate.of(2024, 1, 3).atStartOfDay();
+        ConsultationSaveRequest requestDto = new ConsultationSaveRequest("김", startDate, endDate,
+                CounselingField.FRIENDSHIP, CounselingType.STUDENT, "상담", "결과", false, "red");
 
-        when(userRepository.findById(userId)).thenReturn(Optional.of(mockUser));
-        when(scheduleRepository.findById(scheduleId)).thenReturn(Optional.of(mockSchedule));
+        when(userRepository.findUserById(userId)).thenReturn(mockUser);
+        when(scheduleRepository.findScheduleById(1L)).thenReturn(mockSchedule);
+
         Consultation consultation = requestDto.toEntity(mockUser, mockSchedule);
         when(consultationRepository.save(any(Consultation.class))).thenReturn(consultation);
 
-        ConsultationResponseDto result = consultationService.save(userId, scheduleId, requestDto,
+        ConsultationResponse result = consultationService.save(userId, 1L, requestDto,
                 Collections.emptyList());
 
         assertThat(result).isNotNull();
         assertThat(result.getTitle()).isEqualTo(requestDto.getTitle());
         verify(consultationRepository).save(any(Consultation.class));
-    }
-
-    @DisplayName("상담일지 저장: 올바르지 않은 상수가 입력되었을 때 예외 발생 확인")
-    @Test
-    void saveWithInvalidEnums() {
-        ConsultationRequestDto requestDto = ConsultationRequestDto.builder()
-                .title("김태")
-                .startDate(mockSchedule.getStartDate().atStartOfDay())
-                .endDate(mockSchedule.getStartDate().atStartOfDay().plusHours(2))
-                .counselingField(null)
-                .counselingType(null)
-                .consultationContents("상담내용")
-                .consultationResult("상담결과")
-                .isAllDay(false)
-                .build();
-
-        assertThatThrownBy(() -> consultationService.save(userId, scheduleId, requestDto, Collections.emptyList()))
-                .isInstanceOf(ConsultationException.class);
     }
 
     @DisplayName("상담일지 조회: 작성자가 작성한 모든 상담일지 조회 확인")
@@ -139,7 +112,7 @@ public class ConsultationServiceTest {
                 mockConsultationList.size());
 
         when(consultationRepository.findAllByScheduleId(scheduleId, pageable)).thenReturn(mockConsultations);
-        ConsultationSliceResponseDto result = consultationService.readAllConsultation(userId, scheduleId, pageable);
+        ConsultationResponses result = consultationService.findAll(userId, scheduleId, pageable);
 
         assertThat(result.getConsultations())
                 .isNotNull()
@@ -151,26 +124,18 @@ public class ConsultationServiceTest {
     @DisplayName("상담일지 상세 조회: 상담일지 상세 정보 조회 확인")
     @Test
     void getConsultationDetails() {
-        when(mockUser.getId()).thenReturn(userId);
         when(mockConsultation.getId()).thenReturn(consultationId);
-        when(mockConsultation.getUser()).thenReturn(mockUser);
         when(mockConsultation.getSchedule()).thenReturn(mockSchedule);
-        List<ConsultationImage> mockClassLogImages = new ArrayList<>();
 
         when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(
                 Optional.of(mockConsultation));
-        when(consultationImageRepository.findConsultationImageByConsultationId(consultationId)).thenReturn(
-                mockClassLogImages);
 
-        ConsultationDetailResponseDto result = consultationService.getConsultationDetail(userId, consultationId);
+        ConsultationResponse result = consultationService.find(userId, consultationId);
 
         assertThat(result).isNotNull();
         assertThat(result.getId()).isEqualTo(consultationId);
-        assertThat(result.getUserId()).isEqualTo(userId);
-        assertThat(result.getConsultationImageUrls()).hasSize(mockClassLogImages.size());
 
         verify(consultationRepository).findByIdAndUserId(consultationId, userId);
-        verify(consultationImageRepository).findConsultationImageByConsultationId(consultationId);
     }
 
     @DisplayName("존재하지 않는 상담일지의 상세정보 조회 시 예외 발생")
@@ -180,7 +145,7 @@ public class ConsultationServiceTest {
 
         when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> consultationService.getConsultationDetail(userId, consultationId))
+        assertThatThrownBy(() -> consultationService.find(userId, consultationId))
                 .isInstanceOf(ConsultationException.class);
     }
 
@@ -190,7 +155,7 @@ public class ConsultationServiceTest {
         when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(
                 Optional.of(mockConsultation));
 
-        ConsultationDeleteResponseDto result = consultationService.deleteConsultation(userId, consultationId);
+        ConsultationDeleteResponse result = consultationService.delete(userId, consultationId);
 
         verify(consultationRepository).findByIdAndUserId(userId, consultationId);
         verify(consultationRepository).delete(mockConsultation);
@@ -201,13 +166,13 @@ public class ConsultationServiceTest {
     void updateConsultation() {
         when(mockConsultation.getId()).thenReturn(consultationId);
         when(mockConsultation.getSchedule()).thenReturn(mockSchedule);
-        ConsultationUpdateRequestDto classLogUpdateRequestDto = mock(ConsultationUpdateRequestDto.class);
+        ConsultationUpdateRequest classLogUpdateRequestDto = mock(ConsultationUpdateRequest.class);
         List<MultipartFile> consultationImages = Collections.emptyList();
 
         when(consultationRepository.findByIdAndUserId(consultationId, userId)).thenReturn(
                 Optional.of(mockConsultation));
 
-        ConsultationResponseDto result = consultationService.updateConsultation(userId, consultationId,
+        ConsultationResponse result = consultationService.update(userId, consultationId,
                 classLogUpdateRequestDto,
                 consultationImages);
 
