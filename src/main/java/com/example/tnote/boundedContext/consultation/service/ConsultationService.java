@@ -6,7 +6,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteRespo
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationSaveRequest;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationResponses;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.entity.ConsultationImage;
@@ -64,14 +64,14 @@ public class ConsultationService {
         return ConsultationResponse.from(consultation);
     }
 
-    public ConsultationSliceResponseDto readAllConsultation(Long userId, Long scheduleId, Pageable pageable) {
+    public ConsultationResponses readAllConsultation(Long userId, Long scheduleId, Pageable pageable) {
         List<Consultation> consultations = consultationRepository.findAllByUserIdAndScheduleId(userId, scheduleId);
         Slice<Consultation> allConsultations = consultationRepository.findAllByScheduleId(scheduleId, pageable);
         int numberOfConsultation = consultations.size();
         List<ConsultationResponse> responseDtos = allConsultations.getContent().stream()
                 .map(ConsultationResponse::from).toList();
 
-        return ConsultationSliceResponseDto.builder()
+        return ConsultationResponses.builder()
                 .consultations(responseDtos)
                 .numberOfConsultation(numberOfConsultation)
                 .page(allConsultations.getPageable().getPageNumber())
@@ -223,8 +223,8 @@ public class ConsultationService {
                 .build());
     }
 
-    public ConsultationSliceResponseDto readConsultationsByDate(Long userId, Long scheduleId, LocalDate startDate,
-                                                                LocalDate endDate, Pageable pageable) {
+    public ConsultationResponses readConsultationsByDate(Long userId, Long scheduleId, LocalDate startDate,
+                                                         LocalDate endDate, Pageable pageable) {
         LocalDateTime startOfDay = DateUtils.getStartOfDay(startDate);
         LocalDateTime endOfDay = DateUtils.getEndOfDay(endDate);
 
@@ -239,7 +239,7 @@ public class ConsultationService {
         List<ConsultationResponse> responseDtos = allConsultations.getContent().stream()
                 .map(ConsultationResponse::from).toList();
 
-        return ConsultationSliceResponseDto.builder()
+        return ConsultationResponses.builder()
                 .consultations(responseDtos)
                 .numberOfConsultation(numberOfConsultation)
                 .page(allConsultations.getPageable().getPageNumber())

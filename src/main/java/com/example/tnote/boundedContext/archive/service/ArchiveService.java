@@ -16,7 +16,7 @@ import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.repository.query.ClassLogQueryRepository;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationResponses;
 import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.repository.query.ConsultationQueryRepository;
 import com.example.tnote.boundedContext.consultation.service.ConsultationService;
@@ -121,7 +121,7 @@ public class ArchiveService {
             return ArchiveSliceResponseDto.builder().classLogs(classLogs).build();
         }
         if (logType == LogType.CONSULTATION) {
-            ConsultationSliceResponseDto consultations = consultationService.readConsultationsByDate(userId, scheduleId,
+            ConsultationResponses consultations = consultationService.readConsultationsByDate(userId, scheduleId,
                     startDate,
                     endDate, pageable);
             return ArchiveSliceResponseDto.builder().consultations(consultations).build();

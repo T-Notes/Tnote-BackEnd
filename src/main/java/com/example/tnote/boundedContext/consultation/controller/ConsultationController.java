@@ -5,7 +5,7 @@ import com.example.tnote.boundedContext.consultation.dto.ConsultationDeleteRespo
 import com.example.tnote.boundedContext.consultation.dto.ConsultationDetailResponseDto;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationSaveRequest;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationSliceResponseDto;
+import com.example.tnote.boundedContext.consultation.dto.ConsultationResponses;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationUpdateRequestDto;
 import com.example.tnote.boundedContext.consultation.entity.CounselingField;
 import com.example.tnote.boundedContext.consultation.entity.CounselingType;
@@ -66,7 +66,7 @@ public class ConsultationController {
                                                       @RequestParam(value = "page", required = false, defaultValue = "0") int page,
                                                       @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
-        ConsultationSliceResponseDto responseDto = consultationService.readAllConsultation(principalDetails.getId(),
+        ConsultationResponses responseDto = consultationService.readAllConsultation(principalDetails.getId(),
                 scheduleId,
                 pageRequest);
 

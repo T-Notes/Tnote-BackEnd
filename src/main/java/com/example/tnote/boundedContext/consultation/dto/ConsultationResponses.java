@@ -7,9 +7,9 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class ConsultationSliceResponseDto {
+public class ConsultationResponses {
 
-    List<ConsultationResponse> consultations;
+    private List<ConsultationResponse> consultations;
     private int numberOfConsultation;
 
     private long page;
