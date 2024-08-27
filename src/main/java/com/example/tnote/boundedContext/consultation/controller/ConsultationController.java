@@ -29,41 +29,41 @@ import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-@Slf4j
 @RestController
 @RequestMapping("/tnote/v1/consultation")
-@RequiredArgsConstructor
 public class ConsultationController {
     private final ConsultationService consultationService;
 
+    public ConsultationController(final ConsultationService consultationService) {
+        this.consultationService = consultationService;
+    }
+
     @GetMapping("/field")
-    public ResponseEntity<Result> getCounselingField() {
-        List<CounselingField> response = Arrays.asList(CounselingField.values());
-        return ResponseEntity.ok(Result.of(response));
+    public ResponseEntity<Result> findCounselingField() {
+        return ResponseEntity.ok(Result.of(Arrays.asList(CounselingField.values())));
     }
 
     @GetMapping("/type")
-    public ResponseEntity<Result> getCounselingType() {
-        List<CounselingType> response = Arrays.asList(CounselingType.values());
-        return ResponseEntity.ok(Result.of(response));
+    public ResponseEntity<Result> findCounselingType() {
+        return ResponseEntity.ok(Result.of(Arrays.asList(CounselingType.values())));
     }
 
     @PostMapping(value = "/{scheduleId}", consumes = {MediaType.APPLICATION_JSON_VALUE,
             MediaType.MULTIPART_FORM_DATA_VALUE})
-    public ResponseEntity<Result> createConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                     @PathVariable Long scheduleId,
-                                                     @RequestPart ConsultationSaveRequest requestDto,
-                                                     @RequestPart(name = "consultationImages", required = false) List<MultipartFile> consultationImages) {
-        ConsultationResponse consultationResponseDto = consultationService.save(principalDetails.getId(), scheduleId,
-                requestDto, consultationImages);
-        return ResponseEntity.ok(Result.of(consultationResponseDto));
+    public ResponseEntity<Result> save(@AuthenticationPrincipal final PrincipalDetails principalDetails,
+                                       @PathVariable final Long scheduleId,
+                                       @RequestPart final ConsultationSaveRequest request,
+                                       @RequestPart(name = "consultationImages", required = false) final List<MultipartFile> consultationImages) {
+
+        return ResponseEntity.ok(Result.of(consultationService.save(principalDetails.getId(), scheduleId,
+                request, consultationImages)));
     }
 
     @GetMapping("/{scheduleId}/all")
     public ResponseEntity<Result> getAllConsultation(@AuthenticationPrincipal PrincipalDetails principalDetails,
-                                                      @PathVariable Long scheduleId,
-                                                      @RequestParam(value = "page", required = false, defaultValue = "0") int page,
-                                                      @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
+                                                     @PathVariable Long scheduleId,
+                                                     @RequestParam(value = "page", required = false, defaultValue = "0") int page,
+                                                     @RequestParam(value = "size", required = false, defaultValue = "4") int size) {
         PageRequest pageRequest = PageRequest.of(page, size);
         ConsultationResponses responseDto = consultationService.findAll(principalDetails.getId(),
                 scheduleId,
