@@ -24,6 +24,24 @@ public class ConsultationSaveRequest {
     private boolean isAllDay;
     private String color;
 
+    public ConsultationSaveRequest() {
+    }
+
+    public ConsultationSaveRequest(String title, LocalDateTime startDate, LocalDateTime endDate,
+                                   CounselingField counselingField, CounselingType counselingType,
+                                   String consultationContents, String consultationResult, boolean isAllDay,
+                                   String color) {
+        this.title = title;
+        this.startDate = startDate;
+        this.endDate = endDate;
+        this.counselingField = counselingField;
+        this.counselingType = counselingType;
+        this.consultationContents = consultationContents;
+        this.consultationResult = consultationResult;
+        this.isAllDay = isAllDay;
+        this.color = color;
+    }
+
     public Consultation toEntity(User user, Schedule schedule) {
         validateEnums();
         return new Consultation(this.title, this.startDate, this.endDate, this.counselingField, this.counselingType,
