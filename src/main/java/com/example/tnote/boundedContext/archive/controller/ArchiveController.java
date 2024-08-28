@@ -4,13 +4,10 @@ import com.example.tnote.base.response.Result;
 import com.example.tnote.base.utils.TokenUtils;
 import com.example.tnote.boundedContext.archive.constant.DateType;
 import com.example.tnote.boundedContext.archive.constant.LogType;
+import com.example.tnote.boundedContext.archive.dto.ArchiveResponse;
 import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequest;
 import com.example.tnote.boundedContext.archive.service.ArchiveService;
-import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
-import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
-import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
-import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.recentLog.service.RecentLogService;
 import com.example.tnote.boundedContext.schedule.dto.SemesterResponse;
 import com.example.tnote.boundedContext.schedule.service.ScheduleService;
@@ -23,7 +20,6 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -65,20 +61,7 @@ public class ArchiveController {
             @AuthenticationPrincipal PrincipalDetails user, @PathVariable Long scheduleId) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
-
-        List<ConsultationResponse> consultation = archiveService.findAllOfConsultation(keyword, currentUser.getId(),
-                scheduleId);
-        List<ObservationResponse> observation = archiveService.findAllOfObservation(keyword, currentUser.getId(),
-                scheduleId);
-        List<ClassLogResponse> classLog = archiveService.findAllOfClassLog(keyword, currentUser.getId(), scheduleId);
-        List<ProceedingResponse> proceeding = archiveService.findAllOfProceeding(keyword, currentUser.getId(),
-                scheduleId);
-
-        List<Object> response = new ArrayList<>();
-        response.addAll(consultation);
-        response.addAll(observation);
-        response.addAll(classLog);
-        response.addAll(proceeding);
+        ArchiveResponse response = archiveService.findAll(currentUser.getId(), scheduleId, keyword);
 
         return ResponseEntity.ok(Result.of(response));
     }
