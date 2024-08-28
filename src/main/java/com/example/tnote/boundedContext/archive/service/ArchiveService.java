@@ -12,24 +12,21 @@ import com.example.tnote.boundedContext.archive.dto.LogsDeleteResponse;
 import com.example.tnote.boundedContext.archive.dto.UnifiedLogResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponse;
 import com.example.tnote.boundedContext.classLog.dto.ClassLogResponses;
-import com.example.tnote.boundedContext.classLog.entity.ClassLog;
 import com.example.tnote.boundedContext.classLog.repository.query.ClassLogQueryRepository;
 import com.example.tnote.boundedContext.classLog.service.ClassLogService;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponse;
 import com.example.tnote.boundedContext.consultation.dto.ConsultationResponses;
-import com.example.tnote.boundedContext.consultation.entity.Consultation;
 import com.example.tnote.boundedContext.consultation.repository.query.ConsultationQueryRepository;
 import com.example.tnote.boundedContext.consultation.service.ConsultationService;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponse;
 import com.example.tnote.boundedContext.observation.dto.ObservationResponses;
-import com.example.tnote.boundedContext.observation.entity.Observation;
 import com.example.tnote.boundedContext.observation.repository.query.ObservationQueryRepository;
 import com.example.tnote.boundedContext.observation.service.ObservationService;
 import com.example.tnote.boundedContext.plan.dto.PlanResponse;
+import com.example.tnote.boundedContext.plan.repository.query.PlanQueryRepository;
 import com.example.tnote.boundedContext.plan.service.PlanService;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponse;
 import com.example.tnote.boundedContext.proceeding.dto.ProceedingResponses;
-import com.example.tnote.boundedContext.proceeding.entity.Proceeding;
 import com.example.tnote.boundedContext.proceeding.repository.query.ProceedingQueryRepository;
 import com.example.tnote.boundedContext.proceeding.service.ProceedingService;
 import com.example.tnote.boundedContext.schedule.entity.Schedule;
@@ -59,6 +56,7 @@ public class ArchiveService {
     private final ConsultationQueryRepository consultationQueryRepository;
     private final ObservationQueryRepository observationQueryRepository;
     private final ClassLogQueryRepository classLogQueryRepository;
+    private final PlanQueryRepository planQueryRepository;
     private final ProceedingQueryRepository proceedingQueryRepository;
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
@@ -69,48 +67,17 @@ public class ArchiveService {
     private final TodoService todoService;
     private final PlanService planService;
 
-    public List<ConsultationResponse> findAllOfConsultation(String studentName, Long userId, Long scheduleId) {
 
-        userRepository.findById(userId);
+    public ArchiveResponse findAll(final Long userId, final Long scheduleId, final String title) {
 
-        List<Consultation> consultations = consultationQueryRepository.findAll(studentName, scheduleId);
+        List<ConsultationResponse> consultations = consultationQueryRepository.findAll(userId, title, scheduleId);
+        List<ObservationResponse> observations = observationQueryRepository.findAll(userId, title, scheduleId);
+        List<ClassLogResponse> classLogs = classLogQueryRepository.findAll(userId, title, scheduleId);
+        List<ProceedingResponse> proceedings = proceedingQueryRepository.findAll(userId, title, scheduleId);
+        List<PlanResponse> plans = planQueryRepository.findAll(userId, title, scheduleId);
 
-        return consultations.stream()
-                .map(ConsultationResponse::from)
-                .toList();
-    }
+        return ArchiveResponse.of(classLogs, consultations, observations, proceedings, plans);
 
-    public List<ObservationResponse> findAllOfObservation(String studentName, Long userId, Long scheduleId) {
-
-        userRepository.findById(userId);
-
-        List<Observation> observations = observationQueryRepository.findAll(studentName, scheduleId);
-
-        return observations.stream()
-                .map(ObservationResponse::from)
-                .toList();
-    }
-
-    public List<ClassLogResponse> findAllOfClassLog(String title, Long userId, Long scheduleId) {
-
-        userRepository.findById(userId);
-
-        List<ClassLog> classLogs = classLogQueryRepository.findAll(title, scheduleId);
-
-        return classLogs.stream()
-                .map(ClassLogResponse::from)
-                .toList();
-    }
-
-    public List<ProceedingResponse> findAllOfProceeding(String title, Long userId, Long scheduleId) {
-
-        userRepository.findById(userId);
-
-        List<Proceeding> proceedings = proceedingQueryRepository.findAll(title, scheduleId);
-
-        return proceedings.stream()
-                .map(ProceedingResponse::from)
-                .toList();
     }
 
     public ArchiveSliceResponseDto readLogsByDate(Long userId, Long scheduleId, LocalDate startDate, LocalDate endDate,
@@ -264,6 +231,4 @@ public class ArchiveService {
 
         return UnifiedLogResponse.of(pageContent, totalLogs);
     }
-
-
 }

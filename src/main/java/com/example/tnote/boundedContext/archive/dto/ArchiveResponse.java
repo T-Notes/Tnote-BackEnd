@@ -32,12 +32,30 @@ public class ArchiveResponse {
         this.plans = plans;
     }
 
+    public ArchiveResponse(final List<ClassLogResponse> classLogs, final List<ConsultationResponse> consultations,
+                           final List<ObservationResponse> observations, final List<ProceedingResponse> proceedings,
+                           final List<PlanResponse> plans) {
+        this.classLogs = classLogs;
+        this.consultations = consultations;
+        this.observations = observations;
+        this.proceedings = proceedings;
+        this.plans = plans;
+    }
+
     public static ArchiveResponse of(final List<ClassLogResponse> classLogs,
                                      final List<ConsultationResponse> consultations,
                                      final List<ObservationResponse> observations,
                                      final List<ProceedingResponse> proceedings,
                                      final List<TodoResponse> todos, final List<PlanResponse> plans) {
         return new ArchiveResponse(classLogs, consultations, observations, proceedings, todos, plans);
+    }
+
+    public static ArchiveResponse of(final List<ClassLogResponse> classLogs,
+                                     final List<ConsultationResponse> consultations,
+                                     final List<ObservationResponse> observations,
+                                     final List<ProceedingResponse> proceedings,
+                                     final List<PlanResponse> plans) {
+        return new ArchiveResponse(classLogs, consultations, observations, proceedings, plans);
     }
 
 }
