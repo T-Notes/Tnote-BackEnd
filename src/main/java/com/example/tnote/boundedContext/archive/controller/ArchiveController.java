@@ -4,7 +4,6 @@ import com.example.tnote.base.response.Result;
 import com.example.tnote.base.utils.TokenUtils;
 import com.example.tnote.boundedContext.archive.constant.DateType;
 import com.example.tnote.boundedContext.archive.constant.LogType;
-import com.example.tnote.boundedContext.archive.dto.ArchiveResponse;
 import com.example.tnote.boundedContext.archive.dto.ArchiveSliceResponseDto;
 import com.example.tnote.boundedContext.archive.dto.LogsDeleteRequest;
 import com.example.tnote.boundedContext.archive.service.ArchiveService;
@@ -61,7 +60,8 @@ public class ArchiveController {
             @AuthenticationPrincipal PrincipalDetails user, @PathVariable Long scheduleId) {
 
         PrincipalDetails currentUser = TokenUtils.checkValidToken(user);
-        ArchiveResponse response = archiveService.findAll(currentUser.getId(), scheduleId, keyword);
+        //ArchiveResponse response = archiveService.findAll(currentUser.getId(), scheduleId, keyword);
+        List<Object> response = archiveService.findAll(currentUser.getId(), scheduleId, keyword);
 
         return ResponseEntity.ok(Result.of(response));
     }

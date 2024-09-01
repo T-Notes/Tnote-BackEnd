@@ -34,6 +34,7 @@ import com.example.tnote.boundedContext.schedule.exception.ScheduleErrorCode;
 import com.example.tnote.boundedContext.schedule.exception.ScheduleException;
 import com.example.tnote.boundedContext.schedule.repository.ScheduleRepository;
 import com.example.tnote.boundedContext.todo.dto.TodoResponse;
+import com.example.tnote.boundedContext.todo.repository.TodoQueryRepository;
 import com.example.tnote.boundedContext.todo.service.TodoService;
 import com.example.tnote.boundedContext.user.repository.UserRepository;
 import java.time.LocalDate;
@@ -58,6 +59,7 @@ public class ArchiveService {
     private final ClassLogQueryRepository classLogQueryRepository;
     private final PlanQueryRepository planQueryRepository;
     private final ProceedingQueryRepository proceedingQueryRepository;
+    private final TodoQueryRepository todoQueryRepository;
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
     private final ClassLogService classLogService;
@@ -68,7 +70,9 @@ public class ArchiveService {
     private final PlanService planService;
 
 
-    public ArchiveResponse findAll(final Long userId, final Long scheduleId, final String title) {
+    public List<Object> findAll(final Long userId, final Long scheduleId, final String title) {
+
+        List<Object> arrs = new ArrayList();
 
         List<ConsultationResponse> consultations = consultationQueryRepository.findAll(userId, title, scheduleId);
         List<ObservationResponse> observations = observationQueryRepository.findAll(userId, title, scheduleId);
@@ -76,8 +80,16 @@ public class ArchiveService {
         List<ProceedingResponse> proceedings = proceedingQueryRepository.findAll(userId, title, scheduleId);
         List<PlanResponse> plans = planQueryRepository.findAll(userId, title, scheduleId);
 
-        return ArchiveResponse.of(classLogs, consultations, observations, proceedings, plans);
+        arrs.addAll(consultations);
+        arrs.addAll(observations);
+        arrs.addAll(classLogs);
+        arrs.addAll(proceedings);
+        arrs.addAll(plans);
 
+        log.info("arrs : {}", arrs);
+
+        //return ArchiveResponse.of(classLogs, consultations, observations, proceedings, plans);
+        return arrs;
     }
 
     public ArchiveSliceResponseDto readLogsByDate(Long userId, Long scheduleId, LocalDate startDate, LocalDate endDate,

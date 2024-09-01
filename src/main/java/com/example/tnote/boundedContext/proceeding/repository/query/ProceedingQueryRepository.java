@@ -14,7 +14,6 @@ import org.springframework.stereotype.Repository;
 public class ProceedingQueryRepository {
     private final JPAQueryFactory query;
 
-    // 작성 시간을 id의 역순으로 배치
     public List<ProceedingResponse> findAll(Long userId, String keyword, Long scheduleId) {
         List<Proceeding> proceedings = query
                 .selectFrom(proceeding)
