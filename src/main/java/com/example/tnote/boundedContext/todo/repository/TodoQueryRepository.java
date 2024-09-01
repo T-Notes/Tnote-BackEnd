@@ -19,6 +19,7 @@ import org.springframework.stereotype.Repository;
 public class TodoQueryRepository {
     private final JPAQueryFactory query;
 
+
     public List<Todo> findAllByUserIdAndDate(Long userId, Long scheduleId, LocalDate date) {
         return query
                 .selectFrom(todo)
